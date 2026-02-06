@@ -3423,7 +3423,7 @@
     function getHelpContentEn() {
         return (`
 <h1>Route Planner</h1>
-<p>The purpose of the application is to create walking, cycling, or driving routes by drawing them on a map. The routes created can then be exported in GPX format, allowing them to be used with a GPS or mobile navigation and guidance application.</p>
+<p>The purpose of the application is to create walking, cycling, or driving routes by plotting them on a map. The routes created can be exported in GPX format, allowing them to be used next with a GPS or mobile navigation and guidance application.</p>
 <p>The application only allows you to create or modify one route at a time. This route consists of:</p>
 <ul>
 <li>One or more stages. A stage is a journey that you plan to complete in one go or in one day. It consists of:
@@ -3435,28 +3435,28 @@
 </ul>
 <p>This application was developed entirely with open-source tools and services.</p>
 <h2>Maps</h2>
-<p>Maps are used to create routes (the route is drawn on the map).</p>
+<p>Maps are used to create routes (the route is plotted on the map).</p>
 <p>The application offers several map styles:</p>
 <ul>
 <li>A topographic map (displayed by default) highlighting the natural features of the terrain (relief, waterways, coastlines, etc.) and showing contour lines. </li>
 <li>A general map (from OpenStreetMap). </li>
 <li>A map in the form of satellite views.</li> 
 </ul>
-<p>You can zoom in and out on the maps using the mouse wheel or the + and - controls displayed at the top left.</p>
+<p>You can zoom in and out on the maps using the mouse wheel or the + and - controls (displayed at the top left).</p>
 <p>You can also move the map in any direction by dragging and dropping.</p>
 <h2>Working modes</h2>
 <p>The application offers two working modes:</p>
 <ul>
-<li>The “create/edit stage” mode, which allows you to create or edit a stage of the route.</li>
+<li>The “create/edit stage” mode, which allows you to create a new stage or edit an existing stage of the route.</li>
 <li>The “supervision” mode: the stages of the route are displayed, but none are being edited. </li>
 </ul>
-<p>When you open the application, you are in stage create/edit mode, allowing you to create a first stage by adding points to the map using the mouse.</p>
+<p>When you open the application, you are in stage create/edit mode, allowing you to create a first stage by adding points (and sections) to the map using the mouse.</p>
 <ul>
 <li>To switch to supervision mode, press the Escape key.</li>
 <li>To switch back to create/edit mode, either double-click on the map (to create a new stage) or double-click on an existing stage (to edit it).</li>
 </ul>
 <h3>Stage create/edit mode</h3>
-<p>This mode allows you to create or edit a stage of the route. By clicking repeatedly on the map, points are added to the stage, with sections connecting them to the previous points. The other stages are displayed but cannot be modified. This is the default mode when the application is launched (you are supposed to start by creating a stage).</p>
+<p>This mode allows you to create a new stage or to edit an existing stage of the route. By clicking repeatedly on the map, points are added to the stage, with sections connecting them to the previous points. The other stages are displayed but cannot be modified. This is the default mode when the application is launched (you are supposed to start by creating a stage).</p>
 <p>The actions for creating/editing the stage are:</p>
 <ul>
 <li>Click on the map to add an additional point to the stage. If other points already exist, a section is also created to connect the previous point to this new point. The path used between these two points is determined by the chosen travel mode:
@@ -3467,15 +3467,15 @@
 <li>Car route: paved roads and major roads are used.</li>
 <li>None: allows you to plot a straight line between two points, whether or not a path exists.</li>
 </ul>
-For the first four navigation styles, the route is calculated using the BRouter routing service.
+For the first four travel modes, the route is calculated using the BRouter routing service and the resulting paths are curved. For the last one, a straight segment is plotted between the two points.
 </li>
 <li>Double-click on a section of the stage to insert a new point.</li>
 <li>Double-click on a point in the stage to delete it.</li>
 <li>Drag and drop a point on the stage to move it.</li>
 <li>Drag and drop a section of the stage to insert a new point and move it.</li>
+<li>Press the “n” key to assign a name to the stage.</li>
 <li>Press the “u” key to delete the last point on the stage.</li>
 <li>Press the “v” key to delete the first point on the stage.</li>
-<li>Press the “n” key to assign a name to the stage.</li>
 <li>Press the “d” key to delete all points (and all sections) from the stage. This action also switches to supervision mode.</li>
 <li>Press the “Escape” key to finish creating/editing the stage and switch to supervision mode. </li>
 <li>Double-click on a point or section of another stage to finish creating/editing the current stage and switch to create/edit mode for that stage. </li>
@@ -3496,8 +3496,8 @@ For the first four navigation styles, the route is calculated using the BRouter 
 </ul>
 <h2>Miscellaneous</h2>
 <p>Information such as the name of the stage, its length, the starting and finishing altitudes, and the positive and negative elevation gains can be displayed or hidden. </p>
-<p>A geolocation function is provided (top left). It allows you to determine the user's position and center the map on it. The browser's geolocation feature is used by this function. </p>
-<p>A location search function based on an address is provided (top left). It allows you to search for a location using a more or less detailed address and center the map on it. Several locations matching the search can be found and displayed in a list. The Nominatim geocoding service is used by this function.</p>
+<p>A geolocation function is provided (top left). It allows you to determine the user's position and center the map on it. The browser's Geolocation API is used for that purpose. </p>
+<p>A location search function based on an address is provided (top left). It allows you to search for a location using a more or less detailed address and center the map on it. Several locations matching the search can be found and displayed in a list. The Nominatim geocoding service is used by that purpose.</p>
 <p>The user interface language can be selected: English (default) or French.</p>
         `);
     }
@@ -3508,7 +3508,7 @@ For the first four navigation styles, the route is calculated using the BRouter 
     function getHelpContentFr() {
         return (`
 <h1>Planificateur d'Itinéraires</h1>
-<p>L'objectif de l'application et de créer des itinéraires piétons, cyclistes ou automobile en les dessinant sur une carte. Les itinéraires créés peuvent ensuite être exportés en format GPX, ce qui permet de les utiliser avec un GPS ou une application mobile de navigation et de guidage.</p>
+<p>L'objectif de l'application et de créer des itinéraires piétons, cyclistes ou automobile en les traçant sur une carte. Les itinéraires créés peuvent être exportés en format GPX, ce qui permet de les utiliser ensuite avec un GPS ou une application mobile de navigation et de guidage.</p>
 <p>L'application ne permet de créer ou modifier qu'un itinéraire à la fois. Cet itinéraire est composé :</p>
 <ul>
 <li>D'une ou plusieurs étapes. Une étape est un parcours que l'on prévoit de réaliser d'une traite ou en une journée. Elle est composée :
@@ -3520,28 +3520,28 @@ For the first four navigation styles, the route is calculated using the BRouter 
 </ul>
 <p>Cette application a été entièrement réalisée avec des outils et services open-source.</p>
 <h2>Cartes</h2>
-<p>Des cartes servent de support à la création d'itinéraires (on dessine l'itinéraire sur la carte).</p>
+<p>Des cartes servent de support à la création d'itinéraires (on trace l'itinéraire sur la carte).</p>
 <p>Plusieurs styles de carte sont offerts par l'application :</p>
 <ul>
 <li>Une carte topographique (présentée par défaut) mettant en évidence les caractéristiques naturelles du terrain (relief, cours d'eau, côtes...) et représentant les courbes de niveau.</li>
 <li>Une carte généraliste (celle d'OpenStreetMap).</li>
 <li>Une carte sous forme de vues satellite.</li> 
 </ul>
-<p>On peut zoomer et dézoomer les cartes en utilisant la molette de la souris ou les contrôles + et - affichés en haut à gauche de la carte.</p>
+<p>On peut zoomer et dézoomer les cartes en utilisant la molette de la souris ou les contrôles + et - (affichés en haut à gauche de la carte).</p>
 <p>On peut aussi déplacer la carte dans toutes les directions par tirer-déposer.</p>
 <h2>Modes de travail</h2>
 <p>L'application offre deux modes de travail :</p>
 <ul>
-<li>Le mode "création/modification d'étape", permettant de créer ou de modifier une étape de l'itinéraire.</li>
+<li>Le mode "création/modification d'étape", permettant de créer une nouvelle étape ou de modifier une étape existante de l'itinéraire.</li>
 <li>Le mode "supervision" : les étapes de l'itinéraire sont affichées, mais aucune n'est en cours de modification.</li>
 </ul>
-<p>En ouvrant l'application, on est en mode création/modification d'étape afin de créer une première étape en ajoutant des points sur la carte à l'aide de la souris.</p>
+<p>En ouvrant l'application, on est en mode création/modification d'étape, afin de créer une première étape en ajoutant des points (et des sections) sur la carte à l'aide de la souris.</p>
 <ul>
 <li>Pour passer en mode supervision, il faut presser la touche Echappement</li>
 <li>Pour repasser en mode création/modification, il faut soit double cliquer sur la carte (pour créer une nouvelle étape), soit double-cliquer sur une étape existante (afin de la modifier).</li>
 </ul>
 <h3>Mode création/modification d'étape</h3>
-<p>Ce mode permet de créer ou de modifier une étape de l'itinéraire. En cliquant de manière répétée sur la carte, on ajoute des points à l'étape, et des sections les reliant aux points précédents. Les autres étapes sont affichées, mais ne peuvent pas être modifiées. C'est le mode par défaut au lancement de l'application (on est censé commencer par créer une étape).</p>
+<p>Ce mode permet de créer une nouvelle étape ou de modifier une étape existante de l'itinéraire. En cliquant de manière répétée sur la carte, on ajoute des points à l'étape, et des sections les reliant aux points précédents. Les autres étapes sont affichées, mais ne peuvent pas être modifiées. C'est le mode par défaut au lancement de l'application (on est censé commencer par créer une étape).</p>
 <p>Les actions permettant de créer/modifier l'étape sont :</p>
 <ul>
 <li>Cliquer sur la carte pour ajouter un point supplémentaire à l'étape. Si d'autres points existent déjà, une section est aussi créée pour relier le point précédent à ce nouveau point. Le chemin utilisé entre ces deux points est déterminé par le mode de voyage choisi :
@@ -3552,22 +3552,22 @@ For the first four navigation styles, the route is calculated using the BRouter 
 <li>Automobile : les routes goudronnées et les grands axes sont utilisés.</li>
 <li>Aucun : permet de tracer un trajet en ligne droite entre deux points, qu'il existe ou non un chemin.</li>
 </ul>
-Pour les 4 premiers styles de navigation, le parcours est calculé à l'aide du service de routage BRouter.
+Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du service de routage BRouter etles chemins résultants sont courbes. Pour le dernier, un segment de droite est tracé entre les deux points.
 </li>
 <li>Double-cliquer sur une section de l'étape pour insérer un nouveau point.</li>
 <li>Double-cliquer sur un point de l'étape pour le supprimer.</li>
 <li>Tirer-déposer un point de l'étape pour le déplacer.</li>
 <li>Tirer-déposer une section de l'étape pour insérer un nouveau point et le déplacer.</li>
+<li>Presser la touche "n" pour attribuer un nom à l'étape.</li>
 <li>Presser la touche "u" pour supprimer le dernier point de l'étape.</li>
 <li>Presser la touche "v" pour supprimer le premier point de l'étape.</li>
-<li>Presser la touche "n" pour attribuer un nom à l'étape.</li>
 <li>Presser la touche "d" pour supprimer tous les points (et toutes les sections) de l'étape. Cette action fait également passer en mode supervision.</li>
 <li>Presser la touche "Echappement" pour terminer la création/modification de l'étape et passer en mode supervision.</li>
 <li>Double-cliquer sur un point ou une section d'une autre étape pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour l'autre étape.</li>
 <li>Double-cliquer sur la carte pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'une nouvelle étape.</li>
 <li>Presser la touche "i" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
 <li>Presser la touche "e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
-<li>Presser la touche "r" pour supprimer toutes les étapes de l'itinéraire (c'est-à-dire le remettre à zéro).</li>
+<li>Presser la touche "r" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes).</li>
 </ul>
 <h3>Mode supervision</h3>
 <p>Ce mode permet de visualiser les étapes de l'itinéraire sans qu'aucune ne soit en cours de création/modification. Les points de départ et d'arrivée de chaque étape sont représentés, mais pas les points de passage.</p> 
@@ -3577,21 +3577,15 @@ Pour les 4 premiers styles de navigation, le parcours est calculé à l'aide du 
 <li>Double-cliquer sur la carte pour passer en mode création/modification d'une nouvelle étape.</li>
 <li>Presser la touche "i" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
 <li>Presser la touche "e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
-<li>Presser la touche "r" pour supprimer toutes les étapes de l'itinéraire (c'est-à-dire le remettre à zéro).</li>
+<li>Presser la touche "r" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes).</li>
 </ul>
 <h2>Divers</h2>
 <p>Des informations telles que le nom de l'étape, sa longueur, les altitudes de départ et d'arrivée, les dénivelés positif et négatif peuvent être affichées ou masquées.</p>
-<p>Une fonction de géolocalisation est fournie (en haut à gauche). Elle permet de déterminer la position de l'utilisateur et de centrer la carte dessus. La fonction de géolocalisation du navigateur est utilisée par cette fonction.</p>
-<p>Une fonction de recherche de lieu à partir d'une adresse est fournie (en haut à gauche). Elle permet de rechercher un lieu à partir d'une adresse plus ou moins détaillée et de centrer la carte dessus. Plusieurs lieux correspondant à la recherche peuvent être trouvés et affichés sous forme de liste. Le service de géocodage Nominatim est utilisé par cette fonction.</p>
+<p>Une fonction de géolocalisation est fournie (en haut à gauche). Elle permet de déterminer la position de l'utilisateur et de centrer la carte dessus. L'API de géolocalisation du navigateur est utilisée par cela.</p>
+<p>Une fonction de recherche de lieu à partir d'une adresse est fournie (en haut à gauche). Elle permet de rechercher un lieu à partir d'une adresse plus ou moins détaillée et de centrer la carte dessus. Plusieurs lieux correspondant à la recherche peuvent être trouvés et affichés sous forme de liste. Le service de géocodage Nominatim est utilisé par cela.</p>
 <p>La langue de l'interface utilisateur peut être choisie : anglais (par défaut) ou français.</p>
         `);
     }
     </script>
 </body>
 </html>
-
-
-
-
-
-

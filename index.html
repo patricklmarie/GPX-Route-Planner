@@ -278,7 +278,7 @@
         radios.style.gap = '6px';
         radios.style.flex = '1';
 
-        // Create Yes radio button
+        // Create English radio button
         const enLabel = document.createElement('label');
         const enRadio = document.createElement('input');
         enRadio.type = 'radio';
@@ -286,12 +286,29 @@
         enRadio.value = 'true';
         enRadio.checked = context.language === 'EN';    // Restore selection
 
+        const enFlag = document.createElement('img');
+        enFlag.src = 'https://flagcdn.com/gb.svg';
+        enFlag.alt = 'English';
+        enFlag.style.width = '24px';
+        enFlag.style.height = '18px';
+        enFlag.style.objectFit = 'contain';
+
+        const usFlag = document.createElement('img');
+        usFlag.src = 'https://flagcdn.com/us.svg';
+        usFlag.alt = 'English';
+        usFlag.style.width = '24px';
+        usFlag.style.height = '18px';
+        usFlag.style.objectFit = 'contain';
+
         enLabel.appendChild(enRadio);
-        enLabel.append(' \u{1F1EC}\u{1F1E7}');
+        enLabel.append(enFlag);
+        enLabel.append(usFlag);
         enLabel.style.fontSize = '22px';
-        enLabel.style.fontFamily = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
-		
-        // Create No radio button
+        enLabel.style.display = 'flex';
+        enLabel.style.alignItems = 'center';
+        enLabel.style.gap = '6px';
+
+        // Create French radio button
         const frLabel = document.createElement('label');
         const frRadio = document.createElement('input');
         frRadio.type = 'radio';
@@ -299,12 +316,21 @@
         frRadio.value = 'false';
         frRadio.checked = context.language === 'FR';    // Restore selection
 
-        frLabel.appendChild(frRadio);
-        frLabel.append(' \u{1F1EB}\u{1F1F7}');
-        frLabel.style.fontSize = '22px';
-		frLabel.style.fontFamily = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
+        const frFlag = document.createElement('img');
+        frFlag.src = 'https://flagcdn.com/fr.svg';
+        frFlag.alt = 'Français';
+        frFlag.style.width = '24px';
+        frFlag.style.height = '18px';
+        frFlag.style.objectFit = 'contain';
 
-         // Handle changes
+        frLabel.appendChild(frRadio);
+        frLabel.append(frFlag);
+        frLabel.style.fontSize = '22px';
+        frLabel.style.display = 'flex';
+        frLabel.style.alignItems = 'center';
+        frLabel.style.gap = '6px';
+
+        // Handle changes
         enRadio.addEventListener('change', () => {
             if (enRadio.checked) {
                 context.language = 'EN';
@@ -3563,6 +3589,7 @@ Pour les 4 premiers styles de navigation, le parcours est calculé à l'aide du 
     </script>
 </body>
 </html>
+
 
 
 

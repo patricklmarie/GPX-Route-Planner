@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Route Planner</title>
+  <title>GPX Route Planner</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <style>
     html, body { height: 100%; margin: 0; display: flex; flex-direction: column;}
@@ -31,7 +31,7 @@
 <body>
     <table class="header-table">
     <tr>
-    <td class="title">Route Planner</td>
+    <td class="title">GPX Route Planner</td>
     <td class="author">Developed by Patrick Marie</td>
     </tr>
     </table>
@@ -367,7 +367,7 @@
         // Define submit handler (button)
         function helpHandler() {
             const w = window.open('', '_blank');
-            w.document.title = context.language === 'EN' ? 'Route Planner – Help' : 'Planificateur d’Itinéraires – Aide';
+            w.document.title = context.language === 'EN' ? 'GPX Route Planner – Help' : 'Planificateur d’Itinéraires GPX – Aide';
             w.document.body.innerHTML = context.language === 'EN' ? getHelpContentEn() : getHelpContentFr();
             w.document.close();
         }
@@ -2773,7 +2773,7 @@
             return;     // One operation at a time only
 
         // Create a new file by downloading it
-        const blob = new Blob([makeGPX("Route Planner export")], { type: "application/gpx+xml" });
+        const blob = new Blob([makeGPX("GPX_Route_Planner_export")], { type: "application/gpx+xml" });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = "route_export.gpx";    // Set filename
@@ -3422,7 +3422,7 @@
     //--------------------------------
     function getHelpContentEn() {
         return (`
-<h1>Route Planner</h1>
+<h1>GPX Route Planner</h1>
 <p>The purpose of the application is to create walking, cycling, or driving routes by plotting them on a map. The routes created can be exported in GPX format, allowing them to be used next with a GPS or mobile navigation and guidance application.</p>
 <p>The application only allows you to create or modify one route at a time. This route consists of:</p>
 <ul>
@@ -3507,7 +3507,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
     //-------------------------------
     function getHelpContentFr() {
         return (`
-<h1>Planificateur d'Itinéraires</h1>
+<h1>Planificateur d'Itinéraires GPX</h1>
 <p>L'objectif de l'application et de créer des itinéraires piétons, cyclistes ou automobile en les traçant sur une carte. Les itinéraires créés peuvent être exportés en format GPX, ce qui permet de les utiliser ensuite avec un GPS ou une application mobile de navigation et de guidage.</p>
 <p>L'application ne permet de créer ou modifier qu'un itinéraire à la fois. Cet itinéraire est composé :</p>
 <ul>
@@ -3589,4 +3589,5 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
     </script>
 </body>
 </html>
+
 

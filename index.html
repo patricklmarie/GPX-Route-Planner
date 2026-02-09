@@ -179,7 +179,10 @@ https://opensource.org/licenses/MIT
         map.createPane('markerPaneTop');
         map.getPane('markerPaneTop').style.zIndex = 650; // Higher than polylines
  
-        // Create geolocation control
+        // Add a scale bar
+        L.control.scale().addTo(map);
+ 
+		// Create geolocation control
         setGeolocator();
         
         // Create location finder dialog
@@ -3597,6 +3600,7 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
     </script>
 </body>
 </html>
+
 
 
 

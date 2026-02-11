@@ -1,13 +1,5 @@
 <!doctype html>
 <html lang="en">
-<!--
-Route Planner
-Copyright (c) 2026 Patrick Marie
-
-Licensed under the MIT License.
-You may obtain a copy of the License at:
-https://opensource.org/licenses/MIT
--->
 <head>
   <meta charset="utf-8">
   <title>GPX Route Planner</title>
@@ -24,11 +16,11 @@ https://opensource.org/licenses/MIT
     .header-table td { border: none; padding: 4px 8px; }
     .header-table .title { text-align: left; font-size: 20px; font-weight: bold; white-space: nowrap; }
     .header-table .author { text-align: right; font-size: 12px; font-style: italic; }
-	.legend {background: white; padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+	.menu {background: white; padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     border-radius: 5px; line-height: 18px; color: #555; }
-	.legend i {width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 1.7; }
-    .collapsible-legend {cursor: default; }
-    .legend-header {cursor: pointer; }
+	.menu i {width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 1.7; }
+    .collapsible-menu {cursor: default; }
+    .menu-header {cursor: pointer; }
     .solid-popup .leaflet-popup-content-wrapper,
     .solid-popup .leaflet-popup-tip { opacity: 1; }
     .location-item { padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; background: #ededed; cursor: pointer; user-select: none; transition: background-color 0.2s, border-color 0.2s; }
@@ -107,12 +99,12 @@ https://opensource.org/licenses/MIT
     
     // Context variables
     let context = {
-        legendControl: null,            // Control hosting the legend: option selectors and list of commands
+        menuControl: null,            // Control hosting the menu: option selectors and list of commands
         locFinderControl: null,
         geolocControl: null,
         baseMap: null,                  // Base map style
         routerProfile: 'trekking',      // Router profile
-        spannedCommand: false,          // Flag: commands spanned or not in the legend
+        spannedCommand: false,          // Flag: commands spanned or not in the menu
         editedStage: null,              // Currently edited stage
         initializationInProcess: true,  // Flag: initialization in progress
         operationWithButtonInProcess: false,    // Flag: operation such as save, load or set name in process
@@ -178,11 +170,11 @@ https://opensource.org/licenses/MIT
         // Create a specific layer for the markers, so that are always on top of the polylines
         map.createPane('markerPaneTop');
         map.getPane('markerPaneTop').style.zIndex = 650; // Higher than polylines
- 
+
         // Add a scale bar
         L.control.scale({ imperial: false }).addTo(map);
  
-		// Create geolocation control
+        // Create geolocation control
         setGeolocator();
         
         // Create location finder dialog
@@ -208,7 +200,7 @@ https://opensource.org/licenses/MIT
     // Set environment for non edit status
     //-------------------------------------
     function setEnv4NonEdt() {
-        setLegend4NonEdt();     // Set legend for non edit status
+        setMenu4NonEdt();     // Set menu for non edit status
 
         setDocMap4NonEdt();     // Set document and map event listeners for non edit status
 
@@ -217,15 +209,15 @@ https://opensource.org/licenses/MIT
     }
 
     //--------------------------------
-    // Set legend for non edit status
+    // Set menu for non edit status
     //--------------------------------
-    function setLegend4NonEdt() {
-        if (context.legendControl) context.legendControl.remove();    // Remove previous legend control
+    function setMenu4NonEdt() {
+        if (context.menuControl) context.menuControl.remove();    // Remove previous menu control
 
-        context.legendControl = L.control({ position: 'topright' });  // Create new legend control
+        context.menuControl = L.control({ position: 'topright' });  // Create new menu control
 
-        context.legendControl.onAdd = function (map) {      // Set content into legend control
-            // Create white box hosting the legend
+        context.menuControl.onAdd = function (map) {      // Set content into menu control
+            // Create white box hosting the menu
             const wrapper = L.DomUtil.create('div', 'leaflet-bar unified-control');
             wrapper.style.background = 'white';
             wrapper.style.padding = '8px';
@@ -241,9 +233,9 @@ https://opensource.org/licenses/MIT
             L.DomEvent.disableScrollPropagation(wrapper);
 
             // Create title
-            const title = L.DomUtil.create('div', 'legend-title', wrapper);
+            const title = L.DomUtil.create('div', 'menu-title', wrapper);
             title.textContent = context.language === 'EN' ? 'Plot your route on the map' : 'Tracez votre itinéraire sur la carte';
-            title.style.fontSize = '16px';
+            title.style.fontSize = '18px';
             title.style.fontWeight = 'bold';
             title.style.marginBottom = '4px';
 
@@ -259,13 +251,23 @@ https://opensource.org/licenses/MIT
             // Create display info control
             wrapper.appendChild(createDisplayInfoControl());
 
+            // Create subtitle
+            const subtitle = L.DomUtil.create('div', 'menu-subtitle', wrapper);
+            subtitle.textContent = context.language === 'EN' ? 'Supervision:' : 'Supervision :';
+            subtitle.style.fontSize = '16px';
+            subtitle.style.fontWeight = 'bold';
+            subtitle.style.marginBottom = '4px';
+
+            // Create general buttons control
+            wrapper.appendChild(createGenButtonsControl());
+
             // Create command list for non edit control
             wrapper.appendChild(createCmdListNonEdtControl());
 
             return wrapper;
         };
 
-        context.legendControl.addTo(map);     // Add legend control to map
+        context.menuControl.addTo(map);     // Add menu control to map
     }
 
     //-----------------------------
@@ -341,13 +343,13 @@ https://opensource.org/licenses/MIT
         frLabel.style.alignItems = 'center';
         frLabel.style.gap = '6px';
 
-        // Handle changes
+         // Handle changes
         enRadio.addEventListener('change', () => {
             if (enRadio.checked) {
                 context.language = 'EN';
 
-                if (isTrkEdited) setLegend4EdtStg();
-                else setLegend4NonEdt();
+                if (isTrkEdited) setMenu4EdtStg();
+                else setMenu4NonEdt();
 
                 setGeolocator();
 
@@ -360,8 +362,8 @@ https://opensource.org/licenses/MIT
             if (frRadio.checked) {
                 context.language = 'FR';
                 
-                if (isTrkEdited) setLegend4EdtStg();
-                else setLegend4NonEdt();
+                if (isTrkEdited) setMenu4EdtStg();
+                else setMenu4NonEdt();
 
                 setGeolocator();
 
@@ -545,25 +547,90 @@ https://opensource.org/licenses/MIT
         return container;
     }
 
+    //--------------------------------
+    // Create general buttons control
+    //--------------------------------
+    function createGenButtonsControl() {
+        // Create division
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.gap = '8px';
+
+        // Create button for creating a new stage
+        const newStgButton = document.createElement('button');
+        newStgButton.textContent = context.language === 'EN' ? 'New stage' : 'Nouvelle étape';
+        newStgButton.style.width = '80px';
+        container.appendChild(newStgButton);
+
+        // Define submit handler (for creating a new stage)
+        async function newStgHandler() {
+            setEnv4NonEdt();    // Finish editing the current stage
+
+            setEnv4EdtStg(null);    // Start editing a new stage
+        }
+        newStgButton.addEventListener('click', newStgHandler);  // Associate submit handler with button
+    
+        // Create submit button for resetting the route
+        const resetRteButton = document.createElement('button');
+        resetRteButton.textContent = context.language === 'EN' ? 'Reset route' : 'Réinitialiser itinéraire';
+        resetRteButton.style.width = '80px';
+        container.appendChild(resetRteButton);
+
+        // Define submit handler (for resetting the route)
+        async function resetRteHandler() {
+            if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
+                resetRoute();
+        }
+        resetRteButton.addEventListener('click', resetRteHandler);  // Associate submit handler with button
+    
+        // Create submit button for importing a GPX file
+        const importGPXButton = document.createElement('button');
+        importGPXButton.textContent = context.language === 'EN' ? 'Import GPX' : 'Importer GPX';
+        importGPXButton.style.width = '80px';
+        container.appendChild(importGPXButton);
+
+        // Define submit handler (for exporting to a GPX file)
+        async function importGPXHandler() {
+            importRouteFromGPX();
+        }
+        importGPXButton.addEventListener('click', importGPXHandler);  // Associate submit handler with button
+    
+        // Create submit button for exporting to a GPX file
+        const exportGPXButton = document.createElement('button');
+        exportGPXButton.textContent = context.language === 'EN' ? 'Export GPX' : 'Exporter GPX';
+        exportGPXButton.style.width = '80px';
+        container.appendChild(exportGPXButton);
+
+        // Define submit handler (for exporting to a GPX file)
+        async function exportGPXHandler() {
+            exportRouteToGPX();
+        }
+        exportGPXButton.addEventListener('click', exportGPXHandler);  // Associate submit handler with button
+    
+        return container;
+    }
+
     //------------------------------------------
     // Create command list control for non edit
     //------------------------------------------
     function createCmdListNonEdtControl() {
         // Create global container
-        const container = L.DomUtil.create('div', 'info legend');
+        const container = L.DomUtil.create('div', 'info menu');
         container.style.maxWidth = '300px';
         container.style.boxSizing = 'border-box';
         container.style.display = 'flex';
         container.style.flexDirection = 'column';
 
         // Create header iwth span arrow
-        const header = L.DomUtil.create('div', 'legend-header', container);
+        const header = L.DomUtil.create('div', 'menu-header', container);
         header.style.cursor = 'pointer';
-        header.innerHTML = context.language === 'EN' ? '<strong>Commands (supervision)</strong> <span>▼</span>' : '<strong>Commandes (supervision)</strong> <span>▼</span>';
+        header.style.fontSize = '14px';
+        header.innerHTML = context.language === 'EN' ? '<strong>Other commands</strong> <span>▼</span>' : '<strong>Autres commandes</strong> <span>▼</span>';
         const arrow = header.querySelector('span');
 
         // Create command list
-        const content = L.DomUtil.create('div', 'legend-content', container);
+        const content = L.DomUtil.create('div', 'menu-content', container);
         content.style.fontSize = '12px';
         content.style.overflowY = context.spannedCommand ? 'auto' : 'hidden'; // scroll when expanded
         content.style.transition = 'max-height 0.3s ease';
@@ -693,7 +760,7 @@ https://opensource.org/licenses/MIT
                 } else if (key === 'i') {   // When user presses 'i' (to load a route from a GPX file)
                     importRouteFromGPX();
                 } else if (key === 'r') {   // When user presses 'r' (to reset the route)
-                    if (confirm("Are you sure you want to delete the route?")) 
+                    if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
                         resetRoute();
                 }
             }
@@ -711,8 +778,6 @@ https://opensource.org/licenses/MIT
 
         // Set event listener on map for double-click
         function map_dblclick(e) {
-            setEnv4NonEdt();    // Finish editing the current stage
-                    
             setEnv4EdtStg(null);    // Start editing a new stage
         }
         map.addEventListener('dblclick', map_dblclick);     // Add listener to map
@@ -860,7 +925,7 @@ https://opensource.org/licenses/MIT
     // Set environment for edit stage status
     //---------------------------------------
     function setEnv4EdtStg(i) {
-        setLegend4EdtStg();     // Set legend for edit stage status
+        setMenu4EdtStg();     // Set menu for edit stage status
 
         // Add new empty stage to the route if arg is null
         if (i === null) {
@@ -873,15 +938,15 @@ https://opensource.org/licenses/MIT
     }
 
     //----------------------------------
-    // Set legend fpr edit stage status
+    // Set menu fpr edit stage status
     //----------------------------------
-    function setLegend4EdtStg() {
-        if (context.legendControl) context.legendControl.remove();      // Remove previous legend control
+    function setMenu4EdtStg() {
+        if (context.menuControl) context.menuControl.remove();      // Remove previous menu control
 
-        context.legendControl = L.control({ position: 'topright' });    // Create new legend control
+        context.menuControl = L.control({ position: 'topright' });    // Create new menu control
 
-        context.legendControl.onAdd = function (map) {          // Set content into legend control     
-            // Create white box hosting the legend
+        context.menuControl.onAdd = function (map) {          // Set content into menu control     
+            // Create white box hosting the menu
             const wrapper = L.DomUtil.create('div', 'leaflet-bar unified-control');
             wrapper.style.background = 'white';
             wrapper.style.padding = '8px';
@@ -889,7 +954,7 @@ https://opensource.org/licenses/MIT
             wrapper.style.flexDirection = 'column';
             wrapper.style.gap = '8px';
             wrapper.style.minWidth = '200px';
-            wrapper.style.maxWidth = '300px';
+            wrapper.style.maxWidth = '310px';
             wrapper.style.width = '100%';
 
             // Prevent map interaction
@@ -897,9 +962,9 @@ https://opensource.org/licenses/MIT
             L.DomEvent.disableScrollPropagation(wrapper);
 
             // Create title
-            const title = L.DomUtil.create('div', 'legend-title', wrapper);
+            const title = L.DomUtil.create('div', 'menu-title', wrapper);
             title.textContent = context.language === 'EN' ? 'Plot your route on the map' : 'Tracez votre itinéraire sur la carte';
-            title.style.fontSize = '16px';
+            title.style.fontSize = '18px';
             title.style.fontWeight = 'bold';
             title.style.marginBottom = '4px';
 
@@ -915,13 +980,76 @@ https://opensource.org/licenses/MIT
             // Create display info control
             wrapper.appendChild(createDisplayInfoControl());
 
+            // Create subtitle
+            const subtitle = L.DomUtil.create('div', 'menu-subtitle', wrapper);
+            subtitle.textContent = context.language === 'EN' ? 'Stage edition:' : 'Edition d\'étape :';
+            subtitle.style.fontSize = '16px';
+            subtitle.style.fontWeight = 'bold';
+            subtitle.style.marginBottom = '4px';
+
+            // Create edit stage buttons control
+            wrapper.appendChild(createEdtStgButtonsControl());
+
+            // Create general buttons control
+            wrapper.appendChild(createGenButtonsControl());
+
             // Create command list for edit stage control
             wrapper.appendChild(createCmdListEdtStgControl());
 
             return wrapper;
         };
 
-        context.legendControl.addTo(map);
+        context.menuControl.addTo(map);
+    }
+
+    //--------------------------------
+    // Create edit stage buttons control
+    //--------------------------------
+    function createEdtStgButtonsControl() {
+        // Create division
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.gap = '8px';
+
+        // Create submit button for setting the stage's name
+        const setNameButton = document.createElement('button');
+        setNameButton.textContent = context.language === 'EN' ? 'Set stage name' : 'Déf. nom étape';
+        setNameButton.style.width = '110px';
+        container.appendChild(setNameButton);
+
+        // Define submit handler (for setting the stage's name)
+        async function setNameHandler() {
+            setStgName();
+        }
+        setNameButton.addEventListener('click', setNameHandler);  // Associate submit handler with button
+    
+        // Create submit button for deleting the stage
+        const delStgButton = document.createElement('button');
+        delStgButton.textContent = context.language === 'EN' ? 'Delete stage' : 'Supprimer l\'étape';
+        delStgButton.style.width = '100px';
+        container.appendChild(delStgButton);
+
+        // Define submit handler (for deleting the stage)
+        async function delStgHandler() {
+            if (confirm(context.language === 'EN' ? "Are you sure you want to delete the edited stage?" : "Etes-vous sûr de vouloir supprimer l'étape en cours d'édition ?")) 
+                deleteStg(context.editedStage);
+        }
+        delStgButton.addEventListener('click', delStgHandler);  // Associate submit handler with button
+    
+        // Create submit button for quitting edit mode
+        const quitEdtButton = document.createElement('button');
+        quitEdtButton.textContent = context.language === 'EN' ? 'Quit editing' : 'Quitter mode édition';
+        quitEdtButton.style.width = '100px';
+        container.appendChild(quitEdtButton);
+
+        // Define submit handler (for quitting edit mode)
+        async function quitEdtHandler() {
+            setEnv4NonEdt();
+        }
+        quitEdtButton.addEventListener('click', quitEdtHandler);  // Associate submit handler with button
+       
+        return container;
     }
 
     //--------------------------------------------
@@ -929,20 +1057,21 @@ https://opensource.org/licenses/MIT
     //--------------------------------------------
     function createCmdListEdtStgControl() {
         // Create global container
-        const container = L.DomUtil.create('div', 'info legend');
-        container.style.maxWidth = '300px';
+        const container = L.DomUtil.create('div', 'info menu');
+        container.style.maxWidth = '310px';
         container.style.boxSizing = 'border-box';
         container.style.display = 'flex';
         container.style.flexDirection = 'column';
 
         // Create header with arrow
-        const header = L.DomUtil.create('div', 'legend-header', container);
+        const header = L.DomUtil.create('div', 'menu-header', container);
         header.style.cursor = 'pointer';
-        header.innerHTML = context.language === 'EN' ? '<strong>Commands (create/edit stage)</strong> <span>▼</span>' : '<strong>Commandes (création/modif. étape)</strong> <span>▼</span>';
+        header.fontSize = '14px';
+        header.innerHTML = context.language === 'EN' ? '<strong>Other commands</strong> <span>▼</span>' : '<strong>Autres commandes</strong> <span>▼</span>';
         const arrow = header.querySelector('span');
 
         // Create list of commands
-        const content = L.DomUtil.create('div', 'legend-content', container);
+        const content = L.DomUtil.create('div', 'menu-content', container);
         content.style.fontSize = '12px';
         content.style.overflowY = context.spannedCommand ? 'auto' : 'hidden'; // scroll when expanded
         content.style.transition = 'max-height 0.3s ease';
@@ -1168,7 +1297,8 @@ https://opensource.org/licenses/MIT
             if (key === 'escape') {     // When user presses 'escape' (to quit edit mode)
                 setEnv4NonEdt();
             } else if (key === 'd') {     // When user presses 'd' (to delete current stage)
-                if (confirm("Are you sure you want to delete the edited stage?")) deleteStg(context.editedStage);
+                if (confirm(context.language === 'EN' ? "Are you sure you want to delete the edited stage?" : "Etes-vous sûr de vouloir supprimer l'étape en cours d'édition ?")) 
+                    deleteStg(context.editedStage);
             } else if (key === 'n') {     // When user presses 'n' (to set/change stage name)
                 setStgName();
             } else if (key === 'u') {     // When user presses 'u' (to delete stage's last point)
@@ -1180,7 +1310,7 @@ https://opensource.org/licenses/MIT
             } else if (key === 'i') {   // When user presses 'i' (to load a route from a GPX file)
                 importRouteFromGPX();
             } else if (key === 'r') {   // When user presses 'r' (to reset the route)
-                if (confirm("Are you sure you want to delete the route?")) 
+                if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
                     resetRoute();
             }
         }
@@ -2307,14 +2437,14 @@ https://opensource.org/licenses/MIT
 
         // Create label
         const label = document.createElement('span');
-        label.textContent = context.language === 'EN' ? 'Enter stage\'s name: ' : 'Entrer le nom de l\'étape : ';
+        label.textContent = context.language === 'EN' ? 'Enter stage\'s name: ' : 'Entrer le nom de l\'étape :';
         wrapper.appendChild(label);
 
         // Create file input
         const stage = stages[context.editedStage];
         const input = document.createElement('input');
         input.type = 'text';
-		input.style.marginLeft = '15px';
+        input.style.marginLeft = '15px';
         input.size = 100;
         if (stage.name) {
             input.value = stage.name;
@@ -2422,7 +2552,7 @@ https://opensource.org/licenses/MIT
             L.DomEvent.on(wrapper, 'click', L.DomEvent.stop);
 
             // Create title
-            const title = L.DomUtil.create('div', 'legend-title', wrapper);
+            const title = L.DomUtil.create('div', 'menu-title', wrapper);
             title.textContent = context.language === 'EN' ? 'Where am I?' : 'Où suis-je ?';
             title.style.fontSize = '16px';
             title.style.fontWeight = 'bold';
@@ -2546,7 +2676,7 @@ https://opensource.org/licenses/MIT
             L.DomEvent.disableScrollPropagation(wrapper);
 
             // Create title
-            const title = L.DomUtil.create('div', 'legend-title', wrapper);
+            const title = L.DomUtil.create('div', 'menu-title', wrapper);
             title.textContent = context.language === 'EN' ? 'Search location' : 'Recherchez un lieu';
             title.style.fontSize = '16px';
             title.style.fontWeight = 'bold';
@@ -2750,7 +2880,7 @@ https://opensource.org/licenses/MIT
             return wrapper;
         };
 
-        context.locFinderControl.addTo(map);     // Add legend control to map
+        context.locFinderControl.addTo(map);     // Add menu control to map
 
         // Split an address returned by Nominatim into 30 character lines
         function splitByLengthAtSpaces(str, maxLen = 30) {
@@ -3600,9 +3730,3 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
     </script>
 </body>
 </html>
-
-
-
-
-
-

@@ -110,7 +110,8 @@
         operationWithButtonInProcess: false,    // Flag: operation such as save, load or set name in process
         clickTimeout: null,             // Timeout used to distinguish simple clicks from double clicks
         suppressNextClick: false,       // Flag used not to take into account next click
-        displayInfo: true,              // Fag: info (stage distances and ascents/descents) displayed
+        metricUnits: true,              // Flag used to specify whether the metric unit system or the imperial unit system must be used 
+        displayInfo: true,              // Flag: info (stage distances and ascents/descents) displayed
         language: 'EN'                  // Language to be used for the UI (English or French)
     };
 
@@ -148,7 +149,7 @@
         "Mountain biking": "mtb",
         "Road cycling": "fastbike",
         "Car route": "car-fast",
-        "--none--": ""
+        "--straight line--": ""
     };
 
     const routerProfilesFr = {
@@ -156,7 +157,7 @@
         "VTT": "mtb",
         "Cyclisme sur route": "fastbike",
         "Automobile": "car-fast",
-        "--aucun--": ""
+        "--ligne droite--": ""
     };
 
     // Main block
@@ -247,6 +248,9 @@
 
             // Create router profile control
             wrapper.appendChild(createRouterProfileControl());
+
+            // Create units control
+            wrapper.appendChild(createUnitsControl());
 
             // Create display info control
             wrapper.appendChild(createDisplayInfoControl());
@@ -354,6 +358,17 @@
                 setGeolocator();
 
                 setLocationFinder();
+
+                if (context.displayInfo) {
+                    for (let i = 0; i < stages.length; i++) {
+                        if (context.editedStage === i)
+                            updateInfoPopup(stages[i], true);
+                        else
+                            updateInfoPopup(stages[i], false);
+
+                        showInfoPopup(stages[i]);
+                    }
+                }
             }
         });
 
@@ -368,6 +383,17 @@
                 setGeolocator();
 
                 setLocationFinder();
+
+                if (context.displayInfo) {
+                    for (let i = 0; i < stages.length; i++) {
+                        if (context.editedStage === i)
+                            updateInfoPopup(stages[i], true);
+                        else
+                            updateInfoPopup(stages[i], false);
+
+                        showInfoPopup(stages[i]);
+                    }
+                }
             }
         });
 
@@ -476,6 +502,93 @@
         return container;
     }
 
+    //----------------------
+    // Create units control
+    //----------------------
+    function createUnitsControl() {
+        // Create division
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.gap = '8px';
+
+        // Create global label
+        const globalLabel = document.createElement('span');
+        globalLabel.textContent = context.language === 'EN' ? 'Units:' : 'Unités : ';
+        globalLabel.style.fontSize = '12px';
+
+        // Create radios container
+        const radios = document.createElement('div');
+        radios.style.display = 'flex';
+        radios.style.gap = '6px';
+
+        // Create metric radio button
+        const metricLabel = document.createElement('label');
+        const metricRadio = document.createElement('input');
+        metricRadio.type = 'radio';
+        metricRadio.name = 'units';
+        metricRadio.value = true;
+        metricRadio.checked = context.metricUnits === true;    // Restore selection
+
+        metricLabel.appendChild(metricRadio);
+        metricLabel.append(context.language === 'EN' ? ' Metric' : ' Métriques');
+
+        // Create imperial radio button
+        const imperLabel = document.createElement('label');
+        const imperRadio = document.createElement('input');
+        imperRadio.type = 'radio';
+        imperRadio.name = 'units';
+        imperRadio.value = false;
+        imperRadio.checked = context.metricUnits === false;    // Restore selection
+
+        imperLabel.appendChild(imperRadio);
+        imperLabel.append(context.language === 'EN' ? ' Imperial' : ' Impériales');
+
+         // Handle changes
+        metricRadio.addEventListener('change', () => {
+            if (metricRadio.checked) {
+                context.metricUnits = true;
+
+                if (context.displayInfo) {
+                    for (let i = 0; i < stages.length; i++) {
+                        if (context.editedStage === i)
+                            updateInfoPopup(stages[i], true);
+                        else
+                            updateInfoPopup(stages[i], false);
+
+                        showInfoPopup(stages[i]);
+                    }
+                }
+            }
+        });
+
+        // Handle changes
+        imperRadio.addEventListener('change', () => {
+            if (imperRadio.checked) {
+                context.metricUnits = false;
+                
+                if (context.displayInfo) {
+                    for (let i = 0; i < stages.length; i++) {
+                        if (context.editedStage === i)
+                            updateInfoPopup(stages[i], true);
+                        else
+                            updateInfoPopup(stages[i], false);
+
+                        showInfoPopup(stages[i]);
+                    }
+                }
+            }
+        });
+
+        radios.appendChild(metricLabel);
+        radios.appendChild(imperLabel);
+
+        container.appendChild(globalLabel);
+        container.appendChild(radios);
+
+        return container;
+    }
+
     //-----------------------------
     // Create display info control
     //-----------------------------
@@ -501,7 +614,7 @@
         const yesRadio = document.createElement('input');
         yesRadio.type = 'radio';
         yesRadio.name = 'displayInfo';
-        yesRadio.value = 'true';
+        yesRadio.value = true;
         yesRadio.checked = context.displayInfo === true;    // Restore selection
 
         yesLabel.appendChild(yesRadio);
@@ -512,7 +625,7 @@
         const noRadio = document.createElement('input');
         noRadio.type = 'radio';
         noRadio.name = 'displayInfo';
-        noRadio.value = 'false';
+        noRadio.value = false;
         noRadio.checked = context.displayInfo === false;    // Restore selection
 
         noLabel.appendChild(noRadio);
@@ -523,8 +636,14 @@
             if (yesRadio.checked) {
                 context.displayInfo = true;
 
-                for (let i = 0; i < stages.length; i++)
+                for (let i = 0; i < stages.length; i++) {
+                    if (context.editedStage === i)
+                        updateInfoPopup(stages[i], true);
+                    else
+                        updateInfoPopup(stages[i], false);
+
                     showInfoPopup(stages[i]);
+                }
             }
         });
 
@@ -976,6 +1095,9 @@
 
             // Create router profile control
             wrapper.appendChild(createRouterProfileControl());
+
+            // Create units control
+            wrapper.appendChild(createUnitsControl());
 
             // Create display info control
             wrapper.appendChild(createDisplayInfoControl());
@@ -3160,6 +3282,19 @@
                  // And remove ESC listener since wrapper is gone
                 document.removeEventListener('keydown', escKeyHandler);
 
+                // Focus the map on the route
+                let bounds = L.latLngBounds([]);    // Initialize an array of all polyline bounds
+
+                stages.forEach(stage => {   // Store the bounds of all polylines of all stages
+                    stage.sections.forEach(section => {
+                        bounds.extend(section.polyline.getBounds());
+                    });
+                });
+
+                if (bounds.isValid()) {
+                    map.fitBounds(bounds);  // Focus the map on the polylines
+                }
+
                 context.operationWithButtonInProcess = false;   // Stop blocking the other operations
             } catch (err) {     // Error handler
                 console.error(context.language === 'EN' ? 'Error reading file:' : 'Erreur de lecture du fichier : ', err);
@@ -3418,7 +3553,7 @@
     // Find medium position on a stage to display information about it
     //-----------------------------------------------------------------
     function findMediumPosition(stage) {
-        if (stage.points.length > 1) {
+        if (stage.points && stage.points.length > 1) {
             if (stage.points.length % 2 != 0) { // Odd number of points
                 const midPtIdx = ~~(stage.points.length / 2);
                 return point = stage.points[midPtIdx].marker.getLatLng() ;  // Return point in middle position
@@ -3436,7 +3571,7 @@
                     return pts[midPtIdx];
                 }
             }
-        } else if (stage.points.length === 1)
+        } else if (stage.points && stage.points.length === 1)
             return stage.points[0].marker.getLatLng();
         else
             return null;
@@ -3446,7 +3581,7 @@
     // Find position in the middle of the last but one section of the stage to display information about it
     //------------------------------------------------------------------------------------------------------
     function findNearbyPosition(stage) {
-        if (stage.points.length > 2) {
+        if (stage.points && stage.points.length > 2) {
             const pts = stage.sections[stage.sections.length - 2].polyline.getLatLngs();
             if (pts.length % 2 === 0) {
                 const midPtIdx = ~~(pts.length / 2) - 1;
@@ -3458,7 +3593,7 @@
                 const midPtIdx = ~~(pts.length / 2);
                 return pts[midPtIdx];
             }
-        } else if (stage.points.length === 1 || stage.points.length === 2)
+        } else if (stage.points && (stage.points.length === 1 || stage.points.length === 2))
             return stage.points[0].marker.getLatLng();
         else 
             return null;
@@ -3536,22 +3671,64 @@
         stage.infoPop = L.popup(
             { closeOnClick: false, autoClose: false, autoPan: false, className: 'solid-popup' })
             .setLatLng(pos)
-            .setContent(`<div style="text-align:left; font-size:12px; line-height:12px;">
-                ${stage.name && stage.name.length > 0 ? 
-                    `<span style="font-size:16px; line-height:24px;"><b>${stage.name}:</b></span><br>` : ``}
-                ${stage.distance > 0 ? `<b>Distance: </b> ${stage.distance.toFixed(3)} km<br>` : ''}
-                <b>Altitude: </b> ${stage.points[0].marker.getLatLng().alt ? 
-                    Math.round(stage.points[0].marker.getLatLng().alt) + ' m' : '?'}
-                    ${stage.points.length >= 2 ? `<span style="font-size:20px;">&#8594;</span> 
-                        ${stage.points[stage.points.length - 1].marker.getLatLng().alt ? 
-                            Math.round(stage.points[stage.points.length - 1].marker.getLatLng().alt) + ' m' 
-                            : '?'}`
-                        : ''}
-                ${stage.ascent != null && stage.descent != null ?
-                `<br><b>${context.language === 'EN' ? 'Elevation:' : 'Dénivelé :'}</b> ${stage.ascent != null ? '<span style="font-size:20px;">&#8593;</span> ' + Math.round(stage.ascent) + ' m' : ''}
-                ${stage.descent != null ? ' <span style="font-size:20px;">&#8595;</span> ' + Math.round(-stage.descent) + ' m' : ''}`
-                : ''}
-                </div>`);
+            .setContent(`<div style="text-align:left; font-size:12px; line-height:12px;">${
+                stage.name && stage.name.length > 0 
+                    ? `<span style="font-size:16px; line-height:24px;"><b>${stage.name}:</b></span><br>` 
+                    : ``
+            }
+            ${
+                stage.distance > 0 
+                ? `<b>Distance: </b> ${
+                    context.metricUnits 
+                        ? `${stage.distance.toFixed(3)} km` 
+                        : `${(stage.distance/1.609344).toFixed(3)} mi`
+                }<br>` 
+                : ''
+            }
+            <b>Altitude: </b> ${
+                stage.points[0].marker.getLatLng().alt 
+                ? context.metricUnits 
+                    ? `${Math.round(stage.points[0].marker.getLatLng().alt)} m` 
+                    : `${Math.round(stage.points[0].marker.getLatLng().alt/0.3048)} ft`                 
+                : '?'
+            }
+            ${
+                stage.points.length >= 2 
+                    ? `<span style="font-size:20px;">&#8594;</span> ${
+                        stage.points[stage.points.length - 1].marker.getLatLng().alt 
+                        ? context.metricUnits 
+                            ? `${Math.round(stage.points[stage.points.length - 1].marker.getLatLng().alt)} m` 
+                            : `${Math.round(stage.points[stage.points.length - 1].marker.getLatLng().alt/0.3048)} ft`
+                        : '?'
+                    }`
+                    : ''
+            }
+            ${
+                stage.ascent != null && stage.descent != null 
+                    ? `<br><b>${
+                        context.language === 'EN' 
+                            ? 'Elevation:' 
+                            : 'Dénivelé :'
+                    }</b> ${
+                        stage.ascent != null 
+                            ? `<span style="font-size:20px;">&#8593;</span> ${
+                                context.metricUnits
+                                    ? `${Math.round(stage.ascent)} m`
+                                    : `${Math.round(stage.ascent/0.3048)} ft`
+                            }` 
+                            : ''
+                    } ${
+                        stage.descent != null 
+                            ? ` <span style="font-size:20px;">&#8595;</span> ${
+                                context.metricUnits
+                                    ? `${Math.round(-stage.descent)} m` 
+                                    : `${Math.round(-stage.descent/0.3048)} ft`
+                            }`
+                            : ''
+                    }`
+                    : ''
+            }
+            </div>`);
 
         // Add popup to map if requested
         if (context.displayInfo)

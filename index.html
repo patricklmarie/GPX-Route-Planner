@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>GPX Route Planner</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     html, body { height: 100%; margin: 0; display: flex; flex-direction: column;}
     body { margin:0; font-family:sans-serif; }
@@ -173,7 +174,7 @@
         "VTT": "mtb",
         "Cyclisme sur route": "fastbike",
         "Automobile": "car-fast",
-        "-- vol d'oiseau --": ""
+        "-- vol d\'oiseau --": ""
     };
 
     // Main block
@@ -270,13 +271,6 @@
 
             // Create display info control
             wrapper.appendChild(createDisplayInfoControl());
-
-            // Create subtitle
-            const subtitle = L.DomUtil.create('div', 'menu-subtitle', wrapper);
-            subtitle.textContent = context.language === 'EN' ? 'Supervision:' : 'Supervision :';
-            subtitle.style.fontSize = '16px';
-            subtitle.style.fontWeight = 'bold';
-            subtitle.style.marginBottom = '4px';
 
             // Create general buttons control
             wrapper.appendChild(createGenButtonsControl());
@@ -532,7 +526,7 @@
 
         // Create global label
         const globalLabel = document.createElement('span');
-        globalLabel.textContent = context.language === 'EN' ? 'Units:' : 'Unités : ';
+        globalLabel.textContent = context.language === 'EN' ? 'Measurement units:' : 'Unités de mesure : ';
         globalLabel.style.fontSize = '12px';
 
         // Create radios container
@@ -619,7 +613,7 @@
 
         // Create global label
         const globalLabel = document.createElement('span');
-        globalLabel.textContent = context.language === 'EN' ? 'Display information:' : 'Afficher les informations : ';
+        globalLabel.textContent = context.language === 'EN' ? 'Display stage information:' : 'Afficher informations sur étapes : ';
         globalLabel.style.fontSize = '12px';
 
         // Create radios container
@@ -694,10 +688,31 @@
         container.style.alignItems = 'center';
         container.style.gap = '8px';
 
+        // Create global label
+        const globalLabel = document.createElement('span');
+        globalLabel.textContent = context.language === 'EN' ? 'Global actions:' : 'Actions générales : ';
+        globalLabel.style.fontSize = '14px';
+        globalLabel.style.fontWeight = 'bold';
+        container.appendChild(globalLabel);
+
+        // Create new stage icon
+        const nstIcon = document.createElement('i');
+        //nstIcon.classList.add('fa-regular', 'fa-square-plus');
+        nstIcon.classList.add('fa-solid', 'fa-arrow-right-to-bracket');
+        nstIcon.style.fontSize = '20px';
+        nstIcon.style.lineHeight = '20px';
+        nstIcon.style.width = '27px';
+        nstIcon.style.height = '20px';
+        nstIcon.style.display = 'inline-flex';
+        nstIcon.style.alignItems = 'center';
+        nstIcon.style.justifyContent = 'center';
+
         // Create button for creating a new stage
         const newStgButton = document.createElement('button');
-        newStgButton.textContent = context.language === 'EN' ? 'New stage' : 'Nouvelle étape';
-        newStgButton.style.width = '80px';
+        newStgButton.appendChild(nstIcon);
+        newStgButton.style.width = '35px';
+        newStgButton.style.heigth = '30px';
+        newStgButton.title = context.language === 'EN' ? 'Start creating new stage' : 'Démarrer création nouvelle étape';
         container.appendChild(newStgButton);
 
         // Define submit handler (for creating a new stage)
@@ -708,10 +723,23 @@
         }
         newStgButton.addEventListener('click', newStgHandler);  // Associate submit handler with button
     
+        // Create reset icon
+        const resetIcon = document.createElement('i');
+        resetIcon.classList.add('fa-solid', 'fa-arrow-rotate-left');
+        resetIcon.style.fontSize = '20px';
+        resetIcon.style.lineHeight = '20px';
+        resetIcon.style.width = '27px';
+        resetIcon.style.height = '20px';
+        resetIcon.style.display = 'inline-flex';
+        resetIcon.style.alignItems = 'center';
+        resetIcon.style.justifyContent = 'center';
+
         // Create submit button for resetting the route
         const resetRteButton = document.createElement('button');
-        resetRteButton.textContent = context.language === 'EN' ? 'Reset route' : 'Réinitialiser itinéraire';
-        resetRteButton.style.width = '80px';
+        resetRteButton.appendChild(resetIcon);
+        resetRteButton.style.width = '35px';
+        resetRteButton.style.heigth = '30px';
+        resetRteButton.title = context.language === 'EN' ? 'Reset route' : 'Réinitialiser l\'itinéraire';
         container.appendChild(resetRteButton);
 
         // Define submit handler (for resetting the route)
@@ -721,10 +749,23 @@
         }
         resetRteButton.addEventListener('click', resetRteHandler);  // Associate submit handler with button
     
+        // Create import icon
+        const importIcon = document.createElement('i');
+        importIcon.classList.add('fa-solid', 'fa-file-import');
+        importIcon.style.fontSize = '20px';
+        importIcon.style.lineHeight = '20px';
+        importIcon.style.width = '27px';
+        importIcon.style.height = '20px';
+        importIcon.style.display = 'inline-flex';
+        importIcon.style.alignItems = 'center';
+        importIcon.style.justifyContent = 'center';
+
         // Create submit button for importing a GPX file
         const importGPXButton = document.createElement('button');
-        importGPXButton.textContent = context.language === 'EN' ? 'Import GPX' : 'Importer GPX';
-        importGPXButton.style.width = '80px';
+        importGPXButton.appendChild(importIcon);
+        importGPXButton.style.width = '35px';
+        importGPXButton.style.heigth = '30px';
+        importGPXButton.title = context.language === 'EN' ? 'Import route from GPX' : 'Importer itinéraire de GPX';        
         container.appendChild(importGPXButton);
 
         // Define submit handler (for exporting to a GPX file)
@@ -732,11 +773,24 @@
             importRouteFromGPX();
         }
         importGPXButton.addEventListener('click', importGPXHandler);  // Associate submit handler with button
-    
+
+        // Create export icon
+        const exportIcon = document.createElement('i');
+        exportIcon.classList.add('fa-solid', 'fa-file-export');
+        exportIcon.style.fontSize = '20px';
+        exportIcon.style.lineHeight = '20px';
+        exportIcon.style.width = '27px';
+        exportIcon.style.height = '20px';
+        exportIcon.style.display = 'inline-flex';
+        exportIcon.style.alignItems = 'center';
+        exportIcon.style.justifyContent = 'center';
+
         // Create submit button for exporting to a GPX file
         const exportGPXButton = document.createElement('button');
-        exportGPXButton.textContent = context.language === 'EN' ? 'Export GPX' : 'Exporter GPX';
-        exportGPXButton.style.width = '80px';
+        exportGPXButton.appendChild(exportIcon);
+        exportGPXButton.style.width = '35px';
+        exportGPXButton.style.height = '30px';
+        exportGPXButton.title = context.language === 'EN' ? 'Export route to GPX' : 'Exporter l\'itinéraire vers GPX';
         container.appendChild(exportGPXButton);
 
         // Define submit handler (for exporting to a GPX file)
@@ -773,7 +827,7 @@
         content.style.transition = 'max-height 0.3s ease';
 
         content.innerHTML = context.language === 'EN' ? `
-            <br><strong>Global commands:</strong><br>
+            <br><strong>Global:</strong><br>
             <table class="command-table">
                 <tr>
                     <td><strong>Double click on<br>the map</strong></td>
@@ -797,7 +851,7 @@
                 </tr>
             </table>
         ` : `
-            <br><strong>Commandes générales :</strong><br><br>
+            <br><strong>Générales :</strong><br><br>
             <table class="command-table">
                 <tr>
                     <td><strong>Double cliquer sur<br>la carte</strong></td>
@@ -1120,13 +1174,6 @@
             // Create display info control
             wrapper.appendChild(createDisplayInfoControl());
 
-            // Create subtitle
-            const subtitle = L.DomUtil.create('div', 'menu-subtitle', wrapper);
-            subtitle.textContent = context.language === 'EN' ? 'Stage edition:' : 'Edition d\'étape :';
-            subtitle.style.fontSize = '16px';
-            subtitle.style.fontWeight = 'bold';
-            subtitle.style.marginBottom = '4px';
-
             // Create edit stage buttons control
             wrapper.appendChild(createEdtStgButtonsControl());
 
@@ -1152,10 +1199,30 @@
         container.style.alignItems = 'center';
         container.style.gap = '8px';
 
+        // Create global label
+        const globalLabel = document.createElement('span');
+        globalLabel.textContent = context.language === 'EN' ? 'Edit stage actions:' : 'Actions édition d\'étape : ';
+        globalLabel.style.fontSize = '14px';
+        globalLabel.style.fontWeight = 'bold';
+        container.appendChild(globalLabel);
+
+        // Create set name icon
+        const snIcon = document.createElement('i');
+        snIcon.classList.add('fa-solid', 'fa-n');
+        snIcon.style.fontSize = '20px';
+        snIcon.style.lineHeight = '20px';
+        snIcon.style.width = '27px';
+        snIcon.style.height = '20px';
+        snIcon.style.display = 'inline-flex';
+        snIcon.style.alignItems = 'center';
+        snIcon.style.justifyContent = 'center';
+
         // Create submit button for setting the stage's name
         const setNameButton = document.createElement('button');
-        setNameButton.textContent = context.language === 'EN' ? 'Set stage name' : 'Déf. nom étape';
-        setNameButton.style.width = '110px';
+        setNameButton.appendChild(snIcon);
+        setNameButton.style.width = '35px';
+        setNameButton.style.heigth = '30px';
+        setNameButton.title = context.language === 'EN' ? 'Set stage name' : 'Attribuer nom à l\'étape';
         container.appendChild(setNameButton);
 
         // Define submit handler (for setting the stage's name)
@@ -1164,10 +1231,23 @@
         }
         setNameButton.addEventListener('click', setNameHandler);  // Associate submit handler with button
     
+        // Create delete stage icon
+        const dsIcon = document.createElement('i');
+        dsIcon.classList.add('fa-regular', 'fa-trash-can');
+        dsIcon.style.fontSize = '20px';
+        dsIcon.style.lineHeight = '20px';
+        dsIcon.style.width = '27px';
+        dsIcon.style.height = '20px';
+        dsIcon.style.display = 'inline-flex';
+        dsIcon.style.alignItems = 'center';
+        dsIcon.style.justifyContent = 'center';
+
         // Create submit button for deleting the stage
         const delStgButton = document.createElement('button');
-        delStgButton.textContent = context.language === 'EN' ? 'Delete stage' : 'Supprimer l\'étape';
-        delStgButton.style.width = '100px';
+        delStgButton.appendChild(dsIcon);
+        delStgButton.style.width = '35px';
+        delStgButton.style.heigth = '30px';
+        delStgButton.title = context.language === 'EN' ? 'Delete stage' : 'Supprimer l\'étape';
         container.appendChild(delStgButton);
 
         // Define submit handler (for deleting the stage)
@@ -1177,10 +1257,23 @@
         }
         delStgButton.addEventListener('click', delStgHandler);  // Associate submit handler with button
     
+        // Create quit edit icon
+        const qeIcon = document.createElement('i');
+        qeIcon.classList.add('fa-solid', 'fa-arrow-right-from-bracket');
+        qeIcon.style.fontSize = '20px';
+        qeIcon.style.lineHeight = '20px';
+        qeIcon.style.width = '27px';
+        qeIcon.style.height = '20px';
+        qeIcon.style.display = 'inline-flex';
+        qeIcon.style.alignItems = 'center';
+        qeIcon.style.justifyContent = 'center';
+
         // Create submit button for quitting edit mode
         const quitEdtButton = document.createElement('button');
-        quitEdtButton.textContent = context.language === 'EN' ? 'Quit editing' : 'Quitter mode édition';
-        quitEdtButton.style.width = '100px';
+        quitEdtButton.appendChild(qeIcon);
+        quitEdtButton.style.width = '35px';
+        quitEdtButton.style.heigth = '30px';
+        quitEdtButton.title = context.language === 'EN' ? 'Quit stage edition' : 'Quitter édition d\'étape';
         container.appendChild(quitEdtButton);
 
         // Define submit handler (for quitting edit mode)
@@ -1207,7 +1300,8 @@
         const header = L.DomUtil.create('div', 'menu-header', container);
         header.style.cursor = 'pointer';
         header.fontSize = '14px';
-        header.innerHTML = context.language === 'EN' ? '<strong>Other commands</strong> <span>▼</span>' : '<strong>Autres commandes</strong> <span>▼</span>';
+        header.fontWeight = 'bold';
+        header.innerHTML = context.language === 'EN' ? '<strong>Mouse actions & keyboard shortcuts</strong> <span>▼</span>' : '<strong>Actions avec souris & raccourcis clavier</strong> <span>▼</span>';
         const arrow = header.querySelector('span');
 
         // Create list of commands
@@ -1217,7 +1311,7 @@
         content.style.transition = 'max-height 0.3s ease';
 
         content.innerHTML = context.language === 'EN' ? `
-            <br><strong>Commands to create/edit a stage:</strong><br>
+            <br><strong>Create/edit stage:</strong><br>
             <table class="command-table">
                 <tr>
                     <td><strong>Click on the map</strong></td>
@@ -1256,7 +1350,7 @@
                     <td>Quit editing the stage</td>
                 </tr>
             </table>
-            <br><strong>Global commands:</strong><br>
+            <br><strong>Global:</strong><br>
             <table class="command-table">
                 <tr>
                     <td><strong>Double click on<br>the map</strong></td>
@@ -1280,7 +1374,7 @@
                 </tr>
             </table>
         ` : `
-            <br><strong>Commandes pour créer/modifier une étape:</strong><br>
+            <br><strong>Création/modification d'étape:</strong><br>
             <table class="command-table">
                 <tr>
                     <td><strong>Cliquer sur la carte</strong></td>
@@ -1319,7 +1413,7 @@
                     <td>Terminer la création/<br>modification d'étape</td>
                 </tr>
             </table>
-            <br><strong>Commandes générales :</strong><br>
+            <br><strong>Générales :</strong><br>
             <table class="command-table">
                 <tr>
                     <td><strong>Double cliquer sur<br>la carte</strong></td>
@@ -1593,8 +1687,8 @@
 
             holdTimer = setTimeout(() => {
                 longPressTriggered = true;
-                context.suppressNextClick = true;   // key line
                 map.getContainer().style.cursor = 'grabbing';
+                context.suppressNextClick = true;   // key line
             }, 350);
         }
         map.addEventListener('mousedown', map_mousedown);   // Add event listener to map
@@ -1603,6 +1697,7 @@
         function map_mouseup(e) {
             clearTimeout(holdTimer);
             map.getContainer().style.cursor = 'crosshair';
+            //context.suppressNextClick = false;
         }
         map.addEventListener('mouseup', map_mouseup);   // Add event listener to map
         mapEvtList.push({ target: map, type: 'mouseup', handler: map_mouseup });    //Register listener
@@ -1644,6 +1739,9 @@
     function setSection4Edit(i, j) {
         const stage = stages[i];
         const section = stage.sections[j];
+
+        // Bring to the front
+        section.polyline.bringToFront();
 
         // Set section's layout
         section.polyline.setStyle({ color: routeColors.editRoute, weight: routeWeights.editRoute, opacity: 1, fillOpacity: 0 });
@@ -1914,6 +2012,9 @@
         const stage = stages[i];
         const point = stage.points[j];
 
+        // Bring to the front
+        point.marker.bringToFront();
+
         // Set point layout
         if (stage.points.length === 1)
             point.marker.setStyle({ radius: markerSize.medium, opacity: 1, fillOpacity: 0, color: routeColors.editSingle });
@@ -2131,6 +2232,8 @@
                     // Set environment to non edit mode
                     setEnv4NonEdt();
                 }
+
+                context.suppressNextClick = false;    // Enable single click again
             };
         })(stage, point);
         point.marker.addEventListener('dblclick', point_dblclick);      // Add event listener to point
@@ -3435,13 +3538,10 @@
     // Query BRouter to find a route between points
     //----------------------------------------------
     async function fetchBRouterRoute(coordinates) {
-        // Base BRouter address
-        //const baseURL = "https://brouter.de/brouter?lonlats=" + coordinates +
-        //    "&profile=" + context.routerProfile +"&alternativeidx=0&format=geojson";
-        // URL to be used, passing through a public CORS proxy
-        //const url = "https://corsproxy.io/?" + encodeURIComponent(baseURL);
+        // Prepare request to BRouter
         const url = "https://brouter.de/brouter?lonlats=" + coordinates +
             "&profile=" + context.routerProfile +"&alternativeidx=0&format=geojson";
+        console.log(url);
 
         try {
             // Fetch BRouter GeoJSON
@@ -3925,4 +4025,3 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
     </script>
 </body>
 </html>
-

@@ -1175,7 +1175,9 @@
             wrapper.appendChild(createDisplayInfoControl());
 
             // Create edit stage buttons control
-            wrapper.appendChild(createEdtStgButtonsControl());
+            const edtStgButtonsContainers = createEdtStgButtonsControl();
+            wrapper.appendChild(edtStgButtonsContainers[0]);
+            wrapper.appendChild(edtStgButtonsContainers[1]);
 
             // Create general buttons control
             wrapper.appendChild(createGenButtonsControl());
@@ -1193,18 +1195,24 @@
     // Create edit stage buttons control
     //--------------------------------
     function createEdtStgButtonsControl() {
-        // Create division
-        const container = document.createElement('div');
-        container.style.display = 'flex';
-        container.style.alignItems = 'center';
-        container.style.gap = '8px';
+        // Create title division
+        const titleContainer = document.createElement('div');
+        titleContainer.style.display = 'flex';
+        titleContainer.style.alignItems = 'center';
+        titleContainer.style.gap = '8px';
 
         // Create global label
         const globalLabel = document.createElement('span');
         globalLabel.textContent = context.language === 'EN' ? 'Edit stage actions:' : 'Actions édition d\'étape : ';
         globalLabel.style.fontSize = '14px';
         globalLabel.style.fontWeight = 'bold';
-        container.appendChild(globalLabel);
+        titleContainer.appendChild(globalLabel);
+
+        // Create buttons division
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.style.display = 'flex';
+        buttonsContainer.style.alignItems = 'center';
+        buttonsContainer.style.gap = '8px';
 
         // Create set name icon
         const snIcon = document.createElement('i');
@@ -1223,7 +1231,7 @@
         setNameButton.style.width = '35px';
         setNameButton.style.heigth = '30px';
         setNameButton.title = context.language === 'EN' ? 'Set stage name' : 'Attribuer nom à l\'étape';
-        container.appendChild(setNameButton);
+        buttonsContainer.appendChild(setNameButton);
 
         // Define submit handler (for setting the stage's name)
         async function setNameHandler() {
@@ -1231,6 +1239,83 @@
         }
         setNameButton.addEventListener('click', setNameHandler);  // Associate submit handler with button
     
+        // Create reverse stage direction icon
+        const rsIcon = document.createElement('i');
+        rsIcon.classList.add('fa-solid', 'fa-arrow-right-arrow-left');
+        rsIcon.style.fontSize = '20px';
+        rsIcon.style.lineHeight = '20px';
+        rsIcon.style.width = '27px';
+        rsIcon.style.height = '20px';
+        rsIcon.style.display = 'inline-flex';
+        rsIcon.style.alignItems = 'center';
+        rsIcon.style.justifyContent = 'center';
+
+        // Create submit button for quitting edit mode
+        const revStgButton = document.createElement('button');
+        revStgButton.appendChild(rsIcon);
+        revStgButton.style.width = '35px';
+        revStgButton.style.heigth = '30px';
+        revStgButton.title = context.language === 'EN' ? 'Reverse stage direction' : 'Inverser direction de l\'étape';
+        buttonsContainer.appendChild(revStgButton);
+
+        // Define submit handler (for quitting edit mode)
+        async function revStgHandler() {
+            reverseStage(context.editedStage);
+        }
+        revStgButton.addEventListener('click', revStgHandler);  // Associate submit handler with button
+       
+        // Create split stage icon
+        const splitIcon = document.createElement('i');
+        splitIcon.classList.add('fa-solid', 'fa-scissors');
+        splitIcon.style.fontSize = '20px';
+        splitIcon.style.lineHeight = '20px';
+        splitIcon.style.width = '27px';
+        splitIcon.style.height = '20px';
+        splitIcon.style.display = 'inline-flex';
+        splitIcon.style.alignItems = 'center';
+        splitIcon.style.justifyContent = 'center';
+
+        // Create submit button for quitting edit mode
+        const splitStgButton = document.createElement('button');
+        splitStgButton.appendChild(splitIcon);
+        splitStgButton.style.width = '35px';
+        splitStgButton.style.heigth = '30px';
+        splitStgButton.style.color = 'orange';
+        splitStgButton.title = context.language === 'EN' ? 'Split stage' : 'Partager l\'étape en deux';
+        buttonsContainer.appendChild(splitStgButton);
+
+        // Define submit handler (for quitting edit mode)
+        async function splitStgHandler() {
+            alert(context.language === 'EN' ? 'Will be impleted soon!' : 'Sera implémenté prochainement !');
+        }
+        splitStgButton.addEventListener('click', splitStgHandler);  // Associate submit handler with button
+       
+        // Create merge stage icon
+        const mergeIcon = document.createElement('i');
+        mergeIcon.classList.add('fa-solid', 'fa-hand-holding-hand');
+        mergeIcon.style.fontSize = '20px';
+        mergeIcon.style.lineHeight = '20px';
+        mergeIcon.style.width = '27px';
+        mergeIcon.style.height = '20px';
+        mergeIcon.style.display = 'inline-flex';
+        mergeIcon.style.alignItems = 'center';
+        mergeIcon.style.justifyContent = 'center';
+
+        // Create submit button for quitting edit mode
+        const mergeStgButton = document.createElement('button');
+        mergeStgButton.appendChild(mergeIcon);
+        mergeStgButton.style.width = '35px';
+        mergeStgButton.style.heigth = '30px';
+        mergeStgButton.style.color = 'orange';
+        mergeStgButton.title = context.language === 'EN' ? 'Merge stage' : 'Fusionner l\'étape';
+        buttonsContainer.appendChild(mergeStgButton);
+
+        // Define submit handler (for quitting edit mode)
+        async function mergeStgHandler() {
+            alert(context.language === 'EN' ? 'Will be impleted soon!' : 'Sera implémenté prochainement !');
+        }
+        mergeStgButton.addEventListener('click', mergeStgHandler);  // Associate submit handler with button
+       
         // Create delete stage icon
         const dsIcon = document.createElement('i');
         dsIcon.classList.add('fa-regular', 'fa-trash-can');
@@ -1248,7 +1333,7 @@
         delStgButton.style.width = '35px';
         delStgButton.style.heigth = '30px';
         delStgButton.title = context.language === 'EN' ? 'Delete stage' : 'Supprimer l\'étape';
-        container.appendChild(delStgButton);
+        buttonsContainer.appendChild(delStgButton);
 
         // Define submit handler (for deleting the stage)
         async function delStgHandler() {
@@ -1257,7 +1342,7 @@
         }
         delStgButton.addEventListener('click', delStgHandler);  // Associate submit handler with button
     
-        // Create quit edit icon
+        // Create quit edition icon
         const qeIcon = document.createElement('i');
         qeIcon.classList.add('fa-solid', 'fa-arrow-right-from-bracket');
         qeIcon.style.fontSize = '20px';
@@ -1273,8 +1358,8 @@
         quitEdtButton.appendChild(qeIcon);
         quitEdtButton.style.width = '35px';
         quitEdtButton.style.heigth = '30px';
-        quitEdtButton.title = context.language === 'EN' ? 'Quit stage edition' : 'Quitter édition d\'étape';
-        container.appendChild(quitEdtButton);
+        quitEdtButton.title = context.language === 'EN' ? 'Quit stage edition' : 'Quitter édition de l\'étape';
+        buttonsContainer.appendChild(quitEdtButton);
 
         // Define submit handler (for quitting edit mode)
         async function quitEdtHandler() {
@@ -1282,7 +1367,7 @@
         }
         quitEdtButton.addEventListener('click', quitEdtHandler);  // Associate submit handler with button
        
-        return container;
+        return [titleContainer, buttonsContainer];
     }
 
     //--------------------------------------------
@@ -1590,8 +1675,10 @@
                         const coordinates = lastPointLatlng.lng + "," + lastPointLatlng.lat + "|" +
                             latlng.lng + "," + latlng.lat;      // Prepare coordinates to be submitted to BRouter
                         calculatedPoints = await fetchBRouterRoute(coordinates);    // Find route to new point with BRouter
-                        if (!calculatedPoints)       // When no route is found by BRouter
+                        if (!calculatedPoints) {      // When no route is found by BRouter
+                            //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
                             return;
+                        }
                         calculatedPoints = simplifyPolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
                         latlng = calculatedPoints[calculatedPoints.length - 1];     // Adjust new point's position using BRouter response
                         
@@ -1609,8 +1696,10 @@
                         const coordinates = latlng.lng + "," + latlng.lat + "|" +
                             latlng.lng + "," + latlng.lat;
                         calculatedPoints = await fetchBRouterRoute(coordinates);
-                        if (!calculatedPoints)    // No route found
+                        if (!calculatedPoints) {   // No route found
+                            //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
                             return;
+                        }
                         latlng = calculatedPoints[0];       // Adjust position to be assigned to new point
                     } else if (stageRef.points.length > 0) {       // Not first point and do not use BRouter
                         calculatedPoints = [stageRef.points[stageRef.points.length - 1].marker.getLatLng(), latlng];     // Two points array  to be used to create polyline
@@ -1902,6 +1991,7 @@
                             pointAfterLatlng.lng + "," + pointAfterLatlng.lat;
                         let calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
                         if (!calculatedPoints) {    // When no route found by BRouter, restore initial section
+                            //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
                             sectionRef.polyline.setLatLngs(initPolylineLatlngs)
                                 .setStyle({ dashArray: null });
                             stageRef.sections[jRef + 1].polyline.remove();
@@ -2087,8 +2177,10 @@
                         const coordinates = pointBeforeLatlng.lng + "," + pointBeforeLatlng.lat + "|" +     // Prepare request for BRouter
                             pointAfterLatlng.lng + "," + pointAfterLatlng.lat;
                         calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
-                        if (!calculatedPoints)    // When no route found
+                        if (!calculatedPoints) {   // When no route found
+                            //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
                             return;
+                        }
                         calculatedPoints = simplifyPolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
         
                         // Adjust previous point's and previous section's positions
@@ -2319,6 +2411,7 @@
                                 pointAfterLatlng.lng + "," + pointAfterLatlng.lat;
                             let calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
                             if (!calculatedPoints) {    // When no route is found by BRouter
+                                //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
                                 // Restore initial point and sections
                                 pointRef.marker.setLatLng(initMarkerLatlng);
                                 stageRef.sections[jRef - 1].polyline.setLatLngs(initPrevPolylineLatlngs)
@@ -2385,6 +2478,7 @@
                                 pointAfterLatlng.lng + "," + pointAfterLatlng.lat;
                             calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
                             if (!calculatedPoints) {    // When no route was found by BRouter
+                                //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
                                 // Restore initial point and section
                                 pointRef.marker.setLatLng(initMarkerLatlng);
                                 stageRef.sections[0].polyline.setLatLngs(initNextPolylineLatlngs)
@@ -2425,6 +2519,7 @@
                                 pointBeforeLatlng.lat + "|" + latlng.lng + "," + latlng.lat;
                             calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
                             if (!calculatedPoints) {    // When no route is found by BRouter
+                                //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
                                 // Restore initial section and point
                                 pointRef.marker.setLatLng(initMarkerLatlng);
                                 stageRef.sections[jRef - 1].polyline
@@ -2463,6 +2558,7 @@
                             const coordinates = latlng.lng + "," + latlng.lat + "|" + latlng.lng + "," + latlng.lat;     // Prepare request for BRouter                          
                             calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
                             if (!calculatedPoints) {    // When no route was found
+                                //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
                                 // Restore initial point
                                 pointRef.marker.setLatLng(initMarkerLatlng);
                                 cleanupDrag();
@@ -2503,6 +2599,62 @@
         })(stage, point);
         point.marker.addEventListener('mousedown', point_mousedown);    // Add event listener to point
         stage.points[j].evtList.push({ target: point.marker, type: 'mousedown', handler: point_mousedown });    // Register event listener
+    }
+
+    //-------------------------
+    // Reverse stage direction
+    //-------------------------
+    async function reverseStage(i) {
+        if (i === null) return;
+
+        const stage = stages[i];
+
+        // Collect stage points coordinates in reverse order
+        const latlngs = [];
+        stage.points.forEach(point => {
+            latlngs.unshift(point.marker.getLatLng());
+        });
+        if (latlngs.length === 0) return;
+
+        if (context.routerProfile) {    // When BRouter used to find a route
+            let coordinates = '';
+            latlngs.forEach((latlng, j) => {
+                if (j === 0)
+                    coordinates = coordinates.concat(latlng.lng + ',' + latlng.lat);
+                else
+                    coordinates = coordinates.concat('|' + latlng.lng + ',' + latlng.lat);
+            });
+            let calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
+            if (!calculatedPoints) {    // When no route is found by BRouter
+                //alert(context.language === 'EN' ? "Failed to find a path for the reverse direction" : "Aucun chemin trouvé pour la direction inverse");
+                return;
+            }
+            latlngs.forEach((latlng, j) =>{
+                // Find the section's point closest to the dragged point
+                const closestSegAndPt = findClosestSectionAndPoint(calculatedPoints, latlng);
+                const idx = closestSegAndPt.index;
+                const closestPt = closestSegAndPt.point;
+                // Update stage's points and sections
+                if (j > 0) {
+                    const calculatedPoints1 = calculatedPoints.slice(0, idx + 1).concat(closestPt);
+                    stage.sections[j - 1].polyline.setLatLngs(simplifyPolyGeom(calculatedPoints1));
+                }
+                stage.points[j].marker.setLatLng(closestPt);
+                calculatedPoints = [closestPt].concat(calculatedPoints.slice(idx + 1));                
+            });
+        } else {    // When BRouter is not used
+            latlngs.forEach((latlng, j) =>{
+                // Update stage's points and sections
+                if (j > 0) stage.sections[j - 1].polyline.setLatLngs([latlngs[j - 1], latlngs[j]]);
+                stage.points[j].marker.setLatLng(latlngs[j]);
+            });
+        }
+
+        stage.distance = calculateStageDistance(stage);
+
+        calculateAscentAndDescent(stage);    // Calculate/update stage ascent/descent
+
+        updateInfoPopup(stage, true);  // Update information about the stage to be displayed in popup
     }
 
     //---------------------------------
@@ -3522,6 +3674,19 @@
     }
 
     //------------------------------------------------------------
+    // Calculate the length of a stage
+    //------------------------------------------------------------
+    function calculateStageDistance(stage) {
+        let dist = 0;
+
+        stage.sections.forEach(section => {
+            dist = dist + calculateDistance(section.polyline.getLatLngs());
+        });
+
+        return dist;
+    }
+
+    //------------------------------------------------------------
     // Calculate the length of a path defined with several points
     //------------------------------------------------------------
     function calculateDistance(points) { 
@@ -3548,7 +3713,7 @@
 
             if (!response.ok) {
                 if (response.status === 400)
-                    throw new Error(context.language === 'EN' ? "No route found for this point" : "Pas d\'itinéraire trouvé pour ce point");
+                    throw new Error(context.language === 'EN' ? "Failed to find a path to this location" : "Pas de chemin trouvé pour ce lieu");
                 else 
                     throw new Error(context.language === 'EN' ? `HTTP error, status: ${response.status}` : `Erreur HTTP, état: ${response.status}`);
             }
@@ -3650,6 +3815,7 @@
         function closestPointOnSection(p, p1, p2) {
             const dLng = p2.lng - p1.lng;
             const dLat = p2.lat - p1.lat;
+            const dAlt = p2.alt - p1.alt;
 
             const l2 = dLng * dLng + dLat * dLat;   // Square of the distance between p1 and p2
             if (l2 === 0) 
@@ -3661,7 +3827,8 @@
 
             return {
                 lat: p1.lat + t * dLat,
-                lng: p1.lng + t * dLng
+                lng: p1.lng + t * dLng,
+                alt: p1.alt + t * dAlt
             };
         }
     }
@@ -4024,4 +4191,3 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
     </script>
 </body>
 </html>
-

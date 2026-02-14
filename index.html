@@ -723,32 +723,6 @@
         }
         newStgButton.addEventListener('click', newStgHandler);  // Associate submit handler with button
     
-        // Create reset icon
-        const resetIcon = document.createElement('i');
-        resetIcon.classList.add('fa-solid', 'fa-arrow-rotate-left');
-        resetIcon.style.fontSize = '20px';
-        resetIcon.style.lineHeight = '20px';
-        resetIcon.style.width = '27px';
-        resetIcon.style.height = '20px';
-        resetIcon.style.display = 'inline-flex';
-        resetIcon.style.alignItems = 'center';
-        resetIcon.style.justifyContent = 'center';
-
-        // Create submit button for resetting the route
-        const resetRteButton = document.createElement('button');
-        resetRteButton.appendChild(resetIcon);
-        resetRteButton.style.width = '35px';
-        resetRteButton.style.heigth = '30px';
-        resetRteButton.title = context.language === 'EN' ? 'Reset route' : 'Réinitialiser l\'itinéraire';
-        container.appendChild(resetRteButton);
-
-        // Define submit handler (for resetting the route)
-        async function resetRteHandler() {
-            if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
-                resetRoute();
-        }
-        resetRteButton.addEventListener('click', resetRteHandler);  // Associate submit handler with button
-    
         // Create import icon
         const importIcon = document.createElement('i');
         importIcon.classList.add('fa-solid', 'fa-file-import');
@@ -765,7 +739,7 @@
         importGPXButton.appendChild(importIcon);
         importGPXButton.style.width = '35px';
         importGPXButton.style.heigth = '30px';
-        importGPXButton.title = context.language === 'EN' ? 'Import route from GPX' : 'Importer itinéraire de GPX';        
+        importGPXButton.title = context.language === 'EN' ? 'Import stages from GPX' : 'Importer étapes de GPX';        
         container.appendChild(importGPXButton);
 
         // Define submit handler (for exporting to a GPX file)
@@ -798,6 +772,32 @@
             exportRouteToGPX();
         }
         exportGPXButton.addEventListener('click', exportGPXHandler);  // Associate submit handler with button
+    
+        // Create reset icon
+        const resetIcon = document.createElement('i');
+        resetIcon.classList.add('fa-solid', 'fa-arrow-rotate-left');
+        resetIcon.style.fontSize = '20px';
+        resetIcon.style.lineHeight = '20px';
+        resetIcon.style.width = '27px';
+        resetIcon.style.height = '20px';
+        resetIcon.style.display = 'inline-flex';
+        resetIcon.style.alignItems = 'center';
+        resetIcon.style.justifyContent = 'center';
+
+        // Create submit button for resetting the route
+        const resetRteButton = document.createElement('button');
+        resetRteButton.appendChild(resetIcon);
+        resetRteButton.style.width = '35px';
+        resetRteButton.style.heigth = '30px';
+        resetRteButton.title = context.language === 'EN' ? 'Reset route' : 'Réinitialiser l\'itinéraire';
+        container.appendChild(resetRteButton);
+
+        // Define submit handler (for resetting the route)
+        async function resetRteHandler() {
+            if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
+                resetRoute();
+        }
+        resetRteButton.addEventListener('click', resetRteHandler);  // Associate submit handler with button
     
         return container;
     }
@@ -950,7 +950,7 @@
                     exportRouteToGPX();
                 } else if (key === 'i') {   // When user presses 'i' (to load a route from a GPX file)
                     importRouteFromGPX();
-                } else if (key === 'r') {   // When user presses 'r' (to reset the route)
+                } else if (key === 'z') {   // When user presses 'z' (to reset the route)
                     if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
                         resetRoute();
                 }
@@ -1260,7 +1260,7 @@
 
         // Define submit handler (for quitting edit mode)
         async function revStgHandler() {
-            reverseStage(context.editedStage);
+            reverseStage();
         }
         revStgButton.addEventListener('click', revStgHandler);  // Associate submit handler with button
        
@@ -1286,7 +1286,16 @@
 
         // Define submit handler (for quitting edit mode)
         async function splitStgHandler() {
-            alert(context.language === 'EN' ? 'Will be impleted soon!' : 'Sera implémenté prochainement !');
+            //alert(context.language === 'EN' ? 'Will be impleted soon!' : 'Sera implémenté prochainement !');
+            const svgScissors = `
+            <svg xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 640 640">
+                <path fill="black" d="M256 320L216.5 359.5C203.9 354.6 190.3 352 176 352C114.1 352 64 402.1 64 464C64 525.9 114.1 576 176 576C237.9 576 288 525.9 288 464C288 449.7 285.3 436.1 280.5 423.5L563.2 140.8C570.3 133.7 570.3 122.3 563.2 115.2C534.9 86.9 489.1 86.9 460.8 115.2L320 256L280.5 216.5C285.4 203.9 288 190.3 288 176C288 114.1 237.9 64 176 64C114.1 64 64 114.1 64 176C64 237.9 114.1 288 176 288C190.3 288 203.9 285.3 216.5 280.5L256 320zM353.9 417.9L460.8 524.8C489.1 553.1 534.9 553.1 563.2 524.8C570.3 517.7 570.3 506.3 563.2 499.2L417.9 353.9L353.9 417.9zM128 176C128 149.5 149.5 128 176 128C202.5 128 224 149.5 224 176C224 202.5 202.5 224 176 224C149.5 224 128 202.5 128 176zM176 416C202.5 416 224 437.5 224 464C224 490.5 202.5 512 176 512C149.5 512 128 490.5 128 464C128 437.5 149.5 416 176 416z"/>
+            </svg>
+            `;
+            map.getContainer().style.cursor = `url("data:image/svg+xml;utf8,${encodeURIComponent(svgScissors)}") 8 8, crosshair`;
         }
         splitStgButton.addEventListener('click', splitStgHandler);  // Associate submit handler with button
        
@@ -1628,7 +1637,9 @@
                 exportRouteToGPX();
             } else if (key === 'i') {   // When user presses 'i' (to load a route from a GPX file)
                 importRouteFromGPX();
-            } else if (key === 'r') {   // When user presses 'r' (to reset the route)
+            } else if (key === 'r') {   // When user presses 'r' (to reverse the stage's direction)
+                reverseStage();
+            } else if (key === 'z') {   // When user presses 'z' (to reset the route)
                 if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
                     resetRoute();
             }
@@ -2604,10 +2615,10 @@
     //-------------------------
     // Reverse stage direction
     //-------------------------
-    async function reverseStage(i) {
-        if (i === null) return;
+    async function reverseStage() {
+        if (context.editedStage === null) return;
 
-        const stage = stages[i];
+        const stage = stages[context.editedStage];
 
         // Collect stage points coordinates in reverse order
         const latlngs = [];
@@ -4041,7 +4052,9 @@
 <p>The application offers several map styles:</p>
 <ul>
 <li>A topographic map (displayed by default) highlighting the natural features of the terrain (relief, waterways, coastlines, etc.) and showing contour lines. </li>
-<li>A general map (from OpenStreetMap). </li>
+<li>A general map (from OpenStreetMap).</li>
+<li>A map with hiking trails (Waymarked Trails - Hiking).</li>
+<li>A map with cycling tracks (Waymarked Trails - Cycling).</li>
 <li>A map in the form of satellite views.</li> 
 </ul>
 <p>You can zoom in and out on the maps using the mouse wheel or the + and - controls (displayed at the top left).</p>
@@ -4054,12 +4067,12 @@
 </ul>
 <p>When you open the application, you are in stage create/edit mode, allowing you to create a first stage by adding points (and sections) to the map using the mouse.</p>
 <ul>
-<li>To switch to supervision mode, press the Escape key.</li>
-<li>To switch back to create/edit mode, either double-click on the map (to create a new stage) or double-click on an existing stage (to edit it).</li>
+<li>To switch to supervision mode, click the "Quit stage edition" button or press the Escape key.</li>
+<li>To switch back to create/edit mode, either click the "Start creating new stage" button or double-click on the map (to create a new stage) or double-click on an existing stage (to edit it).</li>
 </ul>
 <h3>Stage create/edit mode</h3>
 <p>This mode allows you to create a new stage or to edit an existing stage of the route. By clicking repeatedly on the map, points are added to the stage, with sections connecting them to the previous points. The other stages are displayed but cannot be modified. This is the default mode when the application is launched (you are supposed to start by creating a stage).</p>
-<p>The actions for creating/editing the stage are:</p>
+<p>The actions available when creating/editing the stage are:</p>
 <ul>
 <li>Click on the map to add an additional point to the stage. If other points already exist, a section is also created to connect the previous point to this new point. The path used between these two points is determined by the chosen travel mode:
 <ul>
@@ -4067,7 +4080,7 @@
 <li>Mountain biking: paths and trails are preferred. </li>
 <li>Road cycling: paved roads are used, excluding highways.</li>
 <li>Car route: paved roads and major roads are used.</li>
-<li>None: allows you to plot a straight line between two points, whether or not a path exists.</li>
+<li>-- crow --: allows you to plot a straight line between two points, whether or not a path exists.</li>
 </ul>
 For the first four travel modes, the route is calculated using the BRouter routing service and the resulting paths are curved. For the last one, a straight segment is plotted between the two points.
 </li>
@@ -4075,32 +4088,34 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Double-click on a point in the stage to delete it.</li>
 <li>Drag and drop a point on the stage to move it.</li>
 <li>Drag and drop a section of the stage to insert a new point and move it.</li>
-<li>Press the “n” key to assign a name to the stage.</li>
+<li>Click the "Set stage name" button or press the “n” key to assign a name to the stage.</li>
+<li>Click the "Reverse stage direction" button or press the "r" key to reverse the stage's direction.</li>
 <li>Press the “u” key to delete the last point on the stage.</li>
 <li>Press the “v” key to delete the first point on the stage.</li>
-<li>Press the “d” key to delete all points (and all sections) from the stage. This action also switches to supervision mode.</li>
-<li>Press the “Escape” key to finish creating/editing the stage and switch to supervision mode. </li>
+<li>Click the "Delete stage" button or press the “d” key to delete all points (and all sections) from the stage. This action also switches to supervision mode.</li>
+<li>Click the "Quit stage edition" button or press the “Escape” key to finish creating/editing the stage and switch to supervision mode. </li>
+<li>Click the "Start creating a new stage" button or double-click on the map to finish creating/editing the current stage and switch to create/edit mode for a new stage. </li>
 <li>Double-click on a point or section of another stage to finish creating/editing the current stage and switch to create/edit mode for that stage. </li>
-<li>Double-click on the map to finish creating/editing the current stage and switch to create/edit mode for a new stage. </li>
-<li>Press the “i” key to import new stages from a GPX file. These stages are added to those already in the application. </li>
-<li>Press the “e” key to export the current route to a GPX file. </li>
-<li>Press the “r” key to reset the route (i.e., delete all the stages).</li>
+<li>Click the "Import stages from GPX" or press the “i” key to import additional stages from a GPX file (without deleting the stages already defined). </li>
+<li>Click the "Export route to GPX" or press the “e” key to export the route to a GPX file. </li>
+<li>Click the "Reset route" or press the “z” key to reset the route (i.e., delete all the stages).</li>
 </ul>
 <h3>Supervision mode</h3>
 <p>This mode allows you to view the stages of the route without any being created/edited. The start and end points of each stage are shown, but not the waypoints. </p> 
 <p>The available actions are:</p>
 <ul>
+<li>Click the "Start creating a new stage" button or double-click on the map to switch to create/edit mode for a new stage. </li>
 <li>Double-click on a point or section of a stage to switch to create/edit mode for that stage. </li>
-<li>Double-click on the map to switch to create/edit mode for a new stage. </li>
-<li>Press the “i” key to import new stages from a GPX file. These stages are added to those already in the application.</li>
-<li>Press the “e” key to export the current route to a GPX file.</li>
-<li>Press the “r” key to reset the route (i.e., delete all the stages).</li>
+<li>Click the "Import stages from GPX" or press the “i” key to import additional stages from a GPX file (without deleting the stages already defined). </li>
+<li>Click the "Export route to GPX" or press the “e” key to export the route to a GPX file. </li>
+<li>Click the "Reset route" or press the “z” key to reset the route (i.e., delete all the stages).</li>
 </ul>
 <h2>Miscellaneous</h2>
-<p>Information such as the name of the stage, its length, the starting and finishing altitudes, and the positive and negative elevation gains can be displayed or hidden. </p>
+<p>The user interface language can be selected: English (default) or French.</p>
+<p>The measurement units can be chosen using the "Measurement units" radio buttons: metric (default) or imperial.</p>
+<p>Information such as the name of the stage, its length, the starting and finishing altitudes, and the positive and negative elevation gains can be displayed or hidden using the "Display stage information" radio buttons.</p>
 <p>A geolocation function is provided (top left). It allows you to determine the user's position and center the map on it. The browser's Geolocation API is used for that purpose. </p>
 <p>A location search function based on an address is provided (top left). It allows you to search for a location using a more or less detailed address and center the map on it. Several locations matching the search can be found and displayed in a list. The Nominatim geocoding service is used for that purpose.</p>
-<p>The user interface language can be selected: English (default) or French.</p>
         `);
     }
 
@@ -4127,6 +4142,8 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <ul>
 <li>Une carte topographique (présentée par défaut) mettant en évidence les caractéristiques naturelles du terrain (relief, cours d'eau, côtes...) et représentant les courbes de niveau.</li>
 <li>Une carte généraliste (celle d'OpenStreetMap).</li>
+<li>Une carte avec des sentiers de randonnée (Waymarked Trails - Hiking).</li>
+<li>Une carte avec des pistes de cyclotourisme (Waymarked Trails - Cycling).</li>
 <li>Une carte sous forme de vues satellite.</li> 
 </ul>
 <p>On peut zoomer et dézoomer les cartes en utilisant la molette de la souris ou les contrôles + et - (affichés en haut à gauche de la carte).</p>
@@ -4139,12 +4156,12 @@ For the first four travel modes, the route is calculated using the BRouter routi
 </ul>
 <p>En ouvrant l'application, on est en mode création/modification d'étape, afin de créer une première étape en ajoutant des points (et des sections) sur la carte à l'aide de la souris.</p>
 <ul>
-<li>Pour passer en mode supervision, il faut presser la touche Echappement</li>
-<li>Pour repasser en mode création/modification, il faut soit double cliquer sur la carte (pour créer une nouvelle étape), soit double-cliquer sur une étape existante (afin de la modifier).</li>
+<li>Pour passer en mode supervision, il faut cliquer le bouton "Quitter édition de l'étape" ou presser la touche Echappement</li>
+<li>Pour repasser en mode création/modification, il faut cliquer sur le bouton "Démarrer création nouvelle étape" ou double cliquer sur la carte (pour créer une nouvelle étape), soit double-cliquer sur une étape existante (afin de la modifier).</li>
 </ul>
 <h3>Mode création/modification d'étape</h3>
 <p>Ce mode permet de créer une nouvelle étape ou de modifier une étape existante de l'itinéraire. En cliquant de manière répétée sur la carte, on ajoute des points à l'étape, et des sections les reliant aux points précédents. Les autres étapes sont affichées, mais ne peuvent pas être modifiées. C'est le mode par défaut au lancement de l'application (on est censé commencer par créer une étape).</p>
-<p>Les actions permettant de créer/modifier l'étape sont :</p>
+<p>Les actions disponibles en mode édition/modification d'étape sont :</p>
 <ul>
 <li>Cliquer sur la carte pour ajouter un point supplémentaire à l'étape. Si d'autres points existent déjà, une section est aussi créée pour relier le point précédent à ce nouveau point. Le chemin utilisé entre ces deux points est déterminé par le mode de voyage choisi :
 <ul>
@@ -4160,32 +4177,34 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Double-cliquer sur un point de l'étape pour le supprimer.</li>
 <li>Tirer-déposer un point de l'étape pour le déplacer.</li>
 <li>Tirer-déposer une section de l'étape pour insérer un nouveau point et le déplacer.</li>
-<li>Presser la touche "n" pour attribuer un nom à l'étape.</li>
+<li>Cliquer sur le bouton "Attribuer nom à l'étape" ou presser la touche "n" pour attribuer un nom à l'étape.</li>
+<li>Cliquer sur le bouton "Inverser direction de l'étape" ou presser la touche "r" pour inverser la direction de l'étape.</li>
 <li>Presser la touche "u" pour supprimer le dernier point de l'étape.</li>
 <li>Presser la touche "v" pour supprimer le premier point de l'étape.</li>
-<li>Presser la touche "d" pour supprimer tous les points (et toutes les sections) de l'étape. Cette action fait également passer en mode supervision.</li>
-<li>Presser la touche "Echappement" pour terminer la création/modification de l'étape et passer en mode supervision.</li>
+<li>Cliquer sur le bouton "Supprimer l'étape" ou presser la touche "d" pour supprimer tous les points (et toutes les sections) de l'étape. Cette action fait également passer en mode supervision.</li>
+<li>Cliquer sur le bouton "Quitter édition de l'étape" ou presser la touche "Echappement" pour terminer la création/modification de l'étape et passer en mode supervision.</li>
+<li>Cliquer sur le bouton "Démarrer création nouvelle étape" ou double-cliquer sur la carte pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'une nouvelle étape.</li>
 <li>Double-cliquer sur un point ou une section d'une autre étape pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour l'autre étape.</li>
-<li>Double-cliquer sur la carte pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'une nouvelle étape.</li>
-<li>Presser la touche "i" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
-<li>Presser la touche "e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
-<li>Presser la touche "r" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes).</li>
+<li>Cliquer sur le boutton "Importer étapes de GPX" ou presser la touche "i" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
+<li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la touche "e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
+<li>Cliquer sur le bouton "Réinitialiser l'itinéraire" ou presser la touche "z" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes).</li>
 </ul>
 <h3>Mode supervision</h3>
 <p>Ce mode permet de visualiser les étapes de l'itinéraire sans qu'aucune ne soit en cours de création/modification. Les points de départ et d'arrivée de chaque étape sont représentés, mais pas les points de passage.</p> 
 <p>Les actions disponibles sont :</p>
 <ul>
-<li>Double-cliquer sur un point ou une section d'une étape pour passer en mode édition/modification pour cette étape.</li>
-<li>Double-cliquer sur la carte pour passer en mode création/modification d'une nouvelle étape.</li>
-<li>Presser la touche "i" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
-<li>Presser la touche "e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
-<li>Presser la touche "r" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes).</li>
+<li>Cliquer sur le bouton "Démarrer création nouvelle étape" ou double-cliquer sur la carte pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'une nouvelle étape.</li>
+<li>Double-cliquer sur un point ou une section d'une autre étape pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour l'autre étape.</li>
+<li>Cliquer sur le boutton "Importer étapes de GPX" ou presser la touche "i" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
+<li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la touche "e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
+<li>Cliquer sur le bouton "Réinitialiser l'itinéraire" ou presser la touche "z" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes).</li>
 </ul>
 <h2>Divers</h2>
+<p>La langue de l'interface utilisateur peut être choisie : anglais (par défaut) ou français.</p>
+<p>Les unités de mesure peuvent être choisies à l'aide des boutons radio "Unités de mesure" : métriques (par default) ou impériales.</p>
 <p>Des informations telles que le nom de l'étape, sa longueur, les altitudes de départ et d'arrivée, les dénivelés positif et négatif peuvent être affichées ou masquées.</p>
 <p>Une fonction de géolocalisation est fournie (en haut à gauche). Elle permet de déterminer la position de l'utilisateur et de centrer la carte dessus. L'API de géolocalisation du navigateur est utilisée pour cela.</p>
 <p>Une fonction de recherche de lieu à partir d'une adresse est fournie (en haut à gauche). Elle permet de rechercher un lieu à partir d'une adresse plus ou moins détaillée et de centrer la carte dessus. Plusieurs lieux correspondant à la recherche peuvent être trouvés et affichés sous forme de liste. Le service de géocodage Nominatim est utilisé pour cela.</p>
-<p>La langue de l'interface utilisateur peut être choisie : anglais (par défaut) ou français.</p>
         `);
     }
     </script>

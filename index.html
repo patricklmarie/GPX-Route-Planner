@@ -3065,6 +3065,29 @@
         }
         input.addEventListener('keydown', keydownHandler);
                     
+        // Create auto fill button
+        const autoFillButton = document.createElement('button');
+        autoFillButton.textContent = context.language === 'EN' ? 'Auto fill' : 'Remplir auto.';
+        autoFillButton.style.marginLeft = '8px';
+        wrapper.appendChild(autoFillButton);
+
+        // Get city name from coordinates
+        async function getLocationCityName(latlng) {
+            const name = await fetchCityWithNominatim(latlng);  // Retrieve city matching the coordinates using Nominatim
+            if (name != null) return name;
+            else return '?';
+        }
+
+        // Auto fill handler
+        async function autoFillHandler() {
+            if (stage.points.length > 1)
+                input.value = await getLocationCityName(stage.points[0].marker.getLatLng()) + ' - ' + 
+                    await getLocationCityName(stage.points[stage.points.length - 1].marker.getLatLng());    //Fill with start city and end city names
+            else if (stage.points.length > 0) 
+                input.value = await getLocationCityName(stage.points[0].marker.getLatLng());    // Fill with city name
+        }
+        autoFillButton.addEventListener('click', autoFillHandler);
+
         // Create submit button
         const cancelButton = document.createElement('button');
         cancelButton.textContent = context.language === 'EN' ? 'Cancel' : 'Annuler';
@@ -3307,7 +3330,7 @@
             wrapper.appendChild(input);
 
             // Define reset handler (button or Escape)
-            async function resetHandler() {
+            function resetHandler() {
                 if (context.operationWithButtonInProcess) return;
                 
                 let container = wrapper.querySelector('#search-results');   // Search for the places found container (if any)
@@ -4002,6 +4025,35 @@
         }
     }
 
+    //--------------------------------------------------
+    // Fetch city name from coordinates using Nominatim
+    //--------------------------------------------------
+    async function fetchCityWithNominatim(latlng) {
+        // Nominatim's reverse geocoding URL
+        const url = "https://nominatim.openstreetmap.org/reverse?lat=" + latlng.lat + "&lon=" + latlng.lng + "&zoom=10&addressdetails=0&format=json";
+
+        try {
+            // Fetch Nominatim
+            const response = await fetch(url);
+
+            // When Nominatim query failed
+            if (!response.ok) {
+                throw new Error(context.language === 'EN' ? `HTTP error! Status: ${response.status}` : `Erreur HTTP! Etat : ${response.status}`);
+            }
+
+            // Parse JSON
+            const respJSON = await response.json();
+
+            // Extract and return location name
+            if (respJSON.name) return respJSON.name;
+            else return null;
+        } catch (err) {
+            alert(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
+            console.error(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " : "Erreur lors de l'interrogation de Monimatim : ", err.message);
+            return null;
+        }
+    }
+
     //-------------------------------------------------
     // Find closest section part from clicked position
     //-------------------------------------------------
@@ -4180,19 +4232,19 @@
             .setLatLng(pos)
             .setContent(`<div style="text-align:left; font-size:12px; line-height:12px;">${
                 stage.name && stage.name.length > 0 
-                    ? `<span style="font-size:16px; line-height:24px;"><b>${stage.name}:</b></span><br>` 
+                    ? `<span style="font-size:16px; line-height:24px;"><b>${stage.name}${context.language === 'EN' ? ':' : ' :'}</b></span><br>` 
                     : ``
             }
             ${
                 stage.distance > 0 
-                ? `<b>Distance: </b> ${
+                ? `<b>Distance${context.language === 'EN' ? ':' : ' :'} </b> ${
                     context.metricUnits 
                         ? `${context.language === 'EN' ? stage.distance.toFixed(3) : stage.distance.toFixed(3).replace('.', ',')} km` 
                         : `${context.language === 'EN' ? (stage.distance/1.609344).toFixed(3) : (stage.distance/1.609344).toFixed(3).replace('.', ',')} mi`
                 }<br>` 
                 : ''
             }
-            <b>Altitude: </b> ${
+            <b>Altitude${context.language === 'EN' ? ':' : ' :'} </b> ${
                 stage.points[0].marker.getLatLng().alt 
                 ? context.metricUnits 
                     ? `${Math.round(stage.points[0].marker.getLatLng().alt)} m` 

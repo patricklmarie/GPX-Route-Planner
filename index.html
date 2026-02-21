@@ -807,8 +807,12 @@
         // Create button for creating a new stage
         const newStgButton = document.createElement('button');
         newStgButton.appendChild(nstIcon);
-        newStgButton.style.width = '35px';
+        newStgButton.style.width = '29px';
         newStgButton.style.height = '30px';
+        newStgButton.style.padding = '0';
+        newStgButton.style.display = 'flex';
+        newStgButton.style.alignItems = 'center';
+        newStgButton.style.justifyContent = 'center';
         newStgButton.title = context.language === 'EN' ? 'Start creating new stage' : 'Démarrer création nouvelle étape';
         container.appendChild(newStgButton);
 
@@ -836,8 +840,12 @@
         // Create submit button for importing a GPX file
         const importGPXButton = document.createElement('button');
         importGPXButton.appendChild(importIcon);
-        importGPXButton.style.width = '35px';
+        importGPXButton.style.width = '29px';
         importGPXButton.style.height = '30px';
+        importGPXButton.style.padding = '0';
+        importGPXButton.style.display = 'flex';
+        importGPXButton.style.alignItems = 'center';
+        importGPXButton.style.justifyContent = 'center';
         importGPXButton.title = context.language === 'EN' ? 'Import stages from GPX' : 'Importer étapes de GPX';        
         container.appendChild(importGPXButton);
 
@@ -863,8 +871,12 @@
         // Create submit button for exporting to a GPX file
         const exportGPXButton = document.createElement('button');
         exportGPXButton.appendChild(exportIcon);
-        exportGPXButton.style.width = '35px';
+        exportGPXButton.style.width = '29px';
         exportGPXButton.style.height = '30px';
+        exportGPXButton.style.padding = '0';
+        exportGPXButton.style.display = 'flex';
+        exportGPXButton.style.alignItems = 'center';
+        exportGPXButton.style.justifyContent = 'center';
         exportGPXButton.title = context.language === 'EN' ? 'Export route to GPX' : 'Exporter l\'itinéraire vers GPX';
         container.appendChild(exportGPXButton);
 
@@ -890,8 +902,12 @@
         // Create submit button for resetting the route
         const resetRteButton = document.createElement('button');
         resetRteButton.appendChild(resetIcon);
-        resetRteButton.style.width = '35px';
+        resetRteButton.style.width = '29px';
         resetRteButton.style.height = '30px';
+        resetRteButton.style.padding = '0';
+        resetRteButton.style.display = 'flex';
+        resetRteButton.style.alignItems = 'center';
+        resetRteButton.style.justifyContent = 'center';
         resetRteButton.title = context.language === 'EN' ? 'Reset route' : 'Réinitialiser l\'itinéraire';
         container.appendChild(resetRteButton);
 
@@ -1342,8 +1358,12 @@
         // Create submit button for setting the stage's name
         const setNameButton = document.createElement('button');
         setNameButton.appendChild(snIcon);
-        setNameButton.style.width = '35px';
+        setNameButton.style.width = '29px';
         setNameButton.style.height = '30px';
+        setNameButton.style.padding = '0';
+        setNameButton.style.display = 'flex';
+        setNameButton.style.alignItems = 'center';
+        setNameButton.style.justifyContent = 'center';
         setNameButton.title = context.language === 'EN' ? 'Set stage name' : 'Attribuer nom à l\'étape';
         buttonsContainer.appendChild(setNameButton);
 
@@ -1369,8 +1389,12 @@
         // Create submit button for reverse stage direction
         const revStgButton = document.createElement('button');
         revStgButton.appendChild(rsIcon);
-        revStgButton.style.width = '35px';
+        revStgButton.style.width = '29px';
         revStgButton.style.height = '30px';
+        revStgButton.style.padding = '0';
+        revStgButton.style.display = 'flex';
+        revStgButton.style.alignItems = 'center';
+        revStgButton.style.justifyContent = 'center';
         revStgButton.title = context.language === 'EN' ? 'Reverse stage direction' : 'Inverser direction de l\'étape';
         buttonsContainer.appendChild(revStgButton);
 
@@ -1396,8 +1420,12 @@
         // Create submit button for split stage
         const splitStgButton = document.createElement('button');
         splitStgButton.appendChild(splitIcon);
-        splitStgButton.style.width = '35px';
+        splitStgButton.style.width = '29px';
         splitStgButton.style.height = '30px';
+        splitStgButton.style.padding = '0';
+        splitStgButton.style.display = 'flex';
+        splitStgButton.style.alignItems = 'center';
+        splitStgButton.style.justifyContent = 'center';
         splitStgButton.title = context.language === 'EN' ? 'Split stage\n(Esc to cancel)' : 'Partager l\'étape en deux\n(Echap. pour annuler)';
         buttonsContainer.appendChild(splitStgButton);
 
@@ -1410,31 +1438,35 @@
         splitStgButton.addEventListener('click', splitStgHandler);  // Associate submit handler with button
        
         // Create merge before stage icon
-        const mergeBIcon = document.createElement('i');
-        mergeBIcon.classList.add('fa-solid', 'fa-handshake');
-        mergeBIcon.style.fontSize = '20px';
-        mergeBIcon.style.lineHeight = '20px';
-        mergeBIcon.style.width = '27px';
-        mergeBIcon.style.height = '20px';
-        mergeBIcon.style.display = 'inline-flex';
-        mergeBIcon.style.alignItems = 'center';
-        mergeBIcon.style.justifyContent = 'center';
+        const mergeIcon = document.createElement('i');
+        mergeIcon.classList.add('fa-solid', 'fa-handshake');
+        mergeIcon.style.fontSize = '20px';
+        mergeIcon.style.lineHeight = '20px';
+        mergeIcon.style.width = '27px';
+        mergeIcon.style.height = '20px';
+        mergeIcon.style.display = 'inline-flex';
+        mergeIcon.style.alignItems = 'center';
+        mergeIcon.style.justifyContent = 'center';
 
         // Create submit button for merge before
-        const mergeBStgButton = document.createElement('button');
-        mergeBStgButton.appendChild(mergeBIcon);
-        mergeBStgButton.style.width = '35px';
-        mergeBStgButton.style.height = '30px';
-        mergeBStgButton.title = context.language === 'EN' ? 'Merge with another stage\n(Esc to cancel)' : 'Fusionner avec une autre étape\n(Echap. pour annuler)';
-        buttonsContainer.appendChild(mergeBStgButton);
+        const mergeStgButton = document.createElement('button');
+        mergeStgButton.appendChild(mergeIcon);
+        mergeStgButton.style.width = '32px';
+        mergeStgButton.style.height = '30px';
+        mergeStgButton.style.padding = '0';
+        mergeStgButton.style.display = 'flex';
+        mergeStgButton.style.alignItems = 'center';
+        mergeStgButton.style.justifyContent = 'center';
+        mergeStgButton.title = context.language === 'EN' ? 'Merge with another stage\n(Esc to cancel)' : 'Fusionner avec une autre étape\n(Echap. pour annuler)';
+        buttonsContainer.appendChild(mergeStgButton);
 
         // Define submit handler (for merge before)
-        async function mergeBStgHandler() {
+        async function mergeStgHandler() {
             if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
 
             mergeStage();
         }
-        mergeBStgButton.addEventListener('click', mergeBStgHandler);  // Associate submit handler with button
+        mergeStgButton.addEventListener('click', mergeStgHandler);  // Associate submit handler with button
        
         // Create delete stage icon
         const dsIcon = document.createElement('i');
@@ -1450,8 +1482,12 @@
         // Create submit button for deleting the stage
         const delStgButton = document.createElement('button');
         delStgButton.appendChild(dsIcon);
-        delStgButton.style.width = '35px';
+        delStgButton.style.width = '29px';
         delStgButton.style.height = '30px';
+        delStgButton.style.padding = '0';
+        delStgButton.style.display = 'flex';
+        delStgButton.style.alignItems = 'center';
+        delStgButton.style.justifyContent = 'center';
         delStgButton.title = context.language === 'EN' ? 'Delete stage' : 'Supprimer l\'étape';
         buttonsContainer.appendChild(delStgButton);
 
@@ -1478,8 +1514,12 @@
         // Create submit button for quitting edit mode
         const quitEdtButton = document.createElement('button');
         quitEdtButton.appendChild(qeIcon);
-        quitEdtButton.style.width = '35px';
+        quitEdtButton.style.width = '29px';
         quitEdtButton.style.height = '30px';
+        quitEdtButton.style.padding = '0';
+        quitEdtButton.style.display = 'flex';
+        quitEdtButton.style.alignItems = 'center';
+        quitEdtButton.style.justifyContent = 'center';
         quitEdtButton.title = context.language === 'EN' ? 'Quit stage edition' : 'Quitter édition de l\'étape';
         buttonsContainer.appendChild(quitEdtButton);
 

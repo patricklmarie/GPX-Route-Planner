@@ -2673,8 +2673,6 @@
                     if (context.displayInfo) {
                         showInfoPopup(stageRef);
                     }
-
-                    context.suppressNextClick = true;   // To prevent firing the single click handler
                 }
             };
         })(stage, section);
@@ -2928,8 +2926,6 @@
             return async function(e) {
                 if (context.operationWithButtonInProcess) return;   // Ignore if load or rename operation in process
 
-                context.suppressNextClick = true;    // To prevent firing the single click handler
-                
                 L.DomEvent.stopPropagation(e);  // Do not propagate to map (stop zooming and bubbling)
                 L.DomEvent.preventDefault(e);
                 
@@ -3099,8 +3095,6 @@
                     // Set environment to non edit mode
                     setEnv4NonEdt();
                 }
-
-                context.suppressNextClick = false;    // Enable single click again
             };
         })(stage, point);
         point.marker.addEventListener('dblclick', point_dblclick);      // Add event listener to point

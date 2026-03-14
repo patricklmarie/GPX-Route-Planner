@@ -202,8 +202,8 @@
     // Main block
     try {
         // Create map
-        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
-//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
+//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
+        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
 
         // Create a specific layer for the markers, so that are always on top of the polylines
         map.createPane('markerPaneTop');
@@ -6342,10 +6342,48 @@
     // Simplify the geometry of a section returned by BRouter by decimating the points
     //---------------------------------------------------------------------------------
     function simplifyPolyGeom(latlngs) {
-        const SELECT_NB = 2;
+        // Project the points on the map (to make the simplification independent of the map's zoom level)
+        const projected = latlngs.map(ll => {
+            const p = map.options.crs.project(ll);
+            p.alt = ll.alt;
+            return p;
+        });
 
-        const lastIdx = latlngs.length - 1;
-        return latlngs.filter((_, i) => i % SELECT_NB === 0 || i === lastIdx);  // Only points with even index will be kept (plus the last point)
+        const simplifiedPoints = L.LineUtil.simplify(projected, 5);     // Simplify the way with precision = 5 meters
+
+        // Unproject the points from the map to retrieve their coordinates
+        const simplifiedLatLngs = simplifiedPoints.map(p => {   
+            const ll = map.options.crs.unproject(p);
+            return L.latLng(ll.lat, ll.lng, p.alt);
+        });
+        
+        // Add altitudes
+        simplifiedLatLngs.forEach(ll => {
+            ll.alt = interpolateAltitude(ll, latlngs);
+        });
+
+        return simplifiedLatLngs;
+
+        //------------------------------------------------------------
+        // Retrieve altitude of the points obtained by simplification
+        //------------------------------------------------------------
+        function interpolateAltitude(latlng, originalTrack) {
+            let bestDist = Infinity;
+            let bestAlt = 0;
+
+            for (let i = 0; i < originalTrack.length - 1; i++) {
+                const a = originalTrack[i];
+                const b = originalTrack[i + 1];
+
+                const d = latlng.distanceTo(a);
+                if (d < bestDist) {
+                    bestDist = d;
+                    bestAlt = a.alt;
+                }
+            }
+
+            return bestAlt;
+        }
     }
 
     //-----------------------------------------------------------
@@ -6634,4 +6672,3 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
     </script>
 </body>
 </html>
-

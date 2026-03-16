@@ -66,14 +66,14 @@
 
     // Colors used to draw the route stages
     let routeColors = { 
-        editArrival: '#ff6666',     // Arrival points in edition mode
-        editDeparture: '#00cc33',   // Departure points in edition mode
-        editRoute: '#2791F5',       // Stage sections in edition mode
-        editSingle: '#ff4dff',      // Departure/arrival points in edition mode
-        neArrival: '#cc0000',       // Arrival point in non edition mode
-        neDeparture: '#008020',     // Departure point in non edition mode 
-        neRoute: '#274BF5',         // Stage sections in non edition mode
-        neSingle: '#cc00cc'         // Departure/arrival points in non edition mode
+        lightRed: '#ff6666',     // Arrival points in edition mode
+        lightGreen: '#00cc33',   // Departure points in edition mode
+        lightBlue: '#2791F5',       // Stage sections in edition mode
+        lightPurple: '#ff4dff',      // Departure/arrival points in edition mode
+        deepRed: '#cc0000',       // Arrival point in non edition mode
+        deepGreen: '#008020',     // Departure point in non edition mode 
+        deepBlue: '#274BF5',         // Stage sections in non edition mode
+        deepPurple: '#cc00cc'         // Departure/arrival points in non edition mode
     }
 
     // Weights used to draw the route stages
@@ -89,6 +89,332 @@
         medium: 7,      // Medium size point
         large: 9       // Large size point
     }
+
+    const lightPurpleDoubleSquareIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: relative;
+                width: 18px;
+                height: 18px;
+            ">
+                <!-- Base square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.lightPurple};
+                    transform: translate(-50%, -50%);
+                "></div>
+
+                <!-- Rotated square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.lightPurple};
+                    transform: translate(-50%, -50%) rotate(45deg);
+                "></div>
+            </div>
+        `,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const deepPurpleDoubleSquareIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: relative;
+                width: 18px;
+                height: 18px;
+            ">
+                <!-- Base square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.deepPurple};
+                    transform: translate(-50%, -50%);
+                "></div>
+
+                <!-- Rotated square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.deepPurple};
+                    transform: translate(-50%, -50%) rotate(45deg);
+                "></div>
+            </div>
+        `,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightGreenDoubleSquareIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: relative;
+                width: 18px;
+                height: 18px;
+            ">
+                <!-- Base square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.lightGreen};
+                    transform: translate(-50%, -50%);
+                "></div>
+
+                <!-- Rotated square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.lightGreen};
+                    transform: translate(-50%, -50%) rotate(45deg);
+                "></div>
+            </div>
+        `,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightRedDoubleSquareIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: relative;
+                width: 18px;
+                height: 18px;
+            ">
+                <!-- Base square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.lightRed};
+                    transform: translate(-50%, -50%);
+                "></div>
+
+                <!-- Rotated square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.lightRed};
+                    transform: translate(-50%, -50%) rotate(45deg);
+                "></div>
+            </div>
+        `,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightGreenDiamondIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 14px;
+            height: 14px;
+            background: transparent;
+            border: 4px solid ${routeColors.lightGreen};
+            transform: translate(-50%, -50%) rotate(45deg);
+        "></div>`,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    const deepGreenDiamondIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 14px;
+            height: 14px;
+            background: transparent;
+            border: 4px solid ${routeColors.deepGreen};
+            transform: translate(-50%, -50%) rotate(45deg);
+        "></div>`,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    const lightRedDiamondIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 14px;
+            height: 14px;
+            background: transparent;
+            border: 4px solid ${routeColors.lightRed};
+            transform: translate(-50%, -50%) rotate(45deg);
+        "></div>`,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    const circleIconEdit = L.divIcon({
+        className: '',
+        html: `<div style="
+            width: 8px;
+            height: 8px;
+            background: transparent;
+            border: 4px solid ${routeColors.lightBlue};
+            border-radius: 50%;
+        "></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const transparentIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            width: 1px;
+            height: 1px;
+            background: transparent;²
+            border: 4px solid transparent;
+        "></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightGreenCircleIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            width: 8px;
+            height: 8px;
+            background: transparent;
+            border: 4px solid ${routeColors.lightGreen};
+            border-radius: 50%;
+        "></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightRedCircleIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            width: 8px;
+            height: 8px;
+            background: transparent;
+            border: 4px solid ${routeColors.lightRed};
+            border-radius: 50%;
+        "></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightPurpleCircleIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            width: 8px;
+            height: 8px;
+            background: transparent;
+            border: 4px solid ${routeColors.lightPurple};
+            border-radius: 50%;
+        "></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightRedSquareIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            position: relative;
+            width: 18px;
+            height: 18px;
+        ">
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 14px;
+                height: 14px;
+                background: transparent;
+                border: 4px solid ${routeColors.lightRed};
+                transform: translate(-50%, -50%);
+            "></div>
+        </div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const deepRedSquareIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            position: relative;
+            width: 18px;
+            height: 18px;
+        ">
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 14px;
+                height: 14px;
+                background: transparent;
+                border: 4px solid ${routeColors.deepRed};
+                transform: translate(-50%, -50%);
+            "></div>
+        </div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightGreenSquareIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            position: relative;
+            width: 18px;
+            height: 18px;
+        ">
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 14px;
+                height: 14px;
+                background: transparent;
+                border: 4px solid ${routeColors.lightGreen};
+                transform: translate(-50%, -50%);
+            "></div>
+        </div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
 
     // Route (defined as an array of stages)
     let stages = [];
@@ -205,9 +531,12 @@
         map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
 //        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
 
-        // Create a specific layer for the markers, so that are always on top of the polylines
-        map.createPane('markerPaneTop');
-        map.getPane('markerPaneTop').style.zIndex = 650; // Higher than polylines
+        // Create specific layers for the markers, so that are always on top of the polylines
+        map.createPane('markerNEPane');
+        map.getPane('markerNEPane').style.zIndex = 600; // Higher than polylines
+
+        map.createPane('markerEditPane');
+        map.getPane('markerEditPane').style.zIndex = 610; // Higher than polylines
 
         // Add a scale bar
         L.control.scale({ imperial: false }).addTo(map);
@@ -1159,7 +1488,7 @@
             for (let j = 0; j < stage.sections.length; j++) {
                 const section = stage.sections[j];
                 
-                section.polyline.setStyle({ color: routeColors.neRoute, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 });   // Set layout
+                section.polyline.setStyle({ color: routeColors.deepBlue, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 });   // Set layout
         
                 // Delete event listeners on section
                 for (const { target, type, handler } of section.evtList)
@@ -1215,20 +1544,59 @@
             for (let j = 0; j < stage.points.length; j++) {
                 const point = stage.points[j];
 
-                // Set point layout
-                if (j === 0 && stage.points.length === 1)
-                    point.marker.setStyle({ radius: markerSize.medium, opacity: 1, fillOpacity: 0, color: routeColors.neSingle });
-                else if (j === 0)
-                    point.marker.setStyle({ radius: markerSize.medium, opacity: 1, fillOpacity: 0, color: routeColors.neDeparture });
-                else if (j < stage.points.length - 1)
-                    point.marker.setStyle({ radius: markerSize.invisible, opacity: 0, fillOpacity: 0 });
-                else
-                    point.marker.setStyle({ radius: markerSize.large, opacity: 1, fillOpacity: 0, color: routeColors.neArrival });        
-
                 // Delete event listeners on point
                 for (const { target, type, handler } of point.evtList)
                     target.removeEventListener(type, handler);
                 point.evtList.splice(0);
+
+                // Change point's layout
+                const latlng = point.marker.getLatLng();
+                let newMarker = null;
+                if (stage.points.length === 1) {
+                    if (point.marker.options.icon != deepPurpleDoubleSquareIcon) {
+                        newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                            icon: deepPurpleDoubleSquareIcon,
+                            pane: 'markerNEPane',
+                            draggable: false,
+                            autoPan: false,
+                            bubblingMouseEvents: true
+                        }).addTo(map);
+                    }
+                } else if (j === 0) { 
+                    if (point.marker.options.icon != deepGreenDiamondIcon) {
+                        newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                            icon: deepGreenDiamondIcon,
+                            pane: 'markerNEPane',
+                            draggable: false,
+                            autoPan: false,
+                            bubblingMouseEvents: true
+                        }).addTo(map);
+                    }
+                } else if (j < stage.points.length - 1) {
+                    if (point.marker.options.icon != transparentIcon) {
+                        newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                            icon: transparentIcon,
+                            pane: 'markerNEPane',
+                            draggable: false,
+                            autoPan: false,
+                            bubblingMouseEvents: true
+                        }).addTo(map);
+                    }
+                } else {
+                    if (point.marker.options.icon != deepRedSquareIcon) {
+                        newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                            icon: deepRedSquareIcon,
+                            pane: 'markerNEPane',
+                            draggable: false,
+                            autoPan: false,
+                            bubblingMouseEvents: true
+                        }).addTo(map);
+                    }
+                }
+                if (newMarker != null) {
+                    point.marker.remove();
+                    point.marker = newMarker;
+                }
 
                 // Set event listener on point for click
                 function point_click(e) {
@@ -2014,7 +2382,7 @@
             if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
     
             map.getContainer().style.cursor = 'grabbing';
-            context.suppressNextClick = true;
+            //context.suppressNextClick = true;
         }
         map.addEventListener('dragstart', map_dragstart);   // Add event listener to map
         mapEvtList.push({ target: map, type: 'dragstart', handler: map_dragstart });    //Register listener
@@ -2037,7 +2405,7 @@
             holdTimer = setTimeout(() => {
                 longPressTriggered = true;
                 map.getContainer().style.cursor = 'grabbing';
-                context.suppressNextClick = true;   // key line
+                //context.suppressNextClick = true;   // key line
             }, 350);
         }
         map.addEventListener('mousedown', map_mousedown);   // Add event listener to map
@@ -2085,11 +2453,9 @@
 
             // Adjust layout of previous point 
             if (stage.points.length > 1) {
-                stage.points[stage.points.length - 1].marker.setStyle({ radius: markerSize.large, 
-                    opacity: 1, fillOpacity: 0, color: routeColors.editArrival });
+                stage.points[stage.points.length - 1].marker.setIcon(lightRedSquareIcon);
             } else if (stage.points.length > 0) {
-                stage.points[stage.points.length - 1].marker.setStyle({ radius: markerSize.medium, 
-                    opacity: 1, fillOpacity: 0, color: routeColors.editSingle });
+                stage.points[stage.points.length - 1].marker.setIcon(lightPurpleDoubleSquareIcon);
             }
                 
             // Remove section
@@ -2167,17 +2533,21 @@
 
             // Adjust layout of previous point 
             if (stage.points.length > 1) {
-                stage.points[stage.points.length - 1].marker.setStyle({ radius: markerSize.small, 
-                    opacity: 1, fillOpacity: 0, color: routeColors.editRoute });
+                stage.points[stage.points.length - 1].marker.setIcon(circleIconEdit);
             } else if (stage.points.length > 0) {
-                stage.points[stage.points.length - 1].marker.setStyle({ radius: markerSize.medium, 
-                    opacity: 1, fillOpacity: 0, color: routeColors.editDeparture });
+                stage.points[stage.points.length - 1].marker.setIcon(lightGreenDiamondIcon);
             }
                 
             // Create and record point
-            const newCircleMarker = L.circleMarker(this.after.nextPoint, { pane: 'markerPaneTop', draggable: true, autoPan: false, bubblingMouseEvents: true })
-                .addTo(map);    // Create marker to represent the point on the map
-            stage.points.push({marker: newCircleMarker, evtList: []});   // Add point to stage
+            const newMarker = L.marker(this.after.nextPoint, { 
+                icon: lightRedSquareIcon, 
+                pane: 'markerEditPane', 
+                draggable: true, 
+                autoPan: false, 
+                bubblingMouseEvents: true 
+            }).addTo(map);    // Create marker to represent the point on the map
+            stage.points.push({marker: newMarker, evtList: []});   // Add point to stage
+
 
             setPoint4Edt(this.stageIdx, stage.points.length - 1);     // Set new point's layout and event listeners for edit mode
 
@@ -2237,7 +2607,7 @@
         section.polyline.bringToFront();
 
         // Set section's layout
-        section.polyline.setStyle({ color: routeColors.editRoute, weight: routeWeights.editRoute, opacity: 1, fillOpacity: 0 });
+        section.polyline.setStyle({ color: routeColors.lightBlue, weight: routeWeights.editRoute, opacity: 1, fillOpacity: 0 });
 
         // Delete event listeners on section
         for (const { target, type, handler } of section.evtList)    // Remove event listeners
@@ -2538,10 +2908,14 @@
 
             setSection4Edit(this.stageIdx, this.sectionIdx + 1);    // Set new section's layout and event listeners for edit mode
                         
-            const newCircleMarker = L.circleMarker(this.after.point, { pane: 'markerPaneTop', draggable: true, autoPan: false, bubblingMouseEvents: true })
-                .addTo(map);    // Create circle marker for the new point
-
-            stage.points.splice(this.sectionIdx + 1, 0, {marker: newCircleMarker, evtList: []});   // Add new point to stage points
+            const newMarker = L.marker(this.after.point, {          // Create circle marker for the new point
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
+            stage.points.splice(this.sectionIdx + 1, 0, {marker: newMarker, evtList: []});   // Add new point to stage points
 
             setPoint4Edt(this.stageIdx, this.sectionIdx + 1);   // Set new point's layout and event listeners for edit mode
 
@@ -2646,10 +3020,14 @@
 
             setSection4Edit(this.stageIdx, this.sectionIdx + 1);    // Set new section's layout and event listeners for edit mode
                         
-            const newCircleMarker2 = L.circleMarker(this.after.newPoint, { pane: 'markerPaneTop', draggable: true, autoPan: false, bubblingMouseEvents: true })
-                .addTo(map);    // Create circle marker for the new point
-
-            stage.points.splice(this.sectionIdx + 1, 0, {marker: newCircleMarker2, evtList: []});   // Add new point to stage points
+            const newMarker2 = L.marker(this.after.newPoint, {          // Create circle marker for the new point
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
+            stage.points.splice(this.sectionIdx + 1, 0, {marker: newMarker2, evtList: []});   // Add new point to stage points
 
             setPoint4Edt(this.stageIdx, this.sectionIdx + 1);   // Set new point's layout and event listeners for edit mode
 
@@ -2674,19 +3052,6 @@
         const stage = stages[i];
         const point = stage.points[j];
 
-        // Bring to the front
-        point.marker.bringToFront();
-
-        // Set point layout
-        if (stage.points.length === 1)
-            point.marker.setStyle({ radius: markerSize.medium, opacity: 1, fillOpacity: 0, color: routeColors.editSingle });
-        else if (j === 0)
-            point.marker.setStyle({ radius: markerSize.medium, opacity: 1, fillOpacity: 0, color: routeColors.editDeparture });
-        else if (j < stage.points.length - 1)
-            point.marker.setStyle({ radius: markerSize.small, opacity: 1, fillOpacity: 0, color: routeColors.editRoute });
-        else
-            point.marker.setStyle({ radius: markerSize.large, opacity: 1, fillOpacity: 0, color: routeColors.editArrival });
-
         // Delete event listeners on point
         if (point.evtList) {
             for (const { target, type, handler } of point.evtList) {
@@ -2694,6 +3059,55 @@
             }
     
             point.evtList.splice(0);
+        }
+
+        // Set point layout
+        const latlng = point.marker.getLatLng();
+        let newMarker = null;
+        if (stage.points.length === 1) {
+            if (point.marker.options.icon != lightPurpleDoubleSquareIcon) {
+                newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                    icon: lightPurpleDoubleSquareIcon,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+            }
+        } else if (j === 0) {
+            if (point.marker.options.icon != lightGreenDiamondIcon) {
+                newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                    icon: lightGreenDiamondIcon,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+            }
+        } else if (j < stage.points.length - 1) {
+            if (point.marker.options.icon != circleIconEdit) {
+                newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                    icon: circleIconEdit,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+            }
+        } else {
+            if (point.marker.options.icon != lightRedSquareIcon) {
+                newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                    icon: lightRedSquareIcon,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+            }
+        }
+        if (newMarker != null) {
+            point.marker.remove();
+            point.marker = newMarker;
         }
 
         // Set event listener on point for click
@@ -2838,7 +3252,7 @@
 
                     if (!isDragging) {
                         isDragging = true;  // Register dragging in process
-                        context.suppressNextClick = true;
+                        //context.suppressNextClick = true;
                     
                         map.dragging.disable();
                     }
@@ -3214,19 +3628,22 @@
             }
 
             // Restore point
-            const newCircleMarker = L.circleMarker(this.before.curPoint, { pane: 'markerPaneTop', draggable: true, autoPan: false, bubblingMouseEvents: true })
-                .addTo(map);    // Create marker to represent the point on the map
-            stage.points.splice(this.pointIdx, 0, {marker: newCircleMarker, evtList: []});   // Add point to stage
+            const newMarker = L.marker(this.before.curPoint, {          // Create marker to represent the point on the map
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
+            stage.points.splice(this.pointIdx, 0, {marker: newMarker, evtList: []});   // Add point to stage
 
             setPoint4Edt(this.stageIdx, this.pointIdx);     // Set new point's layout and event listeners for edit mode
 
             // Adjust layout of previous and next points 
             if (this.pointIdx === 0 && stage.points.length > 1) {
-                stage.points[1].marker.setStyle({ radius: markerSize.small, 
-                    opacity: 1, fillOpacity: 0, color: routeColors.editRoute });
+                stage.points[1].marker.setIcon(lightGreenDiamondIcon);
             } else if (this.pointIdx === stage.points.length - 1 && stage.points.length > 1) {
-                stage.points[stage.points.length - 2].marker.setStyle({ radius: markerSize.small, 
-                    opacity: 1, fillOpacity: 0, color: routeColors.editRoute });
+                stage.points[stage.points.length - 2].marker.setIcon(lightRedSquareIcon);
             }
                 
             // Restore sections before and after restored point
@@ -3331,14 +3748,11 @@
 
             // Adjust layout of previous and next points 
             if (this.before.prevSection === null && stage.points.length > 1) {
-                stage.points[0].marker.setStyle({ radius: markerSize.medium, 
-                    opacity: 1, fillOpacity: 0, color: routeColors.editDeparture });
+                stage.points[0].marker.setIcon(lightGreenDiamondIcon);
             } else if (this.before.nextSection === null && stage.points.length > 1) {
-                stage.points[stage.points.length - 1].marker.setStyle({ radius: markerSize.large, 
-                    opacity: 1, fillOpacity: 0, color: routeColors.editArrival });
+                stage.points[stage.points.length - 1].marker.setIcon(lightRedSquareIcon);
             } else if (stage.points.length === 1) {
-                stage.points[stage.points.length - 1].marker.setStyle({ radius: markerSize.medium, 
-                    opacity: 1, fillOpacity: 0, color: routeColors.editSingle });
+                stage.points[stage.points.length - 1].marker.seIcon(lightPurpleDoubleSquareIcon);
             }
                 
             // Remove preceding and following sections and replace them with a single section
@@ -3551,29 +3965,33 @@
                 if (beforeDistance < DIST_THRESHOLD && afterDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km before and after the edited stage
                     baCandidStgs.push(stages[j]);
                     stages[j].sections.forEach(section => 
-                        section.polyline.setStyle({ color: routeColors.editSingle })
+                        section.polyline.setStyle({ color: routeColors.lightPurple })
                     );
                     stages[j].points.forEach((point, k) => {
-                        if (k === 0) point.marker.setStyle({ color: routeColors.editDeparture });
-                        else if (k === stages[j].points.length - 1) point.marker.setStyle({ color: routeColors.editArrival });
-                        else point.marker.setStyle({ color: routeColors.editSingle });
+                        if (k === 0) point.marker.setIcon(lightGreenDiamondIcon);
+                        else if (k === stages[j].points.length - 1) point.marker.setIcon(lightRedSquareIcon);
+                        else point.marker.setIcon(lightPurpleCircleIcon);
                     });
                 } else if (beforeDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km before the edited stage
                     beforeCandidStgs.push(stages[j]);
                     stages[j].sections.forEach(section =>
-                        section.polyline.setStyle({ color: routeColors.editDeparture })
+                        section.polyline.setStyle({ color: routeColors.lightGreen })
                     );
-                    stages[j].points.forEach(point =>
-                        point.marker.setStyle({ color: routeColors.editDeparture })
-                    );
-                } else if (afterDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km after teh edited stage
+                    stages[j].points.forEach((point, k) => {
+                        if (k === 0) point.marker.setIcon(lightGreenDiamondIcon);
+                        else if (k === stages[j].points.length - 1) point.marker.setIcon(lightGreenSquareIcon);
+                        else point.marker.setIcon(lightGreenCircleIcon);
+                    });
+                } else if (afterDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km after the edited stage
                     afterCandidStgs.push(stages[j]);
                     stages[j].sections.forEach(section =>
-                        section.polyline.setStyle({ color: routeColors.editArrival })
+                        section.polyline.setStyle({ color: routeColors.lightRed })
                     );
-                    stages[j].points.forEach(point =>
-                        point.marker.setStyle({ color: routeColors.editArrival })
-                    );
+                    stages[j].points.forEach((point, k) => {
+                        if (k === 0) point.marker.setIcon(lightRedDiamondIcon);
+                        else if (k === stages[j].points.length - 1) point.marker.setIcon(lightRedSquareIcon);
+                        else point.marker.setIcon(lightRedCircleIcon);
+                    });
                 }
             }
         }
@@ -3823,17 +4241,17 @@
         function setNonEdtColors(candidStages) {
             candidStages.forEach(stage => {
                 stage.sections.forEach(section => {
-                    section.polyline.setStyle({ color: routeColors.neRoute, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 });   // Set layout
+                    section.polyline.setStyle({ color: routeColors.deepBlue, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 });   // Set layout
                 })
                 stage.points.forEach((point, j) => {
                     if (j === 0 && stage.points.length === 1)
-                        point.marker.setStyle({ radius: markerSize.medium, opacity: 1, fillOpacity: 0, color: routeColors.neSingle });
+                        point.marker.setIcon(deepPurpleDoubleSquareIcon);
                     else if (j === 0)
-                        point.marker.setStyle({ radius: markerSize.medium, opacity: 1, fillOpacity: 0, color: routeColors.neDeparture });
+                        point.marker.setIcon(deepGreenDiamondIcon);
                     else if (j < stage.points.length - 1)
-                        point.marker.setStyle({ radius: markerSize.invisible, opacity: 0, fillOpacity: 0 });
+                        point.marker.setIcon(transparentIcon);
                     else
-                        point.marker.setStyle({ radius: markerSize.large, opacity: 1, fillOpacity: 0, color: routeColors.neArrival });
+                        point.marker.setIcon(deepRedSquareIcon);
                 });
             });
         }
@@ -3874,8 +4292,13 @@
                 stage.sections[this.before.beforeStageSectNb].polyline.remove();
                 stage.sections.splice(this.before.beforeStageSectNb, 1);
             } else {
-                const newMarker = L.circleMarker(stage.points[this.before.beforeStageSectNb].marker.getLatLng(), 
-                    { pane: 'markerPaneTop', draggable: true, autoPan: false, bubblingMouseEvents: true }).addTo(map);
+                const newMarker = L.marker(stage.points[this.before.beforeStageSectNb].marker.getLatLng(), {
+                    icon: circleIconEdit,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
                 stage.points.splice(this.before.beforeStageSectNb + 1, 0, { marker: newMarker, evtList: [] });
             }
 
@@ -3907,7 +4330,7 @@
                 }
             }
 
-            setStg4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
+            setEnv4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
             context.editedStage = stageIdx;
             setStg4NonEdt(stageIdx2);    // Set new stage layout and event listeners for edit mode
 
@@ -3981,7 +4404,7 @@
 
             context.editedStage = stages.indexOf(stage);
                 
-            setStg4EdtStg(context.editedStage);    // Set new stage layout and event listeners for edit mode
+            setEnv4EdtStg(context.editedStage);    // Set new stage layout and event listeners for edit mode
 
             stage.distance = calculateStageDistance(stage);   // Calculate stage distance
 
@@ -4026,8 +4449,13 @@
                 stage.sections[stage.sections.length - this.before.afterStageSectNb - 1].polyline.remove();
                 stage.sections.splice(stage.sections.length - this.before.afterStageSectNb - 1, 1);
             } else {
-                const newMarker = L.circleMarker(stage.points[stage.sections.length - this.before.afterStageSectNb].marker.getLatLng(), 
-                    { pane: 'markerPaneTop', draggable: true, autoPan: false, bubblingMouseEvents: true }).addTo(map);
+                const newMarker = L.marker(stage.points[stage.sections.length - this.before.afterStageSectNb].marker.getLatLng(), {
+                    icon: circleIconEdit,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
                 stage.points.splice(stage.sections.length - this.before.afterStageSectNb, 0, { marker: newMarker, evtList: [] });
             }
 
@@ -4060,7 +4488,7 @@
                 }
             }
 
-            setStg4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
+            setEnv4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
             context.editedStage = stageIdx;
             setStg4NonEdt(stageIdx2);    // Set new stage layout and event listeners for edit mode
 
@@ -4134,7 +4562,7 @@
 
             context.editedStage = stages.indexOf(stage);
                 
-            setStg4EdtStg(context.editedStage);    // Set new stage layout and event listeners for edit mode
+            setEnv4EdtStg(context.editedStage);    // Set new stage layout and event listeners for edit mode
 
             stage.distance = calculateStageDistance(stage);   // Calculate stage distance
 
@@ -4366,9 +4794,13 @@
 
             stage2.sections.push(...movedSections);
         
-            const newMarker = L.circleMarker(point.marker.getLatLng(), { pane: 'markerPaneTop', draggable: true, autoPan: false, bubblingMouseEvents: true })
-                .addTo(map);
-
+            const newMarker = L.marker(point.marker.getLatLng(), {
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
             stage2.points.push({ marker: newMarker, evtList: [] });
 
             stage2.points.push(...movedPoints);
@@ -4499,9 +4931,14 @@
 
             stage2.sections.push(...movedSections);
             
-            const marker2 = L.circleMarker(this.after.point, { pane: 'markerPaneTop', draggable: true, autoPan: false, bubblingMouseEvents: true })
-                .addTo(map);
-            stage2.points.push({ marker: marker2, evtList: [] });
+            const newMarker2 = L.marker(this.after.point, {
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
+            stage2.points.push({ marker: newMarker2, evtList: [] });
 
             stage2.points.push(...movedPoints);
 
@@ -4510,10 +4947,14 @@
                         
             section.polyline.setLatLngs(this.after.section1);
             
-            const marker1 = L.circleMarker(this.after.point, { pane: 'markerPaneTop', draggable: true, autoPan: false, bubblingMouseEvents: true })
-                .addTo(map);
-
-            stage.points.splice(this.sectionIdx + 1, 0, { marker: marker1, evtList: [] });
+            const newMarker1 = L.marker(this.after.point, {
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
+            stage.points.splice(this.sectionIdx + 1, 0, { marker: newMarker1, evtList: [] });
 
             setStg4NonEdt(this.stageIdx);    // Set old stage layout and event listeners for edit mode
             setEnv4EdtStg(this.stageIdx + 1);    // Set new stage layout and event listeners for edit mode
@@ -4580,8 +5021,13 @@
             }
 
             // Restore last section and last point
-            const newMarker = L.circleMarker(this.before.point,  { pane: 'markerPaneTop', draggable: true, autoPan: false, bubblingMouseEvents: true })
-                .addTo(map);
+            const newMarker = L.marker(this.before.point, {
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
             stage.points = [{ marker: newMarker, evtList: [] }].concat(stage.points);
             setPoint4Edt(this.stageIdx, 0);     // Set new point's layout and event listeners for edit mode
 
@@ -4593,19 +5039,14 @@
             
             if (this.before.section != null) {
                 // Update first point layout
-                stage.points[0].marker
-                    .setStyle({ radius: markerSize.medium, opacity: 1, fillOpacity: 0, color: routeColors.editDeparture });
+                stage.points[0].marker.setIcon(lightGreenDiamondIcon);
                 // Update next point layout
                 if (stage.points.length > 2)
-                    stage.points[1].marker
-                        .setStyle({ radius: markerSize.small, opacity: 1, fillOpacity: 0, color: routeColors.editRoute });
+                    stage.points[1].marker.setIcon(circleIconEdit);
                 else
-                    stage.points[1].marker
-                        .setStyle({ radius: markerSize.large, opacity: 1, fillOpacity: 0, color: routeColors.editArrival });
-
+                    stage.points[1].marker.setIcon(lightRedSquareIcon);
             } else 
-                    stage.points[0].marker
-                        .setStyle({ radius: markerSize.medium, opacity: 1, fillOpacity: 0, color: routeColors.editSingle });
+                    stage.points[0].marker.setIcon(lightPurpleDoubleSquareIcon);
 
             stage.distance = calculateStageDistance(stage);   // Update stage distance
 
@@ -4646,11 +5087,9 @@
             if (this.before.section != null) {
                 // Update following point layout
                 if (stage.points.length > 1)
-                    stage.points[0].marker
-                        .setStyle({ radius: markerSize.large, opacity: 1, fillOpacity: 0, color: routeColors.editArrival });
+                    stage.points[0].marker.setIcon(lightRedSquareIcon);
                 else
-                    stage.points[0].marker
-                        .setStyle({ radius: markerSize.medium, opacity: 1, fillOpacity: 0, color: routeColors.editSingle });
+                    stage.points[0].marker.setIcon(lightPurpleDoubleSquareIcon);
 
                 stage.distance = calculateStageDistance(stage);   // Update stage distance
 
@@ -4724,8 +5163,13 @@
             }
 
             // Restore last section and last point
-            const newMarker = L.circleMarker(this.before.point,  { pane: 'markerPaneTop', draggable: true, autoPan: false, bubblingMouseEvents: true })
-                .addTo(map);
+            const newMarker = L.marker(this.before.point, {
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
             stage.points.push({ marker: newMarker, evtList: [] });
             setPoint4Edt(this.stageIdx, stage.points.length - 1);     // Set new point's layout and event listeners for edit mode
 
@@ -4737,18 +5181,14 @@
             
             if (this.before.section != null) {
                 // Update last point layout
-                stage.points[stage.points.length - 1].marker
-                    .setStyle({ radius: markerSize.large, opacity: 1, fillOpacity: 0, color: routeColors.editArrival });
+                stage.points[stage.points.length - 1].marker.setIcon(lightRedSquareIcon);
                 // Update preceding point layout
                 if (stage.points.length > 2)
-                    stage.points[stage.points.length - 2].marker
-                        .setStyle({ radius: markerSize.small, opacity: 1, fillOpacity: 0, color: routeColors.editRoute });
+                    stage.points[stage.points.length - 2].marker.setIcon(circleIconEdit);
                 else
-                    stage.points[stage.points.length - 2].marker
-                        .setStyle({ radius: markerSize.medium, opacity: 1, fillOpacity: 0, color: routeColors.editDeparture });
+                    stage.points[stage.points.length - 2].marker.setIcon(lightGreenDiamondIcon);
             } else 
-                    stage.points[stage.points.length - 1].marker
-                        .setStyle({ radius: markerSize.medium, opacity: 1, fillOpacity: 0, color: routeColors.editSingle });
+                    stage.points[stage.points.length - 1].marker.setIcon(lightPurpleDoubleSquareIcon);
 
             stage.distance = calculateStageDistance(stage);   // Update stage distance
 
@@ -4789,11 +5229,9 @@
             if (this.before.section != null) {
                 // Update preceding point layout
                 if (stage.points.length > 1)
-                    stage.points[stage.points.length - 1].marker
-                        .setStyle({ radius: markerSize.large, opacity: 1, fillOpacity: 0, color: routeColors.editArrival });
+                    stage.points[stage.points.length - 1].marker.setIcon(lightRedSquareIcon);
                 else
-                    stage.points[stage.points.length - 1].marker
-                        .setStyle({ radius: markerSize.medium, opacity: 1, fillOpacity: 0, color: routeColors.editSingle });
+                    stage.points[stage.points.length - 1].marker.setIcon(lightPurpleDoubleSquareIcon);
 
                 stage.distance = calculateStageDistance(stage);   // Update stage distance
 
@@ -4851,9 +5289,14 @@
 
             // Restore stage's points
             stage.points.forEach(point => {
-                const newCircleMarker = L.circleMarker(point.latlng, { pane: 'markerPaneTop', draggable: true, autoPan: false, bubblingMouseEvents: true })
-                    .addTo(map);    // Create marker
-                point.marker = newCircleMarker;
+                const newMarker = L.marker(point.latlng, {
+                    icon: circleIconEdit,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+                point.marker = newMarker;
                 point.evtList = [];
                 delete point.latlng;
             });
@@ -4949,9 +5392,14 @@
             stages.forEach((stage, i) => {
                 // Restore stage's points
                 stage.points.forEach(point => {
-                    const newCircleMarker = L.circleMarker(point.latlng, { pane: 'markerPaneTop', draggable: true, autoPan: false, bubblingMouseEvents: true })
-                        .addTo(map);    // Create marker
-                    point.marker = newCircleMarker;
+                    const newMarker = L.marker(point.latlng, {
+                        icon: circleIconEdit,
+                        pane: 'markerEditPane',
+                        draggable: true,
+                        autoPan: false,
+                        bubblingMouseEvents: true
+                    }).addTo(map);
+                    point.marker = newMarker;
                     point.evtList = [];
                     delete point.latlng;
                 });
@@ -5947,9 +6395,14 @@
                 const stage = stages[i];
                 // Restore stage's points
                 stage.points.forEach(point => {
-                    const newCircleMarker = L.circleMarker(point.latlng, { pane: 'markerPaneTop', draggable: true, autoPan: false, bubblingMouseEvents: true })
-                        .addTo(map);    // Create marker
-                    point.marker = newCircleMarker;
+                    const newMarker = L.marker(point.latlng, {
+                        icon: circleIconEdit,
+                        pane: 'markerEditPane',
+                        draggable: true,
+                        autoPan: false,
+                        bubblingMouseEvents: true
+                    }).addTo(map);
+                    point.marker = newMarker;
                     point.evtList = [];
                     delete point.latlng;
                 });

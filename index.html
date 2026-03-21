@@ -520,6 +520,8 @@
         "-- vol d\'oiseau --": "crow"
     };
 
+    let scaleControl = null;    // Scale control to be displayed at the left bottom of the map
+
     /* Undo and redo stacks for undo and redo actions */
     const undoStack = [];   
     const redoStack = [];
@@ -539,7 +541,7 @@
         map.getPane('markerEditPane').style.zIndex = 610; // Higher than polylines
 
         // Add a scale bar
-        L.control.scale({ imperial: false }).addTo(map);
+        scaleControl = L.control.scale({ metric: true, imperial: false }).addTo(map);
  
         // Create geolocation control
         setGeolocator();
@@ -961,6 +963,9 @@
                             updateInfoPopup(stages[i], false);
                     }
                 }
+
+                map.removeControl(scaleControl);
+                scaleControl = L.control.scale({ metric: true, imperial: false }).addTo(map);
             }
         });
 
@@ -988,6 +993,9 @@
                             updateInfoPopup(stages[i], false);
                     }
                 }
+
+                map.removeControl(scaleControl);
+                scaleControl = L.control.scale({ metric: false, imperial: true }).addTo(map);
             }
         });
 

@@ -27,6 +27,7 @@
     .location-item { padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; background: #ededed; cursor: pointer; user-select: none; transition: background-color 0.2s, border-color 0.2s; }
     .location-item:hover { background: #cacaca; }
     .location-item.selected { background: #b0b0b0; border-color: #3399ff; }
+    .leaflet-center { left: 50%; transform: translateX(-50%); }
   </style>
 </head>
 <body>
@@ -43,7 +44,8 @@
 	    crossorigin="">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+
     <script type="text/javascript">
     window.onerror = function(message, url, linenumber) {
         if (typeof map !== 'undefined' && map) map.remove();
@@ -427,8 +429,9 @@
     // Context variables
     let context = {
         menuControl: null,              // Control hosting the menu: option selectors and list of commands
-        locFinderControl: null,
-        geolocControl: null,
+        locFinderControl: null,         // Control hosting the location finder function
+        geolocControl: null,            // Control hosting the geolocation function
+        stageProfileControl: null,      // Control hosting the stage profile diagram
         baseMap: null,                  // Base map style
         routerProfile: null,            // Router profile
         spannedCommand: false,          // Flag: commands spanned or not in the menu
@@ -530,8 +533,8 @@
     // Main block
     try {
         // Create map
-        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
-//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
+//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
+        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
 
         // Create specific layers for the markers, so that are always on top of the polylines
         map.createPane('markerNEPane');
@@ -732,9 +735,9 @@
                 if (context.displayInfo) {
                     for (let i = 0; i < stages.length; i++) {
                         if (context.editedStage === i)
-                            updateInfoPopup(stages[i], true);
+                            updateDetailedInfo(stages[i], true);
                         else
-                            updateInfoPopup(stages[i], false);
+                            updateDetailedInfo(stages[i], false);
                     }
                 }
             }
@@ -764,9 +767,9 @@
                 if (context.displayInfo) {
                     for (let i = 0; i < stages.length; i++) {
                         if (context.editedStage === i)
-                            updateInfoPopup(stages[i], true);
+                            updateDetailedInfo(stages[i], true);
                         else
-                            updateInfoPopup(stages[i], false);
+                            updateDetailedInfo(stages[i], false);
                     }
                 }
             }
@@ -958,9 +961,9 @@
                 if (context.displayInfo) {
                     for (let i = 0; i < stages.length; i++) {
                         if (context.editedStage === i)
-                            updateInfoPopup(stages[i], true);
+                            updateDetailedInfo(stages[i], true);
                         else
-                            updateInfoPopup(stages[i], false);
+                            updateDetailedInfo(stages[i], false);
                     }
                 }
 
@@ -988,9 +991,9 @@
                 if (context.displayInfo) {
                     for (let i = 0; i < stages.length; i++) {
                         if (context.editedStage === i)
-                            updateInfoPopup(stages[i], true);
+                            updateDetailedInfo(stages[i], true);
                         else
-                            updateInfoPopup(stages[i], false);
+                            updateDetailedInfo(stages[i], false);
                     }
                 }
 
@@ -1068,9 +1071,9 @@
 
                 for (let i = 0; i < stages.length; i++) {
                     if (context.editedStage === i)
-                        updateInfoPopup(stages[i], true);
+                        updateDetailedInfo(stages[i], true);
                     else
-                        updateInfoPopup(stages[i], false);
+                        updateDetailedInfo(stages[i], false);
                 }
             }
         });
@@ -1091,9 +1094,15 @@
             if (noRadio.checked) {
                 context.displayInfo = false;
                 
-                for (let i = 0; i < stages.length; i++)
+                for (let i = 0; i < stages.length; i++) {
                     if (stages[i].infoPop)
                         stages[i].infoPop.remove();
+                }
+
+                if (context.stageProfileControl) {
+                    context.stageProfileControl.remove();    // Remove previous stage profile control
+                    context.stageProfileControl = null;
+                }
             }
         });
 
@@ -1650,7 +1659,7 @@
             }
             
             // Update stage information to be displayed in popup and show it (if selected)
-            updateInfoPopup(stages[i], false);
+            updateDetailedInfo(stages[i], false);
         } else {
             stages.splice(i, 1);   // If the stage is empty, delete it
         }
@@ -2496,7 +2505,7 @@
                     stage.descent = null;
                 }
                     
-                updateInfoPopup(stage, true);  // Update information to be displayed about the stage
+                updateDetailedInfo(stage, true);  // Update information to be displayed about the stage
             } else {
                 // Remove information popup
                 if (stage.infoPop)
@@ -2571,7 +2580,7 @@
                 [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
             }
                   
-            updateInfoPopup(stage, true);  // Update information to be displayed about the stage        
+            updateDetailedInfo(stage, true);  // Update information to be displayed about the stage        
         }
     }
 
@@ -2579,20 +2588,179 @@
     // Set stage layout and event listeners for edit stage status
     //------------------------------------------------------------
     function setStg4EdtStg(i) {
-        if (i != null) {
-            if (stages[i] && stages[i].sections)
-                setSections4Edit(i);    // Set sections' layout and event listeners for edit status
+        if (stages[i] && stages[i].sections)
+            setSections4Edit(i);    // Set sections' layout and event listeners for edit status
 
-            if (stages[i] && stages[i].points)
-                setPoints4Edit(i);      // Set points' layout and event listeners for edit status
+        if (stages[i] && stages[i].points)
+            setPoints4Edit(i);      // Set points' layout and event listeners for edit status
 
-            if (stages[i] && stages[i].points.length > 0) {
-                // Update stage information to be displayed in popup and show it (if selected)
-                updateInfoPopup(stages[i], true);
-            }
+        if (stages[i] && stages[i].points.length > 0) {
+            // Update stage information to be displayed in popup and show it (if selected)
+            updateDetailedInfo(stages[i], true);
         }
 
+        displayStageProfile(stages[i]);
+
         context.editedStage = i;
+    }
+
+    //--------------------------------------------------
+    // Create/recreate control to display stage profile 
+    //--------------------------------------------------
+    function displayStageProfile(stage) {
+        if (context.stageProfileControl) context.stageProfileControl.remove();    // Remove previous stage profile control
+
+        if (stage.points.length < 2)
+            return;
+
+        const corners = map._controlCorners;
+        const container = map._controlContainer;
+
+        corners.bottomcenter = L.DomUtil.create('div', 'leaflet-bottom leaflet-center', container);
+
+        context.stageProfileControl = L.control({ position: 'bottomcenter' });  // Create new menu control
+
+        context.stageProfileControl.onAdd = function (map) {      // Set content into menu control            
+            // Create white box hosting the menu
+            const wrapper = L.DomUtil.create('div', 'leaflet-bar unified-control');
+            wrapper.style.background = 'white';
+            wrapper.style.padding = '8px';
+            wrapper.style.display = 'flex';
+            wrapper.style.flexDirection = 'column';
+            wrapper.style.gap = '8px';
+            wrapper.style.minWidth = '100px';
+            wrapper.style.maxWidth = '500px';
+            wrapper.style.width = '100%';
+            
+            // Prevent map interaction
+            L.DomEvent.disableClickPropagation(wrapper);
+            L.DomEvent.disableScrollPropagation(wrapper);
+
+            // Create title
+            const title = L.DomUtil.create('div', 'menu-title', wrapper);
+            title.textContent = context.language === 'EN' ? 'Stage profile' : 'Profil de l\'étape';
+            if (stage.name != null) title.textContent = title.textContent + (context.language === 'EN' ? ': ' : ' : ') + stage.name;
+            title.style.fontSize = '18px';
+            title.style.fontWeight = 'bold';
+            title.style.marginBottom = '4px';
+
+            [points, yMin, yMax] = calculateStageProfile(stage);
+
+            const canvas = L.DomUtil.create('canvas', '', wrapper);
+            canvas.id = "stageProfile";
+            canvas.width = 500;
+            canvas.height = 150;
+
+            let roundValue = 100;
+            if (!context.metricUnits) roundValue = 300;
+
+            const stageProfileChart = new Chart(canvas, {
+                type: "line",
+                data: {
+                    datasets: [{
+                        label: "Altitude",
+                        data: points,
+                        backgroundColor:"rgba(0,0,255,1.0)",
+                        borderColor: routeColors.lightBlue,
+                        borderWidth: 4,
+                        fill: false,
+                        tension: 0.4,
+                        pointRadius: 0,       // hide dots
+                        pointHoverRadius: 0   // hide hover dots
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: "linear",
+                            position: "bottom",
+                            ticks: {
+                                stepSize: 1
+                            },
+                            title: {
+                                display: true,
+                                text: context.metricUnits ? "km" : "mi"
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: false
+                            },
+                            afterFit: function(scale) {
+                                scale.width = 60;
+                            }
+                        },
+                    },
+                    plugins: {
+                        legend: {display: false},
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const x = tooltipItems[0].parsed.x;   // the real distance                               
+                                    const label = context.language === 'EN' ? 'Distance: ' : 'Distance : ';
+                                    const unit  = context.metricUnits ? ' km' : ' mi';
+                                    return label + x.toFixed(3) + unit;
+                                },
+                                label: function(tooltipItem) {
+                                    const y = tooltipItem.parsed.y;
+                                    const label = context.language === 'EN' ? 'Altitude: ' : 'Altitude : ';
+                                    const unit  = context.metricUnits ? ' m' : ' ft';
+                                    return label + y.toFixed(0) + unit;
+                                }
+                            }
+                        },
+                    }
+                },
+                plugins: [{
+                    id: 'yLabel',
+                    afterDraw(chart) {
+                        const { ctx, chartArea } = chart;
+                        ctx.save();
+                        ctx.font = "14px sans-serif";
+                        ctx.fillStyle = "#333";
+                        ctx.textAlign = "center";
+                        ctx.fillText(
+                            context.metricUnits ? "m" : "ft",
+                            chartArea.left - 50,
+                            (chartArea.top + chartArea.bottom) / 2
+                        );
+                        ctx.restore();
+                    }
+                }]
+            });
+
+            return wrapper;
+        };
+
+        context.stageProfileControl.addTo(map);     // Add menu control to map
+
+        //-------------------------
+        // Calculate stage profile  
+        //-------------------------
+        function calculateStageProfile(stage) {
+            let dist = 0;
+            let alt0 = stage.points[0].marker.getLatLng().alt;
+            if (!context.metricUnits) alt0 = alt0/0.3048;
+            const points = [{ x: 0, y: alt0 }];
+            let yMin = alt0;
+            let yMax = alt0;
+
+            stage.sections.forEach(section => {
+                const sectPoints = section.polyline.getLatLngs();
+                for (let j = 1; j < sectPoints.length; j++) {
+                    let delta = haversine(sectPoints[j - 1], sectPoints[j]);
+                    if (!context.metricUnits) delta = delta/1.609344;
+                    dist = dist + delta;  // Use the haversine function to add the distance between two points
+                    let alt = sectPoints[j].alt;
+                    if (!context.metricUnits)  alt = alt/0.3048;
+                    points.push({ x: dist, y: alt });
+                    if (alt < yMin) yMin = alt;
+                    if (alt > yMax) yMax = alt;
+                }
+            });
+
+            return [points, yMin, yMax];
+        }
     }
 
     //------------------------------
@@ -2892,7 +3060,7 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
                   
-            updateInfoPopup(stage, true);  // Update information to be displayed about the stage     
+            updateDetailedInfo(stage, true);  // Update information to be displayed about the stage     
         }
 
         redo() {
@@ -2953,7 +3121,7 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
                   
-            updateInfoPopup(stage, true);  // Update information to be displayed about the stage     
+            updateDetailedInfo(stage, true);  // Update information to be displayed about the stage     
         }
     }
 
@@ -3002,7 +3170,7 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
                   
-            updateInfoPopup(stage, true);  // Update information to be displayed about the stage        
+            updateDetailedInfo(stage, true);  // Update information to be displayed about the stage        
         }
 
         redo() {
@@ -3040,7 +3208,7 @@
             setPoint4Edt(this.stageIdx, this.sectionIdx + 1);   // Set new point's layout and event listeners for edit mode
 
             // Update stage information to be displayed in popup and show it (if selected)
-            updateInfoPopup(stage, true);
+            updateDetailedInfo(stage, true);
         }
     }
 
@@ -3544,7 +3712,7 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
             
             // Update information to be displayed for the stage
-            updateInfoPopup(stage, true);
+            updateDetailedInfo(stage, true);
         }
 
         redo() {
@@ -3602,7 +3770,7 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
             
             // Update information to be displayed for the stage
-            updateInfoPopup(stage, true);
+            updateDetailedInfo(stage, true);
         }
     }
 
@@ -3701,7 +3869,7 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
             
             // Update information to be displayed for the stage
-            updateInfoPopup(stage, true);
+            updateDetailedInfo(stage, true);
         }
 
         redo() {
@@ -3760,7 +3928,7 @@
             } else if (this.before.nextSection === null && stage.points.length > 1) {
                 stage.points[stage.points.length - 1].marker.setIcon(lightRedSquareIcon);
             } else if (stage.points.length === 1) {
-                stage.points[stage.points.length - 1].marker.seIcon(lightPurpleDoubleSquareIcon);
+                stage.points[stage.points.length - 1].marker.setIcon(lightPurpleDoubleSquareIcon);
             }
                 
             // Remove preceding and following sections and replace them with a single section
@@ -3798,7 +3966,7 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
             
             // Update information to be displayed for the stage
-            updateInfoPopup(stage, true);
+            updateDetailedInfo(stage, true);
         }
     }
 
@@ -3915,7 +4083,7 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update stage ascent/descent
 
-            updateInfoPopup(stage, true);  // Update information about the stage to be displayed in popup
+            updateDetailedInfo(stage, true);  // Update information about the stage to be displayed in popup
         }
 
         redo() {
@@ -3944,7 +4112,7 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update stage ascent/descent
 
-            updateInfoPopup(stage, true);  // Update information about the stage to be displayed in popup
+            updateDetailedInfo(stage, true);  // Update information about the stage to be displayed in popup
         }
     }
 
@@ -4346,8 +4514,8 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate stage ascent and descent
                 
-            updateInfoPopup(stage, true);   // Update stage information to be displayed in popup and show it (if selected)
-            updateInfoPopup(stage2, false);   // Update stage information to be displayed in popup and show it (if selected)
+            updateDetailedInfo(stage, true);   // Update stage information to be displayed in popup and show it (if selected)
+            updateDetailedInfo(stage2, false);   // Update stage information to be displayed in popup and show it (if selected)
         }
 
         redo() {
@@ -4418,7 +4586,7 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate stage ascent and descent
                 
-            updateInfoPopup(stage, true);   // Update stage information to be displayed in popup and show it (if selected)
+            updateDetailedInfo(stage, true);   // Update stage information to be displayed in popup and show it (if selected)
         }
     }
 
@@ -4504,8 +4672,8 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate stage ascent and descent
                 
-            updateInfoPopup(stage, true);   // Update stage information to be displayed in popup and show it (if selected)
-            updateInfoPopup(stage2, false);   // Update stage information to be displayed in popup and show it (if selected)
+            updateDetailedInfo(stage, true);   // Update stage information to be displayed in popup and show it (if selected)
+            updateDetailedInfo(stage2, false);   // Update stage information to be displayed in popup and show it (if selected)
         }
 
         redo() {
@@ -4576,7 +4744,7 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate stage ascent and descent
                 
-            updateInfoPopup(stage, true);   // Update stage information to be displayed in popup and show it (if selected)
+            updateDetailedInfo(stage, true);   // Update stage information to be displayed in popup and show it (if selected)
         }
     }
 
@@ -4767,7 +4935,7 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
                 
             // Update stage information to be displayed in popup and show it (if selected)
-            updateInfoPopup(stage, true);
+            updateDetailedInfo(stage, true);
         }
 
         redo() {
@@ -4822,13 +4990,13 @@
 
             stage.distance = calculateStageDistance(stage);   // Calculate old stage distance
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
-            updateInfoPopup(stage, false);
+            updateDetailedInfo(stage, false);
 
             if (!stageRestored) {
                 stage2.distance = calculateStageDistance(stage2);  // Calculate new stage distance
                 [stage2.ascent, stage2.descent] = calculateAscentAndDescent(stage2);    // Calculate new stage ascent and descent
             }
-            updateInfoPopup(stage2, true);
+            updateDetailedInfo(stage2, true);
         }
     }
 
@@ -4901,7 +5069,7 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
                 
             // Update stage information to be displayed in popup and show it (if selected)
-            updateInfoPopup(stage, false);
+            updateDetailedInfo(stage, false);
         }
 
         redo() {
@@ -4970,13 +5138,13 @@
 
             stage.distance = calculateStageDistance(stage);   // Calculate old stage distance
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
-            updateInfoPopup(stage, false);
+            updateDetailedInfo(stage, false);
 
             if (!stageRestored) {
                 stage2.distance = calculateStageDistance(stage2);  // Calculate new stage distance
                 [stage2.ascent, stage2.descent] = calculateAscentAndDescent(stage2);    // Calculate new stage ascent and descent
             }
-            updateInfoPopup(stage2, true);
+            updateDetailedInfo(stage2, true);
         }
     }
 
@@ -5062,7 +5230,7 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
 
             // Update information to be displayed about the stage
-            updateInfoPopup(stage, true);
+            updateDetailedInfo(stage, true);
         }
 
         redo() {
@@ -5105,7 +5273,7 @@
                 [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
 
                 // Update information to be displayed about the stage
-                updateInfoPopup(stage, true);
+                updateDetailedInfo(stage, true);
             } else {
                 if (stage.infoPop)
                     stage.infoPop.remove();
@@ -5204,7 +5372,7 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
 
             // Update information to be displayed about the stage
-            updateInfoPopup(stage, true);
+            updateDetailedInfo(stage, true);
         }
 
         redo() {
@@ -5247,7 +5415,7 @@
                 [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
 
                 // Update information to be displayed about the stage
-                updateInfoPopup(stage, true);
+                updateDetailedInfo(stage, true);
             } else {
                 if (stage.infoPop)
                     stage.infoPop.remove();
@@ -5319,9 +5487,11 @@
 
             setEnv4EdtStg(this.stageIdx);
 
-            // Add popup to map if requested
-            if (context.displayInfo)
-                stage.infoPop.addTo(map);
+            stage.distance = calculateStageDistance(stage);    // Update stage distance
+
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
+                  
+            updateDetailedInfo(stage, true);  // Update information to be displayed about the stage        
 
             context.editedStage = this.stageIdx;
         }
@@ -5422,7 +5592,7 @@
 
                 setStg4NonEdt(i);
 
-                updateInfoPopup(stage, false);
+                updateDetailedInfo(stage, false);
             });
 
             setEnv4NonEdt();
@@ -5649,7 +5819,7 @@
             stage.name = this.before.name;
 
             // Update information to be displayed for the stage
-            updateInfoPopup(stage, true);
+            updateDetailedInfo(stage, true);
         }
 
         redo() {
@@ -5668,7 +5838,7 @@
             stage.name = this.after.name;
                         
             // Update information to be displayed for the stage
-            updateInfoPopup(stage, true);
+            updateDetailedInfo(stage, true);
         }
     }
 
@@ -6433,7 +6603,7 @@
 
                 setStg4NonEdt(i);   // Set stage to non edit mode
 
-                updateInfoPopup(stage, false);     // Update stage's information popup                
+                updateDetailedInfo(stage, false);     // Update stage's information popup                
             };
         }
     }
@@ -6476,8 +6646,6 @@
             return dist;
         }
     }
-
-
 
     //----------------------------------------------------------------------------------------
     // Calculate stage's ascent and descent with smoothing the elevations returned by BRouter
@@ -6850,91 +7018,102 @@
     //-----------------------------------------------------------
     // Update information about stage name and distance as popup
     //-----------------------------------------------------------
-    function updateInfoPopup(stage, editMode) {
-        if (stage.points.length === 0) {
+    function updateDetailedInfo(stage, editMode) {
+        if (context.displayInfo) {
+            if (stage.points.length === 0) {
+                if (stage.infoPop)
+                    stage.infoPop.remove();
+
+                return;
+            }
+
+            let pos = null;
+            if (editMode) 
+                pos = findNearbyPosition(stage);
+            else 
+                pos = findMediumPosition(stage);
+            if (pos === null) return;
+
+            // Remove previous information popup
             if (stage.infoPop)
                 stage.infoPop.remove();
 
-            return;
-        }
-
-        let pos = null;
-        if (editMode) 
-            pos = findNearbyPosition(stage);
-        else 
-            pos = findMediumPosition(stage);
-        if (pos === null) return;
-
-        // Remove previous information popup
-        if (stage.infoPop)
-            stage.infoPop.remove();
-
-        // Create popup with information content
-        stage.infoPop = L.popup(
-            { closeOnClick: false, autoClose: false, autoPan: false, className: 'solid-popup' })
-            .setLatLng(pos)
-            .setContent(`<div style="text-align:left; font-size:12px; line-height:12px;">${
-                stage.name && stage.name.length > 0 
-                    ? `<span style="font-size:16px; line-height:24px;"><b>${stage.name}${context.language === 'EN' ? ':' : ' :'}</b></span><br>` 
-                    : ``
-            }
-            ${
-                stage.distance > 0 
-                ? `<b>Distance${context.language === 'EN' ? ':' : ' :'} </b> ${
-                    context.metricUnits 
-                        ? `${context.language === 'EN' ? stage.distance.toFixed(3) : stage.distance.toFixed(3).replace('.', ',')} km` 
-                        : `${context.language === 'EN' ? (stage.distance/1.609344).toFixed(3) : (stage.distance/1.609344).toFixed(3).replace('.', ',')} mi`
-                }<br>` 
-                : ''
-            }
-            <b>Altitude${context.language === 'EN' ? ':' : ' :'} </b> ${
-                stage.points[0].marker.getLatLng().alt 
-                ? context.metricUnits 
-                    ? `${Math.round(stage.points[0].marker.getLatLng().alt)} m` 
-                    : `${Math.round(stage.points[0].marker.getLatLng().alt/0.3048)} ft`                 
-                : '?'
-            }
-            ${
-                stage.points.length >= 2 
-                    ? `<span style="font-size:20px;">&#8594;</span> ${
-                        stage.points[stage.points.length - 1].marker.getLatLng().alt 
-                        ? context.metricUnits 
-                            ? `${Math.round(stage.points[stage.points.length - 1].marker.getLatLng().alt)} m` 
-                            : `${Math.round(stage.points[stage.points.length - 1].marker.getLatLng().alt/0.3048)} ft`
-                        : '?'
-                    }`
+            // Create popup with information content
+            stage.infoPop = L.popup(
+                { closeOnClick: false, autoClose: false, autoPan: false, className: 'solid-popup' })
+                .setLatLng(pos)
+                .setContent(`<div style="text-align:left; font-size:12px; line-height:12px;">${
+                    stage.name && stage.name.length > 0 
+                        ? `<span style="font-size:16px; line-height:24px;"><b>${stage.name}${context.language === 'EN' ? ':' : ' :'}</b></span><br>` 
+                        : ``
+                }
+                ${
+                    stage.distance > 0 
+                    ? `<b>Distance${context.language === 'EN' ? ':' : ' :'} </b> ${
+                        context.metricUnits 
+                            ? `${context.language === 'EN' ? stage.distance.toFixed(3) : stage.distance.toFixed(3).replace('.', ',')} km` 
+                            : `${context.language === 'EN' ? (stage.distance/1.609344).toFixed(3) : (stage.distance/1.609344).toFixed(3).replace('.', ',')} mi`
+                    }<br>` 
                     : ''
-            }
-            ${
-                stage.ascent != null && stage.descent != null 
-                    ? `<br><b>${
-                        context.language === 'EN' 
-                            ? 'Elevation:' 
-                            : 'Dénivelé :'
-                    }</b> ${
-                        stage.ascent != null 
-                            ? `<span style="font-size:20px;">&#8593;</span> ${
-                                context.metricUnits
-                                    ? `${Math.round(stage.ascent)} m`
-                                    : `${Math.round(stage.ascent/0.3048)} ft`
-                            }` 
-                            : ''
-                    } ${
-                        stage.descent != null 
-                            ? ` <span style="font-size:20px;">&#8595;</span> ${
-                                context.metricUnits
-                                    ? `${Math.round(-stage.descent)} m` 
-                                    : `${Math.round(-stage.descent/0.3048)} ft`
-                            }`
-                            : ''
-                    }`
-                    : ''
-            }
-            </div>`);
+                }
+                <b>Altitude${context.language === 'EN' ? ':' : ' :'} </b> ${
+                    stage.points[0].marker.getLatLng().alt 
+                    ? context.metricUnits 
+                        ? `${Math.round(stage.points[0].marker.getLatLng().alt)} m` 
+                        : `${Math.round(stage.points[0].marker.getLatLng().alt/0.3048)} ft`                 
+                    : '?'
+                }
+                ${
+                    stage.points.length >= 2 
+                        ? `<span style="font-size:20px;">&#8594;</span> ${
+                            stage.points[stage.points.length - 1].marker.getLatLng().alt 
+                            ? context.metricUnits 
+                                ? `${Math.round(stage.points[stage.points.length - 1].marker.getLatLng().alt)} m` 
+                                : `${Math.round(stage.points[stage.points.length - 1].marker.getLatLng().alt/0.3048)} ft`
+                            : '?'
+                        }`
+                        : ''
+                }
+                ${
+                    stage.ascent != null && stage.descent != null 
+                        ? `<br><b>${
+                            context.language === 'EN' 
+                                ? 'Elevation:' 
+                                : 'Dénivelé :'
+                        }</b> ${
+                            stage.ascent != null 
+                                ? `<span style="font-size:20px;">&#8593;</span> ${
+                                    context.metricUnits
+                                        ? `${Math.round(stage.ascent)} m`
+                                        : `${Math.round(stage.ascent/0.3048)} ft`
+                                }` 
+                                : ''
+                        } ${
+                            stage.descent != null 
+                                ? ` <span style="font-size:20px;">&#8595;</span> ${
+                                    context.metricUnits
+                                        ? `${Math.round(-stage.descent)} m` 
+                                        : `${Math.round(-stage.descent/0.3048)} ft`
+                                }`
+                                : ''
+                        }`
+                        : ''
+                }
+                </div>`);
 
-        // Add popup to map if requested
-        if (context.displayInfo)
+            // Add popup to map if requested
             stage.infoPop.addTo(map);
+
+            // Display stage profile control
+            if (editMode) {
+                displayStageProfile(stage);
+            } else {
+                if (context.stageProfileControl) {
+                    context.stageProfileControl.remove();    // Remove previous stage profile control
+                    context.stageProfileControl = null;
+                }
+            }
+        }
     }
 
     //--------------------------------

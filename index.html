@@ -3047,6 +3047,21 @@
                         const nextLatlngs = stageRef.sections[jRef + 1].polyline.getLatLngs();
                         stageRef.sections[jRef + 1].polyline.setLatLngs([ev.latlng, nextLatlngs[nextLatlngs.length - 1]]);
                     }
+
+                    // Remove marker from map
+                    if (context.stageProfileMapMarker) {
+                        context.stageProfileMapMarker.remove();
+                        context.stageProfileMapMarker = null;
+                    }
+
+                    // Remove point from chart
+                    const chart = context.stageProfileChart;
+
+                    chart.setActiveElements([]);
+
+                    chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+
+                    chart.update();                        
                 };
 
                 const up = async ev => {    // Event: mouse button up
@@ -3249,6 +3264,21 @@
             stage.points[this.sectionIdx + 1].marker.remove();
             stage.points.splice(this.sectionIdx + 1, 1);   // Add new point to stage points
 
+            // Remove marker from map
+            if (context.stageProfileMapMarker) {
+                context.stageProfileMapMarker.remove();
+                context.stageProfileMapMarker = null;
+            }
+
+            // Remove point from chart
+            const chart = context.stageProfileChart;
+
+            chart.setActiveElements([]);
+
+            chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+
+            chart.update();            
+            
             stage.distance = calculateStageDistance(stage);    // Update stage distance
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
@@ -3310,6 +3340,21 @@
                 }
             }
 
+            // Remove marker from map
+            if (context.stageProfileMapMarker) {
+                context.stageProfileMapMarker.remove();
+                context.stageProfileMapMarker = null;
+            }
+
+            // Remove point from chart
+            const chart = context.stageProfileChart;
+
+            chart.setActiveElements([]);
+
+            chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+
+            chart.update();            
+            
             stage.distance = calculateStageDistance(stage);    // Update stage distance
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
@@ -3642,6 +3687,21 @@
                         stageRef.sections[jRef].polyline.setLatLngs([ev.latlng, 
                             stage.points[jRef + 1].marker.getLatLng()])
                             .setStyle({ dashArray: '5, 10' });
+
+                    // Remove marker from map
+                    if (context.stageProfileMapMarker) {
+                        context.stageProfileMapMarker.remove();
+                        context.stageProfileMapMarker = null;
+                    }
+
+                    // Remove point from chart
+                    const chart = context.stageProfileChart;
+
+                    chart.setActiveElements([]);
+
+                    chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+
+                    chart.update();            
                 };
 
                 const up = async ev => {    // Event: mouse button up
@@ -3964,6 +4024,21 @@
                 }
             }
 
+            // Remove marker from map
+            if (context.stageProfileMapMarker) {
+                context.stageProfileMapMarker.remove();
+                context.stageProfileMapMarker = null;
+            }
+
+            // Remove point from chart
+            const chart = context.stageProfileChart;
+
+            chart.setActiveElements([]);
+
+            chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+
+            chart.update();            
+            
             // Update stage's distance
             stage.distance = calculateStageDistance(stage);
 
@@ -4022,6 +4097,21 @@
             if (this.before.nextSection != null)
                 stage.sections[this.pointIdx].polyline.setLatLngs(this.after.nextSection).setStyle({ dashArray: null });
 
+            // Remove marker from map
+            if (context.stageProfileMapMarker) {
+                context.stageProfileMapMarker.remove();
+                context.stageProfileMapMarker = null;
+            }
+
+            // Remove point from chart
+            const chart = context.stageProfileChart;
+
+            chart.setActiveElements([]);
+
+            chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+
+            chart.update();
+            
             // Update stage's distance
             stage.distance = calculateStageDistance(stage);
 
@@ -4078,17 +4168,20 @@
             if (this.pointIdx === 0 && stage.points.length > 1) {
                 stage.points[1].marker.setIcon(lightGreenDiamondIcon);
             } else if (this.pointIdx === stage.points.length - 1 && stage.points.length > 1) {
-                stage.points[stage.points.length - 2].marker.setIcon(lightRedSquareIcon);
+                stage.points[stage.points.length - 2].marker.setIcon(circleIconEdit);
             }
                 
             // Restore sections before and after restored point
-            if (this.before.prevSection != null)
+            if (this.before.prevSection != null) {
                 if (stage.sections.length > this.pointIdx - 1)
                     stage.sections[this.pointIdx - 1].polyline.setLatLngs(this.before.prevSection);    // Restore section to stage
                 else {
                     const newPolyline = L.polyline(this.before.prevSection).addTo(map);    // Create polyline to represent section on the map                   
                     stage.sections.push({polyline: newPolyline, evtList:[]});    // Add section to stage
+
+                    setSection4Edit(this.stageIdx, this.pointIdx - 1);    // Set new section's layout and event listeners for edit mode
                 }
+            }
 
             if (this.before.nextSection != null) {
                 const newPolyline = L.polyline(this.before.nextSection).addTo(map);    // Create polyline to represent section on the map                   
@@ -4217,6 +4310,21 @@
 
                 return;
             }
+
+            // Remove marker from map
+            if (context.stageProfileMapMarker) {
+                context.stageProfileMapMarker.remove();
+                context.stageProfileMapMarker = null;
+            }
+
+            // Remove point from chart
+            const chart = context.stageProfileChart;
+
+            chart.setActiveElements([]);
+
+            chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+
+            chart.update();
 
             // Update stage's distance
             stage.distance = calculateStageDistance(stage);

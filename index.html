@@ -433,14 +433,17 @@
         geolocControl: null,            // Control hosting the geolocation function
         stageProfileControl: null,      // Control hosting the stage profile diagram
         stageProfileChart: null,        // Stage profile diagram
+        stageProfileMapMarker: null,    // Marker added on map when hovering on a stage profile curve
+        stageProfileChartRevIdx: null,
+        stageProfileChartPoints: null,
         baseMap: null,                  // Base map style
         routerProfile: null,            // Router profile
         spannedCommand: false,          // Flag: commands spanned or not in the menu
         editedStage: null,              // Currently edited stage
-        mapMarker: null,                // Marker added on map when hovering on a stage profile curve
         initializationInProcess: true,  // Initialization in process
         operationWithButtonInProcess: false,    // Flag: operation such as save, load or set name in process
         clickTimeout: null,             // Timeout used to distinguish simple clicks from double clicks
+        mouseOutTimeout: null,
         suppressNextClick: false,       // Flag used not to take into account next click
         metricUnits: true,              // Flag used to specify whether the metric unit system or the imperial unit system must be used 
         displayInfo: true,              // Flag: info (stage distances and ascents/descents) displayed
@@ -535,8 +538,8 @@
     // Main block
     try {
         // Create map
-        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
-//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
+//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
+        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
 
         // Create specific layers for the markers, so that are always on top of the polylines
         map.createPane('markerNEPane');
@@ -1106,6 +1109,12 @@
                         context.stageProfileChart.destroy();
                         context.stageProfileChart = null;
                     }
+                    if (context.stageProfileMapMarker) {
+                        context.stageProfileMapMarker.remove();
+                        context.stageProfileMapMarker = null;
+                    }
+                    context.stageProfileChartRevIdx = null;
+                    context.stageProfileChartPoints = null;
                     context.stageProfileControl.remove();    // Remove previous stage profile control
                     context.stageProfileControl = null;
                 }
@@ -2442,6 +2451,32 @@
         }
         map.addEventListener('mouseup', map_mouseup);   // Add event listener to map
         mapEvtList.push({ target: map, type: 'mouseup', handler: map_mouseup });    //Register listener
+
+
+        // Set event listener on section for mouseout
+        function map_mousemove(e) {
+            if (!context.stageProfileControl || !context.stageProfileMapMarker) return;
+
+            // Return if mouse cursor is less than 60 pixels from the marker on the map
+            if (map.latLngToLayerPoint(context.stageProfileMapMarker.getLatLng()).distanceTo(map.latLngToLayerPoint(e.latlng)) < 60) return;
+
+            // Remove marker from map
+            if (context.stageProfileMapMarker) {
+                context.stageProfileMapMarker.remove();
+                context.stageProfileMapMarker = null;
+            }
+
+            // Remove point from chart
+            const chart = context.stageProfileChart;
+
+            chart.setActiveElements([]);
+
+            chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+
+            chart.update();
+        };
+        map.addEventListener('mousemove', map_mousemove);    // Add event listener  to map
+        mapEvtList.push({ target: map, type: 'mousemove', handler: map_mousemove });  // Register event listener    
     }
 
     //----------------------------------------------------------
@@ -2649,7 +2684,7 @@
                 title.style.fontWeight = 'bold';
                 title.style.marginBottom = '4px';
 
-                [points, indexes, yMin, yMax] = calculateStageProfile(stage);
+                [indexes, yMin, yMax] = calculateStageProfile(stage);
 
                 const canvas = L.DomUtil.create('canvas', '', wrapper);
                 canvas.id = "stageProfile";
@@ -2657,9 +2692,9 @@
                 canvas.height = 150;
 
                 canvas.addEventListener('mouseleave', () => {
-                    if (context.mapMarker) {
-                        context.mapMarker.remove();
-                        context.mapMarker = null;
+                    if (context.stageProfileMapMarker) {
+                        context.stageProfileMapMarker.remove();
+                        context.stageProfileMapMarker = null;
                     }
                 });
 
@@ -2668,7 +2703,7 @@
                     data: {
                         datasets: [{
                             label: "Altitude",
-                            data: points,
+                            data: context.stageProfileChartPoints,
                             backgroundColor:"rgba(0,0,255,1.0)",
                             borderColor: routeColors.lightBlue,
                             borderWidth: 4,
@@ -2716,24 +2751,24 @@
 
                             if (!inside) {
                                 // Cursor is outside chart → remove marker
-                                if (context.mapMarker) {
-                                    context.mapMarker.remove();
-                                    context.mapMarker = null;
+                                if (context.stageProfileMapMarker) {
+                                    context.stageProfileMapMarker.remove();
+                                    context.stageProfileMapMarker = null;
                                 }
                                 return;
                             }
 
                             if (!elements.length) {
-                                if (context.mapMarker) {
-                                    context.mapMarker.remove();   // Remove marker from Leaflet map
-                                    context.mapMarker = null;
+                                if (context.stageProfileMapMarker) {
+                                    context.stageProfileMapMarker.remove();   // Remove marker from Leaflet map
+                                    context.stageProfileMapMarker = null;
                                 }
                                 return;
                             }
 
                             const idx = elements[0].index;
 
-                            updateMapMarker(stage, indexes[idx].sectNum, indexes[idx].ptNum);       // Create/move marker on Leaflet map
+                            updateStageProfileMapMarker(stage, indexes[idx].sectNum, indexes[idx].ptNum);       // Create/move marker on Leaflet map
                         },
                         interaction: {
                             mode: 'nearest',
@@ -2800,7 +2835,7 @@
 
                             ctx.save();
                             ctx.beginPath();
-                            ctx.arc(el.x, el.y, 5, 0, 2 * Math.PI);
+                            ctx.arc(el.x, el.y, 4, 0, 2 * Math.PI);
                             ctx.fillStyle = "red";
                             ctx.fill();
                             ctx.restore();
@@ -2817,9 +2852,9 @@
             title.textContent = context.language === 'EN' ? 'Stage profile' : 'Profil de l\'étape';
             if (stage.name != null) title.textContent = title.textContent + (context.language === 'EN' ? ': ' : ' : ') + stage.name;
             
-            [points, indexes, yMin, yMax] = calculateStageProfile(stage);
+            [indexes, yMin, yMax] = calculateStageProfile(stage);
 
-            context.stageProfileChart.data.datasets[0].data = points;
+            context.stageProfileChart.data.datasets[0].data = context.stageProfileChartPoints;
             context.stageProfileChart.options.scales.y.min = Math.round(yMin);
             context.stageProfileChart.options.scales.y.max = Math.round(yMax);
             context.stageProfileChart.update();
@@ -2831,38 +2866,43 @@
         function calculateStageProfile(stage) {
             let dist = 0;
             let alt = context.metricUnits ? stage.points[0].marker.getLatLng().alt : stage.points[0].marker.getLatLng().alt/0.3048;
-            const points = [{ x: 0, y: alt }];
+            context.stageProfileChartPoints = [{ x: 0, y: alt }];
             const indexes = [ { sectNum: 0, ptNum: 0 }];
+            context.stageProfileChartRevIdx = [[0]];
             let yMin = alt;
             let yMax = alt;
+            let k = 0;
 
             stage.sections.forEach((section, i) => {
+                if (i > 0) context.stageProfileChartRevIdx.push([]);
                 const sectPoints = section.polyline.getLatLngs();
                 for (let j = 1; j < sectPoints.length; j++) {
+                    k++;
                     let delta = context.metricUnits ? haversine(sectPoints[j - 1], sectPoints[j]) : haversine(sectPoints[j - 1], sectPoints[j])/1.609344;
                     dist = dist + delta;  // Use the haversine function to add the distance between two points
                     if (sectPoints[j].alt) {    // When alt not available, the previous value is used
                         alt = context.metricUnits ? sectPoints[j].alt : sectPoints[j].alt/0.3048;
                     }
-                    points.push({ x: dist, y: alt });
+                    context.stageProfileChartPoints.push({ x: dist, y: alt });
                     indexes.push({ sectNum: i, ptNum: j });
+                    context.stageProfileChartRevIdx[i].push(k);
                     if (alt < yMin) yMin = alt;
                     if (alt > yMax) yMax = alt;
                 }
             });
 
-            return [points, indexes, yMin, yMax];
+            return [indexes, yMin, yMax];
         }
 
         //------------------------------
         // Create/update marker on map  
         //------------------------------
-        function updateMapMarker(stage, sectNum, ptNum) {
+        function updateStageProfileMapMarker(stage, sectNum, ptNum) {
             const latlng = stage.sections[sectNum].polyline.getLatLngs()[ptNum];
-            if (context.mapMarker)
-                context.mapMarker.setLatLng(latlng);
+            if (context.stageProfileMapMarker)
+                context.stageProfileMapMarker.setLatLng(latlng);
             else
-                context.mapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 4, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1 }).addTo(map);
+                context.stageProfileMapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
         }
     }
 
@@ -3097,6 +3137,56 @@
         })(stage, section);
         section.polyline.addEventListener('mousedown', section_mousedown);  // Add event listener to section
         section.evtList.push({ target: section.polyline, type: 'mousedown', handler: section_mousedown });  // Register event listener
+
+        // Set event listener on section for mousemove
+        const section_mousemove = (function(stageRef, sectionRef) {
+            return async function(e) {
+                if (!context.stageProfileControl) return;
+
+                const jRef = stageRef.sections.indexOf(sectionRef); // Retrieve point index
+                if (jRef === -1) return;
+
+                if (context.mouseOutTimeout) {
+                    clearTimeout(context.mouseOutTimeout);
+                    context.mouseOutTimeout = null;
+                }
+
+                const latlngs = sectionRef.polyline.getLatLngs();
+
+                const eLatLng = e.latlng;   // Retrieve hovered coordinates
+
+                const { index: k, point: latlng, distance: distance } = findClosestRegisteredPoint(latlngs, eLatLng);
+
+                if (context.stageProfileMapMarker)
+                    context.stageProfileMapMarker.setLatLng(latlng);
+                else
+                    context.stageProfileMapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
+
+                const idx = context.stageProfileChartRevIdx[jRef][k];
+
+                const dist = context.stageProfileChartPoints[idx].x;
+                const alt = context.stageProfileChartPoints[idx].y;
+
+                const chart = context.stageProfileChart;
+
+                chart.setActiveElements([{
+                    datasetIndex: 0,
+                    index: idx
+                }]);
+
+                chart.tooltip.setActiveElements([{
+                    datasetIndex: 0,
+                    index: idx
+                }], {
+                    x: dist,
+                    y: alt
+                });
+
+                chart.update();
+            };
+        })(stage, section);
+        section.polyline.addEventListener('mousemove', section_mousemove);    // Add event listener  to point
+        section.evtList.push({ target: section.polyline, type: 'mouse_move', handler: section_mousemove });  // Register event listener    
     }
 
     //-------------------------------------------------------------------------------------
@@ -3745,6 +3835,72 @@
         })(stage, point);
         point.marker.addEventListener('mousedown', point_mousedown);    // Add event listener to point
         stage.points[j].evtList.push({ target: point.marker, type: 'mousedown', handler: point_mousedown });    // Register event listener
+
+        // Set event listener on point for mouseover
+        const point_mouseover = (function(stageRef, pointRef) {
+            return async function(e) {
+                if (!context.stageProfileControl) return;
+
+                const jRef = stageRef.points.indexOf(pointRef); // Retrieve point index
+                if (jRef === -1) return;
+
+                const latlng = pointRef.marker.getLatLng();
+
+                if (context.stageProfileMapMarker)
+                    context.stageProfileMapMarker.setLatLng(latlng);
+                else
+                    context.stageProfileMapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
+
+                let idx = null;
+                if (jRef === 0) {
+                    idx = context.stageProfileChartRevIdx[0][0];
+                } else {
+                    idx = context.stageProfileChartRevIdx[jRef - 1][context.stageProfileChartRevIdx[jRef - 1].length - 1];
+                }
+
+                const dist = context.stageProfileChartPoints[idx].x;
+                const alt = context.stageProfileChartPoints[idx].y;
+
+                const chart = context.stageProfileChart;
+
+                chart.setActiveElements([{
+                    datasetIndex: 0,
+                    index: idx
+                }]);
+
+                chart.tooltip.setActiveElements([{
+                    datasetIndex: 0,
+                    index: idx
+                }], {
+                    x: dist,
+                    y: alt
+                });
+
+                chart.update();
+            };
+        })(stage, point);
+        point.marker.addEventListener('mouseover', point_mouseover);    // Add event listener  to point
+        point.evtList.push({ target: point.marker, type: 'mouse_over', handler: point_mouseover });  // Register event listener    
+
+        // Set event listener on point for mouseout
+        const point_mouseout = (function(stageRef, pointRef) {
+            return async function(e) {
+                if (context.stageProfileMapMarker) {
+                    context.stageProfileMapMarker.remove();
+                    context.stageProfileMapMarker = null;
+                }
+
+                const chart = context.stageProfileChart;
+
+                chart.setActiveElements([]);
+
+                chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+
+                chart.update();
+            };
+        })(stage, point);
+        point.marker.addEventListener('mouseout', point_mouseout);    // Add event listener  to point
+        point.evtList.push({ target: point.marker, type: 'mouse_out', handler: point_mouseout });  // Register event listener    
     }
 
     //------------------------------------------------------------------
@@ -6996,6 +7152,25 @@
         }
     }
 
+    //-------------------------------------------------------------
+    // Find closest closest registered point from hovered position
+    //-------------------------------------------------------------
+    function findClosestRegisteredPoint(latlngs, latlng) {
+        let minDistance = Infinity;
+        let closestIdx = -1;
+
+        // Find closest section segment
+        for (let i = 0; i < latlngs.length - 1; i++) {           
+            const distance = haversine(latlngs[i], latlng);     // Distance from point to segment
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestIdx = i;
+            }
+        }
+
+        return { index: closestIdx, point: latlngs[closestIdx], distance: minDistance };      // Index of the closest registered point
+    }
+
     //-----------------------------------------------------------------
     // Find medium position on a stage to display information about it
     //-----------------------------------------------------------------
@@ -7216,6 +7391,12 @@
                         context.stageProfileChart.destroy();
                         context.stageProfileChart = null;
                     }
+                    if (context.stageProfileMapMarker) {
+                        context.stageProfileMapMarker.remove();
+                        context.stageProfileMapMarker = null;
+                    }
+                    context.stageProfileChartRevIdx = null;
+                    context.stageProfileChartPoints = null;
                     context.stageProfileControl.remove();    // Remove previous stage profile control
                     context.stageProfileControl = null;
                 }

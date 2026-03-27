@@ -4311,20 +4311,35 @@
                 return;
             }
 
-            // Remove marker from map
-            if (context.stageProfileMapMarker) {
-                context.stageProfileMapMarker.remove();
-                context.stageProfileMapMarker = null;
+            if (context.stageProfileControl && stage.points.length < 2 ) {
+                if (context.stageProfileChart) {
+                    context.stageProfileChart.destroy();
+                    context.stageProfileChart = null;
+                }
+                if (context.stageProfileMapMarker) {
+                    context.stageProfileMapMarker.remove();
+                    context.stageProfileMapMarker = null;
+                }
+                context.stageProfileChartRevIdx = null;
+                context.stageProfileChartPoints = null;
+                context.stageProfileControl.remove();    // Remove previous stage profile control
+                context.stageProfileControl = null;
+            } else if (context.stageProfileControl) {
+                // Remove marker from map
+                if (context.stageProfileMapMarker) {
+                    context.stageProfileMapMarker.remove();
+                    context.stageProfileMapMarker = null;
+                }
+
+                // Remove point from chart
+                const chart = context.stageProfileChart;
+
+                chart.setActiveElements([]);
+
+                chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+
+                chart.update();
             }
-
-            // Remove point from chart
-            const chart = context.stageProfileChart;
-
-            chart.setActiveElements([]);
-
-            chart.tooltip.setActiveElements([], { x: 0, y: 0 });
-
-            chart.update();
 
             // Update stage's distance
             stage.distance = calculateStageDistance(stage);
@@ -5626,7 +5641,37 @@
                 stage.sections[0].polyline.remove();
                 stage.sections.shift();
             }
-            
+
+            if (context.stageProfileControl && stage.points.length < 2 ) {
+                if (context.stageProfileChart) {
+                    context.stageProfileChart.destroy();
+                    context.stageProfileChart = null;
+                }
+                if (context.stageProfileMapMarker) {
+                    context.stageProfileMapMarker.remove();
+                    context.stageProfileMapMarker = null;
+                }
+                context.stageProfileChartRevIdx = null;
+                context.stageProfileChartPoints = null;
+                context.stageProfileControl.remove();    // Remove previous stage profile control
+                context.stageProfileControl = null;
+            } else if (context.stageProfileControl) {
+                // Remove marker from map
+                if (context.stageProfileMapMarker) {
+                    context.stageProfileMapMarker.remove();
+                    context.stageProfileMapMarker = null;
+                }
+
+                // Remove point from chart
+                const chart = context.stageProfileChart;
+
+                chart.setActiveElements([]);
+
+                chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+
+                chart.update();
+            }
+      
             if (this.before.section != null) {
                 // Update following point layout
                 if (stage.points.length > 1)
@@ -5769,6 +5814,36 @@
                 stage.sections.pop();
             }
             
+            if (context.stageProfileControl && stage.points.length < 2 ) {
+                if (context.stageProfileChart) {
+                    context.stageProfileChart.destroy();
+                    context.stageProfileChart = null;
+                }
+                if (context.stageProfileMapMarker) {
+                    context.stageProfileMapMarker.remove();
+                    context.stageProfileMapMarker = null;
+                }
+                context.stageProfileChartRevIdx = null;
+                context.stageProfileChartPoints = null;
+                context.stageProfileControl.remove();    // Remove previous stage profile control
+                context.stageProfileControl = null;
+            } else if (context.stageProfileControl) {
+                // Remove marker from map
+                if (context.stageProfileMapMarker) {
+                    context.stageProfileMapMarker.remove();
+                    context.stageProfileMapMarker = null;
+                }
+
+                // Remove point from chart
+                const chart = context.stageProfileChart;
+
+                chart.setActiveElements([]);
+
+                chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+
+                chart.update();
+            }
+      
             if (this.before.section != null) {
                 // Update preceding point layout
                 if (stage.points.length > 1)
@@ -5788,6 +5863,21 @@
                     stage.infoPop.remove();
 
                 this.stageRemoved = true;
+
+                if (context.stageProfileControl) {
+                    if (context.stageProfileChart) {
+                        context.stageProfileChart.destroy();
+                        context.stageProfileChart = null;
+                    }
+                    if (context.stageProfileMapMarker) {
+                        context.stageProfileMapMarker.remove();
+                        context.stageProfileMapMarker = null;
+                    }
+                    context.stageProfileChartRevIdx = null;
+                    context.stageProfileChartPoints = null;
+                    context.stageProfileControl.remove();    // Remove previous stage profile control
+                    context.stageProfileControl = null;
+                }
 
                 stages.splice(this.stageIdx, 1);    // Delete stage
 
@@ -5896,6 +5986,21 @@
 
             if (stage.infoPop)
                 stage.infoPop.remove();
+
+            if (context.stageProfileControl) {
+                if (context.stageProfileChart) {
+                    context.stageProfileChart.destroy();
+                    context.stageProfileChart = null;
+                }
+                if (context.stageProfileMapMarker) {
+                    context.stageProfileMapMarker.remove();
+                    context.stageProfileMapMarker = null;
+                }
+                context.stageProfileChartRevIdx = null;
+                context.stageProfileChartPoints = null;
+                context.stageProfileControl.remove();    // Remove previous stage profile control
+                context.stageProfileControl = null;
+            }
 
             stages.splice(this.stageIdx, 1);    // Delete stage
 

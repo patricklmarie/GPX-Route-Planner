@@ -2450,13 +2450,46 @@
 
         // Set event listener on section for mouseout
         function map_mousemove(e) {
-            if (!context.stageProfileControl || !context.stageProfileMapMarker) return;
+            const { sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDist(stages[i], e.latlng);
 
-            // Return if mouse cursor is less than 60 pixels from the marker on the map
-            if (map.latLngToLayerPoint(context.stageProfileMapMarker.getLatLng()).distanceTo(map.latLngToLayerPoint(e.latlng)) < 60) return;
+            if (distance <= 40) {
+                const latlng = stages[i].sections[sectIdx].polyline.getLatLngs()[ptIdx];
 
-            removeMapNChartMarkers();
-        };
+                if (context.stageProfileMapMarker)
+                    context.stageProfileMapMarker.setLatLng(latlng);
+                else
+                    context.stageProfileMapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
+
+                if (!context.stageProfileChartRevIdx[sectIdx] || !context.stageProfileChartRevIdx[sectIdx][ptIdx]) return;
+
+                const idx = context.stageProfileChartRevIdx[sectIdx][ptIdx];
+
+                const dist = context.stageProfileChartPoints[idx].x;
+                const alt = context.stageProfileChartPoints[idx].y;
+
+                const chart = context.stageProfileChart;
+
+                chart.setActiveElements([{
+                    datasetIndex: 0,
+                    index: idx
+                }]);
+
+                chart.tooltip.setActiveElements([{
+                    datasetIndex: 0,
+                    index: idx
+                }], {
+                    x: dist,
+                    y: alt
+                });
+
+                chart.update();
+            } else {
+                if (!context.stageProfileControl || !context.stageProfileMapMarker) 
+                    return;
+                else 
+                    removeMapNChartMarkers();
+            }
+        }
         map.addEventListener('mousemove', map_mousemove);    // Add event listener  to map
         mapEvtList.push({ target: map, type: 'mousemove', handler: map_mousemove });  // Register event listener    
     }
@@ -3129,51 +3162,6 @@
         })(stage, section);
         section.polyline.addEventListener('mousedown', section_mousedown);  // Add event listener to section
         section.evtList.push({ target: section.polyline, type: 'mousedown', handler: section_mousedown });  // Register event listener
-
-        // Set event listener on section for mousemove
-        const section_mousemove = (function(stageRef, sectionRef) {
-            return async function(e) {
-                if (!context.stageProfileControl) return;
-
-                const jRef = stageRef.sections.indexOf(sectionRef); // Retrieve point index
-                if (jRef === -1) return;
-
-                const latlngs = sectionRef.polyline.getLatLngs();
-
-                const eLatLng = e.latlng;   // Retrieve hovered coordinates
-
-                const { index: k, point: latlng, distance: distance } = findClosestRegisteredPoint(latlngs, eLatLng);
-
-                if (context.stageProfileMapMarker)
-                    context.stageProfileMapMarker.setLatLng(latlng);
-                else
-                    context.stageProfileMapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
-
-                const idx = context.stageProfileChartRevIdx[jRef][k];
-
-                const dist = context.stageProfileChartPoints[idx].x;
-                const alt = context.stageProfileChartPoints[idx].y;
-
-                const chart = context.stageProfileChart;
-
-                chart.setActiveElements([{
-                    datasetIndex: 0,
-                    index: idx
-                }]);
-
-                chart.tooltip.setActiveElements([{
-                    datasetIndex: 0,
-                    index: idx
-                }], {
-                    x: dist,
-                    y: alt
-                });
-
-                chart.update();
-            };
-        })(stage, section);
-        section.polyline.addEventListener('mousemove', section_mousemove);    // Add event listener  to point
-        section.evtList.push({ target: section.polyline, type: 'mouse_move', handler: section_mousemove });  // Register event listener    
     }
 
     //-------------------------------------------------------------------------------------
@@ -7217,6 +7205,32 @@
         }
 
         return { index: closestIdx, point: latlngs[closestIdx], distance: minDistance };      // Index of the closest registered point
+    }
+
+    //--------------------------------------------------------------------------
+    // Find stage closest section, point and distance (from hovered position)
+    //--------------------------------------------------------------------------
+    function findClosestSectPointDist(stage, latlng) {
+        let closestSectIdx = -1;
+        let closestPtIdx = -1;
+        let minDistance = Infinity;
+        const latlngPix = map.latLngToLayerPoint(latlng);
+
+        // Find closest stage, point and distance
+        for (let i = 0; i < stage.sections.length; i++) {
+            const latlngs = stage.sections[i].polyline.getLatLngs();
+            for (let j = 0; j < latlngs.length - 1; j++) {
+                const latlng2Pix = map.latLngToLayerPoint(latlngs[j]);
+                const dist = latlngPix.distanceTo(latlng2Pix);     // Distance from hovered point to stage point
+                if (dist < minDistance) {
+                    closestSectIdx = i;
+                    closestPtIdx = j;
+                    minDistance = dist;
+                }
+            }
+        }
+
+        return { sectionIdx: closestSectIdx, pointIdx: closestPtIdx, distance: minDistance };      // Index of the closest registered point
     }
 
     //-----------------------------------------------------------------

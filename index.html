@@ -3138,11 +3138,6 @@
                 const jRef = stageRef.sections.indexOf(sectionRef); // Retrieve point index
                 if (jRef === -1) return;
 
-                if (context.mouseOutTimeout) {
-                    clearTimeout(context.mouseOutTimeout);
-                    context.mouseOutTimeout = null;
-                }
-
                 const latlngs = sectionRef.polyline.getLatLngs();
 
                 const eLatLng = e.latlng;   // Retrieve hovered coordinates

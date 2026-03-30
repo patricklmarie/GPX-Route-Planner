@@ -538,8 +538,8 @@
     // Main block
     try {
         // Create map
-        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
-//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
+//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
+        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
 
         // Create specific layers for the markers, so that are always on top of the polylines
         map.createPane('markerNEPane');
@@ -2454,6 +2454,8 @@
 
         // Set event listener on section for mouseout
         function map_mousemove(e) {
+            if (!context.displayInfo) return;
+
             const { sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDist(stages[i], e.latlng);
 
             if (distance <= 30) {
@@ -2464,29 +2466,29 @@
                 else
                     context.stageProfileMapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
 
-                if (!context.stageProfileChartRevIdx[sectIdx] || !context.stageProfileChartRevIdx[sectIdx][ptIdx]) return;
+                if (context.stageProfileChartRevIdx && context.stageProfileChartRevIdx[sectIdx] && context.stageProfileChartRevIdx[sectIdx][ptIdx]) {
+                    const idx = context.stageProfileChartRevIdx[sectIdx][ptIdx];
 
-                const idx = context.stageProfileChartRevIdx[sectIdx][ptIdx];
+                    const dist = context.stageProfileChartPoints[idx].x;
+                    const alt = context.stageProfileChartPoints[idx].y;
 
-                const dist = context.stageProfileChartPoints[idx].x;
-                const alt = context.stageProfileChartPoints[idx].y;
+                    const chart = context.stageProfileChart;
 
-                const chart = context.stageProfileChart;
+                    chart.setActiveElements([{
+                        datasetIndex: 0,
+                        index: idx
+                    }]);
 
-                chart.setActiveElements([{
-                    datasetIndex: 0,
-                    index: idx
-                }]);
+                    chart.tooltip.setActiveElements([{
+                        datasetIndex: 0,
+                        index: idx
+                    }], {
+                        x: dist,
+                        y: alt
+                    });
 
-                chart.tooltip.setActiveElements([{
-                    datasetIndex: 0,
-                    index: idx
-                }], {
-                    x: dist,
-                    y: alt
-                });
-
-                chart.update();
+                    chart.update();
+                }
             } else {
                 if (!context.stageProfileControl || !context.stageProfileMapMarker) 
                     return;

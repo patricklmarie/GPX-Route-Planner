@@ -2132,6 +2132,7 @@
             context.stageProfileChart.data.datasets[0].data = context.stageProfileChartPoints;
             context.stageProfileChart.options.scales.y.min = Math.round(yMin);
             context.stageProfileChart.options.scales.y.max = Math.round(yMax);
+            context.stageProfileChart.options.scales.x.title.text = context.metricUnits ? "km" : "mi";
             context.stageProfileChart.update();
         }
 

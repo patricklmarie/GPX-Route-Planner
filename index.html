@@ -540,8 +540,8 @@
     //*************
     try {
         // Create map
-        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
-//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
+//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
+        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
 
         // Create specific layers for the markers, so that are always on top of the polylines
         map.createPane('markerNEPane');
@@ -7050,22 +7050,23 @@
             // If sample is not complete, add another point if available
             while (sample.length < (2 * SMOOTH_WINDOW) + 1) {
                 j++;
-                if (j < stage.sections[i].polyline.getLatLngs().length || (j === stage.sections[i].polyline.getLatLngs().length && i < stage.sections.length - 1)) { // End of stage points not reached
-                    if (j === stage.sections[i].polyline.getLatLngs().length && i < stage.sections.length - 1) {     // End of section reached, go to next one
+                const latlngs = stage.sections[i].polyline.getLatLngs();
+                if (j < latlngs.length || (j === latlngs.length && i < stage.sections.length - 1)) { // End of stage points not reached
+                    if (j === latlngs.length && i < stage.sections.length - 1) {     // End of section reached, go to next one
                         i++;
                         j = 0;
                         continue;     // Skip first point of section ignored because the same as last point of previous section
                     }
 
                     // Add point to sample
-                    sample.push(stage.sections[i].polyline.getLatLngs()[j].alt);
+                    sample.push(latlngs[j].alt);
                     sampTotal = sampTotal + sample[sample.length - 1];
                     sampNotNullNb++;
                     // Add ghost points when section has 2 points only of when last stage point reached
-                    if ((j === 0 && stage.sections[i].polyline.getLatLngs().length === 2) || (j === stage.sections[i].polyline.getLatLngs().length - 1 && i < stage.sections.length - 1 && stage.sections[i + 1].polyline.getLatLngs().length === 2)) {
+                    if ((j === 0 && latlngs.length === 2) || (j === latlngs.length - 1 && i < stage.sections.length - 1 && stage.sections[i + 1].polyline.getLatLngs().length === 2)) {
                         for (let k = 0; k < 2 * SMOOTH_WINDOW; k++)      // Add ghost points at the right of the current point
                             sample.push(null); 
-                    } else if (j === stage.sections[i].polyline.getLatLngs().length - 1 && i === stage.sections.length - 1) {
+                    } else if (j === latlngs.length - 1 && i === stage.sections.length - 1) {
                         for (let k = 0; k < SMOOTH_WINDOW; k++)     // Add ghost points at the right of the sample
                             sample.push(null);
                     } 

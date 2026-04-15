@@ -7,7 +7,7 @@
 <p>The application is written in JavaScript, contained in a single HTML file (GPX_Route_Planner.html), and can be run simply by opening this file in a web browser.</p>
 <p>This application is entirely based on open-source technologies part of the <strong>OpenStreetMap</strong> ecosystem: <strong>Leaflet</strong> to render the map and the route, <strong>Nominatim</strong> to locate places from their addresses, <strong>BRouter</strong> to calculate routes between locations, <strong>Open-Meteo Elevation API</strong> to search for elevations. 
 The browser’s <strong>Geolocation API</strong> is used to determine the user’s position.</p>
-<h2>Route structure</h2>
+<h2>Route structure and functionalities</h2>
 <p>In this tool, <strong>a route</strong> consists of:</p>
 <ul>
 <li><strong>One or more stages</strong>. A stage represents a journey planned to be completed in one go or in a single day. It consists of:
@@ -16,6 +16,7 @@ The browser’s <strong>Geolocation API</strong> is used to determine the user�
 <li><strong>One or more sections</strong>. A section is a path (curved or straight) connecting two points of a stage. Sections are rendered on the map using Leaflet <strong>polylines</strong>. Their position and shape are calculated using <strong>BRouter</strong> or by drawing a straight segment, depending on the selected option.</li>
 </ul>
 </ul>
+<p>The tool provides functions to create, modify, and delete stages, as well as their points and sections. The stages can also be named, reversed, split and merged. The resulting routes can be exported as GPX files to be used with GPS devices or mobile navigation apps. It is also possible to import GPX files into the application.</p>
 <h2>Event-driven design</h2>
 <p>The tool provides functions to create, modify, and delete stages, as well as their points and sections.</p>
 <p>A key feature of this application is its extensive use of Leaflet <strong>event handlers</strong> attached to various objects: the map, circle markers, and polylines. Depending on the context (stage editing mode or supervision mode), the required event handlers differ, and most of them cannot be assigned once and for all. Instead, they must be <strong>registered</strong>, in order to be dynamically <strong>retrieved</strong>, <strong>removed</strong>, and <strong>replaced</strong> by others as the context changes.</p>

@@ -3034,6 +3034,12 @@
                             }
                             calculatedPoints = simplifyPolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
                             latlng = calculatedPoints[calculatedPoints.length - 1];     // Adjust new point's position using BRouter response
+
+                            // Check whether altitude was found for new point and find it if necessary
+                            if (!latlng.alt || latlng.alt == null) {
+                                latlng = await fetchOpenMeteoElevation(latlng);
+                                calculatedPoints[calculatedPoints.length - 1] = latlng;
+                            }
                             
                             // Prepare to adjust previous point's and previous section's positions using BRouter response
                             latlngPrev0 = stageRef.points[stageRef.points.length - 1].marker.getLatLng();
@@ -3047,11 +3053,17 @@
                                 return;
                             }
                             latlng = calculatedPoints[0];       // Adjust position to be assigned to new point
+
+                            // Check whether altitude was found for new point and find it if necessary
+                            if (!latlng.alt || latlng.alt == null) {
+                                latlng = await fetchOpenMeteoElevation(latlng);
+                                calculatedPoints[0] = latlng;
+                            }
                         }
                     } else {    // Do not use BRouter
                         if (stageRef.points.length > 0) {       // Not first point of stage
                             latlng = await fetchOpenMeteoElevation(latlng);
-                            calculatedPoints = [stageRef.points[stageRef.points.length - 1].marker.getLatLng(), latlng];     // Two points array  to be used to create polyline
+                            calculatedPoints = [stageRef.points[stageRef.points.length - 1].marker.getLatLng(), latlng];     // Two points array to be used to create polyline
                         } else          // First point
                             latlng = await fetchOpenMeteoElevation(latlng);
                     }
@@ -4020,7 +4032,12 @@
                             // Find the section's point closest to the dragged point
                             const closestSegAndPt = findClosestSectionAndPoint(calculatedPoints, latlng);
                             const idx = closestSegAndPt.index;
-                            const closestPt = closestSegAndPt.point;
+                            let closestPt = closestSegAndPt.point;
+                            
+                            // Check whether altitude was found for new point and find it if necessary
+                            if (!closestPt.alt || closestPt.alt == null)
+                                closestPt = await fetchOpenMeteoElevation(closestPt);
+
                             // Prepare set of points to build section before the dragged point
                             calculatedPoints1 = calculatedPoints.slice(0, idx + 1);
                             calculatedPoints1.push(closestPt);
@@ -4031,7 +4048,9 @@
                             latlng = closestPt;     // Replace the coordinates of the dragged point with those of the closest point
         
                             // Adjust previous point's and previous section's positions
-                            const latlng0 = calculatedPoints1[0];
+                            let latlng0 = calculatedPoints1[0];
+                            if (!latlng0.alt || latlng0.alt == null)    // Find alt if missing
+                                latlng0 = await fetchOpenMeteoElevation(latlng0);
                             stageRef.points[jRef - 1].marker.setLatLng(latlng0);
                             if (stageRef.sections[jRef - 2]) {
                                 let latlngs = stageRef.sections[jRef - 2].polyline.getLatLngs()
@@ -4040,7 +4059,9 @@
                                 stageRef.sections[jRef - 2].polyline.setLatLngs(latlngs);
                             }
                             // Adjust next point's and next section's positions
-                            const latlngx = calculatedPoints2[calculatedPoints2.length - 1];
+                            let latlngx = calculatedPoints2[calculatedPoints2.length - 1];
+                            if (!latlngx.alt || latlngx.alt == null)    // Find alt if missing
+                                latlngx = await fetchOpenMeteoElevation(latlngx);
                             stageRef.points[jRef + 1].marker.setLatLng(latlngx);
                             if (stageRef.sections[jRef + 1]) {
                                 let latlngs = stageRef.sections[jRef + 1].polyline.getLatLngs()
@@ -4076,9 +4097,13 @@
                             }
                             calculatedPoints = simplifyPolyGeom(calculatedPoints);   // Simplify the sections geometry by getting rid of part of the points
                             latlng = calculatedPoints[0];
+                            if (!latlng.alt || latlng.alt == null)    // Find alt if missing
+                                latlng = await fetchOpenMeteoElevation(latlng);
 
                             // Adjust next point's and next section's positions
-                            const latlngx = calculatedPoints[calculatedPoints.length - 1];
+                            let latlngx = calculatedPoints[calculatedPoints.length - 1];
+                            if (!latlngx.alt || latlngx.alt == null)    // Find alt if missing
+                                latlngx = await fetchOpenMeteoElevation(latlngx);
                             stageRef.points[1].marker.setLatLng(latlngx);
                             if (stageRef.sections[1]) {
                                 let latlngs = stageRef.sections[1].polyline.getLatLngs()
@@ -4114,9 +4139,13 @@
                             }
                             calculatedPoints = simplifyPolyGeom(calculatedPoints);   // Simplify the sections geometry by getting rid of part of the points
                             latlng = calculatedPoints[calculatedPoints.length - 1];
+                            if (!latlng.alt || latlng.alt == null)    // Find alt if missing
+                                latlng = await fetchOpenMeteoElevation(latlng);
 
                             // Adjust previous point's and previous section's positions
-                            const latlng0 = calculatedPoints[0];
+                            let latlng0 = calculatedPoints[0];
+                            if (!latlng0.alt || latlng0.alt == null)    // Find alt if missing
+                                latlng0 = await fetchOpenMeteoElevation(latlng0);
                             stageRef.points[jRef - 1].marker.setLatLng(latlng0);
                             if (stageRef.sections[jRef - 2]) {
                                 let latlngs = stageRef.sections[jRef - 2].polyline.getLatLngs()
@@ -4418,7 +4447,10 @@
                         // Find closest point (from the cursor's position) in the route returned by BRouter
                         const closestSegAndPt = findClosestSectionAndPoint(calculatedPoints, latlng);
                         const idx = closestSegAndPt.index;
-                        const closestPt = closestSegAndPt.point;
+                        let closestPt = closestSegAndPt.point;
+                        if (!closestPt.alt || closestPt.alt == null)    // Find alt if missing
+                            closestPt = await fetchOpenMeteoElevation(closestPt);
+
                         // Prepare set of points before the cursor's position (and finishing with it)
                         calculatedPoints1 = calculatedPoints.slice(0, idx + 1);
                         calculatedPoints1.push(closestPt);
@@ -4428,8 +4460,12 @@
                         calculatedPoints2 = simplifyPolyGeom(calculatedPoints2);    // Get rid of part of the points (not to handle too many data)
                         latlng = closestPt;
                         prevPoint = calculatedPoints1[0];
+                        if (!prevPoint.alt || prevPoint.alt == null)    // Find alt if missing
+                            prevPoint = await fetchOpenMeteoElevation(prevPoint);
                         nextPoint = calculatedPoints2[calculatedPoints2.length - 1];
-                    } else {    // When BRouter no used, prepare set of points
+                        if (!nextPoint.alt || nextPoint.alt == null)    // Find alt if missing
+                            nextPoint = await fetchOpenMeteoElevation(nextPoint);
+                    } else {    // When BRouter not used, prepare set of points
                         latlng = await fetchOpenMeteoElevation(latlng);
                         calculatedPoints1 = [stageRef.points[jRef].marker.getLatLng(), latlng];
                         calculatedPoints2 = [latlng, stageRef.points[jRef + 1].marker.getLatLng()];
@@ -7024,7 +7060,7 @@
     // Calculate stage's ascent and descent with smoothing the elevations returned by BRouter
     //----------------------------------------------------------------------------------------
     function calculateAscentAndDescent(stage) {
-        const SMOOTH_WINDOW = 4;    // A sample of n preceding and n following points surrounding the current point will be used to smooth the calculated ascent and descent
+        const SMOOTH_WINDOW = 2;    // A sample of n preceding and n following points surrounding the current point will be used to smooth the calculated ascent and descent
 
         let ascent = null;     // Calculated ascent
         let descent = null;    // Calculated descent
@@ -7032,7 +7068,7 @@
         let sample = [];    // Array of the altitudes of the points surrounding the current point
         let sampTotal = 0;   // Total of the altitudes of the points in "sample" array
         let sampNotNullNb = 0;      // Nb of not null altitudes in "sample" array
-        let prevSmoothAlt = null;     // Smoothed altitude of the preceding point
+        let prevSmoothAlt = stage.sections[0].polyline.getLatLngs()[0].alt;     // Smoothed altitude of the preceding point, initialized to the alt of the first point
 
         for (let k = 0; k < SMOOTH_WINDOW + 1; k++)     // Add ghost points at the left of the sample
             sample.push(null);
@@ -7078,10 +7114,11 @@
                 break;
             
             let smoothAlt = null;
+            let diff = null;
             if (sampNotNullNb > 0 )
                 smoothAlt = sampTotal / sampNotNullNb;      // Calculate smoothed altitude for the point as the average altitude of the sample
             if (smoothAlt != null && prevSmoothAlt != null) {
-                const diff = smoothAlt - prevSmoothAlt;     // Calculate smoothed altitude difference with the previous point
+                diff = smoothAlt - prevSmoothAlt;     // Calculate smoothed altitude difference with the previous point
                 // Initialize ascent and descent if needed
                 if (ascent === null)
                     ascent = 0;
@@ -7104,14 +7141,39 @@
             }
             console.log("sampTotal = " + sampTotal);
             console.log("sampNotNullNb = " + sampNotNullNb);
+            console.log("smoothAlt: " + smoothAlt);
+            console.log("diff: " + diff);
             console.log("ascent: " + ascent);
             console.log("descent: " + descent);
             console.log("____________________________________________________________________________________________________________________________________________________");
 */       
         }
 
-//        console.log("*****************************************************************************************************************************************************");
-
+        let diff = null;
+        let stageSectionsLength = stage.sections.length;
+        let polylineLength = stage.sections[stageSectionsLength - 1].polyline.getLatLngs().length;
+        let smoothAlt = stage.sections[stageSectionsLength - 1].polyline.getLatLngs()[polylineLength - 1].alt;
+        if (smoothAlt == null)
+            smoothAlt = prevSmoothAlt;
+        if (smoothAlt != null && prevSmoothAlt != null) {
+            diff = smoothAlt - prevSmoothAlt;     // Calculate smoothed altitude difference with the previous point
+            // Initialize ascent and descent if needed
+            if (ascent === null)
+                ascent = 0;
+            if (descent === null)
+                descent = 0;
+            // Update ascent and descent
+            if (diff > 0)
+                ascent = ascent + diff;
+            else
+                descent = descent + diff;
+         }
+/*        console.log("smoothAlt: " + smoothAlt);
+        console.log("diff: " + diff);
+        console.log("ascent: " + ascent);
+        console.log("descent: " + descent);
+        console.log("*****************************************************************************************************************************************************");
+*/
         return [ascent, descent];
     }
 

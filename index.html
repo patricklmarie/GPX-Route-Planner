@@ -447,7 +447,8 @@
         suppressNextClick: false,       // Flag used not to take into account next click
         metricUnits: true,              // Flag used to specify whether the metric unit system or the imperial unit system must be used 
         displayInfo: true,              // Flag: info (stage distances and ascents/descents) displayed
-        language: 'EN'                  // Language to be used for the UI (English or French)
+        language: 'EN',                 // Language to be used for the UI (English or French)
+        stageProfileIndexes: null       // Used to build stage profile chart
     };
 
     // OpenStreetMap tile layer
@@ -1959,7 +1960,9 @@
                 title.style.fontWeight = 'bold';
                 title.style.marginBottom = '4px';
 
-                [indexes, yMin, yMax] = calculateStageProfile(stage);
+                let yMin = null;
+                let yMax = null;
+                [context.stageProfileIndexes, yMin, yMax] = calculateStageProfile(stage);
 
                 const canvas = L.DomUtil.create('canvas', '', wrapper);
                 canvas.id = "stageProfile";
@@ -1999,18 +2002,23 @@
                                 title: {
                                     display: true,
                                     text: context.metricUnits ? "km" : "mi"
-                                }
+                                },
+                                min: 0
                             },
                             y: {
                                 title: {
                                     display: false
                                 },
-                                min: Math.max(Math.round((yMin - (yMax - yMin) * 0.08)/10)*10, 0),
-                                max: Math.round((yMax + (yMax - yMin) * 0.08)/10)*10,
+                                min: Math.max(Math.round((yMin - (yMax - yMin) * 0.08)/5)*5, 0),
+                                max: Math.round((yMax + (yMax - yMin) * 0.08)/5)*5,
                                 afterFit: function(scale) {
                                     scale.width = 60;
+                                },
+                                ticks: {
+                                    precision: 0,   // Prevent unneeded roundings
+                                    stepSize: (yMax - yMin) < 5 ? 1 : undefined
                                 }
-                            },
+                            }
                         },
                         onHover: (event, elements, chart) => {
                             const {chartArea} = chart;
@@ -2042,8 +2050,7 @@
                             }
 
                             const idx = elements[0].index;
-
-                            updateStageProfileMapMarker(stage, indexes[idx].sectNum, indexes[idx].ptNum);       // Create/move marker on Leaflet map
+                            updateStageProfileMapMarker(stage, context.stageProfileIndexes[idx].sectNum, context.stageProfileIndexes[idx].ptNum);       // Create/move marker on Leaflet map
                         },
                         interaction: {
                             mode: 'nearest',
@@ -2127,7 +2134,9 @@
             title.textContent = context.language === 'EN' ? 'Stage profile' : 'Profil de l\'étape';
             if (stage.name != null) title.textContent = title.textContent + (context.language === 'EN' ? ': ' : ' : ') + stage.name;
             
-            [indexes, yMin, yMax] = calculateStageProfile(stage);
+            let yMin = null;
+            let yMax = null;
+            [context.stageProfileIndexes, yMin, yMax] = calculateStageProfile(stage);
 
             context.stageProfileChart.data.datasets[0].data = context.stageProfileChartPoints;
             context.stageProfileChart.options.scales.y.min = Math.max(Math.round((yMin - (yMax - yMin) * 0.08)/10)*10, 0);
@@ -2805,7 +2814,7 @@
     function quitEditStage(removeChart) {
         if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
 
-        if (context.editedStage != null && stages[context.editedStage].points.length === 0)
+        if (context.editedStage != null && stages[context.editedStage] && stages[context.editedStage].points && stages[context.editedStage].points.length === 0)
             stages.splice(context.editedStage, 1);  // Remove empty stage
 
         setEnv4NonEdt(removeChart);
@@ -3137,49 +3146,54 @@
 
 
         // Set event listener on section for mouseout
-        function map_mousemove(e) {
-            if (!context.displayInfo) return;
+        const map_mousemove = (function() {
+            return function(e) {
+                if (!context.displayInfo || context.editedStage === null) return;
 
-            const { sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDist(stages[i], e.latlng);
+                const stageRef = stages[context.editedStage];
+                const iRef = context.editedStage;
 
-            if (distance <= 30) {
-                const latlng = stages[i].sections[sectIdx].polyline.getLatLngs()[ptIdx];
+                const { sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDist(stageRef, e.latlng);
 
-                if (context.stageProfileMapMarker)
-                    context.stageProfileMapMarker.setLatLng(latlng);
-                else
-                    context.stageProfileMapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
+                if (distance <= 30) {
+                    const latlng = stageRef.sections[sectIdx].polyline.getLatLngs()[ptIdx];
 
-                if (context.stageProfileChartRevIdx && context.stageProfileChartRevIdx[sectIdx] && context.stageProfileChartRevIdx[sectIdx][ptIdx]) {
-                    const idx = context.stageProfileChartRevIdx[sectIdx][ptIdx];
+                    if (context.stageProfileMapMarker)
+                        context.stageProfileMapMarker.setLatLng(latlng);
+                    else
+                        context.stageProfileMapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
 
-                    const dist = context.stageProfileChartPoints[idx].x;
-                    const alt = context.stageProfileChartPoints[idx].y;
+                    if (context.stageProfileChartRevIdx && context.stageProfileChartRevIdx[sectIdx] && context.stageProfileChartRevIdx[sectIdx][ptIdx]) {
+                        const idx = context.stageProfileChartRevIdx[sectIdx][ptIdx];
 
-                    const chart = context.stageProfileChart;
+                        const dist = context.stageProfileChartPoints[idx].x;
+                        const alt = context.stageProfileChartPoints[idx].y;
 
-                    chart.setActiveElements([{
-                        datasetIndex: 0,
-                        index: idx
-                    }]);
+                        const chart = context.stageProfileChart;
 
-                    chart.tooltip.setActiveElements([{
-                        datasetIndex: 0,
-                        index: idx
-                    }], {
-                        x: dist,
-                        y: alt
-                    });
+                        chart.setActiveElements([{
+                            datasetIndex: 0,
+                            index: idx
+                        }]);
 
-                    chart.update();
+                        chart.tooltip.setActiveElements([{
+                            datasetIndex: 0,
+                            index: idx
+                        }], {
+                            x: dist,
+                            y: alt
+                        });
+
+                        chart.update();
+                    }
+                } else {
+                    if (!context.stageProfileControl || !context.stageProfileMapMarker) 
+                        return;
+                    else 
+                        removeMapNChartMarkers();
                 }
-            } else {
-                if (!context.stageProfileControl || !context.stageProfileMapMarker) 
-                    return;
-                else 
-                    removeMapNChartMarkers();
             }
-        }
+        })(stages[i]);
         map.addEventListener('mousemove', map_mousemove);    // Add event listener  to map
         mapEvtList.push({ target: map, type: 'mousemove', handler: map_mousemove });  // Register event listener    
     }
@@ -5571,19 +5585,16 @@
                     
             setStg4NonEdt(stageIdx, false);    // Set old stage layout and event listeners for edit mode
             setStg4EdtStg(stageIdx + 1);    // Set new stage layout and event listeners for edit mode
-            context.editedStage = stageIdx + 1;
 
             stage.distance = calculateStageDistance(stage);   // Calculate old stage distance
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
-            updateDetailedInfo(stage, false, false);
+            updateDetailedInfo(stage, false, true);
 
             if (!stageRestored) {
                 stage2.distance = calculateStageDistance(stage2);  // Calculate new stage distance
                 [stage2.ascent, stage2.descent] = calculateAscentAndDescent(stage2);    // Calculate new stage ascent and descent
             }
             updateDetailedInfo(stage2, true, false);
-
-            removeMapNChartMarkers();
         }
     }
 
@@ -5726,19 +5737,16 @@
 
             setStg4NonEdt(stageIdx, false);    // Set old stage layout and event listeners for edit mode
             setEnv4EdtStg(stageIdx + 1);    // Set new stage layout and event listeners for edit mode
-            context.editedStage = stageIdx + 1;
 
             stage.distance = calculateStageDistance(stage);   // Calculate old stage distance
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
-            updateDetailedInfo(stage, false, false);
+            updateDetailedInfo(stage, false, true);
 
             if (!stageRestored) {
                 stage2.distance = calculateStageDistance(stage2);  // Calculate new stage distance
                 [stage2.ascent, stage2.descent] = calculateAscentAndDescent(stage2);    // Calculate new stage ascent and descent
             }
             updateDetailedInfo(stage2, true, false);
-
-            removeMapNChartMarkers();
         }
     }
 

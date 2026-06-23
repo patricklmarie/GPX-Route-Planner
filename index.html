@@ -72,10 +72,10 @@
         lightGreen: '#00cc33',   // Departure points in edition mode
         lightBlue: '#2791F5',       // Stage sections in edition mode
         lightPurple: '#ff4dff',      // Departure/arrival points in edition mode
-        deepRed: '#cc0000',       // Arrival point in non edition mode
-        deepGreen: '#008020',     // Departure point in non edition mode 
-        deepBlue: '#274BF5',         // Stage sections in non edition mode
-        deepPurple: '#cc00cc'         // Departure/arrival points in non edition mode
+        Red: '#cc0000',       // Arrival point in non edition mode
+        Green: '#008020',     // Departure point in non edition mode 
+        Blue: '#274BF5',         // Stage sections in non edition mode
+        Purple: '#cc00cc'         // Departure/arrival points in non edition mode
     }
 
     // Weights used to draw the route stages
@@ -129,7 +129,7 @@
         iconAnchor: [9, 9]
     });
 
-    const deepPurpleDoubleSquareIcon = L.divIcon({
+    const PurpleDoubleSquareIcon = L.divIcon({
         className: '',
         html: `
             <div style="
@@ -145,7 +145,7 @@
                     width: 14px;
                     height: 14px;
                     background: transparent;
-                    border: 3px solid ${routeColors.deepPurple};
+                    border: 3px solid ${routeColors.Purple};
                     transform: translate(-50%, -50%);
                 "></div>
 
@@ -157,7 +157,7 @@
                     width: 14px;
                     height: 14px;
                     background: transparent;
-                    border: 3px solid ${routeColors.deepPurple};
+                    border: 3px solid ${routeColors.Purple};
                     transform: translate(-50%, -50%) rotate(45deg);
                 "></div>
             </div>
@@ -256,7 +256,7 @@
         iconAnchor: [12, 12]
     });
 
-    const deepGreenDiamondIcon = L.divIcon({
+    const GreenDiamondIcon = L.divIcon({
         className: '',
         html: `<div style="
             position: absolute;
@@ -265,7 +265,7 @@
             width: 14px;
             height: 14px;
             background: transparent;
-            border: 4px solid ${routeColors.deepGreen};
+            border: 4px solid ${routeColors.Green};
             transform: translate(-50%, -50%) rotate(45deg);
         "></div>`,
         iconSize: [24, 24],
@@ -374,7 +374,7 @@
         iconAnchor: [9, 9]
     });
 
-    const deepRedSquareIcon = L.divIcon({
+    const RedSquareIcon = L.divIcon({
         className: '',
         html: `<div style="
             position: relative;
@@ -388,7 +388,7 @@
                 width: 14px;
                 height: 14px;
                 background: transparent;
-                border: 4px solid ${routeColors.deepRed};
+                border: 4px solid ${routeColors.Red};
                 transform: translate(-50%, -50%);
             "></div>
         </div>`,
@@ -581,6 +581,37 @@
     // MAIN FUNCTIONS *
     //*****************
 
+    //-----------------------------------
+    // Change stage position in the list
+    //-----------------------------------
+    function changeStgPos(newPosition) {
+        if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+
+        if (context.editedStage === null) return;
+
+        const stage = stages[context.editedStage];
+        const stageIdx = context.editedStage;
+
+        let newStageIdx = null;
+        if (newPosition === 'before') {
+            if (context.editedStage === 0) return;
+            newStageIdx = context.editedStage - 1;
+        } else if (newPosition === 'first') {
+            if (context.editedStage === 0) return;
+            newStageIdx = 0;
+        } else if (newPosition === 'after') {
+            if (context.editedStage === stages.length - 1) return;
+            newStageIdx = context.editedStage + 1;
+        } else if (newPosition === 'last') {
+            if (context.editedStage === stages.length - 1) return;
+            newStageIdx = stages.length - 1;
+        } else return;
+
+        const beforeState = null;
+        const afterState = { newStageIdx: newStageIdx };
+        execute(new ChangeStagePosition(stage, stageIdx, beforeState, afterState));        
+    }
+
     //--------------------------------------------
     // Create command list control for stage edit
     //--------------------------------------------
@@ -673,6 +704,10 @@
                     <td>Import a route from a GPX file</td>
                 </tr>
                 <tr>
+                    <td><strong>Ctrl + f</strong></td>
+                    <td>Focus on route</td>
+                </tr>
+                <tr>
                     <td><strong>Ctrl + z</strong></td>
                     <td>Undo last action</td>
                 </tr>
@@ -751,6 +786,10 @@
                 <tr>
                     <td><strong>Ctrl + i</strong></td>
                     <td>Importer un itinéraire d'un<br>fichier GPX</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + f</strong></td>
+                    <td>Focaliser sur l'ininéraire</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + z</strong></td>
@@ -1204,6 +1243,119 @@
         }
         mergeStgButton.addEventListener('click', mergeStgHandler);  // Associate submit handler with button
        
+        // Create change stage position icon
+        const changeStgPosIcon = document.createElement('i');
+        changeStgPosIcon.classList.add('fa-solid', 'fa-sort');
+        changeStgPosIcon.style.fontSize = '20px';
+        changeStgPosIcon.style.lineHeight = '20px';
+        changeStgPosIcon.style.width = '27px';
+        changeStgPosIcon.style.height = '20px';
+        changeStgPosIcon.style.display = 'inline-flex';
+        changeStgPosIcon.style.alignItems = 'center';
+        changeStgPosIcon.style.justifyContent = 'center';
+
+        // Create submit button for change stage order
+        const changeStgPosButton = document.createElement('button');
+        changeStgPosButton.appendChild(changeStgPosIcon);
+        changeStgPosButton.style.width = '32px';
+        changeStgPosButton.style.height = '30px';
+        changeStgPosButton.style.padding = '0';
+        changeStgPosButton.style.display = 'flex';
+        changeStgPosButton.style.alignItems = 'center';
+        changeStgPosButton.style.justifyContent = 'center';
+        changeStgPosButton.title = context.language === 'EN' ? 'Change stage position (in the list of stages)' : 'Modifier la position de l\'étape (dans la liste des étapes)';
+        changeStgPosButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent click outside to close immediately
+
+            // If the menu already exists, delete it
+            let existingMenu = document.getElementById('order-menu');
+            if (existingMenu) {
+                existingMenu.remove();
+                return;
+            }
+
+            // Create menu
+            const menu = document.createElement('div');
+            menu.id = 'order-menu';
+            menu.style.position = 'absolute';
+            menu.style.background = '#fff';
+            menu.style.border = '1px solid #ccc';
+            menu.style.padding = '5px';
+            menu.style.zIndex = 1000;
+            menu.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
+            menu.style.borderRadius = '4px';
+            menu.style.fontSize = '12px';
+
+            // Position menu under button
+            const rect = changeStgPosButton.getBoundingClientRect();
+            menu.style.left = rect.left + 'px';
+            menu.style.top = (rect.bottom + window.scrollY) + 'px';
+
+            // Add the options
+            const options = [
+                { label: context.language === 'EN' ? "Move before" : "Placer avant", action: () => changeStgPos('before') },
+                { label: context.language === 'EN' ? "Move after" : "Placer après", action: () => changeStgPos('after') },
+                { label: context.language === 'EN' ? "Move first" : "Placer au début", action: () => changeStgPos('first') },
+                { label: context.language === 'EN' ? "Move last" : "Placer à la fin", action: () => changeStgPos('last') }
+            ];
+
+            options.forEach(opt => {
+                const item = document.createElement('div');
+                item.textContent = opt.label;
+                item.style.padding = '4px 8px';
+                item.style.cursor = 'pointer';
+
+                item.addEventListener('click', (ev) => {
+                    ev.stopPropagation();
+                    opt.action();
+                    menu.remove();
+                });
+
+                item.addEventListener('mouseover', () => item.style.background = '#eee');
+                item.addEventListener('mouseout', () => item.style.background = '');
+
+                menu.appendChild(item);
+            });
+
+            document.body.appendChild(menu);
+
+            //------------------------
+            // Automatic menu closure
+            //------------------------
+
+            let inside = true;
+
+            const setInside = () => inside = true;
+            const setOutside = () => {
+                inside = false;
+                setTimeout(() => {
+                    if (!inside) menu.remove();
+                }, 150);
+            };
+
+            // Button hovering
+            changeStgPosButton.addEventListener('pointerenter', setInside);
+            changeStgPosButton.addEventListener('pointerleave', setOutside);
+
+            // Survol du menu
+            menu.addEventListener('pointerenter', setInside);
+            menu.addEventListener('pointerleave', setOutside);
+
+            // Close if the user clicks elsewhere
+            const closeOnClickOutside = (ev) => {
+                if (!menu.contains(ev.target) && ev.target !== changeStgPosButton) {
+                    menu.remove();
+                    document.removeEventListener('click', closeOnClickOutside);
+                }
+            };
+
+            // Wait a tick to avoid immediate closure
+            setTimeout(() => {
+                document.addEventListener('click', closeOnClickOutside);
+            }, 0);
+        });
+        buttonsContainer.appendChild(changeStgPosButton);
+
         // Create delete stage icon
         const dsIcon = document.createElement('i');
         dsIcon.classList.add('fa-regular', 'fa-trash-can');
@@ -1383,6 +1535,37 @@
             exportRouteToGPX();
         }
         exportGPXButton.addEventListener('click', exportGPXHandler);  // Associate submit handler with button
+    
+        // Create focus icon
+        const focusIcon = document.createElement('i');
+        focusIcon.classList.add('fa-solid', 'fa-arrows-to-circle');
+        focusIcon.style.fontSize = '20px';
+        focusIcon.style.lineHeight = '20px';
+        focusIcon.style.width = '27px';
+        focusIcon.style.height = '20px';
+        focusIcon.style.display = 'inline-flex';
+        focusIcon.style.alignItems = 'center';
+        focusIcon.style.justifyContent = 'center';
+
+        // Create submit button for focusing to a GPX file
+        const focusButton = document.createElement('button');
+        focusButton.appendChild(focusIcon);
+        focusButton.style.width = '29px';
+        focusButton.style.height = '30px';
+        focusButton.style.padding = '0';
+        focusButton.style.display = 'flex';
+        focusButton.style.alignItems = 'center';
+        focusButton.style.justifyContent = 'center';
+        focusButton.title = context.language === 'EN' ? 'Focus on route' : 'Focaliser sur l\'itinéraire';
+        container.appendChild(focusButton);
+
+        // Define submit handler (for focusing to a GPX file)
+        async function focusHandler() {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            focusOnRoute();
+        }
+        focusButton.addEventListener('click', focusHandler);  // Associate submit handler with button
     
         // Create undo icon
         const undoIcon = document.createElement('i');
@@ -1898,7 +2081,7 @@
 
         const beforeState = { section: sectionPoints0, point: point0 };
         const afterState = null;
-        execute(new DeleteFirstPoint(stage, beforeState, afterState));        
+        execute(new DeleteFirstPoint(stage, i, beforeState, afterState));        
     }
 
     //--------------------------------
@@ -1919,7 +2102,7 @@
 
         const beforeState = { section: sectionPoints0, point: point0 };
         const afterState = null;
-        execute(new DeleteLastPoint(stage, beforeState, afterState));        
+        execute(new DeleteLastPoint(stage, i, beforeState, afterState));        
     }
 
     //--------------
@@ -1930,9 +2113,9 @@
 
         const stage = stages[i];
 
-        const beforeState = { stage: stage, stageIdx: i };
+        const beforeState = null;
         const afterState = null;
-        execute(new DeleteStage(stage, beforeState, afterState));        
+        execute(new DeleteStage(stage, i, beforeState, afterState));        
     }
 
     //-------------------------------------------------------------------
@@ -1945,7 +2128,8 @@
             context.globalInfoControl.remove();
 
         let stageNb = stages.length;
-        if (context.editedStage != null && stages[context.editedStage].points.length == 0) stageNb--;
+        if (context.editedStage !== null && context.editedStage !== undefined && stages[context.editedStage]?.points?.length === 0) 
+            stageNb--;
 
         if (stageNb < 1) return;
 
@@ -2175,10 +2359,14 @@
                 L.DomEvent.disableClickPropagation(wrapper);
                 L.DomEvent.disableScrollPropagation(wrapper);
 
+                // Find stage number
+                let num = stages.indexOf(stage) + 1;  // Retrieve stage index
+                if (context.editedStage != null && context.editedStage !== undefined && stages[context.editedStage].points.length === 0 && context.editedStage < num)
+                    num--;
+                
                 // Create title
                 const title = L.DomUtil.create('div', 'menu-title', wrapper);
-                title.textContent = context.language === 'EN' ? 'Stage profile' : 'Profil de l\'étape';
-                if (stage.name != null) title.textContent = title.textContent + (context.language === 'EN' ? ': ' : ' : ') + stage.name;
+                title.textContent = (context.language === 'EN' ? 'Stage profile: ' : 'Profil de l\'étape : ') + String(num) + '. ' + (stage.name ?? '');
                 title.style.fontSize = '18px';
                 title.style.fontWeight = 'bold';
                 title.style.marginBottom = '4px';
@@ -2353,9 +2541,13 @@
 
             context.stageProfileControl.addTo(map);     // Add menu control to map
         } else {
+            // Find stage number
+            let num = stages.indexOf(stage) + 1;  // Retrieve stage index
+            if (context.editedStage != null && context.editedStage !== undefined && stages[context.editedStage].points.length === 0 && context.editedStage < num)
+                num--;
+                
             const title = context.stageProfileControl._container.getElementsByClassName('menu-title')[0];
-            title.textContent = context.language === 'EN' ? 'Stage profile' : 'Profil de l\'étape';
-            if (stage.name != null) title.textContent = title.textContent + (context.language === 'EN' ? ': ' : ' : ') + stage.name;
+            title.textContent = (context.language === 'EN' ? 'Stage profile: ' : 'Profil de l\'étape : ') + String(num) + '. ' + (stage.name ?? '');
             
             let yMin = null;
             let yMax = null;
@@ -2648,8 +2840,9 @@
                     }
                 });
 
-                const beforeState = { stagesLength: stages.length};
-                const afterState = { importedStages: stages2 };
+//                const beforeState = { stagesLength: stages.length};
+                const beforeState = null;
+                const afterState = { importedStages: stages2, importedStagesNb: stages2.length };
                 execute(new ImportRoute(beforeState, afterState));        
                     
                 console.log(context.language === 'EN' ? "Route imported from GPX file '" : "Itinéraire importé du fichier GPX '" + file.name + "'");
@@ -2660,18 +2853,7 @@
                 document.removeEventListener('keydown', escKeyHandler);
                 wrapper.remove();
 
-                // Focus the map on the route
-                let bounds = L.latLngBounds([]);    // Initialize an array of all polyline bounds
-
-                stages.forEach(stage => {   // Store the bounds of all polylines of all stages
-                    stage.sections.forEach(section => {
-                        bounds.extend(section.polyline.getBounds());
-                    });
-                });
-
-                if (bounds.isValid()) {
-                    map.fitBounds(bounds);  // Focus the map on the polylines
-                }
+                focusOnRoute();
 
                 context.operationWithButtonInProcess = false;   // Stop blocking the other operations
             } catch (err) {     // Error handler
@@ -2719,6 +2901,7 @@
     //------------------
     function mergeStage() {
         const stage = stages[context.editedStage];
+        const stageIdx = stages.indexOf(stage);
 
         // Check that stage has at least one point
         if (!stage.points || stage.points.length < 1) {
@@ -2928,18 +3111,18 @@
                         afterPointLatlng: firstPt };
                     const afterState = { beforePointLatlng: calculatedPoints[0], afterPointLatlng: calculatedPoints[calculatedPoints.length - 1], 
                         linkSectionLatlngs: calculatedPoints };
-                    execute(new Click2MergeBefore(stage, beforeState, afterState));
+                    execute(new Click2MergeBefore(stage, stageIdx, beforeState, afterState));
                 } else {
                     const beforeState = { beforeStage: stageRef, beforeStageIdx: iRef, beforeStageSectNb: stageRef.sections.length, beforePointLatlng: null, 
                         afterPointLatlng: null };
                     const afterState = { beforePointLatlng: null, afterPointLatlng: null, linkSectionLatlngs: [lastPt, firstPt] };
-                    execute(new Click2MergeBefore(stage, beforeState, afterState));
+                    execute(new Click2MergeBefore(stage, stageIdx, beforeState, afterState));
                 }
             } else {    // Last point of stageRef and first point of stage are the same
                 const beforeState = { beforeStage: stageRef, beforeStageIdx: iRef, beforeStageSectNb: stageRef.sections.length, beforePointLatlng: null, 
                     afterPointLatlng: null };
                 const afterState = { beforePointLatlng: null, afterPointLatlng: null, linkSectionLatlngs: null };
-                execute(new Click2MergeBefore(stage, beforeState, afterState));
+                execute(new Click2MergeBefore(stage, stageIdx, beforeState, afterState));
             }
         }
 
@@ -2980,18 +3163,18 @@
                         afterPointLatlng: firstPt };
                     const afterState = { beforePointLatlng: calculatedPoints[0], afterPointLatlng: calculatedPoints[calculatedPoints.length - 1], 
                         linkSectionLatlngs: calculatedPoints };
-                    execute(new Click2MergeAfter(stage, beforeState, afterState));
+                    execute(new Click2MergeAfter(stage, stageIdx, beforeState, afterState));
                } else {
                     const beforeState = { afterStage: stageRef, afterStageIdx: iRef, afterStageSectNb: stageRef.sections.length, beforePointLatlng: null, 
                         afterPointLatlng: null };
                     const afterState = { beforePointLatlng: null, afterPointLatlng: null, linkSectionLatlngs: [lastPt, firstPt] };
-                    execute(new Click2MergeAfter(stage, beforeState, afterState));
+                    execute(new Click2MergeAfter(stage, stageIdx, beforeState, afterState));
                 }
             } else {    // Last point of stageRef and first point of stage are the same
                 const beforeState = { afterStage: stageRef, afterStageIdx: iRef, afterStageSectNb: stageRef.sections.length, beforePointLatlng: null, 
                     afterPointLatlng: null };
-                const afterState = { beforePointLatlng: null, afterPointLatlng: null, linkSectionLatlngs: null };
-                execute(new Click2MergeAfter(stage, beforeState, afterState));
+                const afterState = { stageRef, iRef, beforePointLatlng: null, afterPointLatlng: null, linkSectionLatlngs: null };
+                execute(new Click2MergeAfter(stage, stageIdx, beforeState, afterState));
             }
         }
 
@@ -3015,17 +3198,17 @@
         function setNonEdtColors(candidStages) {
             candidStages.forEach(stage => {
                 stage.sections.forEach(section => {
-                    section.polyline.setStyle({ color: routeColors.deepBlue, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 });   // Set layout
+                    section.polyline.setStyle({ color: routeColors.Blue, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 });   // Set layout
                 })
                 stage.points.forEach((point, j) => {
                     if (j === 0 && stage.points.length === 1)
-                        point.marker.setIcon(deepPurpleDoubleSquareIcon);
+                        point.marker.setIcon(PurpleDoubleSquareIcon);
                     else if (j === 0)
-                        point.marker.setIcon(deepGreenDiamondIcon);
+                        point.marker.setIcon(GreenDiamondIcon);
                     else if (j < stage.points.length - 1)
                         point.marker.setIcon(transparentIcon);
                     else
-                        point.marker.setIcon(deepRedSquareIcon);
+                        point.marker.setIcon(RedSquareIcon);
                 });
             });
         }
@@ -3066,8 +3249,8 @@
 
         const stage = stages[context.editedStage];
 
-        const stageBefore = copyDeep(stage);
-        const stageAfter = copyDeep(stage);
+        const stageBefore = copy(stage);
+        const stageAfter = copy(stage);
 
         // Collect stage points coordinates in reverse order
         const latlngs = [];
@@ -3113,9 +3296,9 @@
 
         const beforeState = { stage: stageBefore };
         const afterState = { stage: stageAfter };
-        execute(new ReverseStage(stage, beforeState, afterState));
+        execute(new ReverseStage(stage, context.editedStage, beforeState, afterState));
 
-        function copyDeep(stage) {
+        function copy(stage) {
             const stage2 = {
                 name: stage.name,
                 points: [],
@@ -3151,7 +3334,15 @@
     
                 const key = (e.key || '').toLowerCase();
 
-                if (e.ctrlKey && key === 'z') {   // When user presses Ctrl + 'z' (to undo last action)
+                if (e.ctrlKey && key === 'e') {   // When user presses Ctrl + 'e' (to export route to GPX file)
+                    e.preventDefault();
+                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+                    exportRouteToGPX();
+                } else if (e.ctrlKey && key === 'i') {   // When user presses Ctrl + 'e' (to export route to GPX file)
+                    e.preventDefault();
+                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+                    importRouteFromGPX();
+                } else if (e.ctrlKey && key === 'z') {   // When user presses Ctrl + 'z' (to undo last action)
                     e.preventDefault();
                     const cmd = undoStack.pop();
                     if (!cmd) return;
@@ -3163,6 +3354,15 @@
                     if (!cmd) return;
                     cmd.redo();
                     undoStack.push(cmd);
+                } else if (e.ctrlKey && key === 'f') {   // When user presses Ctrl + 'f' (to focus the map on the route)
+                    e.preventDefault();
+                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+                    focusOnRoute();
+                } else if (e.ctrlKey && key === 'r') {   // When user presses Ctrl + 'r' (to reset the route)
+                    e.preventDefault();
+                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+                    if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
+                        resetRte();
                 }
             }
             document.addEventListener('keydown', doc_keydown_perm);  // Add event listener to document
@@ -3302,7 +3502,7 @@
 
                     const beforeState = { previousPoint: latlngPrev0 };
                     const afterState = { previousPoint: latlngPrev, nextPoint: latlng, newPoints: calculatedPoints };
-                    execute(new ClickOnMap2AddPoint(stageRef, beforeState, afterState));
+                    execute(new ClickOnMap2AddPoint(stageRef, iRef, beforeState, afterState));
                 }, 350);
             };
         })(stages[i]);
@@ -3950,7 +4150,7 @@
             wrapper.style.flexDirection = 'column';
             wrapper.style.gap = '8px';
             wrapper.style.minWidth = '200px';
-            wrapper.style.maxWidth = '300px';
+            wrapper.style.maxWidth = '310px';
             wrapper.style.width = '100%';
             
             // Prevent map interaction
@@ -4138,14 +4338,14 @@
 
                     const beforeState = { prevPoint: latlngPrev0, curPoint: latlng0, nextPoint: latlngNext0, prevSection: calculatedPointsPrev0, nextSection: calculatedPointsNext0 };
                     const afterState = { prevPoint: latlngPrev, nextPoint: latlngNext, newSection: calculatedPoints };
-                    execute(new DoubleClickPoint2RemoveIt(stageRef, jRef, beforeState, afterState));
+                    execute(new DoubleClickPoint2RemoveIt(stageRef, iRef, jRef, beforeState, afterState));
                 } else if (jRef === 0 && stageRef.points.length > 1) {     // First point of several
                     const latlng0 = pointRef.marker.getLatLng();
                     const calculatedPointsNext0 = stageRef.sections[0].polyline.getLatLngs();
 
                     const beforeState = { prevPoint: null, curPoint: latlng0, nextPoint: null, prevSection: null, nextSection: calculatedPointsNext0 };
                     const afterState = { prevPoint: null, nextPoint: null, newSection: null };
-                    execute(new DoubleClickPoint2RemoveIt(stageRef, jRef, beforeState, afterState));
+                    execute(new DoubleClickPoint2RemoveIt(stageRef, iRef, jRef, beforeState, afterState));
                 } else if (stageRef.points.length > 1) {       // Last point
                     let latlngPrev0 = null;        // Initial position of previous point
                     let latlngPrev = null;         // New position of previous point
@@ -4158,13 +4358,13 @@
 
                     const beforeState = { prevPoint: null, curPoint: latlng0, nextPoint: null, prevSection: calculatedPointsPrev0, nextSection: null };
                     const afterState = { prevPoint: null, nextPoint: null, newSection: null };
-                    execute(new DoubleClickPoint2RemoveIt(stageRef, jRef, beforeState, afterState));
+                    execute(new DoubleClickPoint2RemoveIt(stageRef, iRef, jRef, beforeState, afterState));
                 } else {    // First and only point
                     const latlng0 = pointRef.marker.getLatLng();
 
                     const beforeState = { prevPoint: null, curPoint: latlng0, nextPoint: null, prevSection: null, nextSection: null };
                     const afterState = { prevPoint: null, nextPoint: null, newSection: null };
-                    execute(new DoubleClickPoint2RemoveIt(stageRef, jRef, beforeState, afterState));
+                    execute(new DoubleClickPoint2RemoveIt(stageRef, iRef, jRef, beforeState, afterState));
                 }
             };
         })(stage, point);
@@ -4316,7 +4516,7 @@
                             prevPoint: initPrevPolylineLatlngs[0], nextPoint: initNextPolylineLatlngs[initNextPolylineLatlngs.length - 1] };
                         const afterState = { point: latlng, prevSection: calculatedPoints1, nextSection: calculatedPoints2,
                             prevPoint: calculatedPoints1[0], nextPoint: calculatedPoints2[calculatedPoints2.length - 1] };
-                        execute(new DragNDropPoint2MoveIt(stageRef, jRef, beforeState, afterState));
+                        execute(new DragNDropPoint2MoveIt(stageRef, iRef, jRef, beforeState, afterState));
                     } else if (jRef === 0 && stageRef.points.length > 1) {     // First point of several
                         let calculatedPoints = null;
                         if (context.routerProfile != 'crow') {    // When BRouter is used to find a route
@@ -4357,7 +4557,7 @@
                             prevPoint: null, nextPoint: initNextPolylineLatlngs[initNextPolylineLatlngs.length - 1] };
                         const afterState = { point: latlng, prevSection: null, nextSection: calculatedPoints,
                             prevPoint: null, nextPoint: calculatedPoints[calculatedPoints.length - 1] };
-                        execute(new DragNDropPoint2MoveIt(stageRef, jRef, beforeState, afterState));
+                        execute(new DragNDropPoint2MoveIt(stageRef, iRef, jRef, beforeState, afterState));
                     } else if (stageRef.points.length > 1) {       // Last point or several
                         let calculatedPoints = null;
                         if (context.routerProfile != 'crow') {
@@ -4399,7 +4599,7 @@
                             prevPoint: initPrevPolylineLatlngs[0], nextPoint: null };
                         const afterState = { point: latlng, prevSection: calculatedPoints, nextSection: null,
                             prevPoint: calculatedPoints[0], nextPoint: null };
-                        execute(new DragNDropPoint2MoveIt(stageRef, jRef, beforeState, afterState));
+                        execute(new DragNDropPoint2MoveIt(stageRef, iRef, jRef, beforeState, afterState));
                     } else {    // First and only point
                         if (context.routerProfile != 'crow') {    // When BRouter used to find a route
                             const coordinates = latlng.lng + "," + latlng.lat + "|" + latlng.lng + "," + latlng.lat;     // Prepare request for BRouter                          
@@ -4417,7 +4617,7 @@
 
                         const beforeState = { point: initMarkerLatlng, prevSection: null, nextSection: null, prevPoint: null, nextPoint: null };
                         const afterState = { point: latlng, prevSection: null, nextSection: null, prevPoint: null, nextPoint: null };
-                        execute(new DragNDropPoint2MoveIt(stageRef, jRef, beforeState, afterState));
+                        execute(new DragNDropPoint2MoveIt(stageRef, iRef, jRef, beforeState, afterState));
                     }
 
                     cleanupDrag();
@@ -4572,7 +4772,7 @@
 
                 const beforeState = { sectionPoints: latlngs };
                 const afterState = { prevPointIdx: idx, newPoint: latlng };
-                execute(new DoubleClickSection2InsertPoint(stageRef, jRef, beforeState, afterState));
+                execute(new DoubleClickSection2InsertPoint(stageRef, iRef, jRef, beforeState, afterState));
             };
         })(stage, section);
         section.polyline.addEventListener('dblclick', section_dblclick);    // Add event listner to section
@@ -4716,7 +4916,7 @@
                         prevPoint: prevPoint0, nextPoint: nextPoint0 };
                     const afterState = { point: latlng, prevSection: calculatedPoints1, nextSection: calculatedPoints2,
                         prevPoint: prevPoint, nextPoint: nextPoint };
-                    execute(new DragNDropSection2BreakIt(stageRef, jRef, beforeState, afterState));
+                    execute(new DragNDropSection2BreakIt(stageRef, iRef, jRef, beforeState, afterState));
 
                     cleanupDrag();
                 };
@@ -4791,7 +4991,7 @@
         function applyName(name) {
             const beforeState = { name: stage.name };
             const afterState = { name: name };
-            execute(new SetStageName(stage, beforeState, afterState));
+            execute(new SetStageName(stage, context.editedStage, beforeState, afterState));
 
             status.textContent = context.language === 'EN' ? 'Name set' : 'Nom attribué';
 
@@ -4930,7 +5130,7 @@
             for (let j = 0; j < stage.sections.length; j++) {
                 const section = stage.sections[j];
                 
-                section.polyline.setStyle({ color: routeColors.deepBlue, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 });   // Set layout
+                section.polyline.setStyle({ color: routeColors.Blue, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 });   // Set layout
         
                 // Delete event listeners on section
                 for (const { target, type, handler } of section.evtList)
@@ -4997,9 +5197,9 @@
                 const latlng = point.marker.getLatLng();
                 let newMarker = null;
                 if (stage.points.length === 1) {
-                    if (point.marker.options.icon != deepPurpleDoubleSquareIcon) {
+                    if (point.marker.options.icon != PurpleDoubleSquareIcon) {
                         newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                            icon: deepPurpleDoubleSquareIcon,
+                            icon: PurpleDoubleSquareIcon,
                             pane: 'markerNEPane',
                             draggable: false,
                             autoPan: false,
@@ -5007,9 +5207,9 @@
                         }).addTo(map);
                     }
                 } else if (j === 0) { 
-                    if (point.marker.options.icon != deepGreenDiamondIcon) {
+                    if (point.marker.options.icon != GreenDiamondIcon) {
                         newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                            icon: deepGreenDiamondIcon,
+                            icon: GreenDiamondIcon,
                             pane: 'markerNEPane',
                             draggable: false,
                             autoPan: false,
@@ -5027,9 +5227,9 @@
                         }).addTo(map);
                     }
                 } else {
-                    if (point.marker.options.icon != deepRedSquareIcon) {
+                    if (point.marker.options.icon != RedSquareIcon) {
                         newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                            icon: deepRedSquareIcon,
+                            icon: RedSquareIcon,
                             pane: 'markerNEPane',
                             draggable: false,
                             autoPan: false,
@@ -5151,7 +5351,7 @@
                     
                     const beforeState = { section: latlngs };
                     const afterState = { point: latlng, section1: latlngs1, section2: latlngs2 };
-                    execute(new ClickSection2Split(stageRef, jRef, beforeState, afterState));
+                    execute(new ClickSection2Split(stageRef, iRef, jRef, beforeState, afterState));
 
                     map.getContainer().style.cursor = 'crosshair';
 
@@ -5183,7 +5383,7 @@
 
                     const beforeState = null;
                     const afterState = null;
-                    execute(new ClickPoint2Split(stageRef, jRef, beforeState, afterState));
+                    execute(new ClickPoint2Split(stageRef, iRef, jRef, beforeState, afterState));
 
                     map.getContainer().style.cursor = 'crosshair';
 
@@ -5235,9 +5435,78 @@
     //----------------------------------------------------------
     // Reversible command to add point when clicking on the map
     //----------------------------------------------------------
+    class ChangeStagePosition {
+        constructor(stage, stageIdx, before, after) {
+            this.stageIdx = stageIdx
+            this.after = after;
+        }
+
+        undo() {
+            const stageIdx = this.stageIdx;
+            const newStageIdx = this.after.newStageIdx;
+
+            if (newStageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(newStageIdx);
+            }
+
+            const stage = stages.splice(newStageIdx, 1)[0];    // Remove stage
+            stages.splice(stageIdx, 0, stage);       // Insert it at new position
+            context.editedStage = stageIdx;
+
+            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage
+
+            if (stageIdx < newStageIdx) {
+                for (let i = stageIdx + 1; i < newStageIdx + 1; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            } else {
+                for (let i = newStageIdx; i < stageIdx; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            }
+
+            displayGlobalInfo();
+        }
+
+        redo() {
+            const stageIdx = this.stageIdx;
+            const newStageIdx = this.after.newStageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            const stage = stages.splice(stageIdx, 1)[0];    // Remove stage
+            stages.splice(newStageIdx, 0, stage);       // Insert it at new position
+            context.editedStage = newStageIdx;
+
+            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage
+
+            if (newStageIdx < stageIdx) {
+                for (let i = newStageIdx + 1; i < stageIdx + 1; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            } else {
+                for (let i = stageIdx; i < newStageIdx; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            }
+
+            displayGlobalInfo();
+        }
+    }
+
+    //----------------------------------------------------------
+    // Reversible command to add point when clicking on the map
+    //----------------------------------------------------------
     class ClickOnMap2AddPoint {
-        constructor(stage, before, after) {
+        constructor(stage, stageIdx, before, after) {
             this.stage = stage;
+            this.stageIdx = stageIdx;
             this.before = before;
             this.after = after;
             this.stageRemoved = false;
@@ -5247,14 +5516,12 @@
             // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             // Remove last point
@@ -5321,27 +5588,29 @@
 
                 // Set environment to non edit mode
                 setEnv4NonEdt(true);
+
+                for (let i = stageIdx; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+
+                displayGlobalInfo();
             }
         }
 
         redo() {
             const stage = this.stage;
 
-            let stageIdx = stages.indexOf(stage);
+            const stageIdx = this.stageIdx;
 
             if (this.stageRemoved) {
                 stages.splice(stageIdx, 0, stage);
                 this.stageRemoved = false;
             }
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             // Adjust previous point's and previous section's positions using BRouter response
@@ -5388,6 +5657,12 @@
                   
             updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage
             
+            if (stage.points.length === 1) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            }
+
             displayGlobalInfo();      
         }
     }
@@ -5396,8 +5671,9 @@
     // Reversible command to a selected stage after the edited stage
     //----------------------------------------------------------------
     class Click2MergeAfter {
-        constructor(stage, before, after) {
+        constructor(stage, stageIdx, before, after) {
             this.stage = stage;
+            this.stageIdx = stageIdx;
             this.before = before;
             this.after = after;
         }
@@ -5406,15 +5682,18 @@
             // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            let stageIdx = stages.indexOf(stage);
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
 
             // Restore stage before
             const stage2 = this.before.afterStage;
             const stageIdx2 = this.before.afterStageIdx;
             stages.splice(stageIdx2, 0, stage2);
-
-            const stageIdx = stages.indexOf(stage);
 
             if (this.after.linkSectionLatlngs != null) {
                 for (const { target, type, handler } of stage.sections[stage.sections.length - this.before.afterStageSectNb - 1].evtList)
@@ -5435,11 +5714,13 @@
             const splicePos = stage.sections.length - this.before.afterStageSectNb;
             const movedSections = stage.sections.splice(splicePos);
             const movedPoints = stage.points.splice(splicePos + 1);
+            stage.sections.splice(splicePos);
+            stage.points.splice(splicePos + 1);
 
             stage2.sections.push(...movedSections);     // Merge the sections of the two stages
             stage2.points.push(...movedPoints);     // Merge the points of the two stages
 
-            // Adjust last point's and last section's positions of before track using BRouter response
+            // Adjust last point's and last section's positions of edited track using BRouter response
             if (this.before.beforePointLatlng != null) {     // When BRouter was used
                 stage.points[stage.points.length - 1].marker.setLatLng(this.before.beforePointLatlng); // Adjust last point's position
                 if (stage.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
@@ -5450,7 +5731,7 @@
                 }                            
             }
 
-            // Adjust first point's and first section's positions of edited track using BRouter response
+            // Adjust first point's and first section's positions of after track using BRouter response
             if (this.before.afterPointLatlng != null) {     // When BRouter was used
                 stage2.points[0].marker.setLatLng(this.before.afterPointLatlng); // Adjust first point's position
                 if (stage2.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
@@ -5461,8 +5742,11 @@
                 }
             }
 
-            setEnv4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
+            stageIdx = stages.indexOf(stage);
             context.editedStage = stageIdx;
+
+            setEnv4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
+
             setStg4NonEdt(stageIdx2, false);    // Set new stage layout and event listeners for edit mode
 
             removeMapNChartMarkers();
@@ -5474,22 +5758,35 @@
             updateDetailedInfo(stage, true, false);   // Update stage information to be displayed in popup and show it (if selected)
             updateDetailedInfo(stage2, false, false);   // Update stage information to be displayed in popup and show it (if selected)
 
+            if (stageIdx < stageIdx2) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    if (i != stageIdx2) updateDetailedInfo(stages[i], false, false);
+                }
+            } else {
+                for (let i = stageIdx2; i < stages.length; i++) {
+                    if (i != stageIdx) updateDetailedInfo(stages[i], false, false);
+                }
+            }
+
             displayGlobalInfo();
         }
 
         redo() {
-            // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            let stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
+                setEnv4EdtStg(stageIdx);
+            }
+            stageIdx = stages.indexOf(stage);
 
             const stage2 = this.before.afterStage;
             const stageIdx2 = this.before.afterStageIdx;
 
-            // Adjust last point's and last section's positions of after track using BRouter response
+            // Adjust last point's and last section's positions of edited track using BRouter response
             if (this.after.beforePointLatlng != null) {     // When BRouter was used
                 stage.points[stage.points.length - 1].marker.setLatLng(this.after.beforePointLatlng); // Adjust last point's position
                 if (stage.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
@@ -5500,7 +5797,7 @@
                 }                            
             }
 
-            // Adjust first point's and first section's positions of edited track using BRouter response
+            // Adjust first point's and first section's positions of after track using BRouter response
             if (this.after.afterPointLatlng != null) {     // When BRouter was used
                 stage2.points[0].marker.setLatLng(this.after.afterPointLatlng); // Adjust first point's position
                 if (stage2.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
@@ -5523,6 +5820,7 @@
 
             stage.sections.push(...stage2.sections);     // Merge the sections of the two stages
             stage.points.push(...stage2.points);     // Merge the points of the two stages
+            stageIdx = stages.indexOf(stage);
 
             // Remove all sections and all points from stage2
             stage2.points.length = 0;
@@ -5533,9 +5831,10 @@
 
             stages.splice(stageIdx2, 1);     // Remove stage2
 
-            context.editedStage = stages.indexOf(stage);
+            stageIdx = stages.indexOf(stage);
+            context.editedStage = stageIdx;
                 
-            setEnv4EdtStg(context.editedStage);    // Set new stage layout and event listeners for edit mode
+            setEnv4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
 
             removeMapNChartMarkers();
 
@@ -5545,6 +5844,16 @@
                 
             updateDetailedInfo(stage, true, false);   // Update stage information to be displayed in popup and show it (if selected)
 
+            if (stageIdx < stageIdx2) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);
+                }
+            } else {
+                for (let i = stageIdx2; i < stages.length; i++) {
+                    if (i != stageIdx) updateDetailedInfo(stages[i], false, false);
+                }
+            }
+
             displayGlobalInfo();
         }
     }
@@ -5553,8 +5862,9 @@
     // Reversible command to a selected stage before the edited stage
     //----------------------------------------------------------------
     class Click2MergeBefore {
-        constructor(stage, before, after) {
+        constructor(stage, stageIdx, before, after) {
             this.stage = stage;
+            this.stageIdx = stageIdx;
             this.before = before;
             this.after = after;
         }
@@ -5563,15 +5873,18 @@
             // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            let stageIdx= stages.indexOf(stage);
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
 
             // Restore stage before
             const stage2 = this.before.beforeStage;
             const stageIdx2 = this.before.beforeStageIdx;
             stages.splice(stageIdx2, 0, stage2);
-
-            let stageIdx = stages.indexOf(stage);
 
             if (this.after.linkSectionLatlngs != null) {
                 for (const { target, type, handler } of stage.sections[this.before.beforeStageSectNb].evtList)
@@ -5580,7 +5893,7 @@
                 stage.sections.splice(this.before.beforeStageSectNb, 1);
             } else {
                 const newMarker = L.marker(stage.points[this.before.beforeStageSectNb].marker.getLatLng(), {
-                    icon: circleIconEdit,
+                    icon: lightGreenDiamondIcon,
                     pane: 'markerEditPane',
                     draggable: true,
                     autoPan: false,
@@ -5617,8 +5930,11 @@
                 }
             }
 
-            setEnv4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
+            stageIdx = stages.indexOf(stage);
             context.editedStage = stageIdx;
+
+            setEnv4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
+
             setStg4NonEdt(stageIdx2, false);    // Set new stage layout and event listeners for edit mode
 
             removeMapNChartMarkers();
@@ -5630,6 +5946,16 @@
             updateDetailedInfo(stage, true, false);   // Update stage information to be displayed in popup and show it (if selected)
             updateDetailedInfo(stage2, false, false);   // Update stage information to be displayed in popup and show it (if selected)
 
+            if (stageIdx < stageIdx2) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    if (i != stageIdx2) updateDetailedInfo(stages[i], false, false);
+                }
+            } else {
+                for (let i = stageIdx2; i < stages.length; i++) {
+                    if (i != stageIdx) updateDetailedInfo(stages[i], false, false);
+                }
+            }
+
             displayGlobalInfo();
         }
 
@@ -5637,10 +5963,13 @@
             // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            let stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
+                setEnv4EdtStg(stageIdx);
+            }
 
             const stage2 = this.before.beforeStage;
             const stageIdx2 = this.before.beforeStageIdx;
@@ -5689,9 +6018,10 @@
 
             stages.splice(stageIdx2, 1);     // Remove stage2
 
-            context.editedStage = stages.indexOf(stage);
+            stageIdx = stages.indexOf(stage);
+            context.editedStage = stageIdx;
                 
-            setEnv4EdtStg(context.editedStage);    // Set new stage layout and event listeners for edit mode
+            setEnv4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
 
             removeMapNChartMarkers();
 
@@ -5701,6 +6031,16 @@
                 
             updateDetailedInfo(stage, true, false);   // Update stage information to be displayed in popup and show it (if selected)
 
+            if (stageIdx < stageIdx2) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);
+                }
+            } else {
+                for (let i = stageIdx2; i < stages.length; i++) {
+                    if (i != stageIdx - 1) updateDetailedInfo(stages[i], false, false);
+                }
+            }
+
             displayGlobalInfo();
         }
     }
@@ -5709,8 +6049,9 @@
     // Reversible command to split a stage when clicking on a point
     //--------------------------------------------------------------
     class ClickPoint2Split {
-        constructor(stage, pointIdx, before, after) {
+        constructor(stage, stageIdx, pointIdx, before, after) {
             this.stage = stage;
+            this.stageIdx = stageIdx;
             this.pointIdx = pointIdx;
             this.before = before;
             this.after = after;
@@ -5722,10 +6063,13 @@
             // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
-                quitEditStage(false);
+            const stageIdx = this.stageIdx;
 
-            const stageIdx = stages.indexOf(stage);
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
 
             let point = stage.points[this.pointIdx];   // Find out section
 
@@ -5767,6 +6111,10 @@
             // Update stage information to be displayed in popup and show it (if selected)
             updateDetailedInfo(stage, true, false);
 
+            for (let i = stageIdx + 1; i < stages.length; i++) {
+                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+            }
+
             displayGlobalInfo();
 
             removeMapNChartMarkers();
@@ -5775,6 +6123,16 @@
         redo() {
             let stageRestored = false;
 
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
             // Restore removed stage if needed
             if (this.stageRemoved != null) {
                 stages.splice(this.stageRemovedIdx, 0, this.stageRemoved);
@@ -5782,14 +6140,6 @@
                 this.stageRemovedIdx = -1;
                 stageRestored = true;
             }
-
-            // Find out stage
-            const stage = this.stage;
-
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
-                quitEditStage(true);
-
-            const stageIdx = stages.indexOf(stage);
 
             let point = stage.points[this.pointIdx];  // Find out point
 
@@ -5833,6 +6183,10 @@
             }
             updateDetailedInfo(stage2, true, false);
 
+            for (let i = stageIdx + 2; i < stages.length; i++) {
+                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+            }
+
             displayGlobalInfo();
         }
     }
@@ -5841,8 +6195,9 @@
     // Reversible command to split a stage when clicking on a section
     //----------------------------------------------------------------
     class ClickSection2Split {
-        constructor(stage, sectionIdx, before, after) {
+        constructor(stage, stageIdx, sectionIdx, before, after) {
             this.stage = stage;
+            this.stageIdx = stageIdx;
             this.sectionIdx = sectionIdx;
             this.before = before;
             this.after = after;
@@ -5854,10 +6209,13 @@
             // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
-                quitEditStage(false);
+            const stageIdx = this.stageIdx;
 
-            const stageIdx = stages.indexOf(stage);
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
 
             let section = stage.sections[this.sectionIdx];   // Find out section
 
@@ -5909,6 +6267,10 @@
             // Update stage information to be displayed in popup and show it (if selected)
             updateDetailedInfo(stage, true, false);
 
+            for (let i = stageIdx + 1; i < stages.length; i++) {
+                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+            }
+
             displayGlobalInfo();
 
             removeMapNChartMarkers();
@@ -5917,6 +6279,17 @@
         redo() {
             let stageRestored = false;
 
+            // Find out stage
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
             // Restore removed stage if needed
             if (this.stageRemoved != null) {
                 stages.splice(this.stageRemovedIdx, 0, this.stageRemoved);
@@ -5924,14 +6297,6 @@
                 this.stageRemovedIdx = -1;
                 stageRestored = true;
             }
-
-            // Find out stage
-            const stage = this.stage;
-
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
-                quitEditStage(true);
-
-            const stageIdx = stages.indexOf(stage);
 
             let section = stage.sections[this.sectionIdx];  // Find out section
 
@@ -5989,6 +6354,10 @@
             }
             updateDetailedInfo(stage2, true, false);
 
+            for (let i = stageIdx + 2; i < stages.length; i++) {
+                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+            }
+
             displayGlobalInfo();
         }
     }
@@ -5997,8 +6366,9 @@
     // Reversible command to remove the first point of a stage
     //---------------------------------------------------------
     class DeleteFirstPoint {
-        constructor(stage, before, after) {
+        constructor(stage, stageIdx, before, after) {
             this.stage = stage;
+            this.stageIdx = stageIdx;
             this.before = before;
             this.after = after;
             this.stageRemoved = false;
@@ -6007,21 +6377,17 @@
         undo() {
             const stage = this.stage;
 
-            let stageIdx = stages.indexOf(stage);
+            const stageIdx = this.stageIdx;
 
             if (this.stageRemoved) {
                 stages.splice(stageIdx, 0, stage);
                 this.stageRemoved = false;
             }
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
-            
-            stageIdx = stages.indexOf(stage);
-            
-            if (context.editedStage === null) {
+
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             // Restore last section and last point
@@ -6060,6 +6426,12 @@
             // Update information to be displayed about the stage
             updateDetailedInfo(stage, true, false);
 
+            if (stage.points.length === 1) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            }
+
             displayGlobalInfo();
         }
 
@@ -6067,14 +6439,12 @@
             // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             // Remove event listeners on last point and last section
@@ -6137,6 +6507,10 @@
 
                 context.editedStage = null;
 
+                for (let i = stageIdx; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+
                 displayGlobalInfo();
             }
         }
@@ -6146,8 +6520,9 @@
     // Reversible command to remove the last point of a stage
     //--------------------------------------------------------
     class DeleteLastPoint {
-        constructor(stage, before, after) {
+        constructor(stage, stageIdx, before, after) {
             this.stage    = stage;
+            this.stageIdx = stageIdx;
             this.before = before;
             this.after = after;
             this.stageRemoved = false;
@@ -6156,21 +6531,17 @@
         undo() {
             const stage = this.stage;
 
-            let stageIdx = stages.indexOf(stage);
+            const stageIdx = this.stageIdx;
 
             if (this.stageRemoved) {
                 stages.splice(stageIdx, 0, stage);
                 this.stageRemoved = false;
             }
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             // Restore last section and last point
@@ -6209,6 +6580,12 @@
             // Update information to be displayed about the stage
             updateDetailedInfo(stage, true, false);
 
+            if (stage.points.length === 1) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            }
+
             displayGlobalInfo();
         }
 
@@ -6216,14 +6593,12 @@
             // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             // Remove event listeners on last point and last section
@@ -6290,6 +6665,10 @@
 
                 context.editedStage = null;
 
+                for (let i = stageIdx; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+
                 displayGlobalInfo();
             }
         }
@@ -6299,20 +6678,19 @@
     // Reversible command to delete a stage
     //--------------------------------------
     class DeleteStage {
-        constructor(stage, before, after) {
+        constructor(stage, stageIdx, before, after) {
             this.stage = stage;
-            this.before = before;
-            this.after = after;
+            this.stageIdx = stageIdx;
         }
 
         undo() {
             const stage = this.stage;
 
-            if (context.editedStage != null)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (context.editedStage != null)
                 quitEditStage(true);
-
-            const stageIdx = this.before.stageIdx;
-
+                
             stages.splice(stageIdx, 0, stage);
 
             // Restore stage's points
@@ -6345,6 +6723,12 @@
                   
             updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage        
 
+            if (stage.points.length > 0) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            }
+
             displayGlobalInfo();
 
             context.editedStage = stageIdx;
@@ -6354,10 +6738,13 @@
             // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
+                setEnv4EdtStg(stageIdx);
+            }
 
             // Remove event listeners on all sections and all points
             for (const point of stage.points)
@@ -6398,8 +6785,11 @@
 
             context.editedStage = null;
 
-            if (context.displayInfo)
-                displayGlobalInfo();
+            for (let i = stageIdx; i < stages.length; i++) {
+                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+            }
+
+            displayGlobalInfo();
         }
     }
 
@@ -6407,8 +6797,9 @@
     // Reversible command to remove a point when double clicking it
     //--------------------------------------------------------------
     class DoubleClickPoint2RemoveIt {
-        constructor(stage, pointIdx, before, after) {
+        constructor(stage, stageIdx, pointIdx, before, after) {
             this.stage = stage;
+            this.stageIdx = stageIdx;
             this.pointIdx = pointIdx;
             this.before = before;
             this.after = after;
@@ -6418,21 +6809,17 @@
         undo() {
             const stage = this.stage;
 
-            let stageIdx = stages.indexOf(stage);
+            const stageIdx = this.stageIdx;
 
             if (this.stageRemoved) {
                 stages.splice(stageIdx, 0, stage);
                 this.stageRemoved = false;
             }
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             // Restore point
@@ -6514,6 +6901,12 @@
             // Update information to be displayed for the stage
             updateDetailedInfo(stage, true, false);
 
+            if (stage.points.length === 1) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            }
+
             displayGlobalInfo();
         }
 
@@ -6521,14 +6914,12 @@
             // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             let point = stage.points[this.pointIdx];  // Find out point
@@ -6603,8 +6994,11 @@
                 // Set environment to non edit mode
                 setEnv4NonEdt(true);
 
-                if (context.displayInfo)
-                    displayGlobalInfo();
+                for (let i = stageIdx; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+
+                displayGlobalInfo();
 
                 return;
             }
@@ -6634,25 +7028,23 @@
     // Reversible command to insert a point when double-clicking on a section
     //------------------------------------------------------------------------
     class DoubleClickSection2InsertPoint {
-        constructor(stage, sectionIdx, before, after) {
+        constructor(stage, stageIdx, sectionIdx, before, after) {
             this.stage = stage;
+            this.stageIdx = stageIdx;
             this.sectionIdx = sectionIdx;
             this.before = before;
             this.after = after;
         }
 
         undo() {
-            // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             let section = stage[this.sectionIdx];   // Find out section
@@ -6682,17 +7074,14 @@
         }
 
         redo() {
-            // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             let section = stage.sections[this.sectionIdx];  // Find out section
@@ -6728,25 +7117,23 @@
     // Reversible command to move a point when dragging and dropping it
     //------------------------------------------------------------------
     class DragNDropPoint2MoveIt {
-        constructor(stage, pointIdx, before, after) {
+        constructor(stage, stageIdx, pointIdx, before, after) {
             this.stage = stage;
+            this.stageIdx = stageIdx;
             this.pointIdx = pointIdx;
             this.before = before;
             this.after = after;
         }
 
         undo() {
-            // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             // Find out point
@@ -6801,17 +7188,14 @@
         }
 
         redo() {
-            // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             // Find out point
@@ -6869,25 +7253,23 @@
     // Reversible command to break a polyline and add a point when dragging and dropping it
     //--------------------------------------------------------------------------------------
     class DragNDropSection2BreakIt {
-        constructor(stage, sectionIdx, before, after) {
+        constructor(stage, stageIdx, sectionIdx, before, after) {
             this.stage = stage;
+            this.stageIdx = stageIdx;
             this.sectionIdx = sectionIdx;
             this.before = before;
             this.after = after;
         }
 
         undo() {
-            // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             let section = stage.sections[this.sectionIdx];   // Find out section
@@ -6938,17 +7320,14 @@
         }
 
         redo() {
-            // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             let section = stage.sections[this.sectionIdx];  // Find out section
@@ -7015,7 +7394,7 @@
         }
 
         undo() {
-            for (let i = this.before.stagesLength; i < stages.length; i++) {        // Iterate over the imported stages
+            for (let i = stages.length - this.after.importedStagesNb; i < stages.length; i++) {        // Iterate over the imported stages
                 const stage = stages[i];
                 // Remove event listeners on all sections and all points
                 for (const point of stage.points)
@@ -7048,18 +7427,19 @@
             };
 
             //stages.length = this.before.stagesLength;   // Remove imported stages from "stages"
-            const movedStages = stages.splice(this.before.stagesLength + 1);    // Remove imported stages from "stages"
+            const movedStages = stages.splice(stages.length - this.after.importedStagesNb);    // Remove imported stages from "stages"
             this.after.importedStages.push(...movedStages);     // Add them to backup
                         
             displayGlobalInfo();
         }
 
         redo() {
+            const initStagesNb = stages.length;
             stages.push(...this.after.importedStages);  // Restore stages from backup
             this.after.importedStages.length = 0;   // Clear backup
 
             // Add imported stages to "stages" and to map
-            for (let i = this.before.stagesLength; i < stages.length; i++) {
+            for (let i = initStagesNb; i < stages.length; i++) {
                 const stage = stages[i];
                 // Restore stage's points
                 stage.points.forEach(point => {
@@ -7190,8 +7570,7 @@
 
             context.editedStage = null;
 
-                if (context.displayInfo)
-                    displayGlobalInfo();
+            displayGlobalInfo();
         }
     }
 
@@ -7199,8 +7578,9 @@
     // Reversible command to reverse a stage's direction
     //---------------------------------------------------
     class ReverseStage {
-        constructor(stage, before, after) {
+        constructor(stage, stageIdx, before, after) {
             this.stage = stage;
+            this.stageIdx = stageIdx;
             this.before = before;
             this.after = after;
         }
@@ -7209,17 +7589,13 @@
             // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
-            
-            const stageIdx = stages.indexOf(stage);
 
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
-
-            stage.name = this.before.stage.name;
 
             stage.points.forEach((point, i) => {
                 point.marker.setLatLng(this.before.stage.points[i].latlng);
@@ -7242,17 +7618,13 @@
             // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
-
-            stage.name = this.after.stage.name;
 
             stage.points.forEach((point, i) => {
                 point.marker.setLatLng(this.after.stage.points[i].latlng);
@@ -7276,8 +7648,9 @@
     // Reversible command to change stage's name
     //-------------------------------------------
     class SetStageName {
-        constructor(stage, before, after) {
+        constructor(stage, stageIdx, before, after) {
             this.stage = stage;
+            this.stageIdx = stageIdx;
             this.before = before;
             this.after = after;
         }
@@ -7286,14 +7659,12 @@
             // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             // Restore name
@@ -7307,14 +7678,12 @@
             // Find out stage
             const stage = this.stage;
 
-            if (context.editedStage != null && stages[context.editedStage] != stage)    // Another stage is being edited 
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
                 quitEditStage(true);
 
-            const stageIdx = stages.indexOf(stage);
-
-            if (context.editedStage === null) {
                 setEnv4EdtStg(stageIdx);
-                context.editedStage = stageIdx;
             }
 
             // Change name
@@ -7773,6 +8142,22 @@
             return null;
     }
 
+    //----------------------------
+    // Focus the map on the route
+    //----------------------------
+    function focusOnRoute() {
+        let bounds = L.latLngBounds([]);    // Initialize an array of all polyline bounds
+
+        stages.forEach(stage => {   // Store the bounds of all polylines of all stages
+            stage.sections.forEach(section => {
+                bounds.extend(section.polyline.getBounds());
+            });
+        });
+
+        if (bounds.isValid())
+            map.fitBounds(bounds);  // Focus the map on the polylines
+    }
+
     //---------------------------------------------------------------
     // Calculate distance between two points using haversine formula 
     //---------------------------------------------------------------
@@ -7888,15 +8273,14 @@
     //-----------------------------------------------------------
     function updateDetailedInfo(stage, editMode, removeChart) {
         if (context.displayInfo) {
-            if (stage.points.length === 0) {
+            if (stage.points.length === 0) {    // No stage information displayed if stage has no point
                 if (stage.infoPop)
                     stage.infoPop.remove();
 
                 return;
             }
 
-            const num = stages.indexOf(stage) + 1;  // Retrieve stage index
-
+            // Find position where to display stage information on map
             let pos = null;
             if (editMode) 
                 pos = findNearbyPosition(stage);
@@ -7904,22 +8288,29 @@
                 pos = findMediumPosition(stage);
             if (pos === null) return;
 
-            // Remove previous information popup
-            if (stage.infoPop)
-                stage.infoPop.remove();
+            // Find stage number
+            let num = stages.indexOf(stage) + 1;  // Retrieve stage index
+            if (context.editedStage != null && context.editedStage !== undefined && stages[context.editedStage].points.length === 0 && context.editedStage < num)
+                num--;
 
-            // Create popup with information content
+            // Find elevation of first and last points
             const elevation = stage.points[0].marker.getLatLng().alt;
             let elevation2 = null;
             if (stage.points.length >= 2)
                 elevation2 = stage.points[stage.points.length - 1].marker.getLatLng().alt;
+
+            // Remove previous stage information popup
+            if (stage.infoPop)
+                stage.infoPop.remove();
+
+            // Create popup with stage information content
             stage.infoPop = L.popup(
                 { closeOnClick: false, autoClose: false, autoPan: false, className: 'solid-popup' })
                 .setLatLng(pos)
                 .setContent(`<div style="text-align:left; font-size:12px; line-height:12px;">${
                     stage.name && stage.name.length > 0 
-                        ? `<span style="font-size:16px; line-height:24px;"><b>${stage.name}</b></span><br>` 
-                        : ``
+                        ? `<span style="font-size:16px; line-height:24px;"><b>${num}. ${stage.name}</b></span><br>` 
+                        : `<span style="font-size:16px; line-height:24px;"><b>${num}.</b></span><br>`
                 }
                 ${
                     stage.distance > 0 

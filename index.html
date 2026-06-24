@@ -673,8 +673,16 @@
                     <td>Merge stage</td>
                 </tr>
                 <tr>
+                    <td><strong>f</strong></td>
+                    <td>Focus on stage</td>
+                </tr>
+                <tr>
+                    <td><strong>b</strong> or <strong>a</strong></td>
+                    <td>Move stage to previous or next position in the list</td>
+                </tr>
+                <tr>
                     <td><strong>u</strong> or <strong>v</strong></td>
-                    <td>Delete the last or first<br>point of the stage</td>
+                    <td>Delete the last or first point of the stage</td>
                 </tr>
                 <tr>
                     <td><strong>d</strong></td>
@@ -688,11 +696,11 @@
             <br><strong>Global:</strong><br>
             <table class="command-table">
                 <tr>
-                    <td><strong>Double click on<br>the map</strong></td>
+                    <td><strong>Double click on the<br>map</strong></td>
                     <td>Start creating a new stage</td>
                 </tr>
                 <tr>
-                    <td><strong>Double click on<br>a stage</strong></td>
+                    <td><strong>Double click on a<br>stage</strong></td>
                     <td>Edit the stage</td>
                 </tr>
                 <tr>
@@ -717,7 +725,7 @@
                 </tr>
                 <tr>
                     <td><strong>Ctrl + r</strong></td>
-                    <td>Reset the current route</td>
+                    <td>Reset the route</td>
                 </tr>
             </table>
         ` : `
@@ -725,11 +733,11 @@
             <table class="command-table">
                 <tr>
                     <td><strong>Cliquer sur la carte</strong></td>
-                    <td>Ajouter un nouveau<br>point à l'étape</td>
+                    <td>Ajouter un nouveau point à l'étape</td>
                 </tr>
                 <tr>
                     <td><strong>Double cliquer sur une<br>section de l'étape</strong></td>
-                    <td>Insérer un point dans<br>l'étape</td>
+                    <td>Insérer un point dans l'étape</td>
                 </tr>
                 <tr>
                     <td><strong>Double cliquer sur un<br>point de l'étape</strong></td>
@@ -741,7 +749,7 @@
                 </tr>
                 <tr>
                     <td><strong>n</strong></td>
-                    <td>Attribuer un nom à<br>l'étape</td>
+                    <td>Attribuer un nom à l'étape</td>
                 </tr>
                 <tr>
                 <tr>
@@ -757,6 +765,14 @@
                     <td>Fusionner l'étape</td>
                 </tr>
                 <tr>
+                    <td><strong>f</strong></td>
+                    <td>Focaliser sur l'étape</td>
+                </tr>
+                <tr>
+                    <td><strong>b</strong> ou <strong>a</strong></td>
+                    <td>Déplacer l'étape vers la position précédente ou suivante dans la liste</td>
+                </tr>
+                <tr>
                     <td><strong>u</strong> ou <strong>v</strong></td>
                     <td>Supprimer le dernier ou le premier point de l'étape</td>
                 </tr>
@@ -766,30 +782,30 @@
                 </tr>
                 <tr>
                     <td><strong>Echappement</strong></td>
-                    <td>Terminer la création/<br>modification d'étape</td>
+                    <td>Terminer la création modification d'étape</td>
                 </tr>
             </table>
             <br><strong>Générales :</strong><br>
             <table class="command-table">
                 <tr>
-                    <td><strong>Double cliquer sur<br>la carte</strong></td>
-                    <td>Commencer la création<br>d'une nouvelle étape</td>
+                    <td><strong>Double cliquer sur la<br>carte</strong></td>
+                    <td>Commencer la création d'une nouvelle étape</td>
                 </tr>
                 <tr>
-                    <td><strong>Double cliquer sur<br>une étape</strong></td>
+                    <td><strong>Double cliquer sur une<br>étape</strong></td>
                     <td>Modifier l'étape</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + e</strong></td>
-                    <td>Exporter l'itinéraire dans un<br>fichier GPX</td>
+                    <td>Exporter l'itinéraire dans un fichier GPX</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + i</strong></td>
-                    <td>Importer un itinéraire d'un<br>fichier GPX</td>
+                    <td>Importer un itinéraire d'un fichier GPX</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + f</strong></td>
-                    <td>Focaliser sur l'ininéraire</td>
+                    <td>Focaliser sur l'itinéraire</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + z</strong></td>
@@ -801,7 +817,7 @@
                 </tr>
                 <tr>
                     <td><strong>Ctrl + r</strong></td>
-                    <td>Réinitialiser l'itinéraire<br>en cours</td>
+                    <td>Réinitialiser l'itinéraire</td>
                 </tr>
             </table>
         `;
@@ -895,6 +911,10 @@
                     <td>Import a route from a GPX file</td>
                 </tr>
                 <tr>
+                    <td><strong>Ctrl + f</strong></td>
+                    <td>Focus on route</td>
+                </tr>
+                <tr>
                     <td><strong>Ctrl + z</strong></td>
                     <td>Undo last action</td>
                 </tr>
@@ -925,6 +945,10 @@
                 <tr>
                     <td><strong>Ctrl + i</strong></td>
                     <td>Importer un itinéraire d'un<br>fichier GPX</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + f</strong></td>
+                    <td>Focaliser sur l'itinéraire</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + z</strong></td>
@@ -1243,6 +1267,37 @@
         }
         mergeStgButton.addEventListener('click', mergeStgHandler);  // Associate submit handler with button
        
+        // Create focus icon
+        const focusIcon = document.createElement('i');
+        focusIcon.classList.add('fa-solid', 'fa-arrows-to-circle');
+        focusIcon.style.fontSize = '20px';
+        focusIcon.style.lineHeight = '20px';
+        focusIcon.style.width = '27px';
+        focusIcon.style.height = '20px';
+        focusIcon.style.display = 'inline-flex';
+        focusIcon.style.alignItems = 'center';
+        focusIcon.style.justifyContent = 'center';
+
+        // Create submit button for focusing to a GPX file
+        const focusButton = document.createElement('button');
+        focusButton.appendChild(focusIcon);
+        focusButton.style.width = '29px';
+        focusButton.style.height = '30px';
+        focusButton.style.padding = '0';
+        focusButton.style.display = 'flex';
+        focusButton.style.alignItems = 'center';
+        focusButton.style.justifyContent = 'center';
+        focusButton.title = context.language === 'EN' ? 'Focus on stage' : 'Focaliser sur l\'étape';
+        buttonsContainer.appendChild(focusButton);
+
+        // Define submit handler (for focusing to a GPX file)
+        async function focusHandler() {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            focusOnStage();
+        }
+        focusButton.addEventListener('click', focusHandler);  // Associate submit handler with button
+    
         // Create change stage position icon
         const changeStgPosIcon = document.createElement('i');
         changeStgPosIcon.classList.add('fa-solid', 'fa-sort');
@@ -2153,7 +2208,7 @@
 
             // Create title
             const title = L.DomUtil.create('div', 'menu-title', wrapper);
-            title.innerHTML = context.language === 'EN' ? 'Global route data' : 'Données globales<br> de l\'itinéraire';
+            title.innerHTML = context.language === 'EN' ? 'Global route data' : 'Données générales<br> de l\'itinéraire';
             title.style.fontSize = '18px';
             title.style.fontWeight = 'bold';
             title.style.marginBottom = '4px';
@@ -3394,9 +3449,18 @@
                 e.preventDefault();
                 if (confirm(context.language === 'EN' ? "Are you sure you want to delete the edited stage?" : "Etes-vous sûr de vouloir supprimer l'étape en cours d'édition ?")) 
                     deleteStg(context.editedStage);
+            } else if (key === 'f') {     // When user presses 'f' (to set/change stage name)
+                e.preventDefault();
+                focusOnStage();
             } else if (key === 'n') {     // When user presses 'n' (to set/change stage name)
                 e.preventDefault();
                 setStgName();
+            } else if (key === 'b') {     // When user presses 'b' (to move the stage to the previous position in the list)
+                e.preventDefault();
+                changeStgPos('before');
+            } else if (key === 'a') {     // When user presses 'a' (to move the stage to the next position in the list)
+                e.preventDefault();
+                changeStgPos('after');
             } else if (key === 'u') {     // When user presses 'u' (to delete stage's last point)
                 e.preventDefault();
                 deleteLastPt();
@@ -8158,6 +8222,22 @@
             map.fitBounds(bounds);  // Focus the map on the polylines
     }
 
+    //----------------------------
+    // Focus the map on the route
+    //----------------------------
+    function focusOnStage() {
+        const stage = stages[context.editedStage];
+
+        let bounds = L.latLngBounds([]);    // Initialize an array of all polyline bounds
+
+        stage.sections.forEach(section => {
+            bounds.extend(section.polyline.getBounds());
+        });
+
+        if (bounds.isValid())
+            map.fitBounds(bounds);  // Focus the map on the polylines
+    }
+
     //---------------------------------------------------------------
     // Calculate distance between two points using haversine formula 
     //---------------------------------------------------------------
@@ -8451,6 +8531,10 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Either have their end point less than 2 km from the start point of the edited stage. Such stages are candidates for merging <strong>before</strong> the edited stage and highlighted in green.</li>
 <li>Or have their start point less than 2 km from the end point of the edited stage. Such stages are candidates for merging <strong>after</strong> the edited stage and highlighted in red.</li>
 </ul> 
+<li>Click the "Focus on stage" button or press the "f" key to focus the map on the edited stage.</li>
+<li>Click the "Change stage position" button to move the stage forward or backward in the sequence of stages of the route. A dropdown menu then enables you to select the move direction: before, after, first or last.</li>
+<li>Press the “Ctrl + b” key combination to move the stage before (one step backward in the list of stages).</li>
+<li>Press the “Ctrl + a” key combination to move the stage after (one step forward in the list of stages).</li>
 <li>Press the “u” key to delete the last point on the stage.</li>
 <li>Press the “v” key to delete the first point on the stage.</li>
 <li>Click the "Delete stage" button or press the “d” key to delete all points (and all sections) from the stage. This action also switches to supervision mode.</li>
@@ -8459,6 +8543,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Double-click on a point or section of another stage to finish creating/editing the current stage and switch to create/edit mode for that stage. </li>
 <li>Click the "Import stages from GPX" to import additional stages from a GPX file (without deleting the stages already defined). </li>
 <li>Click the "Export route to GPX" to export the route to a GPX file. </li>
+<li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
 <li>Click the "Undo last action" or press the "Ctrl + z" key combination to undo the last action.</li>
 <li>Click the "Redo last action" or press the "Ctrl + y" key combination to redo the last action undone.</li>
 <li>Click the "Reset route" to reset the route (i.e., delete all the stages).</li>
@@ -8471,6 +8556,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Double-click on a point or section of a stage to switch to create/edit mode for that stage. </li>
 <li>Click the "Import stages from GPX" to import additional stages from a GPX file (without deleting the stages already defined). </li>
 <li>Click the "Export route to GPX" to export the route to a GPX file. </li>
+<li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
 <li>Click the "Undo last action" or press the "Ctrl + z" key combination to undo the last action.</li>
 <li>Click the "Redo last action" or press the "Ctrl + y" key combination to redo the last action undone.</li>
 <li>Click the "Reset route" to reset the route (i.e., delete all the stages).</li>
@@ -8528,7 +8614,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <p>Ce mode permet de créer une nouvelle étape ou de modifier une étape existante de l'itinéraire. En cliquant de manière répétée sur la carte, on ajoute des points à l'étape, et des sections les reliant aux points précédents. Les autres étapes sont affichées, mais ne peuvent pas être modifiées. C'est le mode par défaut au lancement de l'application (on est censé commencer par créer une étape).</p>
 <p>Les actions disponibles en mode édition/modification d'étape sont :</p>
 <ul>
-<li>Cliquer sur la carte pour ajouter un point supplémentaire à l'étape. Si d'autres points existent déjà, une section est aussi créée pour relier le point précédent à ce nouveau point. Le chemin utilisé entre ces deux points est déterminé par le mode de voyage choisi :
+<li>Cliquer sur la carte pour ajouter un point supplémentaire à l'étape en cours d'édition. Si d'autres points existent déjà, une section est aussi créée pour relier le point précédent à ce nouveau point. Le chemin utilisé entre ces deux points est déterminé par le mode de voyage choisi :
 <ul>
 <li>Marche/randonnée (par défaut) : les chemins et les petites routes sont choisis de préférence.</li>
 <li>VTT : les chemins et sentiers sont choisis de préférence.</li>
@@ -8550,6 +8636,10 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Soit avoir leur point d'arrivée distant de moins de 2 km du point de départ de l'étape en cours d'édition. De telles étapes sont candidates à la fusion <strong>avant</strong> l'étape éditée et mises en évidence par la couleur verte.</li>
 <li>Soit avoir leur point de départ distant de moins de 2 km du point d'arrivée de l'étape en cours d'édition. De telles étapes sont candidates à la fusion <strong>après</strong> l'étape éditée et mises en évidence par la couleur rouge.</li>
 </ul> 
+<li>Cliquer sur le bouton "Focaliser sur l'étape" ou presser la touche "f" pour focaliser la carte sur l'étape en cours d'édition.</li>
+<li>Cliquer sur le bouton "Modifier la position de l'étape" pour déplacer l'étape vers l'avant ou l'arrière dans la séquence des étapes de l'itinéraire. Un menu déroulant permet ensuite de choisir la direction du déplacement : avant, après, au début ou à la fin.</li>
+<li>Presser la combinaison de touches "Ctrl + b" pour déplacer l'étape d'un pas vers l'arrière (dans la séquence des étapes).</li>
+<li>Presser la combinaison de touches "Ctrl + a" pour déplacer l'étape d'un pas vers l'avant (dans la séquence des étapes).</li>
 <li>Presser la touche "u" pour supprimer le dernier point de l'étape.</li>
 <li>Presser la touche "v" pour supprimer le premier point de l'étape.</li>
 <li>Cliquer sur le bouton "Supprimer l'étape" ou presser la touche "d" pour supprimer tous les points (et toutes les sections) de l'étape. Cette action fait également passer en mode supervision.</li>
@@ -8558,6 +8648,7 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Double-cliquer sur un point ou une section d'une autre étape pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour l'autre étape.</li>
 <li>Cliquer sur le boutton "Importer étapes de GPX" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
 <li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
+<li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
 <li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
 <li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
 <li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes).</li>
@@ -8570,6 +8661,7 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Double-cliquer sur un point ou une section d'une autre étape pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour l'autre étape.</li>
 <li>Cliquer sur le boutton "Importer étapes de GPX" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
 <li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
+<li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
 <li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
 <li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
 <li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes).</li>

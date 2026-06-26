@@ -1881,7 +1881,7 @@
 
                 setLocationFinder();
 
-                if (context.displayInfo) {
+                if (context.displayInfo > 0) {
                     for (let i = 0; i < stages.length; i++) {
                         if (context.editedStage === i)
                             updateDetailedInfo(stages[i], true, false);
@@ -1890,6 +1890,14 @@
                     }
 
                     displayGlobalInfo();
+                }
+
+                if (context.displayInfo > 1) {
+                    if (context.editedStage !== null) {
+                        displayStageProfile();
+                    } else {
+                        displayRouteProfile();
+                    }
                 }
             }
         });
@@ -1924,6 +1932,14 @@
                     }
 
                     displayGlobalInfo();
+                }
+
+                if (context.displayInfo > 1) {
+                    if (context.editedStage !== null) {
+                        displayStageProfile();
+                    } else {
+                        displayRouteProfile();
+                    }
                 }
             }
         });
@@ -2131,7 +2147,7 @@
                 map.removeControl(scaleControl);
                 scaleControl = L.control.scale({ metric: true, imperial: false }).addTo(map);
 
-                if (context.displayInfo) {
+                if (context.displayInfo > 0) {
                     for (let i = 0; i < stages.length; i++) {
                         if (context.editedStage === i)
                             updateDetailedInfo(stages[i], true, false);
@@ -2140,6 +2156,14 @@
                     }
 
                     displayGlobalInfo();
+                }
+
+                if (context.displayInfo > 1) {
+                    if (context.editedStage !== null) {
+                        displayStageProfile();
+                    } else {
+                        displayRouteProfile();
+                    }
                 }
             }
         });
@@ -2163,7 +2187,7 @@
                 map.removeControl(scaleControl);
                 scaleControl = L.control.scale({ metric: false, imperial: true }).addTo(map);
                 
-                if (context.displayInfo) {
+                if (context.displayInfo > 0) {
                     for (let i = 0; i < stages.length; i++) {
                         if (context.editedStage === i)
                             updateDetailedInfo(stages[i], true, false);
@@ -2172,6 +2196,14 @@
                     }
 
                     displayGlobalInfo();
+                }
+
+                if (context.displayInfo > 1) {
+                    if (context.editedStage !== null) {
+                        displayStageProfile();
+                    } else {
+                        displayRouteProfile();
+                    }
                 }
             }
         });

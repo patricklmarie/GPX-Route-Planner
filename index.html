@@ -3700,8 +3700,6 @@
     // Quit edit stage
     //-----------------
     function quitEditStage(removeChart) {
-        if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
-
         if (context.editedStage != null && stages[context.editedStage] && stages[context.editedStage].points && stages[context.editedStage].points.length === 0)
             stages.splice(context.editedStage, 1);  // Remove empty stage
 
@@ -7935,11 +7933,21 @@
                         
             displayGlobalInfo();
 
-            if (context.editedStage === null && context.displayInfo === 2)
-                displayRouteProfile();
+            if (context.displayInfo === 2 && context.editedStage === null) {
+                if (stages.length > 0)
+                    displayRouteProfile();
+                else {
+                    removeRouteMapNChartMarkers();
+
+                    removeRouteProfileControl();
+                }
+            }
         }
 
         redo() {
+            if (context.editedStage != null && stages[context.editedStage].points.length === 0)
+                quitEditStage(true);
+
             const initStagesNb = stages.length;
             stages.push(...this.after.importedStages);  // Restore stages from backup
             this.after.importedStages.length = 0;   // Clear backup

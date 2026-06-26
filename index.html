@@ -3700,8 +3700,10 @@
     // Quit edit stage
     //-----------------
     function quitEditStage(removeChart) {
-        if (context.editedStage != null && stages[context.editedStage] && stages[context.editedStage].points && stages[context.editedStage].points.length === 0)
+        if (context.editedStage != null && stages[context.editedStage] && stages[context.editedStage].points && stages[context.editedStage].points.length === 0) {
             stages.splice(context.editedStage, 1);  // Remove empty stage
+            context.editedStage = null;
+        }
 
         setEnv4NonEdt(removeChart);
     }

@@ -1,0 +1,9131 @@
+    // Custom namespace
+    const RP_NS = "https://patrickmarie.dev/ns/routeplanner/extensions";
+
+    // Colors used to draw the route stages
+    let routeColors = { 
+        lightRed: '#ff6666',     // Arrival points in edition mode
+        lightGreen: '#00cc33',   // Departure points in edition mode
+        lightBlue: '#2791F5',       // Stage sections in edition mode
+        lightPurple: '#ff4dff',      // Departure/arrival points in edition mode
+        Red: '#cc0000',       // Arrival point in non edition mode
+        Green: '#008020',     // Departure point in non edition mode 
+        Blue: '#274BF5',         // Stage sections in non edition mode
+        Purple: '#cc00cc'         // Departure/arrival points in non edition mode
+    }
+
+    // Weights used to draw the route stages
+    let routeWeights = {
+        editRoute: 4,   // Stage sections in edit mode
+        neRoute: 4      // Stage sections in non edit mode
+    }
+
+    // Point sizes used to draw the route
+    let markerSize = {
+        invisible: 0,   // Invisible point
+        small: 5,       // Small size point
+        medium: 7,      // Medium size point
+        large: 9       // Large size point
+    }
+
+    const lightPurpleDoubleSquareIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: relative;
+                width: 18px;
+                height: 18px;
+            ">
+                <!-- Base square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.lightPurple};
+                    transform: translate(-50%, -50%);
+                "></div>
+
+                <!-- Rotated square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.lightPurple};
+                    transform: translate(-50%, -50%) rotate(45deg);
+                "></div>
+            </div>
+        `,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const PurpleDoubleSquareIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: relative;
+                width: 18px;
+                height: 18px;
+            ">
+                <!-- Base square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.Purple};
+                    transform: translate(-50%, -50%);
+                "></div>
+
+                <!-- Rotated square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.Purple};
+                    transform: translate(-50%, -50%) rotate(45deg);
+                "></div>
+            </div>
+        `,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightGreenDoubleSquareIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: relative;
+                width: 18px;
+                height: 18px;
+            ">
+                <!-- Base square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.lightGreen};
+                    transform: translate(-50%, -50%);
+                "></div>
+
+                <!-- Rotated square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.lightGreen};
+                    transform: translate(-50%, -50%) rotate(45deg);
+                "></div>
+            </div>
+        `,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightRedDoubleSquareIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: relative;
+                width: 18px;
+                height: 18px;
+            ">
+                <!-- Base square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.lightRed};
+                    transform: translate(-50%, -50%);
+                "></div>
+
+                <!-- Rotated square -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 14px;
+                    height: 14px;
+                    background: transparent;
+                    border: 3px solid ${routeColors.lightRed};
+                    transform: translate(-50%, -50%) rotate(45deg);
+                "></div>
+            </div>
+        `,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightGreenDiamondIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 14px;
+            height: 14px;
+            background: transparent;
+            border: 4px solid ${routeColors.lightGreen};
+            transform: translate(-50%, -50%) rotate(45deg);
+        "></div>`,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    const GreenDiamondIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 14px;
+            height: 14px;
+            background: transparent;
+            border: 4px solid ${routeColors.Green};
+            transform: translate(-50%, -50%) rotate(45deg);
+        "></div>`,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    const lightRedDiamondIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 14px;
+            height: 14px;
+            background: transparent;
+            border: 4px solid ${routeColors.lightRed};
+            transform: translate(-50%, -50%) rotate(45deg);
+        "></div>`,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    const circleIconEdit = L.divIcon({
+        className: '',
+        html: `<div style="
+            width: 8px;
+            height: 8px;
+            background: transparent;
+            border: 4px solid ${routeColors.lightBlue};
+            border-radius: 50%;
+        "></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const transparentIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            width: 1px;
+            height: 1px;
+            background: transparent;²
+            border: 4px solid transparent;
+        "></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightGreenCircleIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            width: 8px;
+            height: 8px;
+            background: transparent;
+            border: 4px solid ${routeColors.lightGreen};
+            border-radius: 50%;
+        "></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightRedCircleIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            width: 8px;
+            height: 8px;
+            background: transparent;
+            border: 4px solid ${routeColors.lightRed};
+            border-radius: 50%;
+        "></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightPurpleCircleIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            width: 8px;
+            height: 8px;
+            background: transparent;
+            border: 4px solid ${routeColors.lightPurple};
+            border-radius: 50%;
+        "></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightRedSquareIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            position: relative;
+            width: 18px;
+            height: 18px;
+        ">
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 14px;
+                height: 14px;
+                background: transparent;
+                border: 4px solid ${routeColors.lightRed};
+                transform: translate(-50%, -50%);
+            "></div>
+        </div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const RedSquareIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            position: relative;
+            width: 18px;
+            height: 18px;
+        ">
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 14px;
+                height: 14px;
+                background: transparent;
+                border: 4px solid ${routeColors.Red};
+                transform: translate(-50%, -50%);
+            "></div>
+        </div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    const lightGreenSquareIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            position: relative;
+            width: 18px;
+            height: 18px;
+        ">
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 14px;
+                height: 14px;
+                background: transparent;
+                border: 4px solid ${routeColors.lightGreen};
+                transform: translate(-50%, -50%);
+            "></div>
+        </div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    // Route (defined as an array of stages)
+    let stages = [];
+
+    // Events registered for the document and for the map
+    let documentEvtList = [];
+    let docLocFindEvtList = [];
+    let mapEvtList = [];
+    
+    // Context variables
+    let context = {
+        menuControl: null,              // Control hosting the menu: option selectors and list of commands
+        locFinderControl: null,         // Control hosting the location finder function
+        geolocControl: null,            // Control hosting the geolocation function
+        globalInfoControl: null,        // Control hosting the global information about the route
+        stageProfileControl: null,      // Control hosting the stage profile diagram
+        stageProfileChart: null,        // Stage profile diagram
+        stageProfileMapMarker: null,    // Marker added on map when hovering on a stage profile curve
+        stageProfileChartRevIdx: null,
+        stageProfileChartPoints: null,
+        routeProfileControl: null,      // Control hosting the route profile diagram
+        routeProfileChart: null,        // Route profile diagram
+        routeProfileMapMarker: null,    // Marker added on map when hovering on a route profile curve
+        routeProfileChartRevIdx: null,
+        routeProfileChartPoints: null,
+        baseMap: null,                  // Base map style
+        routerProfile: null,            // Router profile
+        spannedCommand: false,          // Flag: commands spanned or not in the menu
+        editedStage: null,              // Currently edited stage
+        initializationInProcess: true,  // Initialization in process
+        operationWithButtonInProcess: false,    // Flag: operation such as save, load or set name in process
+        clickTimeout: null,             // Timeout used to distinguish simple clicks from double clicks
+        mouseOutTimeout: null,
+        suppressNextClick: false,       // Flag used not to take into account next click
+        metricUnits: true,              // Flag used to specify whether the metric unit system or the imperial unit system must be used 
+        displayInfo: 2,                 // Flag: info (stage distances and ascents/descents) displayed
+        language: 'EN',                 // Language to be used for the UI (English or French)
+        stageProfileIndexes: null       // Used to build stage profile chart
+    };
+
+    // OpenStreetMap tile layer
+    const osmTL = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+    });
+
+    // OpenTopoMap tile layer
+    const otmTL = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+        maxZoom: 15,
+        attribution:
+            'Map data: &copy; OpenStreetMap contributors, SRTM | ' +
+            'Map style: &copy; OpenTopoMap (CC-BY-SA)'
+    });
+
+    // Aerial views tile layer
+    const esriTL = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19,
+        attribution:
+            'Tiles &copy; Esri — Source: Esri, Maxar, Earthstar Geographics'
+    });
+
+    // Waymarked trails - Hiking
+    const wmt_hiking = L.tileLayer('https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png', {
+	    maxZoom: 18,
+	    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; <a href="https://waymarkedtrails.org">waymarkedtrails.org</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+    });
+
+    // Waymarked trails - Cycling
+    const wmt_cycling = L.tileLayer('https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png', {
+	    maxZoom: 18,
+	    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; <a href="https://waymarkedtrails.org">waymarkedtrails.org</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+    });
+
+    // Waymarked trails for cyking
+
+    // Base map styles available
+    const baseMaps = {
+        otm: otmTL,
+        osm: osmTL,
+        hiking: wmt_hiking,
+        cycling: wmt_cycling,
+        esri: esriTL
+    };
+
+    const baseMapLabels = {
+        EN: {
+            otm: "Topographic",
+            osm: "General Map",
+            hiking: "Hiking Trails",
+            cycling: "Cycling Routes",
+            esri: "Satellite Imagery (Esri)"
+        },
+        FR: {
+            otm: "Topographique",
+            osm: "Généraliste",
+            hiking: "Sentiers de randonnée",
+            cycling: "Itinéraires de cyclotourisme",
+            esri: "Images satellite (Esri)"
+        }
+    };
+
+    // Router profiles available
+    const routerProfilesEn = {
+        "Walking / hiking": "trekking",
+        "Mountain biking": "mtb",
+        "Road cycling": "fastbike",
+        "Car route": "car-fast",
+        "-- crow --": "crow"
+    };
+
+    const routerProfilesFr = {
+        "Marche / randonnée": "trekking",
+        "VTT": "mtb",
+        "Cyclisme sur route": "fastbike",
+        "Automobile": "car-fast",
+        "-- vol d\'oiseau --": "crow"
+    };
+
+    let scaleControl = null;    // Scale control to be displayed at the left bottom of the map
+
+    /* Undo and redo stacks for undo and redo actions */
+    const undoStack = [];   
+    const redoStack = [];
+    const MAX_HISTORY = 50;     // Max number of actions that can be undone
+
+    //*****************
+    // MAIN FUNCTIONS *
+    //*****************
+
+    //-----------------------------------
+    // Change stage position in the list
+    //-----------------------------------
+    function changeStgPos(newPosition) {
+        if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+
+        if (context.editedStage === null) return;
+
+        const stage = stages[context.editedStage];
+        const stageIdx = context.editedStage;
+
+        let newStageIdx = null;
+        if (newPosition === 'before') {
+            if (context.editedStage === 0) return;
+            newStageIdx = context.editedStage - 1;
+        } else if (newPosition === 'first') {
+            if (context.editedStage === 0) return;
+            newStageIdx = 0;
+        } else if (newPosition === 'after') {
+            if (context.editedStage === stages.length - 1) return;
+            newStageIdx = context.editedStage + 1;
+        } else if (newPosition === 'last') {
+            if (context.editedStage === stages.length - 1) return;
+            newStageIdx = stages.length - 1;
+        } else return;
+
+        const beforeState = null;
+        const afterState = { newStageIdx: newStageIdx };
+        execute(new ChangeStagePosition(stage, stageIdx, beforeState, afterState));        
+    }
+
+    //--------------------------------------------
+    // Create command list control for stage edit
+    //--------------------------------------------
+    function createCmdListEdtStgControl() {
+        // Create global container
+        const container = L.DomUtil.create('div', 'info menu');
+        container.style.maxWidth = '310px';
+        container.style.boxSizing = 'border-box';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+
+        // Create header with arrow
+        const header = L.DomUtil.create('div', 'menu-header', container);
+        header.style.cursor = 'pointer';
+        header.fontSize = '14px';
+        header.fontWeight = 'bold';
+        header.innerHTML = context.language === 'EN' ? '<strong>Mouse actions & keyboard shortcuts</strong> <span>▼</span>' : '<strong>Actions avec souris & raccourcis clavier</strong> <span>▼</span>';
+        const arrow = header.querySelector('span');
+
+        // Create list of commands
+        const content = L.DomUtil.create('div', 'menu-content', container);
+        content.style.fontSize = '12px';
+        content.style.overflowY = context.spannedCommand ? 'auto' : 'hidden'; // scroll when expanded
+        content.style.transition = 'max-height 0.3s ease';
+
+        content.innerHTML = context.language === 'EN' ? `
+            <br><strong>Create/edit stage:</strong><br>
+            <table class="command-table">
+                <tr>
+                    <td><strong>Click on the map</strong></td>
+                    <td>Add a new point to the<br>stage</td>
+                </tr>
+                <tr>
+                    <td><strong>Double click on a<br>section of the stage</strong></td>
+                    <td>Insert a point in the stage</td>
+                </tr>
+                <tr>
+                    <td><strong>Double click on a<br>point of the stage</strong></td>
+                    <td>Remove the point</td>
+                </tr>
+                <tr>
+                    <td><strong>Drag & drop a point<br>or a section</strong></td>
+                    <td>Modify the stage path</td>
+                </tr>
+                <tr>
+                    <td><strong>n</strong></td>
+                    <td>Set a name to the stage</td>
+                </tr>
+                <tr>
+                    <td><strong>r</strong></td>
+                    <td>Reverse stage direction</td>
+                </tr>
+                <tr>
+                    <td><strong>s</strong></td>
+                    <td>Split stage</td>
+                </tr>
+                <tr>
+                    <td><strong>m</strong></td>
+                    <td>Merge stage</td>
+                </tr>
+                <tr>
+                    <td><strong>f</strong></td>
+                    <td>Focus on stage</td>
+                </tr>
+                <tr>
+                    <td><strong>b</strong> or <strong>a</strong></td>
+                    <td>Move stage to previous or next position in the list</td>
+                </tr>
+                <tr>
+                    <td><strong>u</strong> or <strong>v</strong></td>
+                    <td>Delete the last or first point of the stage</td>
+                </tr>
+                <tr>
+                    <td><strong>d</strong></td>
+                    <td>Delete the stage</td>
+                </tr>
+                <tr>
+                    <td><strong>Escape</strong></td>
+                    <td>Quit editing the stage</td>
+                </tr>
+            </table>
+            <br><strong>Global:</strong><br>
+            <table class="command-table">
+                <tr>
+                    <td><strong>Double click on the<br>map</strong></td>
+                    <td>Start creating a new stage</td>
+                </tr>
+                <tr>
+                    <td><strong>Double click on a<br>stage</strong></td>
+                    <td>Edit the stage</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + e</strong></td>
+                    <td>Export the route to a GPX file</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + i</strong></td>
+                    <td>Import a route from a GPX file</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + f</strong></td>
+                    <td>Focus on route</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + z</strong></td>
+                    <td>Undo last action</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + y</strong></td>
+                    <td>Redo last action</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + r</strong></td>
+                    <td>Reset the route</td>
+                </tr>
+            </table>
+        ` : `
+            <br><strong>Création/modification d'étape:</strong><br>
+            <table class="command-table">
+                <tr>
+                    <td><strong>Cliquer sur la carte</strong></td>
+                    <td>Ajouter un nouveau point à l'étape</td>
+                </tr>
+                <tr>
+                    <td><strong>Double cliquer sur une<br>section de l'étape</strong></td>
+                    <td>Insérer un point dans l'étape</td>
+                </tr>
+                <tr>
+                    <td><strong>Double cliquer sur un<br>point de l'étape</strong></td>
+                    <td>Supprimer le point</td>
+                </tr>
+                <tr>
+                    <td><strong>Tirer-déposer un point<br>ou une section</strong></td>
+                    <td>Modifier le tracé de l'étape</td>
+                </tr>
+                <tr>
+                    <td><strong>n</strong></td>
+                    <td>Attribuer un nom à l'étape</td>
+                </tr>
+                <tr>
+                <tr>
+                    <td><strong>r</strong></td>
+                    <td>Inverser la direction de l'étape</td>
+                </tr>
+                <tr>
+                    <td><strong>s</strong></td>
+                    <td>Partager l'étape</td>
+                </tr>
+                <tr>
+                    <td><strong>m</strong></td>
+                    <td>Fusionner l'étape</td>
+                </tr>
+                <tr>
+                    <td><strong>f</strong></td>
+                    <td>Focaliser sur l'étape</td>
+                </tr>
+                <tr>
+                    <td><strong>b</strong> ou <strong>a</strong></td>
+                    <td>Déplacer l'étape vers la position précédente ou suivante dans la liste</td>
+                </tr>
+                <tr>
+                    <td><strong>u</strong> ou <strong>v</strong></td>
+                    <td>Supprimer le dernier ou le premier point de l'étape</td>
+                </tr>
+                <tr>
+                    <td><strong>d</strong></td>
+                    <td>Supprimer l'étape</td>
+                </tr>
+                <tr>
+                    <td><strong>Echappement</strong></td>
+                    <td>Terminer la création modification d'étape</td>
+                </tr>
+            </table>
+            <br><strong>Générales :</strong><br>
+            <table class="command-table">
+                <tr>
+                    <td><strong>Double cliquer sur la<br>carte</strong></td>
+                    <td>Commencer la création d'une nouvelle étape</td>
+                </tr>
+                <tr>
+                    <td><strong>Double cliquer sur une<br>étape</strong></td>
+                    <td>Modifier l'étape</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + e</strong></td>
+                    <td>Exporter l'itinéraire dans un fichier GPX</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + i</strong></td>
+                    <td>Importer un itinéraire d'un fichier GPX</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + f</strong></td>
+                    <td>Focaliser sur l'itinéraire</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + z</strong></td>
+                    <td>Défaire la dernière action</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + y</strong></td>
+                    <td>Refaire la dernière action</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + r</strong></td>
+                    <td>Réinitialiser l'itinéraire</td>
+                </tr>
+            </table>
+        `;
+
+        // Adjust max height to content
+        if (context.spannedCommand) {
+            content.style.maxHeight = '0';       // collapse
+            content.style.overflow = 'hidden';
+
+            requestAnimationFrame(() => {
+            const mapContainer = map.getContainer(); // Leaflet map container
+            const mapHeight = mapContainer.clientHeight;
+            const containerRect = container.getBoundingClientRect();
+            const availableHeight = mapHeight - containerRect.top - 10; // 10px padding
+            content.style.maxHeight = availableHeight + 'px';   // Expand
+            content.style.overflowY = 'auto';
+            });
+        } else {
+            content.style.maxHeight = '0';       // Collapse
+            content.style.overflow = 'hidden';
+        }
+
+        // Select arrow shape
+        arrow.textContent = context.spannedCommand ? '▲' : '▼';
+
+        // Handle clicks on the arrow
+        L.DomEvent.on(header, 'click', () => {
+            context.spannedCommand = !context.spannedCommand;
+
+            // Adjust max height to content
+            if (context.spannedCommand) {
+                const mapContainer = map.getContainer(); // Leaflet map container
+                const mapHeight = mapContainer.clientHeight;
+                const containerRect = container.getBoundingClientRect();
+                const availableHeight = mapHeight - containerRect.top - 10; // 10px padding
+
+                content.style.maxHeight = availableHeight + 'px';   // Expand
+                content.style.overflowY = 'auto';
+            } else {
+                content.style.maxHeight = '0';       // Collapse
+                content.style.overflow = 'hidden';
+            }
+
+            arrow.textContent = context.spannedCommand ? '▲' : '▼';
+        });
+
+        return container;
+    }
+
+    //------------------------------------------
+    // Create command list control for non edit
+    //------------------------------------------
+    function createCmdListNonEdtControl() {
+        // Create global container
+        const container = L.DomUtil.create('div', 'info menu');
+        container.style.maxWidth = '300px';
+        container.style.boxSizing = 'border-box';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+
+        // Create header iwth span arrow
+        const header = L.DomUtil.create('div', 'menu-header', container);
+        header.style.cursor = 'pointer';
+        header.style.fontSize = '14px';
+        header.innerHTML = context.language === 'EN' ? '<strong>Other commands</strong> <span>▼</span>' : '<strong>Autres commandes</strong> <span>▼</span>';
+        const arrow = header.querySelector('span');
+
+        // Create command list
+        const content = L.DomUtil.create('div', 'menu-content', container);
+        content.style.fontSize = '12px';
+        content.style.overflowY = context.spannedCommand ? 'auto' : 'hidden'; // scroll when expanded
+        content.style.transition = 'max-height 0.3s ease';
+
+        content.innerHTML = context.language === 'EN' ? `
+            <br><strong>Global:</strong><br>
+            <table class="command-table">
+                <tr>
+                    <td><strong>Double click on<br>the map</strong></td>
+                    <td>Start creating a new stage</td>
+                </tr>
+                <tr>
+                    <td><strong>Double click on<br>a stage</strong></td>
+                    <td>Edit the stage</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + e</strong></td>
+                    <td>Export the route to a GPX file</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + i</strong></td>
+                    <td>Import a route from a GPX file</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + f</strong></td>
+                    <td>Focus on route</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + z</strong></td>
+                    <td>Undo last action</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + y</strong></td>
+                    <td>Redo last action</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + r</strong></td>
+                    <td>Reset the current route</td>
+                </tr>
+            </table>
+        ` : `
+            <br><strong>Générales :</strong><br><br>
+            <table class="command-table">
+                <tr>
+                    <td><strong>Double cliquer sur<br>la carte</strong></td>
+                    <td>Commencer la création<br>d'une nouvelle étape</td>
+                </tr>
+                <tr>
+                    <td><strong>Double cliquer sur<br>une étape</strong></td>
+                    <td>Modifier l'étape</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + e</strong></td>
+                    <td>Exporter l'itinéraire dans un<br>fichier GPX</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + i</strong></td>
+                    <td>Importer un itinéraire d'un<br>fichier GPX</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + f</strong></td>
+                    <td>Focaliser sur l'itinéraire</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + z</strong></td>
+                    <td>Défaire la dernière action</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + y</strong></td>
+                    <td>Refaire la dernière action</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + r</strong></td>
+                    <td>Réinitialiser l'itinéraire<br>en cours</td>
+                </tr>
+            </table>
+        `;
+
+        const isExpanded = context.spannedCommand === true;     // Restore spanned status
+
+        // Adjust max height to content
+        if (context.spannedCommand) {
+            content.style.maxHeight = '0';       // collapse
+            content.style.overflow = 'hidden';
+
+            requestAnimationFrame(() => {
+            const mapContainer = map.getContainer(); // Leaflet map container
+            const mapHeight = mapContainer.clientHeight;
+            const containerRect = container.getBoundingClientRect();
+            const availableHeight = mapHeight - containerRect.top - 10; // 10px padding
+            content.style.maxHeight = availableHeight + 'px';   // Expand
+            content.style.overflowY = 'auto';
+            });
+        } else {
+            content.style.maxHeight = '0';       // Collapse
+            content.style.overflow = 'hidden';
+        }
+
+        // Select arrow shape
+        arrow.textContent = context.spannedCommand ? '▲' : '▼';
+
+        // Handle clicks on the arrow
+        L.DomEvent.on(header, 'click', () => {
+            context.spannedCommand = !context.spannedCommand;
+
+            // Adjust max height to content
+            if (context.spannedCommand) {
+                const mapContainer = map.getContainer(); // Leaflet map container
+                const mapHeight = mapContainer.clientHeight;
+                const containerRect = container.getBoundingClientRect();
+                const availableHeight = mapHeight - containerRect.top - 10; // 10px padding
+
+                content.style.maxHeight = availableHeight + 'px';   // Expand
+                content.style.overflowY = 'auto';
+            } else {
+                content.style.maxHeight = '0';       // Collapse
+                content.style.overflow = 'hidden';
+            }
+
+            arrow.textContent = context.spannedCommand ? '▲' : '▼';
+        });
+
+        return container;
+    }
+
+    //-----------------------------
+    // Create display info control
+    //-----------------------------
+    function createDisplayInfoControl() {
+        // Create division
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.gap = '8px';
+
+        // Create global label
+        const globalLabel = document.createElement('span');
+        globalLabel.textContent = context.language === 'EN' ? 'Displayed info.:' : 'Infos : ';
+        globalLabel.style.fontSize = '12px';
+
+        // Create radios container
+        const radios = document.createElement('div');
+        radios.style.display = 'flex';
+        radios.style.gap = '6px';
+
+        // Create data & profile radio button
+        const dataNprofileLabel = document.createElement('label');
+        const dataNprofileRadio = document.createElement('input');
+        dataNprofileRadio.type = 'radio';
+        dataNprofileRadio.name = 'displayInfo';
+        dataNprofileRadio.value = 2;
+        dataNprofileRadio.checked = context.displayInfo === 2;    // Restore selection
+
+        dataNprofileLabel.appendChild(dataNprofileRadio);
+        dataNprofileLabel.append(context.language === 'EN' ? ' Data & profile' : ' Données & profil');
+
+        // Create data radio button
+        const dataLabel = document.createElement('label');
+        const dataRadio = document.createElement('input');
+        dataRadio.type = 'radio';
+        dataRadio.name = 'displayInfo';
+        dataRadio.value = 1;
+        dataRadio.checked = context.displayInfo === 1;    // Restore selection
+
+        dataLabel.appendChild(dataRadio);
+        dataLabel.append(context.language === 'EN' ? ' Data' : ' Données');
+
+        // Create none radio button
+        const noneLabel = document.createElement('label');
+        const noneRadio = document.createElement('input');
+        noneRadio.type = 'radio';
+        noneRadio.name = 'displayInfo';
+        noneRadio.value = 0;
+        noneRadio.checked = context.displayInfo === 0;    // Restore selection
+
+        noneLabel.appendChild(noneRadio);
+        noneLabel.append(context.language === 'EN' ? ' None' : ' Aucune');
+
+         // Disable when other operation in process
+        dataNprofileRadio.addEventListener('click', function (e) {
+            if (context.operationWithButtonInProcess) {
+                e.preventDefault();
+        
+                return;
+            }
+        });
+
+         // Handle changes
+        dataNprofileRadio.addEventListener('change', () => {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            if (dataNprofileRadio.checked) {
+                context.displayInfo = 2;
+
+                for (let i = 0; i < stages.length; i++) {
+                    if (context.editedStage === i)
+                        updateDetailedInfo(stages[i], true, false);
+                    else
+                        updateDetailedInfo(stages[i], false, false);
+                }
+
+                displayGlobalInfo();
+
+                if (context.editedStage != null) {
+                    displayStageProfile(stages[context.editedStage]);
+                } else {
+                    displayRouteProfile();
+                }
+            }
+        });
+
+         // Disable when other operation in process
+        dataRadio.addEventListener('click', function (e) {
+            if (context.operationWithButtonInProcess) {
+                e.preventDefault();
+        
+                return;
+            }
+        });
+
+         // Handle changes
+        dataRadio.addEventListener('change', () => {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            if (dataRadio.checked) {
+                context.displayInfo = 1;
+
+                for (let i = 0; i < stages.length; i++) {
+                    if (context.editedStage === i)
+                        updateDetailedInfo(stages[i], true, true);
+                    else
+                        updateDetailedInfo(stages[i], false, true);
+                }
+
+                displayGlobalInfo();
+
+                if (context.editedStage != null) {
+                    removeStageMapNChartMarkers();
+
+                    removeStageProfileControl();
+                } else {
+                    removeRouteMapNChartMarkers();
+
+                    removeRouteProfileControl();
+                }
+            }
+        });
+
+         // Disable when other operation in process
+        noneRadio.addEventListener('click', function (e) {
+            if (context.operationWithButtonInProcess) {
+                e.preventDefault();
+        
+                return;
+            }
+        });
+
+        // Handle changes
+        noneRadio.addEventListener('change', () => {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            if (noneRadio.checked) {
+                context.displayInfo = 0;
+                
+                for (let i = 0; i < stages.length; i++) {
+                    if (stages[i].infoPop)
+                        stages[i].infoPop.remove();
+                }
+
+                if (context.editedStage != null) {
+                    removeStageMapNChartMarkers();
+
+                    removeStageProfileControl();
+                } else {
+                    removeRouteMapNChartMarkers();
+
+                    removeRouteProfileControl();
+                }
+
+                if (context.globalInfoControl)
+                    context.globalInfoControl.remove();
+            }
+        });
+
+        radios.appendChild(dataNprofileLabel);
+        radios.appendChild(dataLabel);
+        radios.appendChild(noneLabel);
+
+        container.appendChild(globalLabel);
+        container.appendChild(radios);
+
+        return container;
+    }
+
+    //--------------------------------
+    // Create edit stage buttons control
+    //--------------------------------
+    function createEdtStgButtonsControl() {
+        // Create title division
+        const titleContainer = document.createElement('div');
+        titleContainer.style.display = 'flex';
+        titleContainer.style.alignItems = 'center';
+        titleContainer.style.gap = '8px';
+
+        // Create global label
+        const globalLabel = document.createElement('span');
+        globalLabel.textContent = context.language === 'EN' ? 'Edit stage actions:' : 'Actions d\'édition d\'étape : ';
+        globalLabel.style.fontSize = '14px';
+        globalLabel.style.fontWeight = 'bold';
+        titleContainer.appendChild(globalLabel);
+
+        // Create buttons division
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.style.display = 'flex';
+        buttonsContainer.style.alignItems = 'center';
+        buttonsContainer.style.gap = '8px';
+
+        // Create set name icon
+        const snIcon = document.createElement('i');
+        snIcon.classList.add('fa-solid', 'fa-n');
+        snIcon.style.fontSize = '20px';
+        snIcon.style.lineHeight = '20px';
+        snIcon.style.width = '27px';
+        snIcon.style.height = '20px';
+        snIcon.style.display = 'inline-flex';
+        snIcon.style.alignItems = 'center';
+        snIcon.style.justifyContent = 'center';
+
+        // Create submit button for setting the stage's name
+        const setNameButton = document.createElement('button');
+        setNameButton.appendChild(snIcon);
+        setNameButton.style.width = '29px';
+        setNameButton.style.height = '30px';
+        setNameButton.style.padding = '0';
+        setNameButton.style.display = 'flex';
+        setNameButton.style.alignItems = 'center';
+        setNameButton.style.justifyContent = 'center';
+        setNameButton.title = context.language === 'EN' ? 'Set stage name' : 'Attribuer nom à l\'étape';
+        buttonsContainer.appendChild(setNameButton);
+
+        // Define submit handler (for setting the stage's name)
+        async function setNameHandler() {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            setStgName();
+        }
+        setNameButton.addEventListener('click', setNameHandler);  // Associate submit handler with button
+    
+        // Create reverse stage direction icon
+        const rsIcon = document.createElement('i');
+        rsIcon.classList.add('fa-solid', 'fa-arrow-right-arrow-left');
+        rsIcon.style.fontSize = '20px';
+        rsIcon.style.lineHeight = '20px';
+        rsIcon.style.width = '27px';
+        rsIcon.style.height = '20px';
+        rsIcon.style.display = 'inline-flex';
+        rsIcon.style.alignItems = 'center';
+        rsIcon.style.justifyContent = 'center';
+
+        // Create submit button for reverse stage direction
+        const revStgButton = document.createElement('button');
+        revStgButton.appendChild(rsIcon);
+        revStgButton.style.width = '29px';
+        revStgButton.style.height = '30px';
+        revStgButton.style.padding = '0';
+        revStgButton.style.display = 'flex';
+        revStgButton.style.alignItems = 'center';
+        revStgButton.style.justifyContent = 'center';
+        revStgButton.title = context.language === 'EN' ? 'Reverse stage direction' : 'Inverser direction de l\'étape';
+        buttonsContainer.appendChild(revStgButton);
+
+        // Define submit handler (for reverse stage direction)
+        async function revStgHandler() {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            reverseStg();
+        }
+        revStgButton.addEventListener('click', revStgHandler);  // Associate submit handler with button
+       
+        // Create split stage icon
+        const splitIcon = document.createElement('i');
+        splitIcon.classList.add('fa-solid', 'fa-scissors');
+        splitIcon.style.fontSize = '20px';
+        splitIcon.style.lineHeight = '20px';
+        splitIcon.style.width = '27px';
+        splitIcon.style.height = '20px';
+        splitIcon.style.display = 'inline-flex';
+        splitIcon.style.alignItems = 'center';
+        splitIcon.style.justifyContent = 'center';
+
+        // Create submit button for split stage
+        const splitStgButton = document.createElement('button');
+        splitStgButton.appendChild(splitIcon);
+        splitStgButton.style.width = '29px';
+        splitStgButton.style.height = '30px';
+        splitStgButton.style.padding = '0';
+        splitStgButton.style.display = 'flex';
+        splitStgButton.style.alignItems = 'center';
+        splitStgButton.style.justifyContent = 'center';
+        splitStgButton.title = context.language === 'EN' ? 'Split stage\n(Esc to cancel)' : 'Partager l\'étape en deux\n(Echap. pour annuler)';
+        buttonsContainer.appendChild(splitStgButton);
+
+        // Define submit handler (for split stage)
+        async function splitStgHandler() {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+
+            splitStage();
+        }
+        splitStgButton.addEventListener('click', splitStgHandler);  // Associate submit handler with button
+       
+        // Create merge before stage icon
+        const mergeIcon = document.createElement('i');
+        mergeIcon.classList.add('fa-solid', 'fa-handshake');
+        mergeIcon.style.fontSize = '20px';
+        mergeIcon.style.lineHeight = '20px';
+        mergeIcon.style.width = '27px';
+        mergeIcon.style.height = '20px';
+        mergeIcon.style.display = 'inline-flex';
+        mergeIcon.style.alignItems = 'center';
+        mergeIcon.style.justifyContent = 'center';
+
+        // Create submit button for merge before
+        const mergeStgButton = document.createElement('button');
+        mergeStgButton.appendChild(mergeIcon);
+        mergeStgButton.style.width = '32px';
+        mergeStgButton.style.height = '30px';
+        mergeStgButton.style.padding = '0';
+        mergeStgButton.style.display = 'flex';
+        mergeStgButton.style.alignItems = 'center';
+        mergeStgButton.style.justifyContent = 'center';
+        mergeStgButton.title = context.language === 'EN' ? 'Merge stage with another one\n(Esc to cancel)' : 'Fusionner l\'étape avec une autre\n(Echap. pour annuler)';
+        buttonsContainer.appendChild(mergeStgButton);
+
+        // Define submit handler (for merge before)
+        async function mergeStgHandler() {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+
+            mergeStage();
+        }
+        mergeStgButton.addEventListener('click', mergeStgHandler);  // Associate submit handler with button
+       
+        // Create focus icon
+        const focusIcon = document.createElement('i');
+        focusIcon.classList.add('fa-solid', 'fa-arrows-to-circle');
+        focusIcon.style.fontSize = '20px';
+        focusIcon.style.lineHeight = '20px';
+        focusIcon.style.width = '27px';
+        focusIcon.style.height = '20px';
+        focusIcon.style.display = 'inline-flex';
+        focusIcon.style.alignItems = 'center';
+        focusIcon.style.justifyContent = 'center';
+
+        // Create submit button for focusing to a GPX file
+        const focusButton = document.createElement('button');
+        focusButton.appendChild(focusIcon);
+        focusButton.style.width = '29px';
+        focusButton.style.height = '30px';
+        focusButton.style.padding = '0';
+        focusButton.style.display = 'flex';
+        focusButton.style.alignItems = 'center';
+        focusButton.style.justifyContent = 'center';
+        focusButton.title = context.language === 'EN' ? 'Focus on stage' : 'Focaliser sur l\'étape';
+        buttonsContainer.appendChild(focusButton);
+
+        // Define submit handler (for focusing to a GPX file)
+        async function focusHandler() {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            focusOnStage();
+        }
+        focusButton.addEventListener('click', focusHandler);  // Associate submit handler with button
+    
+        // Create change stage position icon
+        const changeStgPosIcon = document.createElement('i');
+        changeStgPosIcon.classList.add('fa-solid', 'fa-sort');
+        changeStgPosIcon.style.fontSize = '20px';
+        changeStgPosIcon.style.lineHeight = '20px';
+        changeStgPosIcon.style.width = '27px';
+        changeStgPosIcon.style.height = '20px';
+        changeStgPosIcon.style.display = 'inline-flex';
+        changeStgPosIcon.style.alignItems = 'center';
+        changeStgPosIcon.style.justifyContent = 'center';
+
+        // Create submit button for change stage order
+        const changeStgPosButton = document.createElement('button');
+        changeStgPosButton.appendChild(changeStgPosIcon);
+        changeStgPosButton.style.width = '32px';
+        changeStgPosButton.style.height = '30px';
+        changeStgPosButton.style.padding = '0';
+        changeStgPosButton.style.display = 'flex';
+        changeStgPosButton.style.alignItems = 'center';
+        changeStgPosButton.style.justifyContent = 'center';
+        changeStgPosButton.title = context.language === 'EN' ? 'Change stage position (in the list of stages)' : 'Modifier la position de l\'étape (dans la liste des étapes)';
+        changeStgPosButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent click outside to close immediately
+
+            // If the menu already exists, delete it
+            let existingMenu = document.getElementById('order-menu');
+            if (existingMenu) {
+                existingMenu.remove();
+                return;
+            }
+
+            // Create menu
+            const menu = document.createElement('div');
+            menu.id = 'order-menu';
+            menu.style.position = 'absolute';
+            menu.style.background = '#fff';
+            menu.style.border = '1px solid #ccc';
+            menu.style.padding = '5px';
+            menu.style.zIndex = 1000;
+            menu.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
+            menu.style.borderRadius = '4px';
+            menu.style.fontSize = '12px';
+
+            // Position menu under button
+            const rect = changeStgPosButton.getBoundingClientRect();
+            menu.style.left = rect.left + 'px';
+            menu.style.top = (rect.bottom + window.scrollY) + 'px';
+
+            // Add the options
+            const options = [
+                { label: context.language === 'EN' ? "Move before" : "Placer avant", action: () => changeStgPos('before') },
+                { label: context.language === 'EN' ? "Move after" : "Placer après", action: () => changeStgPos('after') },
+                { label: context.language === 'EN' ? "Move first" : "Placer au début", action: () => changeStgPos('first') },
+                { label: context.language === 'EN' ? "Move last" : "Placer à la fin", action: () => changeStgPos('last') }
+            ];
+
+            options.forEach(opt => {
+                const item = document.createElement('div');
+                item.textContent = opt.label;
+                item.style.padding = '4px 8px';
+                item.style.cursor = 'pointer';
+
+                item.addEventListener('click', (ev) => {
+                    ev.stopPropagation();
+                    opt.action();
+                    menu.remove();
+                });
+
+                item.addEventListener('mouseover', () => item.style.background = '#eee');
+                item.addEventListener('mouseout', () => item.style.background = '');
+
+                menu.appendChild(item);
+            });
+
+            document.body.appendChild(menu);
+
+            //------------------------
+            // Automatic menu closure
+            //------------------------
+
+            let inside = true;
+
+            const setInside = () => inside = true;
+            const setOutside = () => {
+                inside = false;
+                setTimeout(() => {
+                    if (!inside) menu.remove();
+                }, 150);
+            };
+
+            // Button hovering
+            changeStgPosButton.addEventListener('pointerenter', setInside);
+            changeStgPosButton.addEventListener('pointerleave', setOutside);
+
+            // Survol du menu
+            menu.addEventListener('pointerenter', setInside);
+            menu.addEventListener('pointerleave', setOutside);
+
+            // Close if the user clicks elsewhere
+            const closeOnClickOutside = (ev) => {
+                if (!menu.contains(ev.target) && ev.target !== changeStgPosButton) {
+                    menu.remove();
+                    document.removeEventListener('click', closeOnClickOutside);
+                }
+            };
+
+            // Wait a tick to avoid immediate closure
+            setTimeout(() => {
+                document.addEventListener('click', closeOnClickOutside);
+            }, 0);
+        });
+        buttonsContainer.appendChild(changeStgPosButton);
+
+        // Create delete stage icon
+        const dsIcon = document.createElement('i');
+        dsIcon.classList.add('fa-regular', 'fa-trash-can');
+        dsIcon.style.fontSize = '20px';
+        dsIcon.style.lineHeight = '20px';
+        dsIcon.style.width = '27px';
+        dsIcon.style.height = '20px';
+        dsIcon.style.display = 'inline-flex';
+        dsIcon.style.alignItems = 'center';
+        dsIcon.style.justifyContent = 'center';
+
+        // Create submit button for deleting the stage
+        const delStgButton = document.createElement('button');
+        delStgButton.appendChild(dsIcon);
+        delStgButton.style.width = '29px';
+        delStgButton.style.height = '30px';
+        delStgButton.style.padding = '0';
+        delStgButton.style.display = 'flex';
+        delStgButton.style.alignItems = 'center';
+        delStgButton.style.justifyContent = 'center';
+        delStgButton.title = context.language === 'EN' ? 'Delete stage' : 'Supprimer l\'étape';
+        buttonsContainer.appendChild(delStgButton);
+
+        // Define submit handler (for deleting the stage)
+        async function delStgHandler() {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            if (confirm(context.language === 'EN' ? "Are you sure you want to delete the edited stage?" : "Etes-vous sûr de vouloir supprimer l'étape en cours d'édition ?")) 
+                deleteStg(context.editedStage);
+        }
+        delStgButton.addEventListener('click', delStgHandler);  // Associate submit handler with button
+    
+        // Create quit edition icon
+        const qeIcon = document.createElement('i');
+        qeIcon.classList.add('fa-solid', 'fa-arrow-right-from-bracket');
+        qeIcon.style.fontSize = '20px';
+        qeIcon.style.lineHeight = '20px';
+        qeIcon.style.width = '27px';
+        qeIcon.style.height = '20px';
+        qeIcon.style.display = 'inline-flex';
+        qeIcon.style.alignItems = 'center';
+        qeIcon.style.justifyContent = 'center';
+
+        // Create submit button for quitting edit mode
+        const quitEdtButton = document.createElement('button');
+        quitEdtButton.appendChild(qeIcon);
+        quitEdtButton.style.width = '29px';
+        quitEdtButton.style.height = '30px';
+        quitEdtButton.style.padding = '0';
+        quitEdtButton.style.display = 'flex';
+        quitEdtButton.style.alignItems = 'center';
+        quitEdtButton.style.justifyContent = 'center';
+        quitEdtButton.title = context.language === 'EN' ? 'Quit stage edition' : 'Quitter édition de l\'étape';
+        buttonsContainer.appendChild(quitEdtButton);
+
+        // Define submit handler (for quitting edit mode)
+        async function quitEdtHandler() {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            quitEditStage(true);
+        }
+        quitEdtButton.addEventListener('click', quitEdtHandler);  // Associate submit handler with button
+       
+        return [titleContainer, buttonsContainer];
+    }
+
+    //--------------------------------
+    // Create general buttons control
+    //--------------------------------
+    function createGenButtonsControl() {
+        // Create division
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.gap = '8px';
+
+        // Create global label
+        const globalLabel = document.createElement('span');
+        globalLabel.textContent = context.language === 'EN' ? 'Global\nactions:' : 'Actions\ngénér. : ';
+        globalLabel.style.fontSize = '14px';
+        globalLabel.style.fontWeight = 'bold';
+        globalLabel.style.whiteSpace = 'pre-line';
+        container.appendChild(globalLabel);
+
+        // Create create new stage icon
+        const nstIcon = document.createElement('i');
+        //nstIcon.classList.add('fa-regular', 'fa-square-plus');
+        nstIcon.classList.add('fa-solid', 'fa-arrow-right-to-bracket');
+        nstIcon.style.fontSize = '20px';
+        nstIcon.style.lineHeight = '20px';
+        nstIcon.style.width = '27px';
+        nstIcon.style.height = '20px';
+        nstIcon.style.display = 'inline-flex';
+        nstIcon.style.alignItems = 'center';
+        nstIcon.style.justifyContent = 'center';
+
+        // Create button for creating a new stage
+        const newStgButton = document.createElement('button');
+        newStgButton.appendChild(nstIcon);
+        newStgButton.style.width = '29px';
+        newStgButton.style.height = '30px';
+        newStgButton.style.padding = '0';
+        newStgButton.style.display = 'flex';
+        newStgButton.style.alignItems = 'center';
+        newStgButton.style.justifyContent = 'center';
+        newStgButton.title = context.language === 'EN' ? 'Start creating new stage' : 'Démarrer création nouvelle étape';
+        container.appendChild(newStgButton);
+
+        // Define submit handler (for creating a new stage)
+        async function newStgHandler() {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            setEnv4NonEdt(true);    // Finish editing the current stage
+
+            setEnv4EdtStg(null);    // Start editing a new stage
+        }
+        newStgButton.addEventListener('click', newStgHandler);  // Associate submit handler with button
+    
+        // Create import icon
+        const importIcon = document.createElement('i');
+        importIcon.classList.add('fa-solid', 'fa-file-import');
+        importIcon.style.fontSize = '20px';
+        importIcon.style.lineHeight = '20px';
+        importIcon.style.width = '27px';
+        importIcon.style.height = '20px';
+        importIcon.style.display = 'inline-flex';
+        importIcon.style.alignItems = 'center';
+        importIcon.style.justifyContent = 'center';
+
+        // Create submit button for importing a GPX file
+        const importGPXButton = document.createElement('button');
+        importGPXButton.appendChild(importIcon);
+        importGPXButton.style.width = '29px';
+        importGPXButton.style.height = '30px';
+        importGPXButton.style.padding = '0';
+        importGPXButton.style.display = 'flex';
+        importGPXButton.style.alignItems = 'center';
+        importGPXButton.style.justifyContent = 'center';
+        importGPXButton.title = context.language === 'EN' ? 'Import stages from GPX' : 'Importer étapes de GPX';        
+        container.appendChild(importGPXButton);
+
+        // Define submit handler (for exporting to a GPX file)
+        async function importGPXHandler() {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            importRouteFromGPX();
+        }
+        importGPXButton.addEventListener('click', importGPXHandler);  // Associate submit handler with button
+
+        // Create export icon
+        const exportIcon = document.createElement('i');
+        exportIcon.classList.add('fa-solid', 'fa-file-export');
+        exportIcon.style.fontSize = '20px';
+        exportIcon.style.lineHeight = '20px';
+        exportIcon.style.width = '27px';
+        exportIcon.style.height = '20px';
+        exportIcon.style.display = 'inline-flex';
+        exportIcon.style.alignItems = 'center';
+        exportIcon.style.justifyContent = 'center';
+
+        // Create submit button for exporting to a GPX file
+        const exportGPXButton = document.createElement('button');
+        exportGPXButton.appendChild(exportIcon);
+        exportGPXButton.style.width = '29px';
+        exportGPXButton.style.height = '30px';
+        exportGPXButton.style.padding = '0';
+        exportGPXButton.style.display = 'flex';
+        exportGPXButton.style.alignItems = 'center';
+        exportGPXButton.style.justifyContent = 'center';
+        exportGPXButton.title = context.language === 'EN' ? 'Export route to GPX' : 'Exporter l\'itinéraire vers GPX';
+        container.appendChild(exportGPXButton);
+
+        // Define submit handler (for exporting to a GPX file)
+        async function exportGPXHandler() {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            exportRouteToGPX();
+        }
+        exportGPXButton.addEventListener('click', exportGPXHandler);  // Associate submit handler with button
+    
+        // Create focus icon
+        const focusIcon = document.createElement('i');
+        focusIcon.classList.add('fa-solid', 'fa-arrows-to-circle');
+        focusIcon.style.fontSize = '20px';
+        focusIcon.style.lineHeight = '20px';
+        focusIcon.style.width = '27px';
+        focusIcon.style.height = '20px';
+        focusIcon.style.display = 'inline-flex';
+        focusIcon.style.alignItems = 'center';
+        focusIcon.style.justifyContent = 'center';
+
+        // Create submit button for focusing to a GPX file
+        const focusButton = document.createElement('button');
+        focusButton.appendChild(focusIcon);
+        focusButton.style.width = '29px';
+        focusButton.style.height = '30px';
+        focusButton.style.padding = '0';
+        focusButton.style.display = 'flex';
+        focusButton.style.alignItems = 'center';
+        focusButton.style.justifyContent = 'center';
+        focusButton.title = context.language === 'EN' ? 'Focus on route' : 'Focaliser sur l\'itinéraire';
+        container.appendChild(focusButton);
+
+        // Define submit handler (for focusing to a GPX file)
+        async function focusHandler() {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            focusOnRoute();
+        }
+        focusButton.addEventListener('click', focusHandler);  // Associate submit handler with button
+    
+        // Create undo icon
+        const undoIcon = document.createElement('i');
+        undoIcon.classList.add('fa-solid', 'fa-arrow-left');
+        undoIcon.style.fontSize = '20px';
+        undoIcon.style.lineHeight = '20px';
+        undoIcon.style.width = '27px';
+        undoIcon.style.height = '20px';
+        undoIcon.style.display = 'inline-flex';
+        undoIcon.style.alignItems = 'center';
+        undoIcon.style.justifyContent = 'center';
+
+        // Create button for undoing last action
+        const undoButton = document.createElement('button');
+        undoButton.appendChild(undoIcon);
+        undoButton.style.width = '29px';
+        undoButton.style.height = '30px';
+        undoButton.style.padding = '0';
+        undoButton.style.display = 'flex';
+        undoButton.style.alignItems = 'center';
+        undoButton.style.justifyContent = 'center';
+        undoButton.title = context.language === 'EN' ? 'Undo last action' : 'Défaire la dernière action';
+        container.appendChild(undoButton);
+
+        // Define submit handler (for exporting to a GPX file)
+        async function undoHandler() {
+            const cmd = undoStack.pop();
+            if (!cmd) return;
+            cmd.undo();
+            redoStack.push(cmd);
+        }
+        undoButton.addEventListener('click', undoHandler);  // Associate submit handler with button
+    
+        // Create redo icon
+        const redoIcon = document.createElement('i');
+        redoIcon.classList.add('fa-solid', 'fa-arrow-right');
+        redoIcon.style.fontSize = '20px';
+        redoIcon.style.lineHeight = '20px';
+        redoIcon.style.width = '27px';
+        redoIcon.style.height = '20px';
+        redoIcon.style.display = 'inline-flex';
+        redoIcon.style.alignItems = 'center';
+        redoIcon.style.justifyContent = 'center';
+
+        // Create button for redoing last action
+        const redoButton = document.createElement('button');
+        redoButton.appendChild(redoIcon);
+        redoButton.style.width = '29px';
+        redoButton.style.height = '30px';
+        redoButton.style.padding = '0';
+        redoButton.style.display = 'flex';
+        redoButton.style.alignItems = 'center';
+        redoButton.style.justifyContent = 'center';
+        redoButton.title = context.language === 'EN' ? 'Redo last action' : 'Refaire la dernière action';
+        container.appendChild(redoButton);
+
+        // Define submit handler (for exporting to a GPX file)
+        async function redoHandler() {
+            const cmd = redoStack.pop();
+            if (!cmd) return;
+            cmd.redo();
+            undoStack.push(cmd);
+        }
+        redoButton.addEventListener('click', redoHandler);  // Associate submit handler with button
+    
+        // Create reset route icon
+        const resetIcon = document.createElement('i');
+        resetIcon.classList.add('fa-solid', 'fa-arrow-rotate-left');
+        resetIcon.style.fontSize = '20px';
+        resetIcon.style.lineHeight = '20px';
+        resetIcon.style.width = '27px';
+        resetIcon.style.height = '20px';
+        resetIcon.style.display = 'inline-flex';
+        resetIcon.style.alignItems = 'center';
+        resetIcon.style.justifyContent = 'center';
+
+        // Create submit button for resetting the route
+        const resetRteButton = document.createElement('button');
+        resetRteButton.appendChild(resetIcon);
+        resetRteButton.style.width = '29px';
+        resetRteButton.style.height = '30px';
+        resetRteButton.style.padding = '0';
+        resetRteButton.style.display = 'flex';
+        resetRteButton.style.alignItems = 'center';
+        resetRteButton.style.justifyContent = 'center';
+        resetRteButton.title = context.language === 'EN' ? 'Reset route' : 'Réinitialiser l\'itinéraire';
+        container.appendChild(resetRteButton);
+
+        // Define submit handler (for resetting the route)
+        async function resetRteHandler() {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
+                resetRte();
+        }
+        resetRteButton.addEventListener('click', resetRteHandler);  // Associate submit handler with button
+    
+        return container;
+    }
+
+    //-----------------------------
+    // Create display info control
+    //-----------------------------
+    function createLanguageAndHelpControl(isTrkEdited) {
+        // Create division
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.gap = '8px';
+
+        // Create global label
+        const globalLabel = document.createElement('span');
+        globalLabel.textContent = context.language === 'EN' ? 'Language:' : 'Langue :';
+        globalLabel.style.fontSize = '12px';
+
+        // Create radios container
+        const radios = document.createElement('div');
+        radios.style.display = 'flex';
+        radios.style.gap = '6px';
+        radios.style.flex = '1';
+
+        // Create English radio button
+        const enLabel = document.createElement('label');
+        const enRadio = document.createElement('input');
+        enRadio.type = 'radio';
+        enRadio.name = 'language';
+        enRadio.value = 'true';
+        enRadio.checked = context.language === 'EN';    // Restore selection
+
+        const enFlag = document.createElement('img');
+        enFlag.src = 'https://flagcdn.com/gb.svg';
+        enFlag.alt = 'English';
+        enFlag.style.width = '24px';
+        enFlag.style.height = '18px';
+        enFlag.style.objectFit = 'contain';
+
+        const usFlag = document.createElement('img');
+        usFlag.src = 'https://flagcdn.com/us.svg';
+        usFlag.alt = 'English';
+        usFlag.style.width = '24px';
+        usFlag.style.height = '18px';
+        usFlag.style.objectFit = 'contain';
+
+        enLabel.appendChild(enRadio);
+        enLabel.append(enFlag);
+        enLabel.append(usFlag);
+        enLabel.style.fontSize = '22px';
+        enLabel.style.display = 'flex';
+        enLabel.style.alignItems = 'center';
+        enLabel.style.gap = '6px';
+
+        // Create French radio button
+        const frLabel = document.createElement('label');
+        const frRadio = document.createElement('input');
+        frRadio.type = 'radio';
+        frRadio.name = 'language';
+        frRadio.value = 'false';
+        frRadio.checked = context.language === 'FR';    // Restore selection
+
+        const frFlag = document.createElement('img');
+        frFlag.src = 'https://flagcdn.com/fr.svg';
+        frFlag.alt = 'Français';
+        frFlag.style.width = '24px';
+        frFlag.style.height = '18px';
+        frFlag.style.objectFit = 'contain';
+
+        frLabel.appendChild(frRadio);
+        frLabel.append(frFlag);
+        frLabel.style.fontSize = '22px';
+        frLabel.style.display = 'flex';
+        frLabel.style.alignItems = 'center';
+        frLabel.style.gap = '6px';
+
+         // Disable when other operation in process
+        enRadio.addEventListener('click', function (e) {
+            if (context.operationWithButtonInProcess) {
+                e.preventDefault();
+        
+                return;
+            }
+        });
+
+         // Handle changes
+        enRadio.addEventListener('change', () => {
+            if (enRadio.checked) {
+                context.language = 'EN';
+
+                if (isTrkEdited) setMenu4EdtStg();
+                else setMenu4NonEdt();
+
+                setGeolocator();
+
+                setLocationFinder();
+
+                if (context.displayInfo > 0) {
+                    for (let i = 0; i < stages.length; i++) {
+                        if (context.editedStage === i)
+                            updateDetailedInfo(stages[i], true, false);
+                        else
+                            updateDetailedInfo(stages[i], false, false);
+                    }
+
+                    displayGlobalInfo();
+                }
+
+                if (context.displayInfo > 1) {
+                    if (context.editedStage !== null) {
+                        displayStageProfile();
+                    } else {
+                        displayRouteProfile();
+                    }
+                }
+            }
+        });
+
+         // Disable when other operation in process
+        frRadio.addEventListener('click', function (e) {
+            if (context.operationWithButtonInProcess) {
+                e.preventDefault();
+        
+                return;
+            }
+        });
+
+        // Handle changes
+        frRadio.addEventListener('change', () => {
+            if (frRadio.checked) {
+                context.language = 'FR';
+                
+                if (isTrkEdited) setMenu4EdtStg();
+                else setMenu4NonEdt();
+
+                setGeolocator();
+
+                setLocationFinder();
+
+                if (context.displayInfo) {
+                    for (let i = 0; i < stages.length; i++) {
+                        if (context.editedStage === i)
+                            updateDetailedInfo(stages[i], true, false);
+                        else
+                            updateDetailedInfo(stages[i], false, false);
+                    }
+
+                    displayGlobalInfo();
+                }
+
+                if (context.displayInfo > 1) {
+                    if (context.editedStage !== null) {
+                        displayStageProfile();
+                    } else {
+                        displayRouteProfile();
+                    }
+                }
+            }
+        });
+
+        // Create help button
+        const helpButton = document.createElement('button');
+        helpButton.textContent = context.language === 'EN' ? 'Help' : 'Aide';
+        helpButton.style.width = '40px';
+        helpButton.style.marginLeft = 'auto';
+
+        // Define submit handler (button)
+        function helpHandler() {
+            const w = window.open('', '_blank');
+            w.document.title = context.language === 'EN' ? 'GPX Route Planner – Help' : 'Planificateur d’Itinéraires GPX – Aide';
+            w.document.body.innerHTML = context.language === 'EN' ? getHelpContentEn() : getHelpContentFr();
+            w.document.close();
+        }
+        helpButton.addEventListener('click', helpHandler);  // Associate handler with button
+
+        radios.appendChild(enLabel);
+        radios.appendChild(frLabel);
+        radios.appendChild(helpButton);
+
+        container.appendChild(globalLabel);
+        container.appendChild(radios);
+
+        return container;
+    }
+
+    //------------------------
+    // Create new empty stage
+    //------------------------
+    function createNewEmptyStage() {
+        const stage = {   // New empty stage
+            name: null,     // Stage name
+            points: [],     // Points defined by the user (not calculated by the router). Represented by circle markers on the map
+            sections: [],   // Sections between points (straight or calculated by router). Represented by polylines on the map
+            distance: 0,    // Stage length
+            ascent: null,   // Stage ascent
+            descent: null,  // Stage descent
+            infoPop: null   // Information to be displayed when requested about the stage
+        };
+    
+        return stage;
+    }
+
+    //--------------------------
+    // Create map style control
+    //--------------------------
+    function createMapStyleControl(map) {
+        // Create division
+        const container = L.DomUtil.create('div');
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.gap = '6px';
+
+        // Create label
+        const label = L.DomUtil.create('label', '', container);
+        label.textContent = context.language === 'EN' ? 'Map style:' : 'Style de carte :';
+        label.style.fontSize = '12px';
+
+        // Create selection box
+        const select = L.DomUtil.create('select', '', container);
+        const labels = baseMapLabels[context.language];
+        Object.keys(baseMaps).forEach(key => {
+            const option = document.createElement('option');
+            option.value = key;            // stored string
+            option.textContent = labels[key];      // displayed label
+            select.appendChild(option);
+        });
+
+        // Default value
+        if (!context.baseMap)
+            context.baseMap = 'otm';
+        baseMaps[context.baseMap].addTo(map);
+
+        // Restore selection
+        select.value = context.baseMap;
+
+        // Disable when other operation in process
+        select.addEventListener('mousedown', e => {
+            if (context.operationWithButtonInProcess) {
+                e.preventDefault();
+            }
+        });
+
+        // Handle selection changes
+        select.onchange = function () {
+            Object.values(baseMaps).forEach(layer => {
+                if (map.hasLayer(layer)) map.removeLayer(layer);
+            });
+            context.baseMap = this.value;
+            if (context.baseMap === 'hiking' || context.baseMap === 'cycling')
+                baseMaps.osm.addTo(map);
+            baseMaps[context.baseMap].addTo(map);
+        };
+
+        return container;
+    }
+
+    //-------------------------------
+    // Create router profile control
+    //-------------------------------
+    function createRouterProfileControl() {
+        // Create division
+        const container = L.DomUtil.create('div');
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.gap = '6px';
+
+        // Create label
+        const label = L.DomUtil.create('label', '', container);
+        label.textContent = context.language === 'EN' ? 'Travel mode:' : 'Mode de voyage :';
+        label.style.fontSize = '12px';
+
+        // Create selection box
+        const select = L.DomUtil.create('select', '', container);
+        Object.entries(context.language === 'EN' ? routerProfilesEn : routerProfilesFr).forEach(([labelText, value]) => {
+            const option = document.createElement('option');
+            option.value = value;              // stored string
+            option.textContent = labelText;    // displayed label
+            select.appendChild(option);
+        });
+
+        // Default value
+        if (!context.routerProfile)
+            context.routerProfile = 'trekking';
+
+        // Restore selection
+        select.value = context.routerProfile;
+
+        // Disable when other operation in process
+        select.addEventListener('mousedown', e => {
+            if (context.operationWithButtonInProcess) {
+                e.preventDefault();
+            }
+        });
+
+        // Handle selection changes
+        select.onchange = function () {
+            context.routerProfile = this.value; // ✔ string stored
+        };
+
+        return container;
+    }
+
+    //----------------------
+    // Create units control
+    //----------------------
+    function createUnitsControl() {
+        // Create division
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.gap = '8px';
+
+        // Create global label
+        const globalLabel = document.createElement('span');
+        globalLabel.textContent = context.language === 'EN' ? 'Measurement units:' : 'Unités de mesure : ';
+        globalLabel.style.fontSize = '12px';
+
+        // Create radios container
+        const radios = document.createElement('div');
+        radios.style.display = 'flex';
+        radios.style.gap = '6px';
+
+        // Create metric radio button
+        const metricLabel = document.createElement('label');
+        const metricRadio = document.createElement('input');
+        metricRadio.type = 'radio';
+        metricRadio.name = 'units';
+        metricRadio.value = true;
+        metricRadio.checked = context.metricUnits === true;    // Restore selection
+
+        metricLabel.appendChild(metricRadio);
+        metricLabel.append(context.language === 'EN' ? ' Metric' : ' Métriques');
+
+        // Create imperial radio button
+        const imperLabel = document.createElement('label');
+        const imperRadio = document.createElement('input');
+        imperRadio.type = 'radio';
+        imperRadio.name = 'units';
+        imperRadio.value = false;
+        imperRadio.checked = context.metricUnits === false;    // Restore selection
+
+        imperLabel.appendChild(imperRadio);
+        imperLabel.append(context.language === 'EN' ? ' Imperial' : ' Impériales');
+
+         // Disable when other operation in process
+        metricRadio.addEventListener('click', function (e) {
+            if (context.operationWithButtonInProcess) {
+                e.preventDefault();
+        
+                return;
+            }
+        });
+
+         // Handle changes
+        metricRadio.addEventListener('change', () => {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            if (metricRadio.checked) {
+                context.metricUnits = true;
+
+                map.removeControl(scaleControl);
+                scaleControl = L.control.scale({ metric: true, imperial: false }).addTo(map);
+
+                if (context.displayInfo > 0) {
+                    for (let i = 0; i < stages.length; i++) {
+                        if (context.editedStage === i)
+                            updateDetailedInfo(stages[i], true, false);
+                        else
+                            updateDetailedInfo(stages[i], false, false);
+                    }
+
+                    displayGlobalInfo();
+                }
+
+                if (context.displayInfo > 1) {
+                    if (context.editedStage !== null) {
+                        displayStageProfile();
+                    } else {
+                        displayRouteProfile();
+                    }
+                }
+            }
+        });
+
+         // Disable when other operation in process
+        imperRadio.addEventListener('click', function (e) {
+            if (context.operationWithButtonInProcess) {
+                e.preventDefault();
+        
+                return;
+            }
+        });
+
+        // Handle changes
+        imperRadio.addEventListener('change', () => {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            if (imperRadio.checked) {
+                context.metricUnits = false;
+
+                map.removeControl(scaleControl);
+                scaleControl = L.control.scale({ metric: false, imperial: true }).addTo(map);
+                
+                if (context.displayInfo > 0) {
+                    for (let i = 0; i < stages.length; i++) {
+                        if (context.editedStage === i)
+                            updateDetailedInfo(stages[i], true, false);
+                        else
+                            updateDetailedInfo(stages[i], false, false);
+                    }
+
+                    displayGlobalInfo();
+                }
+
+                if (context.displayInfo > 1) {
+                    if (context.editedStage !== null) {
+                        displayStageProfile();
+                    } else {
+                        displayRouteProfile();
+                    }
+                }
+            }
+        });
+
+        radios.appendChild(metricLabel);
+        radios.appendChild(imperLabel);
+
+        container.appendChild(globalLabel);
+        container.appendChild(radios);
+
+        return container;
+    }
+
+    //---------------------------------
+    // Delete first point of the stage
+    //---------------------------------
+    function deleteFirstPt() {
+        if (context.editedStage === null) return;
+
+        const i = context.editedStage;  // Retrieve stage to be edited
+        const stage = stages[i];
+
+        let sectionPoints0 = null;
+        const point0 = stage.points[0].marker.getLatLng(); 
+
+        if (stage.points.length > 1)  // Stage has more than one point
+            sectionPoints0 = stage.sections[0].polyline.getLatLngs();
+
+        const beforeState = { section: sectionPoints0, point: point0 };
+        const afterState = null;
+        execute(new DeleteFirstPoint(stage, i, beforeState, afterState));        
+    }
+
+    //--------------------------------
+    // Delete last point of the stage
+    //--------------------------------
+    function deleteLastPt() {
+        if (context.editedStage === null) return;
+
+        // Retrieve stage and point to be edited
+        const i = context.editedStage;
+        const stage = stages[i];
+
+        let sectionPoints0 = null;
+        const point0 = stage.points[stage.points.length - 1].marker.getLatLng(); 
+
+        if (stage.points.length > 1)  // Stage has more than one point
+            sectionPoints0 = stage.sections[stage.points.length - 2].polyline.getLatLngs();
+
+        const beforeState = { section: sectionPoints0, point: point0 };
+        const afterState = null;
+        execute(new DeleteLastPoint(stage, i, beforeState, afterState));        
+    }
+
+    //--------------
+    // Delete stage
+    //--------------
+    function deleteStg(i) {
+        if (i === null) return;
+
+        const stage = stages[i];
+
+        const beforeState = null;
+        const afterState = null;
+        execute(new DeleteStage(stage, i, beforeState, afterState));        
+    }
+
+    //-------------------------------------------------------------------
+    // Create/recreate control to display global information about route 
+    //-------------------------------------------------------------------
+    function displayGlobalInfo() {
+        if (context.displayInfo === 0) return;
+
+        if (context.globalInfoControl)
+            context.globalInfoControl.remove();
+
+        let stageNb = stages.length;
+        if (context.editedStage !== null && context.editedStage !== undefined && stages[context.editedStage]?.points?.length === 0) 
+            stageNb--;
+
+        if (stageNb < 1) return;
+
+        context.globalInfoControl = L.control({ position: 'bottomleft' });  // Create new menu control
+
+        context.globalInfoControl.onAdd = function (map) {      // Set content into menu control            
+            // Create white box hosting the menu
+            const wrapper = L.DomUtil.create('div', 'leaflet-bar unified-control');
+            wrapper.style.background = 'white';
+            wrapper.style.padding = '8px';
+            wrapper.style.display = 'flex';
+            wrapper.style.flexDirection = 'column';
+            wrapper.style.gap = '8px';
+            wrapper.style.minWidth = '100px';
+            wrapper.style.maxWidth = '500px';
+            wrapper.style.width = '100%';
+            
+            // Prevent map interaction
+            L.DomEvent.disableClickPropagation(wrapper);
+            L.DomEvent.disableScrollPropagation(wrapper);
+
+            // Create title
+            const title = L.DomUtil.create('div', 'menu-title', wrapper);
+            title.innerHTML = context.language === 'EN' ? 'Global route data' : 'Données générales<br> de l\'itinéraire';
+            title.style.fontSize = '18px';
+            title.style.fontWeight = 'bold';
+            title.style.marginBottom = '4px';
+
+            // Add number of stages
+            const container = document.createElement('div');
+            container.style.display = "inline-block";
+            container.style.whiteSpace = "pre";
+            container.style.alignItems = 'center';
+            container.style.gap = '8px';
+
+            let label = document.createElement('strong');
+            label.textContent = context.language === 'EN' ? 'Number of stages: ' : 'Nombre d\'étapes : ';
+            container.appendChild(label);
+            container.append(
+                document.createTextNode(stageNb),
+                document.createElement("br")
+            );
+ 
+            wrapper.appendChild(container);
+
+            let distance = 0;
+            stages.forEach(stage => {
+                distance += stage.distance;
+            });
+
+            if (distance > 0) {
+                label = document.createElement('strong');
+                label.textContent = context.language === 'EN' ? 'Distance: ' : 'Distance : ';
+                container.appendChild(label);
+                container.append(
+                    document.createTextNode(
+                        `${context.language === 'EN'
+                            ? (context.metricUnits ? distance.toFixed(3) : (distance/1.609344).toFixed(3))
+                            : (context.metricUnits ? distance.toFixed(3) : (distance/1.609344).toFixed(3)).replace('.', ',')
+                        } ${context.metricUnits ? 'km' : 'mi'}`
+                    ),
+                    document.createElement("br")
+                );
+    
+                wrapper.appendChild(container);
+            }
+
+            let elevation = null;
+            if (stages[0].points.length > 0)
+                elevation = stages[0].points[0].marker.getLatLng().alt;
+            else
+                elevation = stages[1].points[0].marker.getLatLng().alt;
+            let elevation2 = null;
+            if (stages.length > 1 || (stages.length == 1 && stages[0].points.length > 1)) {
+                let stage = stages[stages.length - 1];
+                if (stage.points.length < 1)
+                    stage = stages[stages.length - 2];
+                elevation2 = stage.points[stage.points.length - 1].marker.getLatLng().alt;
+            }
+
+            label = document.createElement('strong');
+            label.textContent = 'Altitude' + (context.language === 'EN' ? ': ' : ' : ');
+            container.appendChild(label);
+
+            const arrow = document.createElement("span");
+            arrow.textContent = "\u2192";
+            arrow.style.display = "inline-block";
+            arrow.style.transform = "scale(1.4)";   // visually bigger
+            arrow.style.transformOrigin = "bottom";
+            arrow.style.lineHeight = "1";           // prevents line stretching
+
+            container.append(
+                document.createTextNode(
+                    `${elevation !== null && elevation !== undefined
+                        ? context.metricUnits 
+                            ? `${Math.round(elevation)} m` 
+                            : `${Math.round(elevation/0.3048)} ft`                 
+                        : '?'
+                    }`
+                )
+            );
+
+            if (stages.length > 1 || (stages.length == 1 && stages[0].points.length > 1)) {
+                container.append(
+                    document.createTextNode(" "),   // ← space BEFORE arrow
+                    arrow,
+                    document.createTextNode(" "),   // ← space AFTER arrow                
+                    document.createTextNode(
+                        ` ${elevation2 !== null && elevation2 !== undefined
+                            ? context.metricUnits 
+                                ? `${Math.round(elevation2)} m` 
+                                : `${Math.round(elevation2/0.3048)} ft`                 
+                            : '?'
+                        }`
+                    )
+                );
+            }
+
+            container.append(
+                document.createElement("br")
+            );
+
+            wrapper.appendChild(container);
+
+            if (distance > 0) {
+                let ascent = null;
+                let descent = null;
+                stages.forEach(stage => {
+                    if (stage.ascent != null) {
+                        if (ascent == null)
+                            ascent = stage.ascent;
+                        else
+                            ascent += stage.ascent;
+                    }
+                    if (stage.descent != null) {
+                        if (descent == null)
+                            descent = stage.descent;
+                        else
+                            descent += stage.descent;
+                    }
+                });
+
+                if (ascent != null && descent != null) {
+                    label = document.createElement('strong');
+                    label.textContent = context.language === 'EN' ? 'Elevation: ' : 'Dénivelé : ';
+                    container.appendChild(label);
+
+                    if (ascent != null) {
+                        const uparrow = document.createElement("span");
+                        uparrow.textContent = "\u2191";
+                        uparrow.style.display = "inline-block";
+                        uparrow.style.transform = "scale(1.4)";   // visually bigger
+                        uparrow.style.transformOrigin = "bottom";
+                        uparrow.style.lineHeight = "1";           // prevents line stretching
+
+                        container.append(
+                            uparrow,
+                            document.createTextNode(" "),   // ← space AFTER arrow
+                            document.createTextNode(
+                                `${context.metricUnits
+                                        ? `${Math.round(ascent)} m`
+                                        : `${Math.round(ascent/0.3048)} ft`
+                                }`
+                            )
+                        );
+                    }
+
+                    if (descent != null) {
+                        const dnarrow = document.createElement("span");
+                        dnarrow.textContent = "\u2193";
+                        dnarrow.style.display = "inline-block";
+                        dnarrow.style.transform = "scale(1.4)";   // visually bigger
+                        dnarrow.style.transformOrigin = "bottom";
+                        dnarrow.style.lineHeight = "1";           // prevents line stretching
+
+                        container.append(
+                            document.createTextNode(" "),   // ← space BEFORE arrow
+                            dnarrow,
+                            document.createTextNode(" "),   // ← space AFTER arrow
+                            document.createTextNode(
+                                `${context.metricUnits
+                                        ? `${Math.round(-descent)} m`
+                                        : `${Math.round(-descent/0.3048)} ft`
+                                }`
+                            )
+                        );
+                    }
+
+                    wrapper.appendChild(container);
+                }
+            }
+
+            return wrapper;
+        }
+
+        context.globalInfoControl.addTo(map);
+    }
+
+    //--------------------------------------------------
+    // Create/recreate control to display route profile 
+    //--------------------------------------------------
+    function displayRouteProfile() {
+        if (context.displayInfo < 2) return;
+
+        let pointsNb = 0;
+        stages.forEach(stage => {
+            pointsNb = Math.max(pointsNb, stage.points.length);
+        });
+        if (pointsNb < 2)
+            return;
+
+        if (!context.routeProfileControl) {
+            const corners = map._controlCorners;
+            const container = map._controlContainer;
+
+            corners.bottomcenter = L.DomUtil.create('div', 'leaflet-bottom leaflet-center', container);
+
+            context.routeProfileControl = L.control({ position: 'bottomcenter' });  // Create new menu control
+
+            context.routeProfileControl.onAdd = function (map) {      // Set content into menu control            
+                // Create white box hosting the menu
+                const wrapper = L.DomUtil.create('div', 'leaflet-bar unified-control');
+                wrapper.style.background = 'white';
+                wrapper.style.padding = '8px';
+                wrapper.style.display = 'flex';
+                wrapper.style.flexDirection = 'column';
+                wrapper.style.gap = '8px';
+                //wrapper.style.minWidth = '100px';
+                //wrapper.style.maxWidth = '700px';
+                wrapper.style.width = '700px';
+                
+                // Prevent map interaction
+                L.DomEvent.disableClickPropagation(wrapper);
+                L.DomEvent.disableScrollPropagation(wrapper);
+
+                // Create title
+                const title = L.DomUtil.create('div', 'menu-title', wrapper);
+                title.textContent = context.language === 'EN' ? 'Route profile' : 'Profil de l\'itinéraire';
+                title.style.fontSize = '18px';
+                title.style.fontWeight = 'bold';
+                title.style.marginBottom = '4px';
+
+                let yMin = null;
+                let yMax = null;
+                [yMin, yMax] = calculateRouteProfile();
+
+                const canvas = L.DomUtil.create('canvas', '', wrapper);
+                canvas.id = "routeProfile";
+                canvas.width = 700;
+                canvas.height = 150;
+
+                canvas.addEventListener('mouseleave', () => {
+                    if (context.routeProfileMapMarker) {
+                        context.routeProfileMapMarker.remove();
+                        context.routeProfileMapMarker = null;
+                    }
+                });
+
+                context.routeProfileChart = new Chart(canvas, {
+                    type: "line",
+                    data: {
+                        datasets: [{
+                            label: "Altitude",
+                            data: context.routeProfileChartPoints,
+                            spanGaps: false,
+                            backgroundColor:"rgba(0,0,255,1.0)",
+                            borderColor: routeColors.Blue,
+                            borderWidth: 4,
+                            fill: false,
+                            tension: 0.4,
+                            pointRadius: 0,       // hide dots
+                            pointHoverRadius: 0   // hide hover dots
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                type: "linear",
+                                position: "bottom",
+                                ticks: {
+                                    stepSize: 1
+                                },
+                                title: {
+                                    display: true,
+                                    text: context.metricUnits ? "km" : "mi"
+                                },
+                                min: 0
+                            },
+                            y: {
+                                title: {
+                                    display: false
+                                },
+                                min: Math.max(Math.round((yMin - (yMax - yMin) * 0.08)/5)*5, 0),
+                                max: Math.round((yMax + (yMax - yMin) * 0.08)/5)*5,
+                                afterFit: function(scale) {
+                                    scale.width = 60;
+                                },
+                                ticks: {
+                                    precision: 0,   // Prevent unneeded roundings
+                                    stepSize: (yMax - yMin) < 5 ? 1 : undefined
+                                }
+                            }
+                        },
+                        onHover: (event, elements, chart) => {
+                            const {chartArea} = chart;
+
+                            const x = event.x;
+                            const y = event.y;
+
+                            const inside =
+                                x >= chartArea.left &&
+                                x <= chartArea.right &&
+                                y >= chartArea.top &&
+                                y <= chartArea.bottom;
+
+                            if (!inside) {
+                                // Cursor is outside chart → remove marker
+                                if (context.routeProfileMapMarker) {
+                                    context.routeProfileMapMarker.remove();
+                                    context.routeProfileMapMarker = null;
+                                }
+                                return;
+                            }
+
+                            if (!elements.length) {
+                                if (context.routeProfileMapMarker) {
+                                    context.routeProfileMapMarker.remove();   // Remove marker from Leaflet map
+                                    context.routeProfileMapMarker = null;
+                                }
+                                return;
+                            }
+
+                            const idx = elements[0].index;
+                            if (context.routeProfileIndexes[idx] != null)
+                                updateRouteProfileMapMarker(context.routeProfileIndexes[idx].stageNum, context.routeProfileIndexes[idx].sectNum, context.routeProfileIndexes[idx].ptNum);       // Create/move marker on Leaflet map
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            intersect: false
+                        },
+                        elements: {
+                            point: {
+                                radius: 0,          // keep invisible
+                                hoverRadius: 10,    // larger detection zone
+                                hitRadius: 20       // ← key parameter
+                            }
+                        },
+                        plugins: {
+                            legend: {display: false},
+                            tooltip: {
+                                backgroundColor: 'white',
+                                titleColor: '#000',
+                                bodyColor: '#000',
+                                borderColor: '#ccc',
+                                borderWidth: 1,
+                                displayColors: false,   // ← removes blue square
+                                
+                                callbacks: {
+                                    title: function(tooltipItems) {
+                                        const x = tooltipItems[0].parsed.x;   // the real distance
+                                        if (x == null) return "";                              
+                                        const label = context.language === 'EN' ? 'Distance: ' : 'Distance : ';
+                                        const unit  = context.metricUnits ? ' km' : ' mi';
+                                        return label + x.toFixed(3) + unit;
+                                    },
+                                    label: function(tooltipItem) {
+                                        const y = tooltipItem.parsed.y;
+                                        if (y == null) return "";                              
+                                        const label = context.language === 'EN' ? 'Altitude: ' : 'Altitude : ';
+                                        const unit  = context.metricUnits ? ' m' : ' ft';
+                                        return label + y.toFixed(0) + unit;
+                                    }
+                                }
+                            },
+                            gapSeparators: {
+                                color: 'rgba(0,0,0,0.4)',
+                                width: 2,
+                                dash: [5, 5]
+                            }
+                        }
+                    },
+                    plugins: [
+                        {
+                            id: 'yLabel',
+                            afterDraw(chart) {
+                                const { ctx, chartArea } = chart;
+                                ctx.save();
+                                ctx.font = "14px sans-serif";
+                                ctx.fillStyle = "#333";
+                                ctx.textAlign = "center";
+                                ctx.fillText(
+                                    context.metricUnits ? "m" : "ft",
+                                    chartArea.left - 50,
+                                    (chartArea.top + chartArea.bottom) / 2
+                                );
+                                ctx.restore();
+                            }
+                        },
+                        {
+                            id: 'hoverPoint',
+                            afterDraw(chart) {
+                                const active = chart.getActiveElements();
+                                if (!active.length) return;
+
+                                const {ctx} = chart;
+                                const el = active[0].element;
+
+                                ctx.save();
+                                ctx.beginPath();
+                                ctx.arc(el.x, el.y, 4, 0, 2 * Math.PI);
+                                ctx.fillStyle = "red";
+                                ctx.fill();
+                                ctx.restore();
+                            }
+                        },
+                        {
+                            id: 'gapSeparators',
+                            afterDatasetsDraw(chart, args, options) {
+
+                                const ctx = chart.ctx;
+                                const data = chart.data.datasets[0].data;
+                                const xScale = chart.scales.x;
+                                const { top, bottom } = chart.chartArea;
+
+                                ctx.save();
+                                ctx.strokeStyle = options.color || 'rgba(0,0,0,0.4)';
+                                ctx.lineWidth = options.width || 1;
+                                ctx.setLineDash(options.dash || [5, 5]);
+
+                                data.forEach((pt, idx) => {
+
+                                    // Detect gap
+                                    if (pt.x === null && pt.y === null) {
+
+                                        // Use previous real point's x-value
+                                        const prev = data[idx - 1];
+                                        if (!prev || prev.x == null) return;
+
+                                        const x = xScale.getPixelForValue(prev.x);
+
+                                        ctx.beginPath();
+                                        ctx.moveTo(x, top);
+                                        ctx.lineTo(x, bottom);
+                                        ctx.stroke();
+                                    }
+                                });
+
+                                ctx.restore();
+                            }
+                        }
+                    ]
+                });
+
+                return wrapper;
+            };
+
+            context.routeProfileControl.addTo(map);     // Add menu control to map
+        } else {
+            const title = context.routeProfileControl._container.getElementsByClassName('menu-title')[0];
+            title.textContent = context.language === 'EN' ? 'Route profile' : 'Profil de l\'itinéraire';
+            
+            let yMin = null;
+            let yMax = null;
+            [yMin, yMax] = calculateRouteProfile();
+
+            context.routeProfileChart.data.datasets[0].data = context.routeProfileChartPoints;
+            context.routeProfileChart.options.scales.y.min = Math.max(Math.round((yMin - (yMax - yMin) * 0.08)/10)*10, 0);
+            context.routeProfileChart.options.scales.y.max = Math.round((yMax + (yMax - yMin) * 0.08)/10)*10;
+            context.routeProfileChart.options.scales.x.title.text = context.metricUnits ? "km" : "mi";
+            context.routeProfileChart.update();
+        }
+
+        //-------------------------
+        // Calculate route profile  
+        //-------------------------
+        function calculateRouteProfile() {
+            let dist = 0;
+            context.routeProfileChartPoints = [];
+            context.routeProfileIndexes = [];
+            context.routeProfileChartRevIdx = [];
+            let yMin = null;
+            let yMax = null;
+            let k = -1;
+
+            stages.forEach((stage, h) => {
+                if (stage.points.length === 0) return;
+                if (h > 0) {
+                    k++;
+                    context.routeProfileChartPoints.push({ x: null, y: null });
+                    context.routeProfileIndexes.push(null);
+                }
+                
+                let alt = context.metricUnits ? stage.points[0].marker.getLatLng().alt : stage.points[0].marker.getLatLng().alt/0.3048;
+                context.routeProfileChartPoints.push({ x: dist, y: alt });
+                context.routeProfileIndexes.push({ stageNum: h, sectNum: 0, ptNum: 0 });
+                
+                if (yMin != null) {
+                    if (alt < yMin) yMin = alt;
+                    if (alt > yMax) yMax = alt;
+                } else {
+                    yMin = alt;
+                    yMax = alt;
+                }
+                
+                k++;
+                context.routeProfileChartRevIdx[h] = [[k]];
+                stage.sections.forEach((section, i) => {
+                    const sectPoints = section.polyline.getLatLngs();
+
+                    if (i > 0) {
+                        k++;
+                        context.routeProfileChartPoints.push({ x: dist, y: alt });
+                        context.routeProfileIndexes.push({ stageNum: h, sectNum: i, ptNum: 0 });
+
+                        context.routeProfileChartRevIdx[h].push([]);
+                        context.routeProfileChartRevIdx[h][i].push(k);
+                    }
+
+                    for (let j = 1; j < sectPoints.length; j++) {
+                        k++;
+                        let delta = context.metricUnits ? haversine(sectPoints[j - 1], sectPoints[j]) : haversine(sectPoints[j - 1], sectPoints[j])/1.609344;
+                        dist += delta;  // Use the haversine function to add the distance between two points
+                        if (sectPoints[j].alt) {    // When alt not available, the previous value is used
+                            alt = context.metricUnits ? sectPoints[j].alt : sectPoints[j].alt/0.3048;
+                        }
+                        context.routeProfileChartPoints.push({ x: dist, y: alt });
+                        context.routeProfileIndexes.push({ stageNum: h, sectNum: i, ptNum: j });
+
+                        context.routeProfileChartRevIdx[h][i].push(k);
+
+                        if (alt < yMin) yMin = alt;
+                        if (alt > yMax) yMax = alt;
+                    }
+                });
+            });
+
+            return [yMin, yMax];
+        }
+
+        //------------------------------
+        // Create/update marker on map  
+        //------------------------------
+        function updateRouteProfileMapMarker(stageNum, sectNum, ptNum) {
+            if (stages.length <= stageNum || stages[stageNum].sections.length <= sectNum || !stages[stageNum].sections[sectNum].polyline || stages[stageNum].sections[sectNum].polyline.getLatLngs().length <= ptNum)
+                return;
+
+            const latlng = stages[stageNum].sections[sectNum].polyline.getLatLngs()[ptNum];
+            if (context.routeProfileMapMarker)
+                context.routeProfileMapMarker.setLatLng(latlng);
+            else
+                context.routeProfileMapMarker = L.circleMarker(latlng, { pane: 'markerNEPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
+        }
+    }
+
+    //--------------------------------------------------
+    // Create/recreate control to display stage profile 
+    //--------------------------------------------------
+    function displayStageProfile(stage) {
+        if (stage === undefined || stage === null || stage.points.length < 2 || !stage.points[0].marker.getLatLng().alt)
+            return;
+
+        if (!context.stageProfileControl) {
+            const corners = map._controlCorners;
+            const container = map._controlContainer;
+
+            corners.bottomcenter = L.DomUtil.create('div', 'leaflet-bottom leaflet-center', container);
+
+            context.stageProfileControl = L.control({ position: 'bottomcenter' });  // Create new menu control
+
+            context.stageProfileControl.onAdd = function (map) {      // Set content into menu control            
+                // Create white box hosting the menu
+                const wrapper = L.DomUtil.create('div', 'leaflet-bar unified-control');
+                wrapper.style.background = 'white';
+                wrapper.style.padding = '8px';
+                wrapper.style.display = 'flex';
+                wrapper.style.flexDirection = 'column';
+                wrapper.style.gap = '8px';
+                wrapper.style.minWidth = '100px';
+                wrapper.style.maxWidth = '500px';
+                wrapper.style.width = '100%';
+                
+                // Prevent map interaction
+                L.DomEvent.disableClickPropagation(wrapper);
+                L.DomEvent.disableScrollPropagation(wrapper);
+
+                // Find stage number
+                let num = stages.indexOf(stage) + 1;  // Retrieve stage index
+                if (context.editedStage != null && context.editedStage !== undefined && stages[context.editedStage].points.length === 0 && context.editedStage < num)
+                    num--;
+                
+                // Create title
+                const title = L.DomUtil.create('div', 'menu-title', wrapper);
+                title.textContent = (context.language === 'EN' ? 'Stage profile: ' : 'Profil de l\'étape : ') + String(num) + '. ' + (stage.name ?? '');
+                title.style.fontSize = '18px';
+                title.style.fontWeight = 'bold';
+                title.style.marginBottom = '4px';
+
+                let yMin = null;
+                let yMax = null;
+                [yMin, yMax] = calculateStageProfile(stage);
+
+                const canvas = L.DomUtil.create('canvas', '', wrapper);
+                canvas.id = "stageProfile";
+                canvas.width = 500;
+                canvas.height = 150;
+
+                canvas.addEventListener('mouseleave', () => {
+                    if (context.stageProfileMapMarker) {
+                        context.stageProfileMapMarker.remove();
+                        context.stageProfileMapMarker = null;
+                    }
+                });
+
+                context.stageProfileChart = new Chart(canvas, {
+                    type: "line",
+                    data: {
+                        datasets: [{
+                            label: "Altitude",
+                            data: context.stageProfileChartPoints,
+                            backgroundColor:"rgba(0,0,255,1.0)",
+                            borderColor: routeColors.lightBlue,
+                            borderWidth: 4,
+                            fill: false,
+                            tension: 0.4,
+                            pointRadius: 0,       // hide dots
+                            pointHoverRadius: 0   // hide hover dots
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                type: "linear",
+                                position: "bottom",
+                                ticks: {
+                                    stepSize: 1
+                                },
+                                title: {
+                                    display: true,
+                                    text: context.metricUnits ? "km" : "mi"
+                                },
+                                min: 0
+                            },
+                            y: {
+                                title: {
+                                    display: false
+                                },
+                                min: Math.max(Math.round((yMin - (yMax - yMin) * 0.08)/5)*5, 0),
+                                max: Math.round((yMax + (yMax - yMin) * 0.08)/5)*5,
+                                afterFit: function(scale) {
+                                    scale.width = 60;
+                                },
+                                ticks: {
+                                    precision: 0,   // Prevent unneeded roundings
+                                    stepSize: (yMax - yMin) < 5 ? 1 : undefined
+                                }
+                            }
+                        },
+                        onHover: (event, elements, chart) => {
+                            const {chartArea} = chart;
+
+                            const x = event.x;
+                            const y = event.y;
+
+                            const inside =
+                                x >= chartArea.left &&
+                                x <= chartArea.right &&
+                                y >= chartArea.top &&
+                                y <= chartArea.bottom;
+
+                            if (!inside) {
+                                // Cursor is outside chart → remove marker
+                                if (context.stageProfileMapMarker) {
+                                    context.stageProfileMapMarker.remove();
+                                    context.stageProfileMapMarker = null;
+                                }
+                                return;
+                            }
+
+                            if (!elements.length) {
+                                if (context.stageProfileMapMarker) {
+                                    context.stageProfileMapMarker.remove();   // Remove marker from Leaflet map
+                                    context.stageProfileMapMarker = null;
+                                }
+                                return;
+                            }
+
+                            const idx = elements[0].index;
+                            updateStageProfileMapMarker(stage, context.stageProfileIndexes[idx].sectNum, context.stageProfileIndexes[idx].ptNum);       // Create/move marker on Leaflet map
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            intersect: false
+                        },
+                        elements: {
+                            point: {
+                                radius: 0,          // keep invisible
+                                hoverRadius: 10,    // larger detection zone
+                                hitRadius: 20       // ← key parameter
+                            }
+                        },
+                        plugins: {
+                            legend: {display: false},
+                            tooltip: {
+                                backgroundColor: 'white',
+                                titleColor: '#000',
+                                bodyColor: '#000',
+                                borderColor: '#ccc',
+                                borderWidth: 1,
+                                displayColors: false,   // ← removes blue square
+                                
+                                callbacks: {
+                                    title: function(tooltipItems) {
+                                        const x = tooltipItems[0].parsed.x;   // the real distance                               
+                                        const label = context.language === 'EN' ? 'Distance: ' : 'Distance : ';
+                                        const unit  = context.metricUnits ? ' km' : ' mi';
+                                        return label + x.toFixed(3) + unit;
+                                    },
+                                    label: function(tooltipItem) {
+                                        const y = tooltipItem.parsed.y;
+                                        const label = context.language === 'EN' ? 'Altitude: ' : 'Altitude : ';
+                                        const unit  = context.metricUnits ? ' m' : ' ft';
+                                        return label + y.toFixed(0) + unit;
+                                    }
+                                }
+                            },
+                        }
+                    },
+                    plugins: [
+                        {
+                            id: 'yLabel',
+                            afterDraw(chart) {
+                                const { ctx, chartArea } = chart;
+                                ctx.save();
+                                ctx.font = "14px sans-serif";
+                                ctx.fillStyle = "#333";
+                                ctx.textAlign = "center";
+                                ctx.fillText(
+                                    context.metricUnits ? "m" : "ft",
+                                    chartArea.left - 50,
+                                    (chartArea.top + chartArea.bottom) / 2
+                                );
+                                ctx.restore();
+                            }
+                        },
+                        {
+                            id: 'hoverPoint',
+                            afterDraw(chart) {
+                                const active = chart.getActiveElements();
+                                if (!active.length) return;
+
+                                const {ctx} = chart;
+                                const el = active[0].element;
+
+                                ctx.save();
+                                ctx.beginPath();
+                                ctx.arc(el.x, el.y, 4, 0, 2 * Math.PI);
+                                ctx.fillStyle = "red";
+                                ctx.fill();
+                                ctx.restore();
+                            }
+                        }
+                    ]
+                });
+
+                return wrapper;
+            };
+
+            context.stageProfileControl.addTo(map);     // Add menu control to map
+        } else {
+            // Find stage number
+            let num = stages.indexOf(stage) + 1;  // Retrieve stage index
+            if (context.editedStage != null && context.editedStage !== undefined && stages[context.editedStage].points.length === 0 && context.editedStage < num)
+                num--;
+                
+            const title = context.stageProfileControl._container.getElementsByClassName('menu-title')[0];
+            title.textContent = (context.language === 'EN' ? 'Stage profile: ' : 'Profil de l\'étape : ') + String(num) + '. ' + (stage.name ?? '');
+            
+            let yMin = null;
+            let yMax = null;
+            [yMin, yMax] = calculateStageProfile(stage);
+
+            context.stageProfileChart.data.datasets[0].data = context.stageProfileChartPoints;
+            context.stageProfileChart.options.scales.y.min = Math.max(Math.round((yMin - (yMax - yMin) * 0.08)/10)*10, 0);
+            context.stageProfileChart.options.scales.y.max = Math.round((yMax + (yMax - yMin) * 0.08)/10)*10;
+            context.stageProfileChart.options.scales.x.title.text = context.metricUnits ? "km" : "mi";
+            context.stageProfileChart.update();
+        }
+
+        //-------------------------
+        // Calculate stage profile  
+        //-------------------------
+        function calculateStageProfile(stage) {
+            let dist = 0;
+            let alt = context.metricUnits ? stage.points[0].marker.getLatLng().alt : stage.points[0].marker.getLatLng().alt/0.3048;
+            
+            context.stageProfileChartPoints = [{ x: 0, y: alt }];
+            context.stageProfileIndexes = [ { sectNum: 0, ptNum: 0 }];
+            context.stageProfileChartRevIdx = [[0]];
+            
+            let yMin = alt;
+            let yMax = alt;
+            let k = 0;
+
+            stage.sections.forEach((section, i) => {
+                const sectPoints = section.polyline.getLatLngs();
+
+                if (i > 0) context.stageProfileChartRevIdx.push([]);
+
+                for (let j = 1; j < sectPoints.length; j++) {
+                    k++;
+                    let delta = context.metricUnits ? haversine(sectPoints[j - 1], sectPoints[j]) : haversine(sectPoints[j - 1], sectPoints[j])/1.609344;
+                    dist = dist + delta;  // Use the haversine function to add the distance between two points
+                    if (sectPoints[j].alt) {    // When alt not available, the previous value is used
+                        alt = context.metricUnits ? sectPoints[j].alt : sectPoints[j].alt/0.3048;
+                    }
+                    context.stageProfileChartPoints.push({ x: dist, y: alt });
+                    context.stageProfileIndexes.push({ sectNum: i, ptNum: j });
+                    context.stageProfileChartRevIdx[i].push(k);
+                    if (alt < yMin) yMin = alt;
+                    if (alt > yMax) yMax = alt;
+                }
+            });
+
+            return [yMin, yMax];
+        }
+
+        //------------------------------
+        // Create/update marker on map  
+        //------------------------------
+        function updateStageProfileMapMarker(stage, sectNum, ptNum) {
+            if (stage.sections.length <= sectNum || !stage.sections[sectNum].polyline || stage.sections[sectNum].polyline.getLatLngs().length <= ptNum)
+                return;
+
+            const latlng = stage.sections[sectNum].polyline.getLatLngs()[ptNum];
+            if (context.stageProfileMapMarker)
+                context.stageProfileMapMarker.setLatLng(latlng);
+            else
+                context.stageProfileMapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
+        }
+    }
+
+    //----------------------------------------------
+    // Execute command that can be undone or redone 
+    //----------------------------------------------
+    function execute(command) {
+        command.redo();
+        undoStack.push(command);
+        redoStack.length = 0;
+
+        if (undoStack.length > MAX_HISTORY)
+            undoStack.shift();
+    }
+
+    //-------------------
+    // Save route to GPX
+    //-------------------
+    function exportRouteToGPX() {
+        if (context.operationWithButtonInProcess)
+            return;     // One operation at a time only
+
+        // Create a new file by downloading it
+        const blob = new Blob([makeGPX("GPX Route Planner export")], { type: "application/octet-stream" });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = "GPX_Route_Planner_export.gpx";    // Set filename
+        a.click();
+        URL.revokeObjectURL(a.href);
+        console.log(context.language === 'EN' ? "Route exported as GPX file (in default download directory)" : 
+            "Itinéraire exporté sous forme de fichier GPX (dans le répertoire de téléchargement par défaut)");
+
+        //----------------------
+        // Generate GPX content
+        //----------------------
+        function makeGPX(name) {
+            // Create header
+            const header = `<?xml version="1.0" encoding="UTF-8"?>` +
+                `\n<gpx version="1.1" creator="RoutePlanner"` +
+                `\n    xmlns="http://www.topografix.com/GPX/1/1"` +
+                `\n    xmlns:rp="${RP_NS}">` +
+                `\n    <metadata>` +
+                `\n        <name>${name}</name>` +
+                `\n    </metadata>`;
+                    
+            // Create body
+            let body = ``;
+            for (let stage of stages) {
+                body = body + `\n    <trk>`;    // Create new track
+                if (stage.name && stage.name.length > 0)
+                    body = body + `\n        <name>${stage.name}</name>`;     // Add name
+                if (stage.distance != null && stage.ascent != null && stage.descent != null) {
+                    // Add distance, ascent, descent as extensions
+                    body = body + `\n        <extensions>`;
+                    if (stage.distance != null)
+                        body = body + `\n            <rp:distance>${stage.distance.toFixed(3)}</rp:distance>`;
+                    if (stage.ascent != null)
+                        body = body + `\n            <rp:ascent>${stage.ascent.toFixed(3)}</rp:ascent>`;
+                    if (stage.descent != null)
+                        body = body + `\n            <rp:descent>${stage.descent.toFixed(3)}</rp:descent>`;
+                    body = body + `\n        </extensions>`;
+                }
+
+                body = body + `\n        <trkseg>`;     // Create new track section          
+                for (let i = 0; i < stage.points.length; i++) {
+                    const point = stage.points[i];
+                    body = body + `\n            <trkpt lat="${point.marker.getLatLng().lat}" lon="${point.marker.getLatLng().lng}">`;  // Add track point with coordinates
+                    if (point.marker.getLatLng().alt)
+                        body = body + `\n                <ele>${point.marker.getLatLng().alt}</ele>`;   // Add track point altitude
+                    body = body + `\n            </trkpt>`;
+                    if (stage.sections[i] && stage.sections[i].polyline.getLatLngs().length > 2) {  // If next section was calculated using BRouter
+                        const latlngs = stage.sections[i].polyline.getLatLngs();
+                        for (let j = 1; j < latlngs.length - 1; j++) {  // First point is skipped because already added
+                            body = body + `\n            <trkpt lat="${latlngs[j].lat}" lon="${latlngs[j].lng}">`;  // Add track point with coordinates
+                            if (latlngs[j].alt)
+                                body = body + `\n                <ele>${latlngs[j].alt}</ele>`;     // Add track point altitude
+                            // Add source as extension
+                            body = body + `\n                <extensions>`;
+                            body = body + `\n                    <rp:source>brouter</rp:source>`;
+                            body = body + `\n                </extensions>`;
+                            body = body + `\n            </trkpt>`;
+                        }
+                    }
+                }
+                body = body + `\n        </trkseg>`;    // FInish track section
+                body = body + `\n    </trk>`;   // Finish track
+            }
+
+            const footer = `\n</gpx>`;  // Create footer
+
+            return header + body + footer;  // Merger header, body and footer
+        }
+    }
+
+    //--------------------------
+    // Load route from GXP file
+    //--------------------------
+    function importRouteFromGPX() {
+        if (context.operationWithButtonInProcess)
+            return;     // One operation at a time only
+
+        // Create wrapper division
+        const wrapper = document.createElement('div');
+        wrapper.id = 'gpx-file-wrapper';
+        wrapper.style.border = '1px solid #ccc';
+        wrapper.style.padding = '8px';
+        wrapper.style.marginTop = '8px';
+
+        // Create label
+        const label = document.createElement('span');
+        label.textContent = context.language === 'EN' ? 'Choose file to be loaded: ' : 'Choisissez le fichier à importer : ';
+        wrapper.appendChild(label);
+
+        // Create file input
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.gpx'; // adapt as you like
+        wrapper.appendChild(input);
+
+        // Add a small status span
+        const status = document.createElement('span');
+        status.style.marginLeft = '8px';
+        wrapper.appendChild(status);
+
+        // Escape key handler just for this wrapper
+        function escKeyHandler(e) {
+            if ((e.key || '').toLowerCase() === 'escape') {
+                L.DomEvent.stopPropagation(e);  // Do not propagate event to map and document
+                
+                // Remove handlers and wrapper
+                document.removeEventListener('keydown', escKeyHandler);
+                input.removeEventListener('change', changeHandler);     // Remove event handler
+                cancelButton.removeEventListener('click', cancelHandler);                // Remove wrapper from DOM
+                wrapper.remove();
+
+                context.operationWithButtonInProcess = false;
+            }
+        }
+        document.addEventListener('keydown', escKeyHandler);        // When a file is chosen, read it then remove the wrapper div
+        
+        // Handler triggered when a file has been selected
+        async function changeHandler(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                status.textContent = context.language === 'EN' ? 'Reading...' : 'Lecture en cours...';
+                const text = await file.text();  // Read file content
+
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(text, "application/xml"); // XML parse file content
+
+                // Basic error check
+                const parserError = xmlDoc.querySelector("parsererror");
+                if (parserError) {
+                    console.error(context.language === 'EN' ? "Error parsing GPX:" : "Erreur de parsing du fichier GPX : ", parserError.textContent);
+                    status.textContent = context.language === 'EN' ? 'Error parsing GPX' : 'Erreur de parsing GPX';
+                    return;
+                }
+
+                const stages2 = [];
+
+                const trks = Array.from(xmlDoc.querySelectorAll("trk"));    // Retrieve tracks
+                trks.forEach(trk => {
+                    // Register track as stage
+                    const stage2 = {
+                        name: null,
+                        sections: [],
+                        distance: null,
+                        points: [],
+                        ascent: null,
+                        descent: null,
+                        infoPop: null
+                    };
+                    stages2.push(stage2);
+                
+                    // Retrieve track name and set it as stage name
+                    const names = trk.getElementsByTagName("name");
+                    if (names.length > 0 && names[0].textContent.length > 0)
+                        stage2.name = names[0].textContent;
+                    // Retrieve track distance and set it as stage distance
+                    const distances = trk.getElementsByTagNameNS(RP_NS, "distance");
+                    if (distances.length > 0)
+                        stage2.distance = parseFloat(distances[0].textContent);
+                    // Retrieve track ascent and set it as stage ascent
+                    const ascents = trk.getElementsByTagNameNS(RP_NS, "ascent");
+                    if (ascents.length > 0)
+                        stage2.ascent = parseFloat(ascents[0].textContent);
+                    // Retrieve track descent and set it as stage descent
+                    const descents = trk.getElementsByTagNameNS(RP_NS, "descent");
+                    if (descents.length > 0)
+                        stage2.descent = parseFloat(descents[0].textContent);
+                
+                    let polypoints = [];
+                    const trksegs = Array.from(trk.querySelectorAll("trkseg"));     // Retrieve track sections
+                    trksegs.forEach((trkseg, j) => {
+                        const trkpts =  Array.from(trkseg.querySelectorAll("trkpt"));
+                        trkpts.forEach((trkpt, k) => {
+                            let latlng = null;
+                            const eles = Array.from(trkpt.getElementsByTagName("ele"));
+                            if (eles.length > 0)
+                                latlng = {
+                                    lat: parseFloat(trkpt.getAttribute("lat")),
+                                    lng: parseFloat(trkpt.getAttribute("lon")),
+                                    alt: parseFloat(eles[0].textContent)
+                                }
+                            else
+                                latlng = {
+                                    lat: parseFloat(trkpt.getAttribute("lat")),
+                                    lng: parseFloat(trkpt.getAttribute("lon"))
+                                }
+                            if (stage2.points.length === 0) {
+                                // Register first point of the section and create marker on the map
+                                stage2.points.push({ latlng: latlng });
+                                polypoints.push(latlng);
+                            } else if (isBRouterPoint(trkpt)) { // Register intermediate point calculated by BRouter
+                                polypoints.push(latlng);
+                            } else {
+                                // Register end of section point and create marker and polyline on the map
+                                stage2.points.push({ latlng: latlng })
+                                polypoints.push(latlng);
+                                stage2.sections.push({ latlngs: polypoints })
+                                polypoints = [latlng];
+                            }
+                        });
+                    });
+                    // If the last point of the last track was a point calculated by BRouter, the last section has not been imported. Import it properly now.
+                    if (polypoints.length > 1) {
+                        stage2.points.push({ latlng: polypoints[polypoints.length - 1] });
+                        
+                        stage2.sections.push({ latlngs: polypoints });
+                    }
+                });
+
+                const beforeState = null;
+                const afterState = { importedStages: stages2, importedStagesNb: stages2.length };
+                execute(new ImportRoute(beforeState, afterState));        
+                    
+                console.log((context.language === 'EN' ? "Route imported from GPX file '" : "Itinéraire importé du fichier GPX '") + file.name + "'");
+                
+                // Remove handlers and wrapper
+                input.removeEventListener('change', changeHandler);
+                cancelButton.removeEventListener('click', cancelHandler);                
+                document.removeEventListener('keydown', escKeyHandler);
+                wrapper.remove();
+
+                focusOnRoute();
+
+                context.operationWithButtonInProcess = false;   // Stop blocking the other operations
+            } catch (err) {     // Error handler
+                console.error(context.language === 'EN' ? 'Error reading file:' : 'Erreur de lecture du fichier : ', err);
+                status.textContent = context.language === 'EN' ? 'Error reading file' : 'Erreur de lecture du fichier';
+            }
+        }
+        input.addEventListener('change', changeHandler);       // Add event handler to file input
+
+        // Create submit button
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = context.language === 'EN' ? 'Cancel' : 'Annuler';
+        cancelButton.style.marginLeft = '8px';
+        wrapper.appendChild(cancelButton);
+
+        // Cancel handler
+        function cancelHandler() {
+            // Close the small UI:
+            input.removeEventListener('change', changeHandler);     // Remove event handler
+            cancelButton.removeEventListener('click', cancelHandler);
+            document.removeEventListener('keydown', escKeyHandler);
+            wrapper.remove();
+            
+            context.operationWithButtonInProcess = false;   // Stop blocking the other operations
+        }
+        cancelButton.addEventListener('click', cancelHandler);
+
+        // Finally, add the wrapper to the page
+        document.body.appendChild(wrapper);
+
+        context.operationWithButtonInProcess = true;    // Block other current operations
+                            
+        //--------------------------------------------------------------------------
+        // Check whether the point was created by the user or calculated by BRouter
+        //--------------------------------------------------------------------------
+        function isBRouterPoint(pt) {
+
+            const sourceEls = pt.getElementsByTagNameNS(RP_NS, "source");
+            return sourceEls.length > 0 && sourceEls[0].textContent === "brouter";
+        }
+    }
+
+    //------------------
+    // Merge two stages
+    //------------------
+    function mergeStage() {
+        const stage = stages[context.editedStage];
+        const stageIdx = stages.indexOf(stage);
+
+        // Check that stage has at least one point
+        if (!stage.points || stage.points.length < 1) {
+            alert(context.language === 'EN' ? 'Stage with no point cannot be merged' : 'Etape sans point ne pouvant pas être fusionnée');
+            return;
+        }
+
+        // Find and highlight stages candidates for merge before and after the edited stage
+        const beforeCandidStgs = [];
+        const afterCandidStgs = [];
+        const baCandidStgs = [];
+        for (let j = 0; j < stages.length; j++) {
+            if (j != context.editedStage) {
+                const beforeDistance = haversine(stage.points[0].marker.getLatLng(), stages[j].points[stages[j].points.length - 1].marker.getLatLng());
+                const afterDistance = haversine(stage.points[stage.points.length - 1].marker.getLatLng(), stages[j].points[0].marker.getLatLng());
+                const DIST_THRESHOLD = 2;   // 2 km
+
+                if (beforeDistance < DIST_THRESHOLD && afterDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km before and after the edited stage
+                    baCandidStgs.push(stages[j]);
+                    stages[j].sections.forEach(section => 
+                        section.polyline.setStyle({ color: routeColors.lightPurple })
+                    );
+                    stages[j].points.forEach((point, k) => {
+                        if (k === 0) point.marker.setIcon(lightGreenDiamondIcon);
+                        else if (k === stages[j].points.length - 1) point.marker.setIcon(lightRedSquareIcon);
+                        else point.marker.setIcon(lightPurpleCircleIcon);
+                    });
+                } else if (beforeDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km before the edited stage
+                    beforeCandidStgs.push(stages[j]);
+                    stages[j].sections.forEach(section =>
+                        section.polyline.setStyle({ color: routeColors.lightGreen })
+                    );
+                    stages[j].points.forEach((point, k) => {
+                        if (k === 0) point.marker.setIcon(lightGreenDiamondIcon);
+                        else if (k === stages[j].points.length - 1) point.marker.setIcon(lightGreenSquareIcon);
+                        else point.marker.setIcon(lightGreenCircleIcon);
+                    });
+                } else if (afterDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km after the edited stage
+                    afterCandidStgs.push(stages[j]);
+                    stages[j].sections.forEach(section =>
+                        section.polyline.setStyle({ color: routeColors.lightRed })
+                    );
+                    stages[j].points.forEach((point, k) => {
+                        if (k === 0) point.marker.setIcon(lightRedDiamondIcon);
+                        else if (k === stages[j].points.length - 1) point.marker.setIcon(lightRedSquareIcon);
+                        else point.marker.setIcon(lightRedCircleIcon);
+                    });
+                }
+            }
+        }
+        if (baCandidStgs.length === 0 && beforeCandidStgs.length === 0 && afterCandidStgs.length === 0) {
+            alert(context.language === 'EN' ? "No other stage near enough to be merged" : "Pas d\'autre étape assez proche pour être fusionnée");
+            return;
+        }
+
+        // Define cursor with shakehands
+        const svgHandshake = `
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                width="24"
+                height="24"
+                viewBox="0 0 640 640">
+                <path d="M300.9 149.2L184.3 278.8C179.7 283.9 179.9 291.8 184.8 296.7C215.3 327.2 264.8 327.2 295.3 296.7L327.1 264.9C331.3 260.7 336.6 258.4 342 258C348.8 257.4 355.8 259.7 361 264.9L537.6 440L608 384L608 96L496 160L472.2 144.1C456.4 133.6 437.9 128 418.9 128L348.5 128C347.4 128 346.2 128 345.1 128.1C328.2 129 312.3 136.6 300.9 149.2zM148.6 246.7L255.4 128L215.8 128C190.3 128 165.9 138.1 147.9 156.1L144 160L32 96L32 384L188.4 514.3C211.4 533.5 240.4 544 270.3 544L286 544L279 537C269.6 527.6 269.6 512.4 279 503.1C288.4 493.8 303.6 493.7 312.9 503.1L353.9 544.1L362.9 544.1C382 544.1 400.7 539.8 417.7 531.8L391 505C381.6 495.6 381.6 480.4 391 471.1C400.4 461.8 415.6 461.7 424.9 471.1L456.9 503.1L474.4 485.6C483.3 476.7 485.9 463.8 482 452.5L344.1 315.7L329.2 330.6C279.9 379.9 200.1 379.9 150.8 330.6C127.8 307.6 126.9 270.7 148.6 246.6z"/>
+            </svg>
+        `;
+        map.getContainer().style.cursor = `url("data:image/svg+xml;utf8,${encodeURIComponent(svgHandshake)}") 8 8, crosshair`;
+
+        // Define event handlers on stages candidates for merge before and after the edited stage
+        baCandidStgs.forEach(stageBA => {
+            for (let j = 0; j < stageBA.sections.length; j++) {
+                const section = stageBA.sections[j];
+
+                // Set event listener on section for click
+                const boundHandler = clickForMergeBAInfo.bind(null, stageBA);
+                section.polyline.addEventListener('click', boundHandler);    // Add event listener to section
+                section.evtList.push({ target: section.polyline, type: 'click', handler: boundHandler, role: 'merge' });   // Register event listener 
+            }
+
+            const point1 = stageBA.points[0];
+
+            const boundHandler1 = clickForMergeBefore.bind(null, stageBA);
+            point1.marker.addEventListener('click', boundHandler1);    // Add event listener to section
+            point1.evtList.push({ target: point1.marker, type: 'click', handler: boundHandler1, role: 'merge' });   // Register event listener 
+
+            for (let j = 1; j < stageBA.points.length - 1; j++) {
+                const point = stageBA.points[j];
+
+                const boundHandler = clickForMergeBAInfo.bind(null, stageBA);
+                point.marker.addEventListener('click', boundHandler);    // Add event listener to section
+                point.evtList.push({ target: point.marker, type: 'click', handler: boundHandler, role: 'merge' });   // Register event listener 
+            }
+
+            const point2 = stageBA.points[stageBA.points.length - 1];
+
+            const boundHandler2 = clickForMergeAfter.bind(null, stageBA);
+            point2.marker.addEventListener('click', boundHandler2);    // Add event listener to section
+            point2.evtList.push({ target: point2.marker, type: 'click', handler: boundHandler2, role: 'merge' });   // Register event listener 
+
+        });
+
+        // Define event handlers on stages candidates for merge before the edited stage
+        beforeCandidStgs.forEach(stageBefore => {
+            for (let j = 0; j < stageBefore.sections.length; j++) {
+                const section = stageBefore.sections[j];
+
+                // Set event listener on section for click
+                const boundHandler = clickForMergeBefore.bind(null, stageBefore);
+                section.polyline.addEventListener('click', boundHandler);    // Add event listener to section
+                section.evtList.push({ target: section.polyline, type: 'click', handler: boundHandler, role: 'merge' });   // Register event listener 
+            }
+
+            for (let j = 0; j < stageBefore.points.length; j++) {
+                const point = stageBefore.points[j];
+
+                const boundHandler = clickForMergeBefore.bind(null, stageBefore);
+                point.marker.addEventListener('click', boundHandler);    // Add event listener to section
+                point.evtList.push({ target: point.marker, type: 'click', handler: boundHandler, role: 'merge' });   // Register event listener 
+            }
+        });
+
+        // Define event handlers on stages candidates for merge after the edited stage
+        afterCandidStgs.forEach(stageAfter => {
+            for (let j = 0; j < stageAfter.sections.length; j++) {
+                const section = stageAfter.sections[j];
+
+                // Set event listener on section for click
+                const boundHandler = clickForMergeAfter.bind(null, stageAfter);
+                section.polyline.addEventListener('click', boundHandler);    // Add event listener to section
+                section.evtList.push({ target: section.polyline, type: 'click', handler: boundHandler, role: 'merge' });   // Register event listener 
+            }
+
+            for (let j = 0; j < stageAfter.points.length; j++) {
+                const point = stageAfter.points[j];
+
+                const boundHandler = clickForMergeAfter.bind(null, stageAfter);
+                point.marker.addEventListener('click', boundHandler);    // Add event listener to section
+                point.evtList.push({ target: point.marker, type: 'click', handler: boundHandler, role: 'merge' });   // Register event listener 
+            }
+        });
+
+        // Escape key handler just for split
+        function escKeyHandler(e) {
+            if ((e.key || '').toLowerCase() === 'escape') {
+                L.DomEvent.stopPropagation(e);  // Do not propagate event to map and document
+
+                setNonEdtColors(baCandidStgs)   // Set candidates stages with non edit colors
+                setNonEdtColors(beforeCandidStgs)   // Set candidates stages with non edit colors
+                setNonEdtColors(afterCandidStgs)   // Set candidates stages with non edit colors
+
+                removeMergeHandlers(baCandidStgs);  // Remove event handlers (that were added for merging)
+                removeMergeHandlers(beforeCandidStgs);  // Remove event handlers (that were added for merging)
+                removeMergeHandlers(afterCandidStgs);  // Remove event handlers (that were added for merging)
+                     
+                // Remove handlers and wrapper
+                document.removeEventListener('keydown', escKeyHandler);
+
+                map.getContainer().style.cursor = 'crosshair';
+
+                context.operationWithButtonInProcess = false;   // Stop blocking the other operations
+            }
+        }
+        document.addEventListener('keydown', escKeyHandler);
+
+        // Register operation in process (to block other potential concurrent operations)
+        context.operationWithButtonInProcess = true;
+
+        // Function to process clicks on polylines and markers
+        async function clickForMergeBAInfo(stageRef, e) {
+            alert(context.language === 'EN' ? 'This stage can be merged on both sides of the edited stage.\nClick its first point to merge it before.\nOr click its last point to merge it after.' : 
+                'Cette étape peut être fusionnée de chaque côté de l\'étape en cours d\'édition\nCliquer sur son premier point pour la fusionner avant.\nOu cliquer sur son dernier point pour la fusionner après.')
+        }
+
+        // Function to process clicks on polylines and markers
+        async function clickForMergeBefore(stageRef, e) {
+            const iRef = stages.indexOf(stageRef);  // Retrieve stage index
+            if (iRef === -1) return;
+
+            L.DomEvent.stopPropagation(e);  // Prevent map click from firing
+
+            setNonEdtColors(baCandidStgs)   // Set candidates stages with non edit colors
+            setNonEdtColors(beforeCandidStgs)   // Set candidates stages with non edit colors
+            setNonEdtColors(afterCandidStgs)   // Set candidates stages with non edit colors
+                     
+            removeMergeHandlers(baCandidStgs);  // Remove event handlers (that were added for merging)
+            removeMergeHandlers(beforeCandidStgs);  // Remove event handlers (that were added for merging)
+            removeMergeHandlers(afterCandidStgs);  // Remove event handlers (that were added for merging)
+            
+            document.removeEventListener('keydown', escKeyHandler); //Remove Esc event handler (that were added for merging);
+
+            map.getContainer().style.cursor = 'crosshair';
+
+            context.operationWithButtonInProcess = false;   // To prevent firing the single click handler
+
+            let lastPt = stageRef.points[stageRef.points.length - 1].marker.getLatLng();
+            let firstPt = stage.points[0].marker.getLatLng();
+            if (lastPt.lat != firstPt.lat || lastPt.lng != firstPt.lng) {
+                if (context.routerProfile != 'crow') {
+                    const coordinates = lastPt.lng + "," + lastPt.lat + "|" +
+                        firstPt.lng + "," + firstPt.lat;      // Prepare coordinates to be submitted to BRouter
+                    calculatedPoints = await fetchBRouterRoute(coordinates);    // Find route to new point with BRouter
+                    if (!calculatedPoints) {      // When no route is found by BRouter
+                        //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
+                        return;
+                    }
+                    calculatedPoints = simplifyPolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
+
+                    const beforeState = { beforeStage: stageRef, beforeStageIdx: iRef, beforeStageSectNb: stageRef.sections.length, beforePointLatlng: lastPt, 
+                        afterPointLatlng: firstPt };
+                    const afterState = { beforePointLatlng: calculatedPoints[0], afterPointLatlng: calculatedPoints[calculatedPoints.length - 1], 
+                        linkSectionLatlngs: calculatedPoints };
+                    execute(new Click2MergeBefore(stage, stageIdx, beforeState, afterState));
+                } else {
+                    const beforeState = { beforeStage: stageRef, beforeStageIdx: iRef, beforeStageSectNb: stageRef.sections.length, beforePointLatlng: null, 
+                        afterPointLatlng: null };
+                    const afterState = { beforePointLatlng: null, afterPointLatlng: null, linkSectionLatlngs: [lastPt, firstPt] };
+                    execute(new Click2MergeBefore(stage, stageIdx, beforeState, afterState));
+                }
+            } else {    // Last point of stageRef and first point of stage are the same
+                const beforeState = { beforeStage: stageRef, beforeStageIdx: iRef, beforeStageSectNb: stageRef.sections.length, beforePointLatlng: null, 
+                    afterPointLatlng: null };
+                const afterState = { beforePointLatlng: null, afterPointLatlng: null, linkSectionLatlngs: null };
+                execute(new Click2MergeBefore(stage, stageIdx, beforeState, afterState));
+            }
+        }
+
+        // Function to process clicks on polylines and markers
+        async function clickForMergeAfter(stageRef, e) {
+            const iRef = stages.indexOf(stageRef);  // Retrieve stage index
+            if (iRef === -1) return;
+
+            L.DomEvent.stopPropagation(e);  // Prevent map click from firing
+
+            setNonEdtColors(baCandidStgs)   // Set candidates stages with non edit colors
+            setNonEdtColors(beforeCandidStgs)   // Set candidates stages with non edit colors
+            setNonEdtColors(afterCandidStgs)   // Set candidates stages with non edit colors
+                     
+            removeMergeHandlers(baCandidStgs);  // Remove event handlers (that were added for merging)
+            removeMergeHandlers(beforeCandidStgs);  // Remove event handlers (that were added for merging)
+            removeMergeHandlers(afterCandidStgs);  // Remove event handlers (that were added for merging)
+            
+            document.removeEventListener('keydown', escKeyHandler); //Remove Esc event handler (that were added for merging);
+
+            map.getContainer().style.cursor = 'crosshair';
+
+            context.operationWithButtonInProcess = false;   // To prevent firing the single click handler
+
+            let lastPt = stage.points[stage.points.length - 1].marker.getLatLng();
+            let firstPt = stageRef.points[0].marker.getLatLng();
+            if (lastPt.lat != firstPt.lat || lastPt.lng != firstPt.lng) {
+                if (context.routerProfile != 'crow') {
+                    const coordinates = lastPt.lng + "," + lastPt.lat + "|" +
+                        firstPt.lng + "," + firstPt.lat;      // Prepare coordinates to be submitted to BRouter
+                    calculatedPoints = await fetchBRouterRoute(coordinates);    // Find route to new point with BRouter
+                    if (!calculatedPoints) {      // When no route is found by BRouter
+                        return;
+                    }
+                    calculatedPoints = simplifyPolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
+
+                    const beforeState = { afterStage: stageRef, afterStageIdx: iRef, afterStageSectNb: stageRef.sections.length, beforePointLatlng: lastPt, 
+                        afterPointLatlng: firstPt };
+                    const afterState = { beforePointLatlng: calculatedPoints[0], afterPointLatlng: calculatedPoints[calculatedPoints.length - 1], 
+                        linkSectionLatlngs: calculatedPoints };
+                    execute(new Click2MergeAfter(stage, stageIdx, beforeState, afterState));
+               } else {
+                    const beforeState = { afterStage: stageRef, afterStageIdx: iRef, afterStageSectNb: stageRef.sections.length, beforePointLatlng: null, 
+                        afterPointLatlng: null };
+                    const afterState = { beforePointLatlng: null, afterPointLatlng: null, linkSectionLatlngs: [lastPt, firstPt] };
+                    execute(new Click2MergeAfter(stage, stageIdx, beforeState, afterState));
+                }
+            } else {    // Last point of stageRef and first point of stage are the same
+                const beforeState = { afterStage: stageRef, afterStageIdx: iRef, afterStageSectNb: stageRef.sections.length, beforePointLatlng: null, 
+                    afterPointLatlng: null };
+                const afterState = { stageRef, iRef, beforePointLatlng: null, afterPointLatlng: null, linkSectionLatlngs: null };
+                execute(new Click2MergeAfter(stage, stageIdx, beforeState, afterState));
+            }
+        }
+
+        // Function to remove the handlers created for merge
+        function removeMergeHandlers(candidStages) {
+            candidStages.forEach(stg => {
+                for (const collection of [stg.sections, stg.points]) {
+                    for (const item of collection) {
+                        for (let j = item.evtList.length - 1; j >= 0; j--) {
+                            const evt = item.evtList[j];
+                            if (evt.role === 'merge') {
+                                evt.target.removeEventListener(evt.type, evt.handler);
+                                item.evtList.splice(j, 1);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function setNonEdtColors(candidStages) {
+            candidStages.forEach(stage => {
+                stage.sections.forEach(section => {
+                    section.polyline.setStyle({ color: routeColors.Blue, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 });   // Set layout
+                })
+                stage.points.forEach((point, j) => {
+                    if (j === 0 && stage.points.length === 1)
+                        point.marker.setIcon(PurpleDoubleSquareIcon);
+                    else if (j === 0)
+                        point.marker.setIcon(GreenDiamondIcon);
+                    else if (j < stage.points.length - 1)
+                        point.marker.setIcon(transparentIcon);
+                    else
+                        point.marker.setIcon(RedSquareIcon);
+                });
+            });
+        }
+    }
+
+    //-----------------
+    // Quit edit stage
+    //-----------------
+    function quitEditStage(removeChart) {
+        if (context.editedStage != null && stages[context.editedStage] && stages[context.editedStage].points && stages[context.editedStage].points.length === 0) {
+            stages.splice(context.editedStage, 1);  // Remove empty stage
+            context.editedStage = null;
+        }
+
+        setEnv4NonEdt(removeChart);
+    }
+
+   //---------------------------------
+    // Reset route (delete all stages)
+    //---------------------------------
+    function resetRte() {
+        if (context.editedStage != null)
+            setStg4NonEdt(context.editedStage, true);
+
+        // Backup stages
+        const stagesBackup = [];
+
+        const beforeState = { stages: stagesBackup };
+        const afterState = null;
+        execute(new ResetRoute(beforeState, afterState));        
+    }
+
+    //-------------------------
+    // Reverse stage direction
+    //-------------------------
+    async function reverseStg() {
+        if (context.editedStage === null) return;
+
+        const stage = stages[context.editedStage];
+
+        const stageBefore = copy(stage);
+        const stageAfter = copy(stage);
+
+        // Collect stage points coordinates in reverse order
+        const latlngs = [];
+        stage.points.forEach(point => {
+            latlngs.unshift(point.marker.getLatLng());
+        });
+        if (latlngs.length === 0) return;
+
+        if (context.routerProfile != 'crow') {    // When BRouter used to find a route
+            let coordinates = '';
+            latlngs.forEach((latlng, j) => {
+                if (j === 0)
+                    coordinates = coordinates.concat(latlng.lng + ',' + latlng.lat);
+                else
+                    coordinates = coordinates.concat('|' + latlng.lng + ',' + latlng.lat);
+            });
+            let calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
+            if (!calculatedPoints) {    // When no route is found by BRouter
+                return;
+            }
+            latlngs.forEach((latlng, j) =>{
+                // Find the section's point closest to the dragged point
+                const closestSegAndPt = findClosestSectionAndPoint(calculatedPoints, latlng);
+                const idx = closestSegAndPt.index;
+                const closestPt = closestSegAndPt.point;
+                // Update stage's points and sections
+                if (j > 0) {
+                    const calculatedPoints1 = calculatedPoints.slice(0, idx + 1).concat(closestPt);
+                    stageAfter.sections[j - 1].latlngs = simplifyPolyGeom(calculatedPoints1);
+                }
+                stageAfter.points[j].latlng = closestPt;
+                calculatedPoints = [closestPt].concat(calculatedPoints.slice(idx + 1));                
+            });
+        } else {    // When BRouter is not used
+            latlngs.forEach((latlng, j) =>{
+                // Update stage's points and sections
+                if (j > 0) 
+                    stageAfter.sections[j - 1].latlngs = [latlngs[j - 1], latlngs[j]];
+
+                    stageAfter.points[j].latlng = latlngs[j];
+            });
+        }
+
+        const beforeState = { stage: stageBefore };
+        const afterState = { stage: stageAfter };
+        execute(new ReverseStage(stage, context.editedStage, beforeState, afterState));
+
+        function copy(stage) {
+            const stage2 = {
+                name: stage.name,
+                points: [],
+                sections: []                  
+            }
+
+            stage.points.forEach(point => {
+                stage2.points.push({ latlng: point.marker.getLatLng() });
+            })
+
+            stage.sections.forEach(section => {
+                stage2.sections.push({ latlngs: section.polyline.getLatLngs() });
+            })
+
+            return stage2;
+        }
+    }
+
+    //------------------------------------------------------------
+    // Set document and map event listeners for edit stage status
+    //------------------------------------------------------------
+    function setDocMap4EdtStg(i) {
+        context.editedStage = i;    // Record edited stage number
+
+        let holdTimer = null;
+        let longPressTriggered = false;
+
+        // Set permanent event listeners (just the first time). They are not registered because they never need to be removed
+        if (context.initializationInProcess) {
+            // Set permanent event listeners on doc for key pressed (one time for all time)
+            function doc_keydown_perm(e) {    
+                if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+                const key = (e.key || '').toLowerCase();
+
+                if (e.ctrlKey && key === 'e') {   // When user presses Ctrl + 'e' (to export route to GPX file)
+                    e.preventDefault();
+                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+                    exportRouteToGPX();
+                } else if (e.ctrlKey && key === 'i') {   // When user presses Ctrl + 'e' (to export route to GPX file)
+                    e.preventDefault();
+                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+                    importRouteFromGPX();
+                } else if (e.ctrlKey && key === 'z') {   // When user presses Ctrl + 'z' (to undo last action)
+                    e.preventDefault();
+                    const cmd = undoStack.pop();
+                    if (!cmd) return;
+                    cmd.undo();
+                    redoStack.push(cmd);
+                } else if (e.ctrlKey && key === 'y') {   // When user presses Ctrl + 'y' (to redo last action undone)
+                    e.preventDefault();
+                    const cmd = redoStack.pop();
+                    if (!cmd) return;
+                    cmd.redo();
+                    undoStack.push(cmd);
+                } else if (e.ctrlKey && key === 'f') {   // When user presses Ctrl + 'f' (to focus the map on the route)
+                    e.preventDefault();
+                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+                    focusOnRoute();
+                } else if (e.ctrlKey && key === 'r') {   // When user presses Ctrl + 'r' (to reset the route)
+                    e.preventDefault();
+                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+                    if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
+                        resetRte();
+                }
+            }
+            document.addEventListener('keydown', doc_keydown_perm);  // Add event listener to document
+
+            context.initializationInProcess = false;
+        }
+
+        // Delete non permanent event listeners on doc
+        for (const { target, type, handler } of documentEvtList)
+            target.removeEventListener(type, handler);
+        documentEvtList.splice(0);  // Remove event listeners from registered list
+
+        // Set non permanent event listeners for key down on doc (for stage edition)
+        function doc_keydown(e) {
+            if (context.operationWithButtonInProcess) return;   // Do not execute if save of rename operation in process
+
+            const key = (e.key || '').toLowerCase();
+
+            // If the user is typing in an input or textarea, ignore shortcuts
+            const tag = (e.target && e.target.tagName || '').toLowerCase();
+            if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) {
+                return; // don't handle t, r, s, etc.
+            }
+
+            if (key === 'escape') {     // When user presses 'escape' (to quit edit mode)
+                e.preventDefault();
+                quitEditStage(true);
+            } else if (key === 'd') {     // When user presses 'd' (to delete current stage)
+                e.preventDefault();
+                if (confirm(context.language === 'EN' ? "Are you sure you want to delete the edited stage?" : "Etes-vous sûr de vouloir supprimer l'étape en cours d'édition ?")) 
+                    deleteStg(context.editedStage);
+            } else if (key === 'f') {     // When user presses 'f' (to set/change stage name)
+                e.preventDefault();
+                focusOnStage();
+            } else if (key === 'n') {     // When user presses 'n' (to set/change stage name)
+                e.preventDefault();
+                setStgName();
+            } else if (key === 'b') {     // When user presses 'b' (to move the stage to the previous position in the list)
+                e.preventDefault();
+                changeStgPos('before');
+            } else if (key === 'a') {     // When user presses 'a' (to move the stage to the next position in the list)
+                e.preventDefault();
+                changeStgPos('after');
+            } else if (key === 'u') {     // When user presses 'u' (to delete stage's last point)
+                e.preventDefault();
+                deleteLastPt();
+            } else if (key === 'v') {     // When user presses 'v' (to delete stage's first point)
+                e.preventDefault();
+                deleteFirstPt();
+            } else if (key === 'r') {   // When user presses 'r' (to reverse the stage's direction)
+                e.preventDefault();
+                reverseStg();
+            } else if (key === 's') {   // When user presses 's' (to split the stage
+                e.preventDefault();
+                splitStage();
+            } else if (key === 'm') {   // When user presses 'm' (to merge the stage with another)
+                e.preventDefault();
+                mergeStage();
+            }
+        }
+        document.addEventListener('keydown', doc_keydown);      // Add event listener to document
+        documentEvtList.push({ target: document, type: 'keydown', handler: doc_keydown });  // Record event listener
+
+        map.getContainer().style.cursor = 'crosshair';
+
+        // Delete non permanent event listeners on map
+        for (const { target, type, handler } of mapEvtList)
+            target.removeEventListener(type, handler);
+        mapEvtList.splice(0);  // Remove event listeners from registered list
+
+        // Set event listener on map for simple click
+        const map_click = (function() {
+            return function(e) {
+                if (context.editedStage === null) return;
+
+                const stageRef = stages[context.editedStage];
+                const iRef = context.editedStage;
+
+                if (context.operationWithButtonInProcess) return;
+            
+                // If a double-click is coming, cancel this click
+                if (context.clickTimeout) {
+                    clearTimeout(context.clickTimeout);
+                    context.clickTimeout = null;
+                }
+
+                // If a drag just happened, skip this click
+                if (context.suppressNextClick) {
+                    context.suppressNextClick = false;      // Reset for next time
+                    return;
+                }
+  
+                context.clickTimeout = setTimeout(async () => {     // Delay the action of 350 ms to see if a dblclick follows
+                    context.clickTimeout = null;
+            
+                    let latlng = e.latlng;      // Extract click coordinates
+                    let latlngPrev0 = null;        // Initial position of previous point
+                    let latlngPrev = null;         // New position of previous point
+                    let calculatedPoints = null;
+                    if (context.routerProfile != 'crow')  {     // Use BRouter
+                        if (stageRef.points.length > 0) {     // Not first point of stage
+                            // Search a route to this point with BRouter
+                            const lastPointLatlng = stageRef.points[stageRef.points.length - 1].marker.getLatLng();    // Retrieve previous point coordinates
+                            const coordinates = lastPointLatlng.lng + "," + lastPointLatlng.lat + "|" +
+                                latlng.lng + "," + latlng.lat;      // Prepare coordinates to be submitted to BRouter
+                            calculatedPoints = await fetchBRouterRoute(coordinates);    // Find route to new point with BRouter
+                            if (!calculatedPoints) {      // When no route is found by BRouter
+                                //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
+                                return;
+                            }
+                            calculatedPoints = simplifyPolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
+                            latlng = calculatedPoints[calculatedPoints.length - 1];     // Adjust new point's position using BRouter response
+
+                            // Check whether altitude was found for new point and find it if necessary
+                            if (!latlng.alt || latlng.alt == null) {
+                                latlng = await fetchOpenMeteoElevation(latlng);
+                                calculatedPoints[calculatedPoints.length - 1] = latlng;
+                            }
+                            
+                            // Prepare to adjust previous point's and previous section's positions using BRouter response
+                            latlngPrev0 = stageRef.points[stageRef.points.length - 1].marker.getLatLng();
+                            latlngPrev = calculatedPoints[0];
+                        } else {    // First point
+                            // Search the nearest reachable point with BRouter
+                            const coordinates = latlng.lng + "," + latlng.lat + "|" +
+                                latlng.lng + "," + latlng.lat;
+                            calculatedPoints = await fetchBRouterRoute(coordinates);
+                            if (!calculatedPoints) {   // No route found
+                                return;
+                            }
+                            latlng = calculatedPoints[0];       // Adjust position to be assigned to new point
+
+                            // Check whether altitude was found for new point and find it if necessary
+                            if (!latlng.alt || latlng.alt == null) {
+                                latlng = await fetchOpenMeteoElevation(latlng);
+                                calculatedPoints[0] = latlng;
+                            }
+                        }
+                    } else {    // Do not use BRouter
+                        if (stageRef.points.length > 0) {       // Not first point of stage
+                            latlng = await fetchOpenMeteoElevation(latlng);
+                            calculatedPoints = [stageRef.points[stageRef.points.length - 1].marker.getLatLng(), latlng];     // Two points array to be used to create polyline
+                        } else          // First point
+                            latlng = await fetchOpenMeteoElevation(latlng);
+                    }
+
+                    const beforeState = { previousPoint: latlngPrev0 };
+                    const afterState = { previousPoint: latlngPrev, nextPoint: latlng, newPoints: calculatedPoints };
+                    execute(new ClickOnMap2AddPoint(stageRef, iRef, beforeState, afterState));
+                }, 350);
+            };
+        })(stages[i]);
+        map.addEventListener('click', map_click);       // Add event listener to map
+        mapEvtList.push({ target: map, type: 'click', handler: map_click });    // Register event listener
+
+        // Set event listener on map for double-click
+        function map_dblclick(e) {
+            // Cancel single-click if double-click detected
+            if (context.clickTimeout) {
+                clearTimeout(context.clickTimeout);
+                context.clickTimeout = null;
+            }
+
+            quitEditStage(true);    // Finish editing the current stage
+                    
+            setEnv4EdtStg(null);    // Start editing a new stage
+        }
+        map.addEventListener('dblclick', map_dblclick);     // Add listener to map
+        mapEvtList.push({ target: map, type: 'dblclick', handler: map_dblclick });    //Register listener
+
+        // On real pan start
+        function map_dragstart(e) {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            map.getContainer().style.cursor = 'grabbing';
+            //context.suppressNextClick = true;
+        }
+        map.addEventListener('dragstart', map_dragstart);   // Add event listener to map
+        mapEvtList.push({ target: map, type: 'dragstart', handler: map_dragstart });    //Register listener
+
+        // On pan end
+        function map_dragend(e) {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            map.getContainer().style.cursor = 'crosshair';
+            context.suppressNextClick = false;
+        }
+        map.addEventListener('dragend', map_dragend);   // Add event listener to map
+        mapEvtList.push({ target: map, type: 'dragend', handler: map_dragend });    //Register listener
+
+        function map_mousedown(e) {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            longPressTriggered = false;
+
+            holdTimer = setTimeout(() => {
+                longPressTriggered = true;
+                map.getContainer().style.cursor = 'grabbing';
+                //context.suppressNextClick = true;   // key line
+            }, 350);
+        }
+        map.addEventListener('mousedown', map_mousedown);   // Add event listener to map
+        mapEvtList.push({ target: map, type: 'mousedown', handler: map_mousedown });    //Register listener
+
+        function map_mouseup(e) {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            clearTimeout(holdTimer);
+            map.getContainer().style.cursor = 'crosshair';
+        }
+        map.addEventListener('mouseup', map_mouseup);   // Add event listener to map
+        mapEvtList.push({ target: map, type: 'mouseup', handler: map_mouseup });    //Register listener
+
+
+        // Set event listener on section for mouseout
+        const map_mousemove = (function() {
+            return function(e) {
+                if (context.displayInfo < 2 || context.editedStage === null) return;
+
+                const stageRef = stages[context.editedStage];
+                const iRef = context.editedStage;
+
+                let { sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnStage(stageRef, e.latlng);
+                if (sectIdx > 0) ptIdx--;   // First point of section is indexed only for the first section
+
+                if (distance <= 30) {
+                    const latlng = stageRef.sections[sectIdx].polyline.getLatLngs()[ptIdx];
+
+                    if (context.stageProfileMapMarker)
+                        context.stageProfileMapMarker.setLatLng(latlng);
+                    else
+                        context.stageProfileMapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
+
+                    if (context.stageProfileChartRevIdx && context.stageProfileChartRevIdx[sectIdx] && context.stageProfileChartRevIdx[sectIdx][ptIdx] != undefined) {
+                        const idx = context.stageProfileChartRevIdx[sectIdx][ptIdx];
+
+                        const dist = context.stageProfileChartPoints[idx].x;
+                        const alt = context.stageProfileChartPoints[idx].y;
+
+                        const chart = context.stageProfileChart;
+
+                        chart.setActiveElements([{
+                            datasetIndex: 0,
+                            index: idx
+                        }]);
+
+                        chart.tooltip.setActiveElements([{
+                            datasetIndex: 0,
+                            index: idx
+                        }], {
+                            x: dist,
+                            y: alt
+                        });
+
+                        chart.update();
+                    }
+                } else {
+                    if (!context.stageProfileControl || !context.stageProfileMapMarker) 
+                        return;
+                    else 
+                        removeStageMapNChartMarkers();
+                }
+            }
+        })(stages[i]);
+        map.addEventListener('mousemove', map_mousemove);    // Add event listener  to map
+        mapEvtList.push({ target: map, type: 'mousemove', handler: map_mousemove });  // Register event listener    
+    }
+
+    //-----------------------------------------
+    // Set document and map to non edit status
+    //-----------------------------------------
+    function setDocMap4NonEdt() {
+        // Delete event listeners on doc for edit status
+        for (const { target, type, handler } of documentEvtList)
+            target.removeEventListener(type, handler);
+        documentEvtList.splice(0);  // Clear registered event listeners
+
+        map.getContainer().style.cursor = 'grabbing';
+
+        // Delete event listeners on map for edit status
+        for (const { target, type, handler } of mapEvtList)
+            target.removeEventListener(type, handler);
+        mapEvtList.splice(0);
+
+        // Set event listener on map for double-click
+        function map_dblclick(e) {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+            setEnv4EdtStg(null);    // Start editing a new stage
+        }
+        map.addEventListener('dblclick', map_dblclick);     // Add listener to map
+        mapEvtList.push({ target: map, type: 'dblclick', handler: map_dblclick });    //Register listener
+
+
+        // Set event listener on map when mouse cursor hovers a section of the route
+        const map_mousemove = (function() {
+            return function(e) {
+                if (context.displayInfo < 2 || context.editedStage !== null) return;
+
+                stages.forEach((stage, i) => {
+                    let { stageIdx: stageIdx, sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnRoute(e.latlng);
+                    if (sectIdx > 0) ptIdx--;   // First point of section is indexed only for the first section
+
+                    if (distance <= 30) {
+                        const latlng = stages[stageIdx].sections[sectIdx].polyline.getLatLngs()[ptIdx];
+
+                        if (context.routeProfileMapMarker)
+                            context.routeProfileMapMarker.setLatLng(latlng);
+                        else
+                            context.routeProfileMapMarker = L.circleMarker(latlng, { pane: 'markerNEPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
+
+                        if (context.routeProfileChartRevIdx && context.routeProfileChartRevIdx[stageIdx] && context.routeProfileChartRevIdx[stageIdx][sectIdx] && context.routeProfileChartRevIdx[stageIdx][sectIdx][ptIdx] != undefined) {
+                            const idx = context.routeProfileChartRevIdx[stageIdx][sectIdx][ptIdx];
+
+                            const dist = context.routeProfileChartPoints[idx].x;
+                            const alt = context.routeProfileChartPoints[idx].y;
+
+                            const chart = context.routeProfileChart;
+
+                            chart.setActiveElements([{
+                                datasetIndex: 0,
+                                index: idx
+                            }]);
+
+                            chart.tooltip.setActiveElements([{
+                                datasetIndex: 0,
+                                index: idx
+                            }], {
+                                x: dist,
+                                y: alt
+                            });
+
+                            chart.update();
+                        }
+                    } else {
+                        if (!context.routeProfileControl || !context.routeProfileMapMarker) 
+                            return;
+                        else 
+                            removeRouteMapNChartMarkers();
+                    }
+                });
+            }
+        })();
+        map.addEventListener('mousemove', map_mousemove);    // Add event listener  to map
+        mapEvtList.push({ target: map, type: 'mousemove', handler: map_mousemove });  // Register event listener    
+    }
+
+    //---------------------------------------
+    // Set environment for edit stage status
+    //---------------------------------------
+    function setEnv4EdtStg(i) {
+        setMenu4EdtStg();     // Set menu for edit stage status
+
+        // Add new empty stage to the route if arg is null
+        if (i === null) {
+            stages.push(createNewEmptyStage());
+            i = stages.length -1;
+            context.editedStage = i;
+        }
+
+        setDocMap4EdtStg(i);    // Set document and map for edit stage status
+
+        setStg4EdtStg(i);   // Set stage to be edited for edit status
+
+        removeRouteMapNChartMarkers();
+        
+        removeRouteProfileControl();
+    }
+
+    //-------------------------------------
+    // Set environment for non edit status
+    //-------------------------------------
+    function setEnv4NonEdt(removeChart) {
+        setMenu4NonEdt();     // Set menu for non edit status
+
+        setDocMap4NonEdt();     // Set document and map event listeners for non edit status
+
+        if (context.editedStage != null)
+            if (removeChart)
+                setStg4NonEdt(context.editedStage, true);     // Set layout and event listeners on currently edited stage
+            else
+                setStg4NonEdt(context.editedStage, false);     // Set layout and event listeners on currently edited stage
+
+        if (context.displayInfo === 2)
+            displayRouteProfile();
+    }
+
+    //----------------------------
+    // Create geolocation control
+    //----------------------------
+    function setGeolocator() {
+        if (context.geolocControl) context.geolocControl.remove();  // Remove previous geolocalizer control
+
+        context.geolocControl = L.control({ position: 'topleft' });     // Create new geolocalizer control
+
+        context.geolocControl.onAdd = function () {
+            // Create wrapper (that will contain all objects)
+            const wrapper = L.DomUtil.create('div', 'leaflet-bar geoloc-btn');
+            wrapper.style.background = 'white'; wrapper.href = '#';
+            wrapper.style.padding = '8px';
+            wrapper.style.display = 'flex';
+            wrapper.style.flexDirection = 'column';
+            wrapper.style.gap = '8px';
+            wrapper.style.minWidth = '130px';
+            wrapper.style.maxWidth = '225px';
+
+            // Prevent click propagation to map
+            L.DomEvent.disableClickPropagation(wrapper);
+            L.DomEvent.on(wrapper, 'click', L.DomEvent.stop);
+
+            // Create title
+            const title = L.DomUtil.create('div', 'menu-title', wrapper);
+            title.textContent = context.language === 'EN' ? 'Where are you?' : 'Où êtes-vous ?';
+            title.style.fontSize = '16px';
+            title.style.fontWeight = 'bold';
+            title.style.marginBottom = '4px';
+
+            // Create submit button
+            const submitButton = document.createElement('button');
+            submitButton.textContent = context.language === 'EN' ? 'Geolocalize me!' : 'Géolocalise-moi !';
+            submitButton.style.width = '120px';
+            wrapper.appendChild(submitButton);
+
+            // Define submit handler (button)
+            async function submitHandler() {
+                if (context.operationWithButtonInProcess) return;
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(setPositionOnMap, handleGeolocationError);
+                } else {
+                    alert(context.language === 'EN' ? "Geolocation is not supported by this browser." : "La géolocalisation n'est pas supportée par ce navigateur.");
+                    return;
+                }
+            }
+            submitButton.addEventListener('click', submitHandler);  // Associate submit handler with button
+
+            //-------------------------------------------------------------
+            // Create create two circles on map at the geolocated position
+            //-------------------------------------------------------------
+            function setPositionOnMap(position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude
+
+                map.setView([lat, lng], 15, { 'animate': false });  // Center map on geolocated position
+                
+                // Remove previous layers if any
+                if (window.userLocationMarker) {    
+                    map.removeLayer(window.userLocationMarker);
+                }
+                if (window.userAccuracyCircle) {
+                    map.removeLayer(window.userAccuracyCircle);
+                }
+
+                // Add small filled black circle to the map at user's position
+                window.userLocationMarker = L.circleMarker([lat, lng], {
+                    radius: 5,
+                    fillColor: 'red',
+                    fillOpacity: 1,
+                    color: 'red',
+                    interactive: false
+                }).addTo(map);
+
+                // Add larger accuracy circle
+                window.userAccuracyCircle = L.circleMarker([lat, lng], {
+                    radius: 12,
+                    color: 'red',
+                    fillOpacity: 0,
+                    weight: 2,
+                    interactive: false
+                }).addTo(map);
+            }  
+
+            //-------------------------------------------------
+            // Display an alert message when geolocation fails
+            //-------------------------------------------------
+            function handleGeolocationError(error) {
+                if (error.code === 1)
+                    alert(context.language === 'EN' ? 'Permission denied by user' : 'Permission refusée par l\'utilisateur');
+                else if (error.code === 2)
+                    alert(context.language === 'EN' ? 'Position not available' : 'Position non disponible');
+                else if (error.code === 3)
+                    alert(context.language === 'EN' ? 'Timeout exceeded' : 'Délai dépassé');
+                else    
+                    alert(context.language === 'EN' ? 'Unknown error' : 'Erreur inconnue')
+            }  
+
+            return wrapper;
+        };
+
+        context.geolocControl.addTo(map);       // Add geolocation control to map
+        
+        const corner = map._controlCorners.topleft;     // Retrieve map corner
+        const zoom = map.zoomControl._container;    // Retrieve map zoom control
+
+        // Create a horizontal wrapper only once in order to add the geolocation control beside the zoom control
+        let row = corner.querySelector('.leaflet-control-row');
+        if (!row) {
+            row = L.DomUtil.create('div', 'leaflet-control-row', corner);
+            row.style.display = 'flex';
+            row.style.alignItems = 'flex-start';
+            row.style.gap = '4px';
+
+            corner.insertBefore(row, zoom);
+            row.appendChild(zoom);  // Add zoom control to row
+        }
+
+        row.appendChild(context.geolocControl._container);  // Add geolocation control to row 
+    }
+
+    //--------------------------------
+    // Create location finder control
+    //--------------------------------
+    function setLocationFinder() {
+        if (context.locFinderControl) context.locFinderControl.remove();    // Remove previous location finder control
+
+        for (const { target, type, handler } of docLocFindEvtList)  // Remove event listeners associated with the location finder control
+            target.removeEventListener(type, handler);
+        docLocFindEvtList.splice(0);  // Clear registered event listeners
+
+        context.locFinderControl = L.control({ position: 'topleft' });  // Create new location finder control
+
+        context.locFinderControl.onAdd = function () {      // Set content into location finder control
+            // Create white box hosting the content
+            const wrapper = L.DomUtil.create('div', 'leaflet-bar unified-control');
+            wrapper.style.background = 'white';
+            wrapper.style.padding = '8px';
+            wrapper.style.display = 'flex';
+            wrapper.style.flexDirection = 'column';
+            wrapper.style.gap = '8px';
+            wrapper.style.minWidth = '150px';
+            wrapper.style.maxWidth = '225px';
+
+            // Prevent map interaction
+            L.DomEvent.disableClickPropagation(wrapper);
+            L.DomEvent.disableScrollPropagation(wrapper);
+
+            // Create title
+            const title = L.DomUtil.create('div', 'menu-title', wrapper);
+            title.textContent = context.language === 'EN' ? 'Search location' : 'Recherchez un lieu';
+            title.style.fontSize = '16px';
+            title.style.fontWeight = 'bold';
+            title.style.marginBottom = '4px';
+
+            // Create row for hosting label and two buttons
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.alignItems = 'center';
+            row.style.gap = '6px';
+            row.style.justifyContent = 'space-between';
+            row.style.width = '100%';
+
+            // Create label
+            const label = document.createElement('span');
+            label.textContent = context.language === 'EN' ? 'Address:' : 'Adresse :';
+            row.appendChild(label);
+
+            // Create submit button
+            const submitButton = document.createElement('button');
+            submitButton.textContent = context.language === 'EN' ? 'Search' : 'Rechercher';
+            submitButton.style.width = '80px';
+            row.appendChild(submitButton);
+
+            // Create reset button
+            const resetButton = document.createElement('button');
+            resetButton.textContent = context.language === 'EN' ? 'Reset' : 'Réinitial.';
+            resetButton.style.width = '80px';
+            row.appendChild(resetButton);
+
+            // Add label and buttons to row and row to wrapper
+            row.appendChild(label);
+            row.appendChild(submitButton);
+            row.appendChild(resetButton);
+            wrapper.appendChild(row);
+
+            // Create text input
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.size = 30;
+            wrapper.appendChild(input);
+
+            // Define reset handler (button or Escape)
+            function resetHandler() {
+                if (context.operationWithButtonInProcess) return;
+                
+                let container = wrapper.querySelector('#search-results');   // Search for the places found container (if any)
+                if (container) 
+                    container.remove(); // Remove the results
+                input.value = '';   // Clear the input field
+                if (window.searchMarker) 
+                    window.searchMarker.remove();   // Remove the marker identifying a place found from the map
+                if (window.searchPolygon) 
+                    window.searchPolygon.remove();  // Remove the polygon identifying an area found from the map
+                for (const { target, type, handler } of docLocFindEvtList)
+                    target.removeEventListener(type, handler);  // Remove all event listeners associated with places found
+                docLocFindEvtList.splice(0);  // Clear registered event listeners
+            }
+            resetButton.addEventListener('click', resetHandler);    // Associate reset handler with reset button
+                    
+            // Submit handler (button or Enter)
+            async function submitHandler() {
+                if (context.operationWithButtonInProcess) return;
+                
+                for (const { target, type, handler } of docLocFindEvtList)  // Remove events listeners associated with places found
+                    target.removeEventListener(type, handler);
+                docLocFindEvtList.splice(0);  // Clear registered event listeners
+
+                const value = input.value.trim();   // Retrieve content of input field (location address)
+                let locs = [];
+                if (value) {
+                    locs = await fetchCoordinatesWithNominatim(value);  // Retrieve coordinates matching the location address using Nominatim
+
+                    let container = wrapper.querySelector('#search-results');
+
+                    if (!container) {
+                        // Create results container if it does not exist
+                        container = document.createElement('div');
+                        container.id = 'search-results';
+                        container.style.maxHeight = '600px';   // adjust as needed
+                        container.style.overflowY = 'auto';
+                        container.style.overflowX = 'hidden';
+                        wrapper.appendChild(container);
+
+                        // Disable event propagation
+                        L.DomEvent.disableClickPropagation(container);
+                        L.DomEvent.disableScrollPropagation(container);
+                        L.DomEvent.on(container, 'mousedown', L.DomEvent.stop);
+                    } else {
+                        // Clear results container it it exists
+                        container.innerHTML = '';
+                    }
+
+                    const items = [];
+                    let selectedIndex = -1;
+
+                    // Iterate on location found by Nominatim
+                    if (locs != null) {
+                        locs.forEach((loc, index) => {
+                            // Add the location name in the location finder control
+                            const div = document.createElement('div');
+                            div.className = 'location-item';
+                            div.innerHTML = splitByLengthAtSpaces(loc[1], 30);
+                            items.push({ div, loc });
+
+                            if (index === 0) {      // First item is selected by default
+                                selectItem(0);
+                            }
+
+                            L.DomEvent.on(div, 'click', (e) => {    // Define click event handler
+                                if (context.operationWithButtonInProcess) return;
+                
+                                L.DomEvent.stop(e);     // Stop map interaction
+
+                                selectItem(index);  // Register the selected location item
+                            });
+
+                            container.appendChild(div);
+                        });
+                    }
+
+                    // Escape, arrow down and arrow up keys handler just for this wrapper
+                    function keydownDocHandler(e) {
+                        if (context.operationWithButtonInProcess) return;
+                
+                        if ((e.key || '').toLowerCase() === 'escape') {
+                            L.DomEvent.stop(e);     // Stop map interaction
+                            
+                            resetHandler();     // Clear results (locations found), input field and marker & polygon on the map
+                        }
+
+                        if (e.key === "ArrowDown" && items.length) {
+                            L.DomEvent.stop(e);     // Stop map interaction
+
+                            selectItem(selectedIndex + 1);  // Register next item as selected
+                        }
+
+                        if (e.key === "ArrowUp" && items.length) {
+                            L.DomEvent.stop(e);     // Stop map interaction
+
+                            selectItem(selectedIndex - 1);  // Register previous item as selected
+                        }
+                    }
+                    document.addEventListener('keydown', keydownDocHandler);    // Associate event listener with document
+                    docLocFindEvtList.push({ target: document, type: 'keydown', handler: keydownDocHandler });  // Register event listener                    
+                    
+                    // When a result (found location) is selected, register it and display its position on the map
+                    function selectItem(index) {
+                        if (index < 0 || index >= items.length) return;
+
+                        if (selectedIndex != -1)
+                            items[selectedIndex].div.classList.remove('selected');
+    
+                        selectedIndex = index;  // Register selected location
+
+                        const { div, loc } = items[index];
+
+                        div.classList.add('selected');
+            
+                        onLocationSelected(loc);    // Display the selected location on the map
+
+                        // Ensure visibility
+                        div.scrollIntoView({
+                            block: 'nearest',
+                            behavior: 'smooth'
+                        });
+                    }
+
+                    // Display the position of a location found on the map
+                    function onLocationSelected(loc) {
+                        const [lat, lng] = loc[0];
+
+                        map.setView([lat, lng], 15, { 'animate': false });      // Center the map on the location
+
+                        // Add marker
+                        if (window.searchMarker)
+                            map.removeLayer(window.searchMarker);       // Remove marker for previous position (if any)
+
+                        window.searchMarker = L.marker([lat, lng], {interactive: false}).addTo(map);    // Add new marker at the location
+
+                        if (window.searchPolygon)
+                            map.removeLayer(window.searchPolygon);      // Remove polygon for previous area (if any)
+
+                        if (loc[2] != null) {       // Add new polygon around the location (if area information provided by Nominatim)
+                            window.searchPolygon = L.geoJSON(loc[2], {
+                                style: {
+                                    color: 'blue', 
+                                    weight: 2
+                                },
+                                interactive: false
+                            }).addTo(map);
+
+                            map.fitBounds(window.searchPolygon.getBounds());    // Adjust the map zoom level for the polygon
+                        }
+                    }
+                }
+            }
+            submitButton.addEventListener('click', submitHandler);  // Associate the submit handler with the submit button
+
+            // Keydown handler (another way to submit the location search)
+            function keydownInputHandler(e) {
+                if (e.key === 'Enter') {
+                    if (context.operationWithButtonInProcess) return;
+                
+                    L.DomEvent.stop(e);
+                    submitHandler();
+                }
+            }
+            input.addEventListener('keydown', keydownInputHandler);
+                    
+            return wrapper;
+        };
+
+        context.locFinderControl.addTo(map);     // Add menu control to map
+
+        // Split an address returned by Nominatim into 30 character lines
+        function splitByLengthAtSpaces(str, maxLen = 30) {
+            const words = str.split(' ');
+            let lines = '';
+            let current = '';
+
+            for (const word of words) {
+                // If adding the word would exceed the limit
+                if ((current + ' ' + word).trim().length > maxLen) {
+                    lines = lines.length > 0 ? lines.concat('<br>' + current) : lines.concat(current);
+                    current = word;
+                } else {
+                    current = current ? current + ' ' + word : word;
+                }
+            }
+
+            if (current) {
+                    lines = lines.length > 0 ? lines.concat('<br>' + current) : lines.concat(current);
+            }
+
+            return lines;
+        }
+    }
+
+    //----------------------------------
+    // Set menu fpr edit stage status
+    //----------------------------------
+    function setMenu4EdtStg() {
+        if (context.menuControl) context.menuControl.remove();      // Remove previous menu control
+
+        context.menuControl = L.control({ position: 'topright' });    // Create new menu control
+
+        context.menuControl.onAdd = function (map) {          // Set content into menu control     
+            // Create white box hosting the menu
+            const wrapper = L.DomUtil.create('div', 'leaflet-bar unified-control');
+            wrapper.style.background = 'white';
+            wrapper.style.padding = '8px';
+            wrapper.style.display = 'flex';
+            wrapper.style.flexDirection = 'column';
+            wrapper.style.gap = '8px';
+            wrapper.style.minWidth = '200px';
+            wrapper.style.maxWidth = '310px';
+            wrapper.style.width = '100%';
+
+            // Prevent map interaction
+            L.DomEvent.disableClickPropagation(wrapper);
+            L.DomEvent.disableScrollPropagation(wrapper);
+
+            // Create title
+            const title = L.DomUtil.create('div', 'menu-title', wrapper);
+            title.textContent = context.language === 'EN' ? 'Plot your route on the map' : 'Tracez votre itinéraire sur la carte';
+            title.style.fontSize = '18px';
+            title.style.fontWeight = 'bold';
+            title.style.marginBottom = '4px';
+
+            // Create language control
+            wrapper.appendChild(createLanguageAndHelpControl(true));
+
+            // Create map style contol
+            wrapper.appendChild(createMapStyleControl(map));
+
+            // Create router profile control
+            wrapper.appendChild(createRouterProfileControl());
+
+            // Create units control
+            wrapper.appendChild(createUnitsControl());
+
+            // Create display info control
+            wrapper.appendChild(createDisplayInfoControl());
+
+            // Create edit stage buttons control
+            const edtStgButtonsContainers = createEdtStgButtonsControl();
+            wrapper.appendChild(edtStgButtonsContainers[0]);
+            wrapper.appendChild(edtStgButtonsContainers[1]);
+
+            // Create general buttons control
+            wrapper.appendChild(createGenButtonsControl());
+
+            // Create command list for edit stage control
+            wrapper.appendChild(createCmdListEdtStgControl());
+
+            return wrapper;
+        };
+
+        context.menuControl.addTo(map);
+    }
+
+    //--------------------------------
+    // Set menu for non edit status
+    //--------------------------------
+    function setMenu4NonEdt() {
+        if (context.menuControl) context.menuControl.remove();    // Remove previous menu control
+
+        context.menuControl = L.control({ position: 'topright' });  // Create new menu control
+
+        context.menuControl.onAdd = function (map) {      // Set content into menu control
+            // Create white box hosting the menu
+            const wrapper = L.DomUtil.create('div', 'leaflet-bar unified-control');
+            wrapper.style.background = 'white';
+            wrapper.style.padding = '8px';
+            wrapper.style.display = 'flex';
+            wrapper.style.flexDirection = 'column';
+            wrapper.style.gap = '8px';
+            wrapper.style.minWidth = '200px';
+            wrapper.style.maxWidth = '310px';
+            wrapper.style.width = '100%';
+            
+            // Prevent map interaction
+            L.DomEvent.disableClickPropagation(wrapper);
+            L.DomEvent.disableScrollPropagation(wrapper);
+
+            // Create title
+            const title = L.DomUtil.create('div', 'menu-title', wrapper);
+            title.textContent = context.language === 'EN' ? 'Plot your route on the map' : 'Tracez votre itinéraire sur la carte';
+            title.style.fontSize = '18px';
+            title.style.fontWeight = 'bold';
+            title.style.marginBottom = '4px';
+
+            // Create language control
+            wrapper.appendChild(createLanguageAndHelpControl(false));
+
+            // Create map style control
+            wrapper.appendChild(createMapStyleControl(map));
+
+            // Create router profile control
+            wrapper.appendChild(createRouterProfileControl());
+
+            // Create units control
+            wrapper.appendChild(createUnitsControl());
+
+            // Create display info control
+            wrapper.appendChild(createDisplayInfoControl());
+
+            // Create general buttons control
+            wrapper.appendChild(createGenButtonsControl());
+
+            // Create command list for non edit control
+            wrapper.appendChild(createCmdListNonEdtControl());
+
+            return wrapper;
+        };
+
+        context.menuControl.addTo(map);     // Add menu control to map
+    }
+
+    //-----------------------------------
+    // Set points for edit stage status
+    //-----------------------------------
+    function setPoints4Edit(i) {
+        for (let j = 0; j < stages[i].points.length; j++) {
+            setPoint4Edt(i, j);     // Set point layout and event listeners for edit stage status
+        }
+    }
+
+    //-------------------------------------------------------------
+    // Set point layout and event listeners for edit stage status
+    //-------------------------------------------------------------
+    function setPoint4Edt(i, j) {
+        const stage = stages[i];
+        const point = stage.points[j];
+
+        // Delete event listeners on point
+        if (point.evtList) {
+            for (const { target, type, handler } of point.evtList) {
+                target.removeEventListener(type, handler);
+            }
+    
+            point.evtList.splice(0);
+        }
+
+        // Set point layout
+        const latlng = point.marker.getLatLng();
+        let newMarker = null;
+        if (stage.points.length === 1) {
+            if (point.marker.options.icon != lightPurpleDoubleSquareIcon) {
+                newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                    icon: lightPurpleDoubleSquareIcon,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+            }
+        } else if (j === 0) {
+            if (point.marker.options.icon != lightGreenDiamondIcon) {
+                newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                    icon: lightGreenDiamondIcon,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+            }
+        } else if (j < stage.points.length - 1) {
+            if (point.marker.options.icon != circleIconEdit) {
+                newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                    icon: circleIconEdit,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+            }
+        } else {
+            if (point.marker.options.icon != lightRedSquareIcon) {
+                newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                    icon: lightRedSquareIcon,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+            }
+        }
+        if (newMarker != null) {
+            point.marker.remove();
+            point.marker = newMarker;
+        }
+
+        // Set event listener on point for click
+        function point_click(e) {
+            if (context.operationWithButtonInProcess) return;   // Ignore if load or rename operation in process
+
+            if (context.suppressNextClick) {
+                context.suppressNextClick = false;
+                L.DomEvent.stopPropagation(e);      // Do not propagate to the map
+                L.DomEvent.preventDefault(e);
+                return;
+            }
+            
+            if (context.clickTimeout) {     // Clear existing tieout if ny
+                clearTimeout(context.clickTimeout);
+                context.clickTimeout = null;
+            }
+
+            // Execute a timeout of 350 ms, to make sure it is a simple click and not a double click
+            context.clickTimeout = setTimeout(() => {
+                context.clickTimeout = null;
+            }, 350);
+        }
+        point.marker.addEventListener('click', point_click);    // Add event listener  to point
+        point.evtList.push({ target: point.marker, type: 'click', handler: point_click });  // Register event listener    
+
+        // Set event listener on point for double-click
+        const point_dblclick = (function(stageRef, pointRef) {
+            return async function(e) {
+                if (context.operationWithButtonInProcess) return;   // Ignore if load or rename operation in process
+
+                L.DomEvent.stopPropagation(e);  // Do not propagate to map (stop zooming and bubbling)
+                L.DomEvent.preventDefault(e);
+                
+                // Stop the pending single-click
+                if (context.clickTimeout) {
+                    clearTimeout(context.clickTimeout);
+                    context.clickTimeout = null;
+                }
+
+                const iRef = stages.indexOf(stageRef);  // Retrieve stage index
+                if (iRef === -1) return;
+                const jRef = stageRef.points.indexOf(pointRef); // Retrieve point index
+                if (jRef === -1) return;
+
+                if (jRef > 0 && jRef < stageRef.points.length - 1) {     // Not the first nor le last point 
+                    let latlngPrev0 = null;        // Initial position of previous point
+                    let latlngPrev = null;         // New position of previous point
+                    const latlng0 = pointRef.marker.getLatLng();
+                    let latlngNext0 = null;        // Initial position of next point
+                    let latlngNext = null;         // New position of next point
+                    const calculatedPointsPrev0 = stageRef.sections[jRef - 1].polyline.getLatLngs();
+                    const calculatedPointsNext0 = stageRef.sections[jRef].polyline.getLatLngs();
+                    let calculatedPoints = null;
+                    if (context.routerProfile != 'crow') {    // BRouter must be used
+                        const latlngPrev0 = stageRef.points[jRef - 1].marker.getLatLng();     // Regtrieve coordinates of point preceding the clicked point
+                        const latlngNext0 = stageRef.points[jRef + 1].marker.getLatLng();      // Regtrieve coordinates of point following the clicked point
+                        const coordinates = latlngPrev0.lng + "," + latlngPrev0.lat + "|" +     // Prepare request for BRouter
+                            latlngNext0.lng + "," + latlngNext0.lat;
+                        calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
+                        if (!calculatedPoints) {   // When no route found
+                            return;
+                        }
+                        calculatedPoints = simplifyPolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
+                               
+                        const latlngPrev = calculatedPoints[0];     // Prepare to adjust previous point's and previous section's positions
+         
+                        const latlngNext = calculatedPoints[calculatedPoints.length - 1];   // Prepare to adjust next point's and next section's positions
+                    } else { 
+                        calculatedPoints = [stageRef.points[jRef - 1].marker.getLatLng(), 
+                            stageRef.points[jRef + 1].marker.getLatLng()];
+                    }
+
+                    const beforeState = { prevPoint: latlngPrev0, curPoint: latlng0, nextPoint: latlngNext0, prevSection: calculatedPointsPrev0, nextSection: calculatedPointsNext0 };
+                    const afterState = { prevPoint: latlngPrev, nextPoint: latlngNext, newSection: calculatedPoints };
+                    execute(new DoubleClickPoint2RemoveIt(stageRef, iRef, jRef, beforeState, afterState));
+                } else if (jRef === 0 && stageRef.points.length > 1) {     // First point of several
+                    const latlng0 = pointRef.marker.getLatLng();
+                    const calculatedPointsNext0 = stageRef.sections[0].polyline.getLatLngs();
+
+                    const beforeState = { prevPoint: null, curPoint: latlng0, nextPoint: null, prevSection: null, nextSection: calculatedPointsNext0 };
+                    const afterState = { prevPoint: null, nextPoint: null, newSection: null };
+                    execute(new DoubleClickPoint2RemoveIt(stageRef, iRef, jRef, beforeState, afterState));
+                } else if (stageRef.points.length > 1) {       // Last point
+                    let latlngPrev0 = null;        // Initial position of previous point
+                    let latlngPrev = null;         // New position of previous point
+                    const latlng0 = pointRef.marker.getLatLng();
+                    let latlngNext0 = null;        // Initial position of next point
+                    let latlngNext = null;         // New position of next point
+                    const calculatedPointsPrev0 = stageRef.sections[jRef - 1].polyline.getLatLngs();
+                    const calculatedPointsNext0 = null;
+                    let calculatedPoints = null;
+
+                    const beforeState = { prevPoint: null, curPoint: latlng0, nextPoint: null, prevSection: calculatedPointsPrev0, nextSection: null };
+                    const afterState = { prevPoint: null, nextPoint: null, newSection: null };
+                    execute(new DoubleClickPoint2RemoveIt(stageRef, iRef, jRef, beforeState, afterState));
+                } else {    // First and only point
+                    const latlng0 = pointRef.marker.getLatLng();
+
+                    const beforeState = { prevPoint: null, curPoint: latlng0, nextPoint: null, prevSection: null, nextSection: null };
+                    const afterState = { prevPoint: null, nextPoint: null, newSection: null };
+                    execute(new DoubleClickPoint2RemoveIt(stageRef, iRef, jRef, beforeState, afterState));
+                }
+            };
+        })(stage, point);
+        point.marker.addEventListener('dblclick', point_dblclick);      // Add event listener to point
+        stage.points[j].evtList.push({ target: point.marker, type: 'dblclick', handler: point_dblclick });    // Register event listener
+        
+        // Set event listener on point for drag and drop
+        const point_mousedown = (function(stageRef, pointRef) {
+            return function(e) {
+                if (context.operationWithButtonInProcess) return;   // Ignore if load or rename operation in process
+
+                map.dragging.disable(); // Prevent panning
+
+                const DRAG_THRESHOLD = 5;    // Minimal move detected: 5 pixels
+                let startPoint = map.mouseEventToContainerPoint(e);
+                let isDragging = false;
+                
+                const iRef = stages.indexOf(stageRef);  // Retrieve stage index
+                if (iRef === -1) return;
+                const jRef = stageRef.points.indexOf(pointRef); // Retrieve point index
+                if (jRef === -1) return;
+
+                const initMarkerLatlng = pointRef.marker.getLatLng();   // Record initial point coordinates
+                // Record intial position of the preceding section
+                let initPrevPolylineLatlngs = null;
+                if (jRef > 0)
+                    initPrevPolylineLatlngs = stageRef.sections[jRef - 1].polyline.getLatLngs(); 
+                // Record intial position of the following section
+                let initNextPolylineLatlngs = null; 
+                if (jRef < stageRef.points.length - 1)
+                    initNextPolylineLatlngs = stageRef.sections[jRef].polyline.getLatLngs(); 
+
+                const move = ev => {    // Event: mouse cursor moved
+                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+
+                    const p = map.mouseEventToContainerPoint(ev);
+                    if (!isDragging && p.distanceTo(startPoint) < DRAG_THRESHOLD) {
+                        return;     // Moved distance too small: still regarded as a click
+                    }
+
+                    if (!isDragging) {
+                        isDragging = true;  // Register dragging in process
+                        //context.suppressNextClick = true;
+                    
+                        map.dragging.disable();
+                    }
+
+                    // Prevent event propagation to map
+                    L.DomEvent.stopPropagation(ev);
+                    L.DomEvent.preventDefault(ev);
+
+                    // Assign new position to point
+                    pointRef.marker.setLatLng(ev.latlng);
+                    // Replace preceding section with straight dashed line
+                    if (stageRef.sections && stageRef.sections[jRef - 1])
+                        stageRef.sections[jRef - 1].polyline.setLatLngs(
+                            [stage.points[jRef - 1].marker.getLatLng(), ev.latlng])
+                            .setStyle({ dashArray: '5, 10' });
+                    // Replace preceding section with straight dashed line
+                    if (stageRef.sections && stageRef.sections[jRef]) 
+                        stageRef.sections[jRef].polyline.setLatLngs([ev.latlng, 
+                            stage.points[jRef + 1].marker.getLatLng()])
+                            .setStyle({ dashArray: '5, 10' });
+
+                    removeStageMapNChartMarkers();
+                };
+
+                const up = async ev => {    // Event: mouse button up
+                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+
+                    if (!isDragging) {
+                        cleanupDrag();
+                        return;
+                    }
+
+                    // Prevent event propagation to map
+                    L.DomEvent.stopPropagation(ev);
+                    L.DomEvent.preventDefault(ev);
+
+                    let latlng = map.mouseEventToLatLng(ev);
+
+                    if (jRef > 0 && jRef < stageRef.points.length - 1) {     // Not the first nor le last point 
+                        let calculatedPoints1 = null;
+                        let calculatedPoints2 = null;
+                        if (context.routerProfile != 'crow') {    // When BRouter used to find a route
+                            const pointBeforeLatlng = stageRef.points[jRef - 1].marker.getLatLng();     // Retrieve coordinates of preceding point
+                            const pointAfterLatlng = stageRef.points[jRef + 1].marker.getLatLng();      // Retrieve coordinates of following point
+                            const coordinates = pointBeforeLatlng.lng + "," +       // Prépare request for BRouter
+                                pointBeforeLatlng.lat + "|" + latlng.lng + "," + latlng.lat + "|" + 
+                                pointAfterLatlng.lng + "," + pointAfterLatlng.lat;
+                            let calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
+                            if (!calculatedPoints) {    // When no route is found by BRouter
+                                // Restore initial point and sections
+                                pointRef.marker.setLatLng(initMarkerLatlng);
+                                stageRef.sections[jRef - 1].polyline.setLatLngs(initPrevPolylineLatlngs)
+                                    .setStyle({ dashArray: null });
+                                stageRef.sections[jRef].polyline.setLatLngs(initNextPolylineLatlngs)
+                                    .setStyle({ dashArray: null });
+                                cleanupDrag();
+                                return;
+                            }
+                            // Find the section's point closest to the dragged point
+                            const closestSegAndPt = findClosestSectionAndPoint(calculatedPoints, latlng);
+                            const idx = closestSegAndPt.index;
+                            let closestPt = closestSegAndPt.point;
+                            
+                            // Check whether altitude was found for new point and find it if necessary
+                            if (!closestPt.alt || closestPt.alt == null)
+                                closestPt = await fetchOpenMeteoElevation(closestPt);
+
+                            // Prepare set of points to build section before the dragged point
+                            calculatedPoints1 = calculatedPoints.slice(0, idx + 1);
+                            calculatedPoints1.push(closestPt);
+                            calculatedPoints1 = simplifyPolyGeom(calculatedPoints1);    // Simplify the sections geometry by getting rid of part of the points
+                            // Prepare set of points to build section after the dragged point
+                            calculatedPoints2 = [closestPt].concat(calculatedPoints.slice(idx + 1));
+                            calculatedPoints2 = simplifyPolyGeom(calculatedPoints2);   // Simplify the sections geometry by getting rid of part of the points
+                            latlng = closestPt;     // Replace the coordinates of the dragged point with those of the closest point
+        
+                            // Adjust previous point's and previous section's positions
+                            let latlng0 = calculatedPoints1[0];
+                            if (!latlng0.alt || latlng0.alt == null)    // Find alt if missing
+                                latlng0 = await fetchOpenMeteoElevation(latlng0);
+                            stageRef.points[jRef - 1].marker.setLatLng(latlng0);
+                            if (stageRef.sections[jRef - 2]) {
+                                let latlngs = stageRef.sections[jRef - 2].polyline.getLatLngs()
+                                latlngs.pop();
+                                latlngs.push(latlng0);
+                                stageRef.sections[jRef - 2].polyline.setLatLngs(latlngs);
+                            }
+                            // Adjust next point's and next section's positions
+                            let latlngx = calculatedPoints2[calculatedPoints2.length - 1];
+                            if (!latlngx.alt || latlngx.alt == null)    // Find alt if missing
+                                latlngx = await fetchOpenMeteoElevation(latlngx);
+                            stageRef.points[jRef + 1].marker.setLatLng(latlngx);
+                            if (stageRef.sections[jRef + 1]) {
+                                let latlngs = stageRef.sections[jRef + 1].polyline.getLatLngs()
+                                latlngs.shift();
+                                latlngs = [latlngx].concat(latlngs);
+                                stageRef.sections[jRef + 1].polyline.setLatLngs(latlngs);
+                            }
+                        } else {    // When BRouter is not used
+                            latlng = await fetchOpenMeteoElevation(latlng);
+                            calculatedPoints1 = [stageRef.points[jRef - 1].marker.getLatLng(), latlng];     // Set of points to build the prededing section
+                            calculatedPoints2 = [latlng, stageRef.points[jRef + 1].marker.getLatLng()];     // Set of points to build the following section
+                        }
+
+                        const beforeState = { point: initMarkerLatlng, prevSection: initPrevPolylineLatlngs, nextSection: initNextPolylineLatlngs, 
+                            prevPoint: initPrevPolylineLatlngs[0], nextPoint: initNextPolylineLatlngs[initNextPolylineLatlngs.length - 1] };
+                        const afterState = { point: latlng, prevSection: calculatedPoints1, nextSection: calculatedPoints2,
+                            prevPoint: calculatedPoints1[0], nextPoint: calculatedPoints2[calculatedPoints2.length - 1] };
+                        execute(new DragNDropPoint2MoveIt(stageRef, iRef, jRef, beforeState, afterState));
+                    } else if (jRef === 0 && stageRef.points.length > 1) {     // First point of several
+                        let calculatedPoints = null;
+                        if (context.routerProfile != 'crow') {    // When BRouter is used to find a route
+                            const pointAfterLatlng = stageRef.points[1].marker.getLatLng();     // Retrieve next point coordinates
+                            const coordinates = latlng.lng + "," + latlng.lat + "|" +   // Prepare request for BRouter
+                                pointAfterLatlng.lng + "," + pointAfterLatlng.lat;
+                            calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
+                            if (!calculatedPoints) {    // When no route was found by BRouter
+                                // Restore initial point and section
+                                pointRef.marker.setLatLng(initMarkerLatlng);
+                                stageRef.sections[0].polyline.setLatLngs(initNextPolylineLatlngs)
+                                    .setStyle({ dashArray: null });
+                                cleanupDrag();
+                                return;
+                            }
+                            calculatedPoints = simplifyPolyGeom(calculatedPoints);   // Simplify the sections geometry by getting rid of part of the points
+                            latlng = calculatedPoints[0];
+                            if (!latlng.alt || latlng.alt == null)    // Find alt if missing
+                                latlng = await fetchOpenMeteoElevation(latlng);
+
+                            // Adjust next point's and next section's positions
+                            let latlngx = calculatedPoints[calculatedPoints.length - 1];
+                            if (!latlngx.alt || latlngx.alt == null)    // Find alt if missing
+                                latlngx = await fetchOpenMeteoElevation(latlngx);
+                            stageRef.points[1].marker.setLatLng(latlngx);
+                            if (stageRef.sections[1]) {
+                                let latlngs = stageRef.sections[1].polyline.getLatLngs()
+                                latlngs.shift();
+                                latlngs = [latlngx].concat(latlngs);
+                                stageRef.sections[1].polyline.setLatLngs(latlngs);
+                            }
+                        } else {    // When BRouter is not used
+                            latlng = await fetchOpenMeteoElevation(latlng);
+                            calculatedPoints = [latlng, stageRef.points[1].marker.getLatLng()];
+                        }
+
+                        const beforeState = { point: initMarkerLatlng, prevSection: null, nextSection: initNextPolylineLatlngs, 
+                            prevPoint: null, nextPoint: initNextPolylineLatlngs[initNextPolylineLatlngs.length - 1] };
+                        const afterState = { point: latlng, prevSection: null, nextSection: calculatedPoints,
+                            prevPoint: null, nextPoint: calculatedPoints[calculatedPoints.length - 1] };
+                        execute(new DragNDropPoint2MoveIt(stageRef, iRef, jRef, beforeState, afterState));
+                    } else if (stageRef.points.length > 1) {       // Last point or several
+                        let calculatedPoints = null;
+                        if (context.routerProfile != 'crow') {
+                            const pointBeforeLatlng = stageRef.points[jRef - 1].marker.getLatLng(); // Retrieve preceding point
+                            const coordinates = pointBeforeLatlng.lng + "," +       // Prepare request for BRouter
+                                pointBeforeLatlng.lat + "|" + latlng.lng + "," + latlng.lat;
+                            calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
+                            if (!calculatedPoints) {    // When no route is found by BRouter
+                                // Restore initial section and point
+                                pointRef.marker.setLatLng(initMarkerLatlng);
+                                stageRef.sections[jRef - 1].polyline
+                                    .setLatLngs(initPrevPolylineLatlngs)
+                                    .setStyle({ dashArray: null });
+                                cleanupDrag();
+                                return;
+                            }
+                            calculatedPoints = simplifyPolyGeom(calculatedPoints);   // Simplify the sections geometry by getting rid of part of the points
+                            latlng = calculatedPoints[calculatedPoints.length - 1];
+                            if (!latlng.alt || latlng.alt == null)    // Find alt if missing
+                                latlng = await fetchOpenMeteoElevation(latlng);
+
+                            // Adjust previous point's and previous section's positions
+                            let latlng0 = calculatedPoints[0];
+                            if (!latlng0.alt || latlng0.alt == null)    // Find alt if missing
+                                latlng0 = await fetchOpenMeteoElevation(latlng0);
+                            stageRef.points[jRef - 1].marker.setLatLng(latlng0);
+                            if (stageRef.sections[jRef - 2]) {
+                                let latlngs = stageRef.sections[jRef - 2].polyline.getLatLngs()
+                                latlngs.pop();
+                                latlngs.push(latlng0);
+                                stageRef.sections[jRef - 2].polyline.setLatLngs(latlngs);
+                            }
+                        } else {    // When BRouter is not used
+                            latlng = await fetchOpenMeteoElevation(latlng);
+                            calculatedPoints = [stageRef.points[jRef - 1].marker.getLatLng(), latlng];
+                        }
+
+                        const beforeState = { point: initMarkerLatlng, prevSection: initPrevPolylineLatlngs, nextSection: null, 
+                            prevPoint: initPrevPolylineLatlngs[0], nextPoint: null };
+                        const afterState = { point: latlng, prevSection: calculatedPoints, nextSection: null,
+                            prevPoint: calculatedPoints[0], nextPoint: null };
+                        execute(new DragNDropPoint2MoveIt(stageRef, iRef, jRef, beforeState, afterState));
+                    } else {    // First and only point
+                        if (context.routerProfile != 'crow') {    // When BRouter used to find a route
+                            const coordinates = latlng.lng + "," + latlng.lat + "|" + latlng.lng + "," + latlng.lat;     // Prepare request for BRouter                          
+                            calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
+                            if (!calculatedPoints) {    // When no route was found
+                                // Restore initial point
+                                pointRef.marker.setLatLng(initMarkerLatlng);
+                                cleanupDrag();
+                                return;
+                            }
+
+                            latlng = calculatedPoints[0];     // Update point's position
+                        } else
+                            latlng = await fetchOpenMeteoElevation(latlng);
+
+                        const beforeState = { point: initMarkerLatlng, prevSection: null, nextSection: null, prevPoint: null, nextPoint: null };
+                        const afterState = { point: latlng, prevSection: null, nextSection: null, prevPoint: null, nextPoint: null };
+                        execute(new DragNDropPoint2MoveIt(stageRef, iRef, jRef, beforeState, afterState));
+                    }
+
+                    cleanupDrag();
+                };
+
+                // Use DOM events from the map container to ensure firing consistency
+                const moveHandler = ev => {
+                    const latlng = map.mouseEventToLatLng(ev);
+                    move({ latlng });
+                };
+                const upHandler = up;
+
+                // Function for cleaning up event listeners from document
+                const cleanupDrag = () => {
+                    document.removeEventListener('mousemove', moveHandler);
+                    document.removeEventListener('mouseup', upHandler);
+                    map.dragging.enable();
+                };
+
+                // Add event listeners to document
+                document.addEventListener('mousemove', moveHandler);
+                document.addEventListener('mouseup', upHandler);
+            };
+        })(stage, point);
+        point.marker.addEventListener('mousedown', point_mousedown);    // Add event listener to point
+        stage.points[j].evtList.push({ target: point.marker, type: 'mousedown', handler: point_mousedown });    // Register event listener
+    }
+
+    //------------------------------
+    // Set sections for edit stage 
+    //------------------------------
+    function setSections4Edit(i) {
+        for (let j = 0; j < stages[i].sections.length; j++) {
+            setSection4Edit(i, j);  // Set section's layout and event listeners for edit status
+        }
+    }
+
+    //--------------------------------------------------------------
+    // Set section layout and event listeners for edit stage status
+    //---------------------------------------------------------------
+    function setSection4Edit(i, j) {
+        const stage = stages[i];
+        const section = stage.sections[j];
+
+        // Bring to the front
+        section.polyline.bringToFront();
+
+        // Set section's layout
+        section.polyline.setStyle({ color: routeColors.lightBlue, weight: routeWeights.editRoute, opacity: 1, fillOpacity: 0 });
+
+        // Delete event listeners on section
+        for (const { target, type, handler } of section.evtList)    // Remove event listeners
+            target.removeEventListener(type, handler);  
+        section.evtList.splice(0);  // Clear event listener list
+
+        // Set event listener on section for click
+        function section_click(e) {
+            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+
+            // If a double-click is coming, cancel this click
+            if (context.clickTimeout) {
+                clearTimeout(context.clickTimeout);
+                context.clickTimeout = null;
+            }
+
+            // Do nothing when simple click
+            clickTimeout = setTimeout(() => {
+                context.clickTimeout = null;
+            }, 350);
+        };
+        section.polyline.addEventListener('click', section_click);  // Add event listener to map
+        section.evtList.push({ target: section.polyline, type: 'click', handler: section_click });    // Register event listener
+
+        // Set event listener on section for double-click
+        const section_dblclick = (function(stageRef, sectionRef) {
+            return function(e) {
+                if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+                
+                const iRef = stages.indexOf(stageRef);  // Retrieve stage index
+                if (iRef === -1) return;
+                const jRef = stageRef.sections.indexOf(sectionRef); // Retrieve section index
+                if (jRef === -1) return;
+
+                // Stop the pending single-click
+                if (context.clickTimeout) {
+                    clearTimeout(context.clickTimeout);
+                    context.clickTimeout = null;
+                }
+    
+                L.DomEvent.stopPropagation(e);  // Prevent map click from firing
+
+                const eLatLng = e.latlng;   // Retrieve clicked coordinates
+                const latlngs = sectionRef.polyline.getLatLngs();   // Retrieve section points
+                const {index: idx, point: latlng} = findClosestSectionAndPoint(latlngs, e.latlng);  // Find section point closest to the clicked point
+
+                if (idx < 0) return;     // When closest point was not found
+
+                const beforeState = { sectionPoints: latlngs };
+                const afterState = { prevPointIdx: idx, newPoint: latlng };
+                execute(new DoubleClickSection2InsertPoint(stageRef, iRef, jRef, beforeState, afterState));
+            };
+        })(stage, section);
+        section.polyline.addEventListener('dblclick', section_dblclick);    // Add event listner to section
+        section.evtList.push({ target: section.polyline, type: 'dblclick', handler: section_dblclick });   // Register event listener 
+
+        // Set event listener on section for drag and drop
+        const section_mousedown = (function(stageRef, sectionRef) {
+            return function(e) {
+                if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+
+                map.dragging.disable(); // Prevent map panning
+
+                const DRAG_THRESHOLD = 5;   // Minimal move detected: 5 pixels
+                let startPoint = map.mouseEventToContainerPoint(e);
+                let isDragging = false;
+                let firstDrag = true;
+                
+                const iRef = stages.indexOf(stageRef);  // Retrieve stage index
+                if (iRef === -1) return;
+                const jRef = stageRef.sections.indexOf(sectionRef);     // Retrieve section index
+                if (jRef === -1) return;
+
+                let prevPoint0 = null;
+                let nextPoint0 = null;
+                const calculatedPoints0 = sectionRef.polyline.getLatLngs();   // Save initial section's points
+                if (context.routerProfile != 'crow') {
+                    prevPoint0 = calculatedPoints0[0];
+                    nextPoint0 = calculatedPoints0[calculatedPoints0.length - 1];
+                }
+
+                const move = ev => {    // Event: mouse cursor moved
+                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+
+                    const p = map.mouseEventToContainerPoint(ev);
+                    if (!isDragging && p.distanceTo(startPoint) < DRAG_THRESHOLD) {
+                        return;     // Move is too small
+                    }
+
+                    if (!isDragging) {
+                        isDragging = true;  // Register dragging in process
+                        context.suppressNextClick = true;
+                    
+                        map.dragging.disable();
+                    }
+
+                    // Prevent event propagation to map
+                    L.DomEvent.stopPropagation(e);
+                    L.DomEvent.preventDefault(e);
+
+                    if (firstDrag) {
+                        const latlngs = sectionRef.polyline.getLatLngs();
+                        // Replace section's polyline with a straignt dashed polyline from the section's origin to the mouse cursor's position
+                        sectionRef.polyline.setLatLngs([latlngs[0], ev.latlng])
+                            .setStyle({ dashArray: '5, 10' });
+                        // Insert a new section with a straight dashed polyline from the mouse cursor's position to the section's end
+                        const newPolyline = L.polyline([ev.latlng, latlngs[latlngs.length - 1]]).addTo(map);
+                        newPolyline.setStyle({ dashArray: '5, 10' });
+                        stageRef.sections.splice(jRef + 1, 0, {polyline: newPolyline, evtList: []});
+                        
+                        firstDrag = false;
+                    } else {
+                        // Update the section preceding the mouse cursor's position
+                        const latlngs = sectionRef.polyline.getLatLngs();
+                        sectionRef.polyline.setLatLngs([latlngs[0], ev.latlng])
+                            .setStyle({ dashArray: '5, 10' });
+                        // Update the section following the mouse cursor's position
+                        const nextLatlngs = stageRef.sections[jRef + 1].polyline.getLatLngs();
+                        stageRef.sections[jRef + 1].polyline.setLatLngs([ev.latlng, nextLatlngs[nextLatlngs.length - 1]]);
+                    }
+
+                    removeStageMapNChartMarkers();
+                };
+
+                const up = async ev => {    // Event: mouse button up
+                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+    
+                    if (!isDragging) {  // Ignore if no dragging is in process
+                        cleanupDrag();
+                        return;
+                    }
+
+                    // Prevent event propagation to map
+                    L.DomEvent.stopPropagation(e);
+                    L.DomEvent.preventDefault(e);
+
+                    let latlng = map.mouseEventToLatLng(ev);
+
+                    let calculatedPoints1 = null;
+                    let calculatedPoints2 = null;
+                    let prevPoint = null;
+                    let nextPoint = null;
+                    if (context.routerProfile != 'crow') {    // When BRouter used
+                        const pointBeforeLatlng = stageRef.points[jRef].marker.getLatLng();     // Retrieve preceding point's coordinates
+                        const pointAfterLatlng = stageRef.points[jRef + 1].marker.getLatLng();  // Retrieve next point's coordinates
+                        // Prepare request to BRouter with prceding point's, current cursor point's and next point's coordinates
+                        const coordinates = pointBeforeLatlng.lng + "," + 
+                            pointBeforeLatlng.lat + "|" + latlng.lng + "," + latlng.lat + "|" + 
+                            pointAfterLatlng.lng + "," + pointAfterLatlng.lat;
+                        let calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
+                        if (!calculatedPoints) {    // When no route found by BRouter, restore initial section
+                            //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
+                            sectionRef.polyline.setLatLngs(calculatedPoints0)
+                                .setStyle({ dashArray: null });
+                            stageRef.sections[jRef + 1].polyline.remove();
+                            stageRef.sections.splice(jRef + 1, 1);
+                            cleanupDrag();
+                            return;
+                        }
+                        // Find closest point (from the cursor's position) in the route returned by BRouter
+                        const closestSegAndPt = findClosestSectionAndPoint(calculatedPoints, latlng);
+                        const idx = closestSegAndPt.index;
+                        let closestPt = closestSegAndPt.point;
+                        if (!closestPt.alt || closestPt.alt == null)    // Find alt if missing
+                            closestPt = await fetchOpenMeteoElevation(closestPt);
+
+                        // Prepare set of points before the cursor's position (and finishing with it)
+                        calculatedPoints1 = calculatedPoints.slice(0, idx + 1);
+                        calculatedPoints1.push(closestPt);
+                        calculatedPoints1 = simplifyPolyGeom(calculatedPoints1);    // Get rid of part of the points (not to handle too many data)
+                        // Prepare set of points after the cursor's position (and starting with it)
+                        calculatedPoints2 = [closestPt].concat(calculatedPoints.slice(idx + 1));
+                        calculatedPoints2 = simplifyPolyGeom(calculatedPoints2);    // Get rid of part of the points (not to handle too many data)
+                        latlng = closestPt;
+                        prevPoint = calculatedPoints1[0];
+                        if (!prevPoint.alt || prevPoint.alt == null)    // Find alt if missing
+                            prevPoint = await fetchOpenMeteoElevation(prevPoint);
+                        nextPoint = calculatedPoints2[calculatedPoints2.length - 1];
+                        if (!nextPoint.alt || nextPoint.alt == null)    // Find alt if missing
+                            nextPoint = await fetchOpenMeteoElevation(nextPoint);
+                    } else {    // When BRouter not used, prepare set of points
+                        latlng = await fetchOpenMeteoElevation(latlng);
+                        calculatedPoints1 = [stageRef.points[jRef].marker.getLatLng(), latlng];
+                        calculatedPoints2 = [latlng, stageRef.points[jRef + 1].marker.getLatLng()];
+                    }
+
+                    // Remove section added when dragging
+                    stageRef.sections[jRef + 1].polyline.remove();
+                    stageRef.sections.splice(jRef + 1, 1);
+                        
+                    const beforeState = { section: calculatedPoints0, 
+                        prevPoint: prevPoint0, nextPoint: nextPoint0 };
+                    const afterState = { point: latlng, prevSection: calculatedPoints1, nextSection: calculatedPoints2,
+                        prevPoint: prevPoint, nextPoint: nextPoint };
+                    execute(new DragNDropSection2BreakIt(stageRef, iRef, jRef, beforeState, afterState));
+
+                    cleanupDrag();
+                };
+
+                // Use DOM events from the map container to ensure firing consistency
+                const moveHandler = ev => {
+                    const latlng = map.mouseEventToLatLng(ev);
+                    move({ latlng });
+                };
+                const upHandler = up;
+
+                // Function for cleaning up event listeners from document
+                const cleanupDrag = () => {
+                    document.removeEventListener('mousemove', moveHandler);
+                    document.removeEventListener('mouseup', upHandler);
+                    map.dragging.enable();
+                };
+
+                // Add event listeners to document
+                document.addEventListener('mousemove', moveHandler);
+                document.addEventListener('mouseup', upHandler);
+            };
+        })(stage, section);
+        section.polyline.addEventListener('mousedown', section_mousedown);  // Add event listener to section
+        section.evtList.push({ target: section.polyline, type: 'mousedown', handler: section_mousedown });  // Register event listener
+    }
+
+    //-----------------------
+    // Set/change stage name
+    //-----------------------
+    function setStgName() {
+        if (context.operationWithButtonInProcess)
+            return;     // One operation at a time only
+
+        // Create wrapper div
+        const wrapper = document.createElement('div');
+        wrapper.id = 'gpx-file-wrapper';
+        wrapper.style.border = '1px solid #ccc';
+        wrapper.style.padding = '8px';
+        wrapper.style.marginTop = '8px';
+
+        // Create label
+        const label = document.createElement('span');
+        label.textContent = context.language === 'EN' ? 'Enter stage\'s name: ' : 'Entrer le nom de l\'étape :';
+        wrapper.appendChild(label);
+
+        // Create file input
+        const stage = stages[context.editedStage];
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.style.marginLeft = '15px';
+        input.size = 100;
+        if (stage.name) {
+            input.value = stage.name;
+        } else {
+            input.value = '';
+        }
+        wrapper.appendChild(input);
+
+        // Add status span
+        const status = document.createElement('span');
+        status.style.marginLeft = '8px';
+        wrapper.appendChild(status);
+
+        // Create submit button
+        const submitButton = document.createElement('button');
+        submitButton.textContent = context.language === 'EN' ? 'Set' : 'Attribuer';
+        submitButton.style.marginLeft = '8px';
+        wrapper.appendChild(submitButton);
+
+        // Process the entered name
+        function applyName(name) {
+            const beforeState = { name: stage.name };
+            const afterState = { name: name };
+            execute(new SetStageName(stage, context.editedStage, beforeState, afterState));
+
+            status.textContent = context.language === 'EN' ? 'Name set' : 'Nom attribué';
+
+            // Close the small UI:
+            submitButton.removeEventListener('click', submitHandler);
+            cancelButton.removeEventListener('click', cancelHandler);
+            input.removeEventListener('keydown', keydownHandler);
+            document.removeEventListener('keydown', escKeyHandler);
+            wrapper.remove();
+            
+            context.operationWithButtonInProcess = false;   // Stop blocking the other operations
+        }
+
+        // Submit handler (button or Enter)
+        function submitHandler() {
+            const value = input.value.trim();
+            if (!value) {
+                applyName(null);
+            }
+            applyName(value);
+        }
+        submitButton.addEventListener('click', submitHandler);
+
+        // Keydown handler
+        function keydownHandler(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+
+                submitHandler();
+            }
+        }
+        input.addEventListener('keydown', keydownHandler);
+                    
+        // Create auto fill button
+        const autoFillButton = document.createElement('button');
+        autoFillButton.textContent = context.language === 'EN' ? 'Auto fill' : 'Remplir auto.';
+        autoFillButton.style.marginLeft = '8px';
+        wrapper.appendChild(autoFillButton);
+
+        // Get city name from coordinates
+        async function getLocationCityName(latlng) {
+            const name = await fetchCityWithNominatim(latlng);  // Retrieve city matching the coordinates using Nominatim
+            if (name != null) return name;
+            else return '?';
+        }
+
+        // Auto fill handler
+        async function autoFillHandler() {
+            if (stage.points.length > 1)
+                input.value = await getLocationCityName(stage.points[0].marker.getLatLng()) + ' - ' + 
+                    await getLocationCityName(stage.points[stage.points.length - 1].marker.getLatLng());    //Fill with start city and end city names
+            else if (stage.points.length > 0) 
+                input.value = await getLocationCityName(stage.points[0].marker.getLatLng());    // Fill with city name
+        }
+        autoFillButton.addEventListener('click', autoFillHandler);
+
+        // Create cancel button
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = context.language === 'EN' ? 'Cancel' : 'Annuler';
+        cancelButton.style.marginLeft = '8px';
+        wrapper.appendChild(cancelButton);
+
+        // Cancel handler
+        function cancelHandler() {
+            // Close the small UI:
+            submitButton.removeEventListener('click', submitHandler);
+            cancelButton.removeEventListener('click', cancelHandler);
+            input.removeEventListener('keydown', keydownHandler);
+            document.removeEventListener('keydown', escKeyHandler);
+            wrapper.remove();
+            
+            context.operationWithButtonInProcess = false;   // Stop blocking the other operations
+        }
+        cancelButton.addEventListener('click', cancelHandler);
+
+        // Escape key handler just for this wrapper
+        function escKeyHandler(e) {
+            if ((e.key || '').toLowerCase() === 'escape') {
+                L.DomEvent.stopPropagation(e);  // Do not propagate event to map and document
+
+                // Remove handlers and wrapper
+                submitButton.removeEventListener('click', submitHandler);
+                cancelButton.removeEventListener('click', cancelHandler);
+                input.removeEventListener('keydown', keydownHandler);
+                document.removeEventListener('keydown', escKeyHandler);
+                wrapper.remove();
+
+                context.operationWithButtonInProcess = false;   // Stop blocking the other operations
+            }
+        }
+        document.addEventListener('keydown', escKeyHandler);
+        
+        // Finally, add the wrapper to the page
+        document.body.appendChild(wrapper);
+
+        // Focus after DOM insertion (and after current event loop)
+        setTimeout(() => {
+            input.focus();
+        }, 0);
+
+        // Register operation in process (to block other potential concurrent operations)
+        context.operationWithButtonInProcess = true;
+    }
+
+    //------------------------------------------------------------
+    // Set stage layout and event listeners for edit stage status
+    //------------------------------------------------------------
+    function setStg4EdtStg(i) {
+        if (stages[i] && stages[i].sections)
+            setSections4Edit(i);    // Set sections' layout and event listeners for edit status
+
+        if (stages[i] && stages[i].points)
+            setPoints4Edit(i);      // Set points' layout and event listeners for edit status
+
+        if (stages[i] && stages[i].points.length > 0) {
+            // Update stage information to be displayed in popup and show it (if selected)
+            updateDetailedInfo(stages[i], true, false);
+        }
+
+        if (context.displayInfo === 2)
+            displayStageProfile(stages[i]);
+        else {
+            removeStageProfileControl();
+
+            removeStageMapNChartMarkers();
+        }
+
+        context.editedStage = i;
+    }
+
+    //------------------------------------------------
+    // Set previously edited stage to non edit status
+    //------------------------------------------------
+    function setStg4NonEdt(i, removeChart) {
+        if (i === null || i < 0 || i > stages.length - 1)
+            return;
+           
+        const stage = stages[i];
+
+        if (stage.points.length > 0) {      // When the stage is not empty
+            // Process the sections
+            for (let j = 0; j < stage.sections.length; j++) {
+                const section = stage.sections[j];
+                
+                section.polyline.setStyle({ color: routeColors.Blue, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 });   // Set layout
+        
+                // Delete event listeners on section
+                for (const { target, type, handler } of section.evtList)
+                    target.removeEventListener(type, handler);
+                section.evtList.splice(0);
+
+                // Set event listener on section for click (does nothing, but needed to distinguish simple clicks from double-clicks)
+                function section_click(e) {
+                    if (context.operationWithButtonInProcess) return;   // Not executed if a load or rename operation is in process
+
+                    // Stop a pending single-click
+                    if (context.clickTimeout) {
+                        clearTimeout(context.clickTimeout);
+                        context.clickTimeout = null;
+                    }
+
+                    // Execute a timeout of 350 ms, to make sure it is a simple click and not a double click
+                    context.clickTimeout = setTimeout(() => {
+                        context.clickTimeout = null;
+                    }, 350);
+                };
+                section.polyline.addEventListener('click', section_click);  // Add event listener to the section's polyline
+                section.evtList.push({ target: section.polyline, type: 'click', handler: section_click });      // Register event listener
+
+                // Set event listener on section for double-click
+                const section_dblclick = (function(stageRef) {
+                    return function(e) {
+                        if (context.operationWithButtonInProcess) return;   // Not executed if a load or rename operation is in process
+
+                        // Retrieve stage number
+                        let iRef = stages.indexOf(stageRef);
+                        if (iRef === -1)
+                            return;     // Stage was removed; do nothing
+
+                        // Stop a pending single-click
+                        if (context.clickTimeout) {
+                            clearTimeout(context.clickTimeout);
+                            context.clickTimeout = null;
+                        }
+    
+                        L.DomEvent.stopPropagation(e);  // Do not propagate event to map and document
+        
+                        quitEditStage(true);    // If another stage was being edited, set it to non edit status
+                        
+                        iRef = stages.indexOf(stageRef);    // A stage may have been removed preceding the current stage
+
+                        setEnv4EdtStg(iRef);    // Set the double clicked stage to edit status
+                    };   
+                })(stage);
+                section.polyline.addEventListener('dblclick', section_dblclick);  // Add event listener to the section's polyline
+                section.evtList.push({ target: section.polyline, type: 'dblclick', handler: section_dblclick });    // Register event listener
+            };
+
+            // Process the points
+            for (let j = 0; j < stage.points.length; j++) {
+                const point = stage.points[j];
+
+                // Delete event listeners on point
+                for (const { target, type, handler } of point.evtList)
+                    target.removeEventListener(type, handler);
+                point.evtList.splice(0);
+
+                // Change point's layout
+                const latlng = point.marker.getLatLng();
+                let newMarker = null;
+                if (stage.points.length === 1) {
+                    if (point.marker.options.icon != PurpleDoubleSquareIcon) {
+                        newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                            icon: PurpleDoubleSquareIcon,
+                            pane: 'markerNEPane',
+                            draggable: false,
+                            autoPan: false,
+                            bubblingMouseEvents: true
+                        }).addTo(map);
+                    }
+                } else if (j === 0) { 
+                    if (point.marker.options.icon != GreenDiamondIcon) {
+                        newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                            icon: GreenDiamondIcon,
+                            pane: 'markerNEPane',
+                            draggable: false,
+                            autoPan: false,
+                            bubblingMouseEvents: true
+                        }).addTo(map);
+                    }
+                } else if (j < stage.points.length - 1) {
+                    if (point.marker.options.icon != transparentIcon) {
+                        newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                            icon: transparentIcon,
+                            pane: 'markerNEPane',
+                            draggable: false,
+                            autoPan: false,
+                            bubblingMouseEvents: true
+                        }).addTo(map);
+                    }
+                } else {
+                    if (point.marker.options.icon != RedSquareIcon) {
+                        newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
+                            icon: RedSquareIcon,
+                            pane: 'markerNEPane',
+                            draggable: false,
+                            autoPan: false,
+                            bubblingMouseEvents: true
+                        }).addTo(map);
+                    }
+                }
+                if (newMarker != null) {
+                    point.marker.remove();
+                    point.marker = newMarker;
+                }
+
+                // Set event listener on point for click
+                function point_click(e) {
+                    if (context.operationWithButtonInProcess) return;   // Not executed if a load or rename operation is in process
+
+                    // Stop a pending single-click
+                    if (context.clickTimeout) {
+                        clearTimeout(context.clickTimeout);
+                        context.clickTimeout = null;
+                    }
+
+                    // Execute a timeout of 350 ms, to make sure it is a simple click and not a double click
+                    context.clickTimeout = setTimeout(() => {
+                        context.clickTimeout = null;
+                    }, 350);
+                };
+                point.marker.addEventListener('click', point_click);
+                point.evtList.push({ target: point.marker, type: 'click', handler: point_click });    
+
+                // Set event listener on point for double-click
+                const point_dblclick = (function(stageRef) {
+                    return function (e) {
+                        let iRef = stages.indexOf(stageRef);
+                        if (iRef === -1) return;     // Stage was removed; do nothing
+
+                        if (context.operationWithButtonInProcess) return;
+
+                        // Stop the pending single-click
+                        if (context.clickTimeout) {
+                            clearTimeout(context.clickTimeout);
+                            context.clickTimeout = null;
+                        }
+    
+                        L.DomEvent.stopPropagation(e);  // Do not propagate event to map and document
+        
+                        quitEditStage(true);
+
+                        iRef = stages.indexOf(stageRef);
+
+                        setEnv4EdtStg(iRef);
+                    }
+                })(stage);
+                point.marker.addEventListener('dblclick', point_dblclick);  // Add event listener to the section's marker
+                point.evtList.push({ target: point.marker, type: 'dblclick', handler: point_dblclick });    // Register event listener
+            }
+            
+            // Update stage information to be displayed in popup and show it (if selected)
+            if (removeChart)
+                updateDetailedInfo(stages[i], false, true);
+            else
+                updateDetailedInfo(stages[i], false, false);
+        } else {
+            stages.splice(i, 1);   // If the stage is empty, delete it
+        }
+
+        if (context.editedStage === i)
+            context.editedStage = null;
+    }
+
+    //--------------------------------------------------
+    // Split stage in two parts at the position clicked
+    //--------------------------------------------------
+    function splitStage() {
+        const stage = stages[context.editedStage];
+
+        // Check that stage has at least two points
+        if (!stage.points || stage.points.length < 2) {
+            alert(context.language === 'EN' ? 'Stage has less than two points and cannot be split' : 'Etape de moins de deux points ne pouvant être partagée');
+            return;
+        }
+
+        // Define cursor with scissors
+        const svgScissors = `
+            <svg xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 640 640">
+                <path fill="black" d="M256 320L216.5 359.5C203.9 354.6 190.3 352 176 352C114.1 352 64 402.1 64 464C64 525.9 114.1 576 176 576C237.9 576 288 525.9 288 464C288 449.7 285.3 436.1 280.5 423.5L563.2 140.8C570.3 133.7 570.3 122.3 563.2 115.2C534.9 86.9 489.1 86.9 460.8 115.2L320 256L280.5 216.5C285.4 203.9 288 190.3 288 176C288 114.1 237.9 64 176 64C114.1 64 64 114.1 64 176C64 237.9 114.1 288 176 288C190.3 288 203.9 285.3 216.5 280.5L256 320zM353.9 417.9L460.8 524.8C489.1 553.1 534.9 553.1 563.2 524.8C570.3 517.7 570.3 506.3 563.2 499.2L417.9 353.9L353.9 417.9zM128 176C128 149.5 149.5 128 176 128C202.5 128 224 149.5 224 176C224 202.5 202.5 224 176 224C149.5 224 128 202.5 128 176zM176 416C202.5 416 224 437.5 224 464C224 490.5 202.5 512 176 512C149.5 512 128 490.5 128 464C128 437.5 149.5 416 176 416z"/>
+            </svg>
+        `;
+        map.getContainer().style.cursor = `url("data:image/svg+xml;utf8,${encodeURIComponent(svgScissors)}") 8 8, crosshair`;
+
+        // Define event handlers on sections
+        for (let j = 0; j < stage.sections.length; j++) {
+            const section = stage.sections[j];
+
+            // Set event listener on section for click
+            const section_click_for_split = (function(stageRef, sectionRef) {
+                return function(e) {
+                    const iRef = stages.indexOf(stageRef);  // Retrieve stage index
+                    if (iRef === -1) return;
+                    const jRef = stageRef.sections.indexOf(sectionRef); // Retrieve section index
+                    if (jRef === -1) return;
+
+                    L.DomEvent.stopPropagation(e);  // Prevent map click from firing
+
+                    // Remove event handlers that were added for splitting
+                    removeSplitHandlers(stageRef);
+                    document.removeEventListener('keydown', escKeyHandler);
+
+                    const eLatLng = e.latlng;   // Retrieve clicked coordinates
+                    const latlngs = sectionRef.polyline.getLatLngs();   // Retrieve section points
+                    const {index: idx, point: latlng} = findClosestSectionAndPoint(latlngs, e.latlng);  // Find section point closest to the clicked point
+                    if (idx < 0) return;     // When closest point was not found
+
+                    const latlngs1 = latlngs.slice(0, idx + 1).concat([latlng]);     // Retrieve the points before the closest point (including it)
+                    const latlngs2 = [latlng].concat(latlngs.slice(idx + 1)); // Retrieve the points after the closest points (including it)
+                    
+                    const beforeState = { section: latlngs };
+                    const afterState = { point: latlng, section1: latlngs1, section2: latlngs2 };
+                    execute(new ClickSection2Split(stageRef, iRef, jRef, beforeState, afterState));
+
+                    map.getContainer().style.cursor = 'crosshair';
+
+                    context.operationWithButtonInProcess = false;   // To prevent firing the single click handler
+                };
+            })(stage, section);
+            section.polyline.addEventListener('click', section_click_for_split);    // Add event listner to section
+            section.evtList.push({ target: section.polyline, type: 'click', handler: section_click_for_split, role: 'split' });   // Register event listener 
+        }
+
+        // Define event handlers on points
+        for (let j = 0; j < stage.points.length; j++) {
+            const point = stage.points[j];
+
+            // Set event listener on point for click
+            const point_click_for_split = (function(stageRef, pointRef) {
+                return function(e) {
+                    const iRef = stages.indexOf(stageRef);  // Retrieve stage index
+                    if (iRef === -1) return;
+                    const jRef = stageRef.points.indexOf(pointRef); // Retrieve section index
+                    if (jRef === -1) return;
+                    if (jRef === 0 || jRef === stageRef.points.length - 1) return;  // Stage cannot be split at first and last points
+
+                    L.DomEvent.stopPropagation(e);  // Prevent map click from firing
+
+                    // Remove event handlers that were added for splitting
+                    removeSplitHandlers(stageRef);
+                    document.removeEventListener('keydown', escKeyHandler);
+
+                    const beforeState = null;
+                    const afterState = null;
+                    execute(new ClickPoint2Split(stageRef, iRef, jRef, beforeState, afterState));
+
+                    map.getContainer().style.cursor = 'crosshair';
+
+                    context.operationWithButtonInProcess = false;   // To prevent firing the single click handler
+                };
+            })(stage, point);
+            point.marker.addEventListener('click', point_click_for_split);    // Add event listner to section
+            point.evtList.push({ target: point.marker, type: 'click', handler: point_click_for_split, role: 'split' });   // Register event listener 
+        }
+
+        // Escape key handler just for split
+        function escKeyHandler(e) {
+            if ((e.key || '').toLowerCase() === 'escape') {
+                L.DomEvent.stopPropagation(e);  // Do not propagate event to map and document
+
+                // Remove handlers and wrapper
+                document.removeEventListener('keydown', escKeyHandler);
+
+                map.getContainer().style.cursor = 'crosshair';
+
+                context.operationWithButtonInProcess = false;   // Stop blocking the other operations
+            }
+        }
+        document.addEventListener('keydown', escKeyHandler);
+
+        // Function to remove the handlers created for split
+        function removeSplitHandlers(stage) {
+            for (const collection of [stage.sections, stage.points]) {
+                for (const item of collection) {
+                    for (let j = item.evtList.length - 1; j >= 0; j--) {
+                        const evt = item.evtList[j];
+                        if (evt.role === 'split') {
+                            evt.target.removeEventListener(evt.type, evt.handler);
+                            item.evtList.splice(j, 1);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Register operation in process (to block other potential concurrent operations)
+        context.operationWithButtonInProcess = true;
+    }
+
+    //*******************************************
+    // CLASSES FOR REVERSIBLE ACTION MANAGEMENT *
+    //*******************************************
+
+    //----------------------------------------------------------
+    // Reversible command to add point when clicking on the map
+    //----------------------------------------------------------
+    class ChangeStagePosition {
+        constructor(stage, stageIdx, before, after) {
+            this.stageIdx = stageIdx
+            this.after = after;
+        }
+
+        undo() {
+            const stageIdx = this.stageIdx;
+            const newStageIdx = this.after.newStageIdx;
+
+            if (newStageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(newStageIdx);
+            }
+
+            const stage = stages.splice(newStageIdx, 1)[0];    // Remove stage
+            stages.splice(stageIdx, 0, stage);       // Insert it at new position
+            context.editedStage = stageIdx;
+
+            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage
+
+            if (stageIdx < newStageIdx) {
+                for (let i = stageIdx + 1; i < newStageIdx + 1; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            } else {
+                for (let i = newStageIdx; i < stageIdx; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            }
+
+            displayGlobalInfo();
+        }
+
+        redo() {
+            const stageIdx = this.stageIdx;
+            const newStageIdx = this.after.newStageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            const stage = stages.splice(stageIdx, 1)[0];    // Remove stage
+            stages.splice(newStageIdx, 0, stage);       // Insert it at new position
+            context.editedStage = newStageIdx;
+
+            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage
+
+            if (newStageIdx < stageIdx) {
+                for (let i = newStageIdx + 1; i < stageIdx + 1; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            } else {
+                for (let i = stageIdx; i < newStageIdx; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            }
+
+            displayGlobalInfo();
+        }
+    }
+
+    //----------------------------------------------------------
+    // Reversible command to add point when clicking on the map
+    //----------------------------------------------------------
+    class ClickOnMap2AddPoint {
+        constructor(stage, stageIdx, before, after) {
+            this.stage = stage;
+            this.stageIdx = stageIdx;
+            this.before = before;
+            this.after = after;
+            this.stageRemoved = false;
+        }
+
+        undo() {
+            // Find out stage
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Remove last point
+            for (const { target, type, handler } of stage.points[stage.points.length - 1].evtList)    // Remove event listeners
+                target.removeEventListener(type, handler);
+            stage.points[stage.points.length - 1].marker.remove();
+            stage.points.pop();   // Remove point from stage
+
+            // Adjust layout of previous point 
+            if (stage.points.length > 1) {
+                stage.points[stage.points.length - 1].marker.setIcon(lightRedSquareIcon);
+            } else if (stage.points.length > 0) {
+                stage.points[stage.points.length - 1].marker.setIcon(lightPurpleDoubleSquareIcon);
+            }
+                
+            // Remove section
+            if (stage.sections.length > 0) {
+                for (const { target, type, handler } of stage.sections[stage.sections.length - 1].evtList)    // Remove event listeners
+                    target.removeEventListener(type, handler);
+                stage.sections[stage.sections.length - 1].polyline.remove();
+                stage.sections.pop();   // Remove section from stage
+            }
+        
+            // Restore previous point's and previous section's positions
+            if (this.before.previousPoint != null || stage.points.length > 0) {
+                stage.points[stage.points.length - 1].marker.setLatLng(this.before.previousPoint); // Adjust last point's position
+                if (stage.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
+                    let latlngs = stage.sections[stage.sections.length - 1].polyline.getLatLngs()
+                    latlngs[latlngs.length - 1] = this.before.previousPoint;
+                    stage.sections[stage.sections.length - 1].polyline.setLatLngs(latlngs);
+                }
+            }
+
+            if (stage.points.length > 0) {
+                // Update distance
+                if (stage.points.length > 1) {  // When not first point
+                    stage.distance = calculateStageDistance(stage);    // Update stage distance
+
+                    [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
+                } else {    // Single point
+                    stage.distance = 0;
+                    stage.ascent = null;
+                    stage.descent = null;
+                }
+                
+                if (stage.points.length > 1)
+                    updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage
+                else
+                    updateDetailedInfo(stage, true, true);  // Update information to be displayed about the stage
+
+                displayGlobalInfo();
+
+                removeStageMapNChartMarkers();
+            } else {
+                // Remove information popup
+                if (stage.infoPop)
+                    stage.infoPop.remove();
+
+                stages.splice(stageIdx, 1);
+
+                this.stageRemoved = true;
+
+                context.editedStage = null;
+
+                // Set environment to non edit mode
+                setEnv4NonEdt(true);
+
+                for (let i = stageIdx; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+
+                displayGlobalInfo();
+            }
+        }
+
+        redo() {
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (this.stageRemoved) {
+                stages.splice(stageIdx, 0, stage);
+                this.stageRemoved = false;
+            }
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Adjust previous point's and previous section's positions using BRouter response
+            if (this.after.previousPoint != null) {
+                stage.points[stage.points.length - 1].marker.setLatLng(this.after.previousPoint); // Adjust last point's position
+                if (stage.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
+                    let latlngs = stage.sections[stage.sections.length - 1].polyline.getLatLngs()
+                    latlngs[latlngs.length - 1] = this.after.previousPoint;
+                    stage.sections[stage.sections.length - 1].polyline.setLatLngs(latlngs);
+                }
+            }
+
+            // Adjust layout of previous point 
+            if (stage.points.length > 1) {
+                stage.points[stage.points.length - 1].marker.setIcon(circleIconEdit);
+            } else if (stage.points.length > 0) {
+                stage.points[stage.points.length - 1].marker.setIcon(lightGreenDiamondIcon);
+            }
+                
+            // Create and record point
+            const newMarker = L.marker(this.after.nextPoint, { 
+                icon: lightRedSquareIcon, 
+                pane: 'markerEditPane', 
+                draggable: true, 
+                autoPan: false, 
+                bubblingMouseEvents: true 
+            }).addTo(map);    // Create marker to represent the point on the map
+            stage.points.push({marker: newMarker, evtList: []});   // Add point to stage
+
+
+            setPoint4Edt(stageIdx, stage.points.length - 1);     // Set new point's layout and event listeners for edit mode
+
+            // Add a section and update distance
+            if (stage.points.length > 1) {  // When not first point
+                const newPolyline = L.polyline(this.after.newPoints).addTo(map);    // Create polyline to represent section on the map                   
+                stage.sections.push({polyline: newPolyline, evtList:[]});    // Add section to stage
+
+                setSection4Edit(stageIdx, stage.sections.length - 1);    // Set new section's layout and event listeners for edit mode
+        
+                stage.distance = calculateStageDistance(stage);    // Update stage distance
+
+                [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
+            }
+                  
+            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage
+            
+            if (stage.points.length === 1) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            }
+
+            displayGlobalInfo();      
+        }
+    }
+
+    //----------------------------------------------------------------
+    // Reversible command to a selected stage after the edited stage
+    //----------------------------------------------------------------
+    class Click2MergeAfter {
+        constructor(stage, stageIdx, before, after) {
+            this.stage = stage;
+            this.stageIdx = stageIdx;
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            // Find out stage
+            const stage = this.stage;
+
+            let stageIdx = stages.indexOf(stage);
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Restore stage before
+            const stage2 = this.before.afterStage;
+            const stageIdx2 = this.before.afterStageIdx;
+            stages.splice(stageIdx2, 0, stage2);
+
+            if (this.after.linkSectionLatlngs != null) {
+                for (const { target, type, handler } of stage.sections[stage.sections.length - this.before.afterStageSectNb - 1].evtList)
+                    target.removeEventListener(type, handler);
+                stage.sections[stage.sections.length - this.before.afterStageSectNb - 1].polyline.remove();
+                stage.sections.splice(stage.sections.length - this.before.afterStageSectNb - 1, 1);
+            } else {
+                const newMarker = L.marker(stage.points[stage.sections.length - this.before.afterStageSectNb].marker.getLatLng(), {
+                    icon: circleIconEdit,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+                stage.points.splice(stage.sections.length - this.before.afterStageSectNb, 0, { marker: newMarker, evtList: [] });
+            }
+
+            const splicePos = stage.sections.length - this.before.afterStageSectNb;
+            const movedSections = stage.sections.splice(splicePos);
+            const movedPoints = stage.points.splice(splicePos + 1);
+            stage.sections.splice(splicePos);
+            stage.points.splice(splicePos + 1);
+
+            stage2.sections.push(...movedSections);     // Merge the sections of the two stages
+            stage2.points.push(...movedPoints);     // Merge the points of the two stages
+
+            // Adjust last point's and last section's positions of edited track using BRouter response
+            if (this.before.beforePointLatlng != null) {     // When BRouter was used
+                stage.points[stage.points.length - 1].marker.setLatLng(this.before.beforePointLatlng); // Adjust last point's position
+                if (stage.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
+                    const latlngs = stage.sections[stage.sections.length - 1].polyline.getLatLngs();
+                    latlngs.pop();
+                    latlngs.push(this.before.beforePointLatlng);
+                    stage.sections[stage.sections.length - 1].polyline.setLatLngs(latlngs);
+                }                            
+            }
+
+            // Adjust first point's and first section's positions of after track using BRouter response
+            if (this.before.afterPointLatlng != null) {     // When BRouter was used
+                stage2.points[0].marker.setLatLng(this.before.afterPointLatlng); // Adjust first point's position
+                if (stage2.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
+                    let latlngs = stage2.sections[0].polyline.getLatLngs();
+                    latlngs.shift();
+                    latlngs.unshift(this.before.afterPointLatlng);
+                    stage2.sections[0].polyline.setLatLngs(latlngs);
+                }
+            }
+
+            stageIdx = stages.indexOf(stage);
+            context.editedStage = stageIdx;
+
+            setEnv4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
+
+            setStg4NonEdt(stageIdx2, false);    // Set new stage layout and event listeners for edit mode
+
+            removeStageMapNChartMarkers();
+
+            stage.distance = calculateStageDistance(stage);   // Calculate stage distance
+
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate stage ascent and descent
+                
+            updateDetailedInfo(stage, true, false);   // Update stage information to be displayed in popup and show it (if selected)
+            updateDetailedInfo(stage2, false, false);   // Update stage information to be displayed in popup and show it (if selected)
+
+            if (stageIdx < stageIdx2) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    if (i != stageIdx2) updateDetailedInfo(stages[i], false, false);
+                }
+            } else {
+                for (let i = stageIdx2; i < stages.length; i++) {
+                    if (i != stageIdx) updateDetailedInfo(stages[i], false, false);
+                }
+            }
+
+            displayGlobalInfo();
+        }
+
+        redo() {
+            const stage = this.stage;
+
+            let stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+            stageIdx = stages.indexOf(stage);
+
+            const stage2 = this.before.afterStage;
+            const stageIdx2 = this.before.afterStageIdx;
+
+            // Adjust last point's and last section's positions of edited track using BRouter response
+            if (this.after.beforePointLatlng != null) {     // When BRouter was used
+                stage.points[stage.points.length - 1].marker.setLatLng(this.after.beforePointLatlng); // Adjust last point's position
+                if (stage.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
+                    const latlngs = stage.sections[stage.sections.length - 1].polyline.getLatLngs();
+                    latlngs.pop();
+                    latlngs.push(this.after.beforePointLatlng);
+                    stage.sections[stage.sections.length - 1].polyline.setLatLngs(latlngs);
+                }                            
+            }
+
+            // Adjust first point's and first section's positions of after track using BRouter response
+            if (this.after.afterPointLatlng != null) {     // When BRouter was used
+                stage2.points[0].marker.setLatLng(this.after.afterPointLatlng); // Adjust first point's position
+                if (stage2.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
+                    let latlngs = stage2.sections[0].polyline.getLatLngs();
+                    latlngs.shift();
+                    latlngs.unshift(this.after.afterPointLatlng);
+                    stage2.sections[0].polyline.setLatLngs(latlngs);
+                }
+            }
+
+            if (this.after.linkSectionLatlngs != null) {
+                const newPolyline = L.polyline(this.after.linkSectionLatlngs).addTo(map);
+                stage.sections.push({polyline: newPolyline, evtList: []});
+            } else {
+                for (const { target, type, handler } of stage2.points[0].evtList)
+                    target.removeEventListener(type, handler);
+                stage2.points[0].marker.remove();
+                stage2.points.shift();
+            }
+
+            stage.sections.push(...stage2.sections);     // Merge the sections of the two stages
+            stage.points.push(...stage2.points);     // Merge the points of the two stages
+            stageIdx = stages.indexOf(stage);
+
+            // Remove all sections and all points from stage2
+            stage2.points.length = 0;
+            stage2.sections.length = 0;
+
+            if (stage2.infoPop)
+                stage2.infoPop.remove();
+
+            stages.splice(stageIdx2, 1);     // Remove stage2
+
+            stageIdx = stages.indexOf(stage);
+            context.editedStage = stageIdx;
+                
+            setEnv4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
+
+            removeStageMapNChartMarkers();
+
+            stage.distance = calculateStageDistance(stage);   // Calculate stage distance
+
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate stage ascent and descent
+                
+            updateDetailedInfo(stage, true, false);   // Update stage information to be displayed in popup and show it (if selected)
+
+            if (stageIdx < stageIdx2) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);
+                }
+            } else {
+                for (let i = stageIdx2; i < stages.length; i++) {
+                    if (i != stageIdx) updateDetailedInfo(stages[i], false, false);
+                }
+            }
+
+            displayGlobalInfo();
+        }
+    }
+
+    //----------------------------------------------------------------
+    // Reversible command to a selected stage before the edited stage
+    //----------------------------------------------------------------
+    class Click2MergeBefore {
+        constructor(stage, stageIdx, before, after) {
+            this.stage = stage;
+            this.stageIdx = stageIdx;
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            // Find out stage
+            const stage = this.stage;
+
+            let stageIdx= stages.indexOf(stage);
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Restore stage before
+            const stage2 = this.before.beforeStage;
+            const stageIdx2 = this.before.beforeStageIdx;
+            stages.splice(stageIdx2, 0, stage2);
+
+            if (this.after.linkSectionLatlngs != null) {
+                for (const { target, type, handler } of stage.sections[this.before.beforeStageSectNb].evtList)
+                    target.removeEventListener(type, handler);
+                stage.sections[this.before.beforeStageSectNb].polyline.remove();
+                stage.sections.splice(this.before.beforeStageSectNb, 1);
+            } else {
+                const newMarker = L.marker(stage.points[this.before.beforeStageSectNb].marker.getLatLng(), {
+                    icon: lightGreenDiamondIcon,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+                stage.points.splice(this.before.beforeStageSectNb + 1, 0, { marker: newMarker, evtList: [] });
+            }
+
+            const movedSections = stage.sections.splice(0, this.before.beforeStageSectNb);
+            const movedPoints = stage.points.splice(0, this.before.beforeStageSectNb + 1);
+
+            stage2.sections.push(...movedSections);     // Merge the sections of the two stages
+            stage2.points.push(...movedPoints);     // Merge the points of the two stages
+
+            // Adjust last point's and last section's positions of before track using BRouter response
+            if (this.before.beforePointLatlng != null) {     // When BRouter was used
+                stage2.points[stage2.points.length - 1].marker.setLatLng(this.before.beforePointLatlng); // Adjust last point's position
+                if (stage2.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
+                    const latlngs = stage2.sections[stage2.sections.length - 1].polyline.getLatLngs();
+                    latlngs.pop();
+                    latlngs.push(this.before.beforePointLatlng);
+                    stage2.sections[stage2.sections.length - 1].polyline.setLatLngs(latlngs);
+                }                            
+            }
+
+            // Adjust first point's and first section's positions of edited track using BRouter response
+            if (this.before.afterPointLatlng != null) {     // When BRouter was used
+                stage.points[0].marker.setLatLng(this.before.afterPointLatlng); // Adjust first point's position
+                if (stage.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
+                    let latlngs = stage.sections[0].polyline.getLatLngs();
+                    latlngs.shift();
+                    latlngs.unshift(this.before.afterPointLatlng);
+                    stage.sections[0].polyline.setLatLngs(latlngs);
+                }
+            }
+
+            stageIdx = stages.indexOf(stage);
+            context.editedStage = stageIdx;
+
+            setEnv4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
+
+            setStg4NonEdt(stageIdx2, false);    // Set new stage layout and event listeners for edit mode
+
+            removeStageMapNChartMarkers();
+
+            stage.distance = calculateStageDistance(stage);   // Calculate stage distance
+
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate stage ascent and descent
+                
+            updateDetailedInfo(stage, true, false);   // Update stage information to be displayed in popup and show it (if selected)
+            updateDetailedInfo(stage2, false, false);   // Update stage information to be displayed in popup and show it (if selected)
+
+            if (stageIdx < stageIdx2) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    if (i != stageIdx2) updateDetailedInfo(stages[i], false, false);
+                }
+            } else {
+                for (let i = stageIdx2; i < stages.length; i++) {
+                    if (i != stageIdx) updateDetailedInfo(stages[i], false, false);
+                }
+            }
+
+            displayGlobalInfo();
+        }
+
+        redo() {
+            // Find out stage
+            const stage = this.stage;
+
+            let stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            const stage2 = this.before.beforeStage;
+            const stageIdx2 = this.before.beforeStageIdx;
+
+            // Adjust last point's and last section's positions of before track using BRouter response
+            if (this.after.beforePointLatlng != null) {     // When BRouter was used
+                stage2.points[stage2.points.length - 1].marker.setLatLng(this.after.beforePointLatlng); // Adjust last point's position
+                if (stage2.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
+                    const latlngs = stage2.sections[stage2.sections.length - 1].polyline.getLatLngs();
+                    latlngs.pop();
+                    latlngs.push(this.after.beforePointLatlng);
+                    stage2.sections[stage2.sections.length - 1].polyline.setLatLngs(latlngs);
+                }                            
+            }
+
+            // Adjust first point's and first section's positions of edited track using BRouter response
+            if (this.after.afterPointLatlng != null) {     // When BRouter was used
+                stage.points[0].marker.setLatLng(this.after.afterPointLatlng); // Adjust first point's position
+                if (stage.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
+                    let latlngs = stage.sections[0].polyline.getLatLngs();
+                    latlngs.shift();
+                    latlngs.unshift(this.after.afterPointLatlng);
+                    stage.sections[0].polyline.setLatLngs(latlngs);
+                }
+            }
+
+            if (this.after.linkSectionLatlngs != null) {
+                const newPolyline = L.polyline(this.after.linkSectionLatlngs).addTo(map);
+                stage.sections.unshift({polyline: newPolyline, evtList: []});
+            } else {
+                for (const { target, type, handler } of stage2.points[stage2.points.length - 1].evtList)
+                    target.removeEventListener(type, handler);
+                stage2.points[stage2.points.length - 1].marker.remove();
+                stage2.points.pop();
+            }
+
+            stage.sections.unshift(...stage2.sections);     // Merge the sections of the two stages
+            stage.points.unshift(...stage2.points);     // Merge the points of the two stages
+
+            // Remove all sections and all points from stage2
+            stage2.points.length = 0;
+            stage2.sections.length = 0;
+
+            if (stage2.infoPop)
+                stage2.infoPop.remove();
+
+            stages.splice(stageIdx2, 1);     // Remove stage2
+
+            stageIdx = stages.indexOf(stage);
+            context.editedStage = stageIdx;
+                
+            setEnv4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
+
+            removeStageMapNChartMarkers();
+
+            stage.distance = calculateStageDistance(stage);   // Calculate stage distance
+
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate stage ascent and descent
+                
+            updateDetailedInfo(stage, true, false);   // Update stage information to be displayed in popup and show it (if selected)
+
+            if (stageIdx < stageIdx2) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);
+                }
+            } else {
+                for (let i = stageIdx2; i < stages.length; i++) {
+                    if (i != stageIdx - 1) updateDetailedInfo(stages[i], false, false);
+                }
+            }
+
+            displayGlobalInfo();
+        }
+    }
+
+    //--------------------------------------------------------------
+    // Reversible command to split a stage when clicking on a point
+    //--------------------------------------------------------------
+    class ClickPoint2Split {
+        constructor(stage, stageIdx, pointIdx, before, after) {
+            this.stage = stage;
+            this.stageIdx = stageIdx;
+            this.pointIdx = pointIdx;
+            this.before = before;
+            this.after = after;
+            this.stageRemoved = null;
+            this.stageRemovedIdx = -1;
+        }
+
+        undo() {
+            // Find out stage
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            let point = stage.points[this.pointIdx];   // Find out section
+
+            // Remove event listeners on section and points to be removed
+            for (const { target, type, handler } of stages[stageIdx + 1].points[0].evtList)
+                target.removeEventListener(type, handler);
+        
+            // Delete section and points
+            stages[stageIdx + 1].points[0].marker.remove();
+            stages[stageIdx + 1].points.shift();
+
+            if (stages[stageIdx + 1].infoPop)
+                stages[stageIdx + 1].infoPop.remove();
+
+            // Merge stages
+            stage.points.push(...stages[stageIdx + 1].points);
+            stage.sections.push(...stages[stageIdx + 1].sections);
+
+            // Remove all sections and all points from stage to be removed
+            stages[stageIdx + 1].points.length = 0;
+            stages[stageIdx + 1].sections.length = 0;
+
+            if (stages[stageIdx + 1].infoPop)
+                stages[stageIdx + 1].infoPop.remove();
+
+            // Register removed stage
+            this.stageRemoved = stages[stageIdx + 1];
+            this.stageRemovedIdx = stageIdx + 1;
+
+            stages.splice(stageIdx + 1, 1);    // Delete second stage
+
+            setEnv4EdtStg(stageIdx);    // Set stage layout and event listeners for edit mode
+            context.editedStage = stageIdx;
+
+            stage.distance = calculateStageDistance(stage);   // Calculate old stage distance
+
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
+                
+            // Update stage information to be displayed in popup and show it (if selected)
+            updateDetailedInfo(stage, true, false);
+
+            for (let i = stageIdx + 1; i < stages.length; i++) {
+                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+            }
+
+            displayGlobalInfo();
+
+            removeStageMapNChartMarkers();
+        }
+
+        redo() {
+            let stageRestored = false;
+
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Restore removed stage if needed
+            if (this.stageRemoved != null) {
+                stages.splice(this.stageRemovedIdx, 0, this.stageRemoved);
+                this.stageRemoved = null;
+                this.stageRemovedIdx = -1;
+                stageRestored = true;
+            }
+
+            let point = stage.points[this.pointIdx];  // Find out point
+
+            const movedSections = stage.sections.splice(this.pointIdx);
+            const movedPoints = stage.points.splice(this.pointIdx + 1);
+
+            let stage2 = null;
+            if (stageRestored) {
+                stage2 = stages[stageIdx + 1];
+            } else {
+                stage2 = createNewEmptyStage();   // Create new stage
+                stages.splice(stageIdx + 1, 0, stage2);  // Insert new stage into array of stages
+            }
+
+            stage2.sections.push(...movedSections);
+        
+            const newMarker = L.marker(point.marker.getLatLng(), {
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
+            stage2.points.push({ marker: newMarker, evtList: [] });
+
+            stage2.points.push(...movedPoints);
+
+            if (stage.name != null)
+                stage2.name = stage.name + ' (2)';
+                    
+            setStg4NonEdt(stageIdx, false);    // Set old stage layout and event listeners for edit mode
+            setStg4EdtStg(stageIdx + 1);    // Set new stage layout and event listeners for edit mode
+
+            stage.distance = calculateStageDistance(stage);   // Calculate old stage distance
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
+            updateDetailedInfo(stage, false, true);
+
+            if (!stageRestored) {
+                stage2.distance = calculateStageDistance(stage2);  // Calculate new stage distance
+                [stage2.ascent, stage2.descent] = calculateAscentAndDescent(stage2);    // Calculate new stage ascent and descent
+            }
+            updateDetailedInfo(stage2, true, false);
+
+            for (let i = stageIdx + 2; i < stages.length; i++) {
+                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+            }
+
+            displayGlobalInfo();
+        }
+    }
+
+    //----------------------------------------------------------------
+    // Reversible command to split a stage when clicking on a section
+    //----------------------------------------------------------------
+    class ClickSection2Split {
+        constructor(stage, stageIdx, sectionIdx, before, after) {
+            this.stage = stage;
+            this.stageIdx = stageIdx;
+            this.sectionIdx = sectionIdx;
+            this.before = before;
+            this.after = after;
+            this.stageRemoved = null;
+            this.stageRemovedIdx = -1;
+        }
+
+        undo() {
+            // Find out stage
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            let section = stage.sections[this.sectionIdx];   // Find out section
+
+            // Remove event listeners on section and points to be removed
+            for (const { target, type, handler } of stage.points[stage.points.length - 1].evtList)
+                target.removeEventListener(type, handler);
+            for (const { target, type, handler } of stages[stageIdx + 1].points[0].evtList)
+                target.removeEventListener(type, handler);
+            for (const { target, type, handler } of stages[stageIdx + 1].sections[0].evtList)
+                target.removeEventListener(type, handler);
+        
+            // Delete section and points
+            stage.points[stage.points.length - 1].marker.remove();
+            stage.points.pop();
+
+            stages[stageIdx + 1].points[0].marker.remove();
+            stages[stageIdx + 1].points.shift();
+
+            stages[stageIdx + 1].sections[0].polyline.remove();
+            stages[stageIdx + 1].sections.shift();
+
+            // Merge stages
+            stage.points.push(...stages[stageIdx + 1].points);
+            stage.sections.push(...stages[stageIdx + 1].sections);
+
+            // Remove all sections and all points from stage to be removed
+            stages[stageIdx + 1].points.length = 0;
+            stages[stageIdx + 1].sections.length = 0;
+
+            if (stages[stageIdx + 1].infoPop)
+                stages[stageIdx + 1].infoPop.remove();
+
+            // Register removed stage
+            this.stageRemoved = stages[stageIdx + 1];
+            this.stageRemovedIdx = stageIdx + 1;
+
+            stages.splice(stageIdx + 1, 1);    // Remove stage
+
+            // Update section
+            section.polyline.setLatLngs(this.before.section);
+
+            setEnv4EdtStg(stageIdx);    // Set new stage layout and event listeners for edit mode
+            context.editedStage = stageIdx;
+
+            stage.distance = calculateStageDistance(stage);   // Calculate old stage distance
+
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
+                
+            // Update stage information to be displayed in popup and show it (if selected)
+            updateDetailedInfo(stage, true, false);
+
+            for (let i = stageIdx + 1; i < stages.length; i++) {
+                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+            }
+
+            displayGlobalInfo();
+
+            removeStageMapNChartMarkers();
+        }
+
+        redo() {
+            let stageRestored = false;
+
+            // Find out stage
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Restore removed stage if needed
+            if (this.stageRemoved != null) {
+                stages.splice(this.stageRemovedIdx, 0, this.stageRemoved);
+                this.stageRemoved = null;
+                this.stageRemovedIdx = -1;
+                stageRestored = true;
+            }
+
+            let section = stage.sections[this.sectionIdx];  // Find out section
+
+            let stage2 = null;
+            if (stageRestored) {
+                stage2 = stages[stageIdx + 1];
+            } else {
+                stage2 = createNewEmptyStage();   // Create new stage
+                stages.splice(stageIdx + 1, 0, stage2);  // Insert new stage into array of stages
+            }
+
+            const movedSections = stage.sections.splice(this.sectionIdx + 1);
+            const movedPoints = stage.points.splice(this.sectionIdx + 1);
+
+            const polyline2 = L.polyline(this.after.section2).addTo(map);
+            stage2.sections.push({polyline: polyline2, evtList: []});   // Add section to new stage
+
+            stage2.sections.push(...movedSections);
+            
+            const newMarker2 = L.marker(this.after.point, {
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
+            stage2.points.push({ marker: newMarker2, evtList: [] });
+
+            stage2.points.push(...movedPoints);
+
+            if (stage.name != null)
+                stage2.name = stage.name + ' (2)';
+                        
+            section.polyline.setLatLngs(this.after.section1);
+            
+            const newMarker1 = L.marker(this.after.point, {
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
+            stage.points.splice(this.sectionIdx + 1, 0, { marker: newMarker1, evtList: [] });
+
+            setStg4NonEdt(stageIdx, false);    // Set old stage layout and event listeners for edit mode
+            setEnv4EdtStg(stageIdx + 1);    // Set new stage layout and event listeners for edit mode
+
+            stage.distance = calculateStageDistance(stage);   // Calculate old stage distance
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
+            updateDetailedInfo(stage, false, true);
+
+            if (!stageRestored) {
+                stage2.distance = calculateStageDistance(stage2);  // Calculate new stage distance
+                [stage2.ascent, stage2.descent] = calculateAscentAndDescent(stage2);    // Calculate new stage ascent and descent
+            }
+            updateDetailedInfo(stage2, true, false);
+
+            for (let i = stageIdx + 2; i < stages.length; i++) {
+                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+            }
+
+            displayGlobalInfo();
+        }
+    }
+
+    //---------------------------------------------------------
+    // Reversible command to remove the first point of a stage
+    //---------------------------------------------------------
+    class DeleteFirstPoint {
+        constructor(stage, stageIdx, before, after) {
+            this.stage = stage;
+            this.stageIdx = stageIdx;
+            this.before = before;
+            this.after = after;
+            this.stageRemoved = false;
+        }
+
+        undo() {
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (this.stageRemoved) {
+                stages.splice(stageIdx, 0, stage);
+                this.stageRemoved = false;
+            }
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Restore last section and last point
+            const newMarker = L.marker(this.before.point, {
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
+            stage.points = [{ marker: newMarker, evtList: [] }].concat(stage.points);
+            setPoint4Edt(stageIdx, 0);     // Set new point's layout and event listeners for edit mode
+
+            if (this.before.section != null) {
+                const newPolyline = L.polyline(this.before.section).addTo(map);
+                stage.sections = [{ polyline: newPolyline, evtList: [] }].concat(stage.sections);
+                setSection4Edit(stageIdx, 0);
+            }
+            
+            if (this.before.section != null) {
+                // Update first point layout
+                stage.points[0].marker.setIcon(lightGreenDiamondIcon);
+                // Update next point layout
+                if (stage.points.length > 2)
+                    stage.points[1].marker.setIcon(circleIconEdit);
+                else
+                    stage.points[1].marker.setIcon(lightRedSquareIcon);
+            } else 
+                    stage.points[0].marker.setIcon(lightPurpleDoubleSquareIcon);
+
+            stage.distance = calculateStageDistance(stage);   // Update stage distance
+
+            // Calculate/update stage ascent/descent
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
+
+            // Update information to be displayed about the stage
+            updateDetailedInfo(stage, true, false);
+
+            if (stage.points.length === 1) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            }
+
+            displayGlobalInfo();
+        }
+
+        redo() {
+            // Find out stage
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Remove event listeners on last point and last section
+            for (const { target, type, handler } of stage.points[0].evtList)
+                target.removeEventListener(type, handler);
+            if (this.before.section != null)
+                for (const { target, type, handler } of stage.sections[0].evtList)
+                    target.removeEventListener(type, handler);
+
+            // Delete first section and first point
+            stage.points[0].marker.remove();
+            stage.points.shift();
+            if (this.before.section != null) {
+                stage.sections[0].polyline.remove();
+                stage.sections.shift();
+            }
+
+            if (context.stageProfileControl && stage.points.length < 2 ) {
+                removeStageMapNChartMarkers();
+
+                removeStageProfileControl();
+            } else if (context.stageProfileControl) {
+                removeStageMapNChartMarkers();
+
+                // Remove point from chart
+                const chart = context.stageProfileChart;
+
+                chart.setActiveElements([]);
+
+                chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+
+                chart.update();
+            }
+      
+            if (this.before.section != null) {
+                // Update following point layout
+                if (stage.points.length > 1)
+                    stage.points[0].marker.setIcon(lightRedSquareIcon);
+                else
+                    stage.points[0].marker.setIcon(lightPurpleDoubleSquareIcon);
+
+                stage.distance = calculateStageDistance(stage);   // Update stage distance
+
+                // Calculate/update stage ascent/descent
+                [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
+
+                // Update information to be displayed about the stage
+                updateDetailedInfo(stage, true, false);
+
+                displayGlobalInfo();
+            } else {
+                if (stage.infoPop)
+                    stage.infoPop.remove();
+
+                this.stageRemoved = true;
+
+                stages.splice(stageIdx, 1);    // Delete stage
+
+                setEnv4NonEdt(true);     // Exit edit mode
+
+                context.editedStage = null;
+
+                for (let i = stageIdx; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+
+                displayGlobalInfo();
+            }
+        }
+    }
+
+    //--------------------------------------------------------
+    // Reversible command to remove the last point of a stage
+    //--------------------------------------------------------
+    class DeleteLastPoint {
+        constructor(stage, stageIdx, before, after) {
+            this.stage    = stage;
+            this.stageIdx = stageIdx;
+            this.before = before;
+            this.after = after;
+            this.stageRemoved = false;
+        }
+
+        undo() {
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (this.stageRemoved) {
+                stages.splice(stageIdx, 0, stage);
+                this.stageRemoved = false;
+            }
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Restore last section and last point
+            const newMarker = L.marker(this.before.point, {
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
+            stage.points.push({ marker: newMarker, evtList: [] });
+            setPoint4Edt(stageIdx, stage.points.length - 1);     // Set new point's layout and event listeners for edit mode
+
+            if (this.before.section != null) {
+                const newPolyline = L.polyline(this.before.section).addTo(map);
+                stage.sections.push({ polyline: newPolyline, evtList: [] });
+                setSection4Edit(stageIdx, stage.sections.length - 1);
+            }
+            
+            if (this.before.section != null) {
+                // Update last point layout
+                stage.points[stage.points.length - 1].marker.setIcon(lightRedSquareIcon);
+                // Update preceding point layout
+                if (stage.points.length > 2)
+                    stage.points[stage.points.length - 2].marker.setIcon(circleIconEdit);
+                else
+                    stage.points[stage.points.length - 2].marker.setIcon(lightGreenDiamondIcon);
+            } else 
+                    stage.points[stage.points.length - 1].marker.setIcon(lightPurpleDoubleSquareIcon);
+
+            stage.distance = calculateStageDistance(stage);   // Update stage distance
+
+            // Calculate/update stage ascent/descent
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
+
+            // Update information to be displayed about the stage
+            updateDetailedInfo(stage, true, false);
+
+            if (stage.points.length === 1) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            }
+
+            displayGlobalInfo();
+        }
+
+        redo() {
+            // Find out stage
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Remove event listeners on last point and last section
+            for (const { target, type, handler } of stage.points[stage.points.length - 1].evtList)
+                target.removeEventListener(type, handler);
+            if (this.before.section != null)
+                for (const { target, type, handler } of stage.sections[stage.sections.length - 1].evtList)
+                    target.removeEventListener(type, handler);
+
+            // Delete last section and last point
+            stage.points[stage.points.length - 1].marker.remove();
+            stage.points.pop();
+            if (this.before.section != null) {
+                stage.sections[stage.sections.length - 1].polyline.remove();
+                stage.sections.pop();
+            }
+            
+            if (context.stageProfileControl && stage.points.length < 2 ) {
+                removeStageMapNChartMarkers();
+
+                removeStageProfileControl();
+            } else if (context.stageProfileControl) {
+                removeStageMapNChartMarkers();
+
+                // Remove point from chart
+                const chart = context.stageProfileChart;
+
+                chart.setActiveElements([]);
+
+                chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+
+                chart.update();
+            }
+      
+            if (this.before.section != null) {
+                // Update preceding point layout
+                if (stage.points.length > 1)
+                    stage.points[stage.points.length - 1].marker.setIcon(lightRedSquareIcon);
+                else
+                    stage.points[stage.points.length - 1].marker.setIcon(lightPurpleDoubleSquareIcon);
+
+                stage.distance = calculateStageDistance(stage);   // Update stage distance
+
+                // Calculate/update stage ascent/descent
+                [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
+
+                // Update information to be displayed about the stage
+                updateDetailedInfo(stage, true, false);
+
+                displayGlobalInfo();
+            } else {
+                if (stage.infoPop)
+                    stage.infoPop.remove();
+
+                this.stageRemoved = true;
+
+                removeStageMapNChartMarkers();
+
+                removeStageProfileControl();
+
+                stages.splice(stageIdx, 1);    // Delete stage
+
+                setEnv4NonEdt(true);     // Exit edit mode
+
+                context.editedStage = null;
+
+                for (let i = stageIdx; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+
+                displayGlobalInfo();
+            }
+        }
+    }
+
+    //--------------------------------------
+    // Reversible command to delete a stage
+    //--------------------------------------
+    class DeleteStage {
+        constructor(stage, stageIdx, before, after) {
+            this.stage = stage;
+            this.stageIdx = stageIdx;
+        }
+
+        undo() {
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (context.editedStage != null)
+                quitEditStage(true);
+                
+            stages.splice(stageIdx, 0, stage);
+
+            // Restore stage's points
+            stage.points.forEach(point => {
+                const newMarker = L.marker(point.latlng, {
+                    icon: circleIconEdit,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+                point.marker = newMarker;
+                point.evtList = [];
+                delete point.latlng;
+            });
+
+            // Restore stage's sections
+            stage.sections.forEach(section => {
+                const newPolyline = L.polyline(section.latlngs).addTo(map);    // Create section
+                section.polyline = newPolyline;
+                section.evtList = [];
+                delete section.latlngs;
+            });
+
+            setEnv4EdtStg(stageIdx);
+
+            stage.distance = calculateStageDistance(stage);    // Update stage distance
+
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
+                  
+            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage        
+
+            if (stage.points.length > 0) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            }
+
+            displayGlobalInfo();
+
+            context.editedStage = stageIdx;
+        }
+
+        redo() {
+            // Find out stage
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Remove event listeners on all sections and all points
+            for (const point of stage.points)
+                for (const { target, type, handler } of point.evtList)
+                    target.removeEventListener(type, handler);
+            if (stage.sections)
+                for (const section of stage.sections)
+                    for (const { target, type, handler } of section.evtList)
+                        target.removeEventListener(type, handler);
+        
+            //Delete all sections and all points
+            for (const point of stage.points) {
+                point.latlng = point.marker.getLatLng();
+                point.marker.remove();
+                delete point.marker;
+                delete point.evtList;
+            }
+            if (stage.sections)
+                for (const section of stage.sections) {
+                    section.latlngs = section.polyline.getLatLngs();
+                    section.polyline.remove();
+                    delete section.polyline;
+                    delete section.evtList;
+                }
+
+            if (stage.infoPop)
+                stage.infoPop.remove();
+
+            if (context.stageProfileControl) {
+                removeStageMapNChartMarkers();
+
+                removeStageProfileControl();
+            }
+
+            stages.splice(stageIdx, 1);    // Delete stage
+
+            setEnv4NonEdt(true);     // Exit edit status
+
+            context.editedStage = null;
+
+            for (let i = stageIdx; i < stages.length; i++) {
+                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+            }
+
+            displayGlobalInfo();
+        }
+    }
+
+    //--------------------------------------------------------------
+    // Reversible command to remove a point when double clicking it
+    //--------------------------------------------------------------
+    class DoubleClickPoint2RemoveIt {
+        constructor(stage, stageIdx, pointIdx, before, after) {
+            this.stage = stage;
+            this.stageIdx = stageIdx;
+            this.pointIdx = pointIdx;
+            this.before = before;
+            this.after = after;
+            this.stageRemoved = false;
+        }
+
+        undo() {
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (this.stageRemoved) {
+                stages.splice(stageIdx, 0, stage);
+                this.stageRemoved = false;
+            }
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Restore point
+            const newMarker = L.marker(this.before.curPoint, {          // Create marker to represent the point on the map
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
+            stage.points.splice(this.pointIdx, 0, { marker: newMarker, evtList: [] });   // Add point to stage
+
+            setPoint4Edt(stageIdx, this.pointIdx);     // Set new point's layout and event listeners for edit mode
+
+            // Adjust layout of previous and next points 
+            if (this.pointIdx === 0) {
+                if (stage.points.length > 2) {
+                    stage.points[1].marker.setIcon(circleIconEdit);
+                } else if (stage.points.length === 2) {
+                    stage.points[1].marker.setIcon(lightRedSquareIcon);
+                }
+            } else if (this.pointIdx === stage.points.length - 1) {
+                if (stage.points.length > 2) {
+                    stage.points[stage.points.length - 2].marker.setIcon(circleIconEdit);
+                } else if (stage.points.length === 2) {
+                    stage.points[stage.points.length - 2].marker.setIcon(lightGreenDiamondIcon);
+                }
+            }
+                
+            // Restore sections before and after restored point
+            if (this.before.prevSection != null) {
+                if (stage.sections.length > this.pointIdx - 1)
+                    stage.sections[this.pointIdx - 1].polyline.setLatLngs(this.before.prevSection);    // Restore section to stage
+                else {
+                    const newPolyline = L.polyline(this.before.prevSection).addTo(map);    // Create polyline to represent section on the map                   
+                    stage.sections.push({polyline: newPolyline, evtList:[]});    // Add section to stage
+
+                    setSection4Edit(stageIdx, this.pointIdx - 1);    // Set new section's layout and event listeners for edit mode
+                }
+            }
+
+            if (this.before.nextSection != null) {
+                const newPolyline = L.polyline(this.before.nextSection).addTo(map);    // Create polyline to represent section on the map                   
+                stage.sections.splice(this.pointIdx, 0, {polyline: newPolyline, evtList:[]});    // Add section to stage
+
+                setSection4Edit(stageIdx, this.pointIdx);    // Set new section's layout and event listeners for edit mode
+            }
+
+            // Adjust previous point's and previous section's positions
+            if (this.before.prevPoint != null) {
+                stage.points[this.pointIdx - 1].marker.setLatLng(this.before.prevPoint);
+                if (stage.sections[this.pointIdx - 2]) {
+                    // Remove previous coordinates and replace with new ones
+                    let latlngs = stage.sections[this.pointIdx - 2].polyline.getLatLngs()
+                    latlngs.pop();
+                    latlngs.push(this.before.prevPoint);
+                    stage.sections[this.pointIdx - 2].polyline.setLatLngs(latlngs);
+                }
+            }
+                        
+            // Adjust next point's and next section's positions
+            if (this.before.nextPoint != null) {
+                stage.points[this.pointIdx + 1].marker.setLatLng(this.before.nextPoint);
+                if (stage.sections[this.pointIdx + 1]) {
+                    // Remove previous coordinates and replace with new ones
+                    let latlngs = stage.sections[this.pointIdx + 1].polyline.getLatLngs()
+                    latlngs.shift();
+                    latlngs = [this.before.nextPoint].concat(latlngs);
+                    stage.sections[this.pointIdx + 1].polyline.setLatLngs(latlngs);
+                }
+            }
+
+            // Update stage's distance
+            stage.distance = calculateStageDistance(stage);
+
+            // Calculate/update stage ascent/descent
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
+            
+            // Update information to be displayed for the stage
+            updateDetailedInfo(stage, true, false);
+
+            if (stage.points.length === 1) {
+                for (let i = stageIdx + 1; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+            }
+
+            displayGlobalInfo();
+        }
+
+        redo() {
+            // Find out stage
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            let point = stage.points[this.pointIdx];  // Find out point
+
+            // Adjust previous point's and previous section's positions
+            if (this.after.prevPoint != null) {
+                stage.points[this.pointIdx - 1].marker.setLatLng(this.after.prevPoint);
+                if (stage.sections[this.pointIdx - 2]) {
+                    // Remove previous coordinates and replace with new ones
+                    let latlngs = stage.sections[this.pointIdx - 2].polyline.getLatLngs()
+                    latlngs.pop();
+                    latlngs.push(this.after.prevPoint);
+                    stage.sections[this.pointIdx - 2].polyline.setLatLngs(latlngs);
+                }
+            }
+                        
+            // Adjust next point's and next section's positions
+            if (this.after.nextPoint != null) {
+                stage.points[this.pointIdx + 1].marker.setLatLng(this.after.nextPoint);
+                if (stage.sections[this.pointIdx + 1]) {
+                    // Remove previous coordinates and replace with new ones
+                    let latlngs = stage.sections[this.pointIdx + 1].polyline.getLatLngs()
+                    latlngs.shift();
+                    latlngs = [latlngNext].concat(latlngs);
+                    stage.sections[this.pointIdx + 1].polyline.setLatLngs(latlngs);
+                }
+            }
+
+            // Remove event listeners on point and following sections
+            if (this.before.nextSection != null) {
+                for (const { target, type, handler } of stage.sections[this.pointIdx].evtList)
+                    target.removeEventListener(type, handler);
+            }
+            for (const { target, type, handler } of point.evtList)
+                target.removeEventListener(type, handler);
+
+            // Remove point
+            stage.points[this.pointIdx].marker.remove();
+            stage.points.splice(this.pointIdx, 1);
+
+            // Adjust layout of previous and next points 
+            if (this.before.prevSection === null && stage.points.length > 1) {
+                stage.points[0].marker.setIcon(lightGreenDiamondIcon);
+            } else if (this.before.nextSection === null && stage.points.length > 1) {
+                stage.points[stage.points.length - 1].marker.setIcon(lightRedSquareIcon);
+            } else if (stage.points.length === 1) {
+                stage.points[stage.points.length - 1].marker.setIcon(lightPurpleDoubleSquareIcon);
+            }
+                
+            // Remove preceding and following sections and replace them with a single section
+            if (this.before.nextSection != null) {
+                stage.sections[this.pointIdx].polyline.remove();
+                stage.sections.splice(this.pointIdx, 1);
+            }
+            if (this.before.prevSection != null && this.before.nextSection != null) {
+                stage.sections[this.pointIdx - 1].polyline.setLatLngs(this.after.newSection);
+            } else if (this.before.prevSection != null) {
+                stage.sections[this.pointIdx - 1].polyline.remove();
+                stage.sections.splice(this.pointIdx - 1, 1);
+            }
+            if (this.before.prevSection === null && this.before.nextSection === null) {
+                // Remove information popup
+                if (stage.infoPop)
+                    stage.infoPop.remove();
+
+                stages.splice(stageIdx, 1);
+
+                this.stageRemoved = true;
+
+                context.editedStage = null;
+
+                // Set environment to non edit mode
+                setEnv4NonEdt(true);
+
+                for (let i = stageIdx; i < stages.length; i++) {
+                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                }
+
+                displayGlobalInfo();
+
+                return;
+            }
+
+            if (context.stageProfileControl && stage.points.length < 2 ) {
+                removeStageMapNChartMarkers();
+
+                removeStageProfileControl();
+            } else if (context.stageProfileControl) {
+                removeStageMapNChartMarkers();
+            }
+
+            // Update stage's distance
+            stage.distance = calculateStageDistance(stage);
+
+            // Calculate/update stage ascent/descent
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
+            
+            // Update information to be displayed for the stage
+            updateDetailedInfo(stage, true, false);
+
+            displayGlobalInfo();
+        }
+    }
+
+    //------------------------------------------------------------------------
+    // Reversible command to insert a point when double-clicking on a section
+    //------------------------------------------------------------------------
+    class DoubleClickSection2InsertPoint {
+        constructor(stage, stageIdx, sectionIdx, before, after) {
+            this.stage = stage;
+            this.stageIdx = stageIdx;
+            this.sectionIdx = sectionIdx;
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            let section = stage[this.sectionIdx];   // Find out section
+
+            // Remove marker
+            for (const { target, type, handler } of stage.points[this.sectionIdx + 1].evtList)    // Remove event listeners
+                target.removeEventListener(type, handler);
+            stage.points[this.sectionIdx + 1].marker.remove();
+            stage.points.splice(this.sectionIdx + 1, 1);   // Remove point from stage
+
+            // Remove section
+            for (const { target, type, handler } of stage.sections[this.sectionIdx + 1].evtList)    // Remove event listeners
+                target.removeEventListener(type, handler);
+            stage.sections[this.sectionIdx + 1].polyline.remove();
+            stage.sections.splice(this.sectionIdx + 1, 1);   // Remove section from stage
+        
+            // Restore previous section
+            stage.sections[this.sectionIdx].polyline.setLatLngs(this.before.sectionPoints);
+
+            stage.distance = calculateStageDistance(stage);    // Update stage distance
+
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
+                  
+            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage        
+
+            displayGlobalInfo();
+        }
+
+        redo() {
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            let section = stage.sections[this.sectionIdx];  // Find out section
+
+            const latlngs1 = this.before.sectionPoints.slice(0, this.after.prevPointIdx + 1);     // Retrieve the points before the closest point (including it)
+            latlngs1.push(this.after.newPoint);  // Add the clicked point
+            const latlngs2 = [this.after.newPoint].concat(this.before.sectionPoints.slice(this.after.prevPointIdx + 1)); // Retrieve the point after the closest points and concat the clicked point at the beginning
+            section.polyline.setLatLngs(latlngs1);   // Update the section with the points before and up to the clicked point
+            // Insert a new section with the clicked point and the points after it                
+            stage.sections.splice(this.sectionIdx + 1, 0, {polyline: L.polyline(latlngs2).addTo(map), evtList: []});
+
+            setSection4Edit(stageIdx, this.sectionIdx + 1);    // Set new section's layout and event listeners for edit mode
+                        
+            const newMarker2 = L.marker(this.after.newPoint, {          // Create circle marker for the new point
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
+            stage.points.splice(this.sectionIdx + 1, 0, {marker: newMarker2, evtList: []});   // Add new point to stage points
+
+            setPoint4Edt(stageIdx, this.sectionIdx + 1);   // Set new point's layout and event listeners for edit mode
+
+            // Update stage information to be displayed in popup and show it (if selected)
+            updateDetailedInfo(stage, true, false);
+
+            displayGlobalInfo();
+        }
+    }
+
+    //------------------------------------------------------------------
+    // Reversible command to move a point when dragging and dropping it
+    //------------------------------------------------------------------
+    class DragNDropPoint2MoveIt {
+        constructor(stage, stageIdx, pointIdx, before, after) {
+            this.stage = stage;
+            this.stageIdx = stageIdx;
+            this.pointIdx = pointIdx;
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Find out point
+            let point = stage.points[this.pointIdx];  // Find out point
+
+            // Restore point
+            point.marker.setLatLng(this.before.point);
+            
+            // Restore sections before and after restored point
+            if (this.before.prevSection != null)
+                stage.sections[this.pointIdx - 1].polyline.setLatLngs(this.before.prevSection);
+
+            if (this.before.nextSection != null)
+                stage.sections[this.pointIdx].polyline.setLatLngs(this.before.nextSection);
+
+            // Adjust previous point's and previous section's positions
+            if (this.before.prevPoint != null) {
+                stage.points[this.pointIdx - 1].marker.setLatLng(this.before.prevPoint);
+                if (stage.sections[this.pointIdx - 2]) {
+                    // Remove previous coordinates and replace with new ones
+                    let latlngs = stage.sections[this.pointIdx - 2].polyline.getLatLngs()
+                    latlngs.pop();
+                    latlngs.push(this.before.prevPoint);
+                    stage.sections[this.pointIdx - 2].polyline.setLatLngs(latlngs);
+                }
+            }
+                        
+            // Adjust next point's and next section's positions
+            if (this.before.nextPoint != null) {
+                stage.points[this.pointIdx + 1].marker.setLatLng(this.before.nextPoint);
+                if (stage.sections[this.pointIdx + 1]) {
+                    // Remove previous coordinates and replace with new ones
+                    let latlngs = stage.sections[this.pointIdx + 1].polyline.getLatLngs()
+                    latlngs.shift();
+                    latlngs = [this.before.nextPoint].concat(latlngs);
+                    stage.sections[this.pointIdx + 1].polyline.setLatLngs(latlngs);
+                }
+            }
+
+            removeStageMapNChartMarkers();
+            
+            // Update stage's distance
+            stage.distance = calculateStageDistance(stage);
+
+            // Calculate/update stage ascent/descent
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
+            
+            // Update information to be displayed for the stage
+            updateDetailedInfo(stage, true, false);
+
+            displayGlobalInfo();
+        }
+
+        redo() {
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Find out point
+            let point = stage.points[this.pointIdx];  // Find out point
+
+            // Adjust previous point's and previous section's positions
+            if (this.after.prevPoint != null) {
+                stage.points[this.pointIdx - 1].marker.setLatLng(this.after.prevPoint);
+                if (stage.sections[this.pointIdx - 2]) {
+                    // Remove previous coordinates and replace with new ones
+                    let latlngs = stage.sections[this.pointIdx - 2].polyline.getLatLngs()
+                    latlngs.pop();
+                    latlngs.push(this.after.prevPoint);
+                    stage.sections[this.pointIdx - 2].polyline.setLatLngs(latlngs);
+                }
+            }
+                        
+            // Adjust next point's and next section's positions
+            if (this.after.nextPoint != null) {
+                stage.points[this.pointIdx + 1].marker.setLatLng(this.after.nextPoint);
+                if (stage.sections[this.pointIdx + 1]) {
+                    // Remove previous coordinates and replace with new ones
+                    let latlngs = stage.sections[this.pointIdx + 1].polyline.getLatLngs()
+                    latlngs.shift();
+                    latlngs = [this.after.nextPoint].concat(latlngs);
+                    stage.sections[this.pointIdx + 1].polyline.setLatLngs(latlngs);
+                }
+            }
+
+            // Change point's position
+            point.marker.setLatLng(this.after.point);
+
+            // Change preceding and following sections
+            if (this.before.prevSection != null)
+                stage.sections[this.pointIdx - 1].polyline.setLatLngs(this.after.prevSection).setStyle({ dashArray: null });
+            if (this.before.nextSection != null)
+                stage.sections[this.pointIdx].polyline.setLatLngs(this.after.nextSection).setStyle({ dashArray: null });
+
+            removeStageMapNChartMarkers();
+            
+            // Update stage's distance
+            stage.distance = calculateStageDistance(stage);
+
+            // Calculate/update stage ascent/descent
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
+            
+            // Update information to be displayed for the stage
+            updateDetailedInfo(stage, true, false);
+
+            displayGlobalInfo();
+        }
+    }
+
+    //-------------------------------------------------------------------------------------
+    // Reversible command to break a polyline and add a point when dragging and dropping it
+    //--------------------------------------------------------------------------------------
+    class DragNDropSection2BreakIt {
+        constructor(stage, stageIdx, sectionIdx, before, after) {
+            this.stage = stage;
+            this.stageIdx = stageIdx;
+            this.sectionIdx = sectionIdx;
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            let section = stage.sections[this.sectionIdx];   // Find out section
+
+            // Adjust previous point's and previous section's positions
+            if (this.before.prevPoint != null) {
+                stage.points[this.sectionIdx].marker.setLatLng(this.before.prevPoint);
+                if (stage.sections[this.sectionIdx - 1]) {
+                    let latlngs = stage.sections[this.sectionIdx - 1].polyline.getLatLngs()
+                    latlngs.pop();
+                    latlngs.push(this.before.prevPoint);
+                    stage.sections[this.sectionIdx - 1].polyline.setLatLngs(latlngs);
+                }
+            }
+
+            // Adjust next point's and next section's positions
+            if (this.before.nextPoint != null) {
+                stage.points[this.sectionIdx + 2].marker.setLatLng(this.before.nextPoint);
+                if (stage.sections[this.sectionIdx + 2]) {
+                    let latlngs = stage.sections[this.sectionIdx + 2].polyline.getLatLngs()
+                    latlngs.shift();
+                    latlngs = [this.before.nextPoint].concat(latlngs);
+                    stage.sections[this.sectionIdx + 2].polyline.setLatLngs(latlngs);
+                }
+            }
+
+            section.polyline.setLatLngs(this.before.section);    // Update the section with the points before and up to the clicked point
+            // Remove next section
+            for (const { target, type, handler } of stage.sections[this.sectionIdx + 1].evtList)    // Remove event listeners
+                target.removeEventListener(type, handler);
+            stage.sections[this.sectionIdx + 1].polyline.remove();                
+            stage.sections.splice(this.sectionIdx + 1, 1);
+
+            for (const { target, type, handler } of stage.points[this.sectionIdx + 1].evtList)    // Remove event listeners
+                target.removeEventListener(type, handler);
+            stage.points[this.sectionIdx + 1].marker.remove();
+            stage.points.splice(this.sectionIdx + 1, 1);   // Add new point to stage points
+
+            removeStageMapNChartMarkers();
+            
+            stage.distance = calculateStageDistance(stage);    // Update stage distance
+
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
+                  
+            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage     
+
+            displayGlobalInfo();
+        }
+
+        redo() {
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            let section = stage.sections[this.sectionIdx];  // Find out section
+
+            section.polyline.setLatLngs(this.after.prevSection).setStyle({ dashArray: null });    // Update the section with the points before and up to the clicked point
+            // Insert a new section with the clicked point and the points after it                
+            const newPolyline = L.polyline(this.after.nextSection).addTo(map);
+            stage.sections.splice(this.sectionIdx + 1, 0, {polyline: newPolyline, evtList: []});
+
+            setSection4Edit(stageIdx, this.sectionIdx + 1);    // Set new section's layout and event listeners for edit mode
+                        
+            const newMarker = L.marker(this.after.point, {          // Create circle marker for the new point
+                icon: circleIconEdit,
+                pane: 'markerEditPane',
+                draggable: true,
+                autoPan: false,
+                bubblingMouseEvents: true
+            }).addTo(map);
+            stage.points.splice(this.sectionIdx + 1, 0, {marker: newMarker, evtList: []});   // Add new point to stage points
+
+            setPoint4Edt(stageIdx, this.sectionIdx + 1);   // Set new point's layout and event listeners for edit mode
+
+            // Adjust previous point's and previous section's positions
+            if (this.after.prevPoint != null) {
+                stage.points[this.sectionIdx].marker.setLatLng(this.after.prevPoint);
+                if (stage.sections[this.sectionIdx - 1]) {
+                    let latlngs = stage.sections[this.sectionIdx - 1].polyline.getLatLngs()
+                    latlngs.pop();
+                    latlngs.push(this.after.prevPoint);
+                    stage.sections[this.sectionIdx - 1].polyline.setLatLngs(latlngs);
+                }
+            }
+
+            // Adjust next point's and next section's positions
+            if (this.after.nextPoint != null) {
+                stage.points[this.sectionIdx + 2].marker.setLatLng(this.after.nextPoint);
+                if (stage.sections[this.sectionIdx + 2]) {
+                    let latlngs = stage.sections[this.sectionIdx + 2].polyline.getLatLngs()
+                    latlngs.shift();
+                    latlngs = [this.after.nextPoint].concat(latlngs);
+                    stage.sections[this.sectionIdx + 2].polyline.setLatLngs(latlngs);
+                }
+            }
+
+            removeStageMapNChartMarkers();
+            
+            stage.distance = calculateStageDistance(stage);    // Update stage distance
+
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
+                  
+            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage     
+
+            displayGlobalInfo();
+        }
+    }
+
+    //------------------------------------
+    // Reversible command to import route
+    //------------------------------------
+    class ImportRoute {
+        constructor(before, after) {
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            for (let i = stages.length - this.after.importedStagesNb; i < stages.length; i++) {        // Iterate over the imported stages
+                const stage = stages[i];
+                // Remove event listeners on all sections and all points
+                for (const point of stage.points)
+                    for (const { target, type, handler } of point.evtList)
+                        target.removeEventListener(type, handler);
+                if (stage.sections) {
+                    for (const section of stage.sections)
+                        for (const { target, type, handler } of section.evtList)
+                            target.removeEventListener(type, handler);
+                }
+                
+                //Delete all sections and all points
+                for (const point of stage.points) {
+                    point.latlng = point.marker.getLatLng();
+                    point.marker.remove();
+                    delete point.marker;
+                    delete point.evtList;
+                }
+                if (stage.sections) {
+                    for (const section of stage.sections) {
+                        section.latlngs = section.polyline.getLatLngs();
+                        section.polyline.remove();
+                        delete section.polyline;
+                        delete section.evtList;
+                    }
+                }
+
+                if (stage.infoPop)      // Remove stage's information popup
+                    stage.infoPop.remove();
+            };
+
+            //stages.length = this.before.stagesLength;   // Remove imported stages from "stages"
+            const movedStages = stages.splice(stages.length - this.after.importedStagesNb);    // Remove imported stages from "stages"
+            this.after.importedStages.push(...movedStages);     // Add them to backup
+                        
+            displayGlobalInfo();
+
+            if (context.displayInfo === 2 && context.editedStage === null) {
+                if (stages.length > 0)
+                    displayRouteProfile();
+                else {
+                    removeRouteMapNChartMarkers();
+
+                    removeRouteProfileControl();
+                }
+            }
+        }
+
+        redo() {
+            if (context.editedStage != null && stages[context.editedStage].points.length === 0)
+                quitEditStage(true);
+
+            const initStagesNb = stages.length;
+            stages.push(...this.after.importedStages);  // Restore stages from backup
+            this.after.importedStages.length = 0;   // Clear backup
+
+            // Add imported stages to "stages" and to map
+            for (let i = initStagesNb; i < stages.length; i++) {
+                const stage = stages[i];
+                // Restore stage's points
+                stage.points.forEach(point => {
+                    const newMarker = L.marker(point.latlng, {
+                        icon: circleIconEdit,
+                        pane: 'markerEditPane',
+                        draggable: true,
+                        autoPan: false,
+                        bubblingMouseEvents: true
+                    }).addTo(map);
+                    point.marker = newMarker;
+                    point.evtList = [];
+                    delete point.latlng;
+                });
+
+                // Restore stage's sections
+                stage.sections.forEach(section => {
+                    const newPolyline = L.polyline(section.latlngs).addTo(map);    // Create section
+                    section.polyline = newPolyline;
+                    section.evtList = [];
+                    delete section.latlngs;
+                });
+
+                // Calculate distance if not found in GPX file
+                if (stage.distance === null || Number.isNaN(stage.distance))
+                    stage.distance = calculateStageDistance(stage);
+
+                // Calculate stage ascent and descent if not found in GPX file
+                if (stage.ascent === null || Number.isNaN(stage.ascent) || stage.descent === null || Number.isNaN(stage.descent))
+                    [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
+
+                setStg4NonEdt(i, false);   // Set stage to non edit mode
+
+                updateDetailedInfo(stage, false, false);     // Update stage's information popup                
+            };
+            
+            displayGlobalInfo();
+
+            if (context.editedStage === null && context.displayInfo === 2)
+                displayRouteProfile();
+        }
+    }
+
+     //----------------------------------------------
+    // Reversible command to remove the whole route
+    //----------------------------------------------
+    class ResetRoute {
+        constructor(before, after) {
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            // Restore stages from backup
+            stages.push(...this.before.stages);
+            this.before.stages.length = 0;
+
+            stages.forEach((stage, i) => {
+                // Restore stage's points
+                stage.points.forEach(point => {
+                    const newMarker = L.marker(point.latlng, {
+                        icon: circleIconEdit,
+                        pane: 'markerEditPane',
+                        draggable: true,
+                        autoPan: false,
+                        bubblingMouseEvents: true
+                    }).addTo(map);
+                    point.marker = newMarker;
+                    point.evtList = [];
+                    delete point.latlng;
+                });
+
+                // Restore stage's sections
+                stage.sections.forEach(section => {
+                    const newPolyline = L.polyline(section.latlngs).addTo(map);    // Create section
+                    section.polyline = newPolyline;
+                    section.evtList = [];
+                    delete section.latlngs;
+                });
+
+                setStg4NonEdt(i, false);
+
+                updateDetailedInfo(stage, false, true);
+            });
+            
+            displayGlobalInfo();
+
+            setEnv4NonEdt(true);
+        }
+
+        redo() {
+            stages.forEach(stage => {
+                // Remove event listeners on all sections and all points
+                for (const point of stage.points)
+                    for (const { target, type, handler } of point.evtList)
+                        target.removeEventListener(type, handler);
+                if (stage.sections) {
+                    for (const section of stage.sections)
+                        for (const { target, type, handler } of section.evtList)
+                            target.removeEventListener(type, handler);
+                }
+                
+                //Delete all sections and all points
+                for (const point of stage.points) {
+                    point.latlng = point.marker.getLatLng();
+                    point.marker.remove();
+                    delete point.marker;
+                    delete point.evtList;
+                }
+                if (stage.sections) {
+                    for (const section of stage.sections) {
+                        section.latlngs = section.polyline.getLatLngs();
+                        section.polyline.remove();
+                        delete section.polyline;
+                        delete section.evtList;
+                    }
+                }
+
+                if (stage.infoPop)
+                    stage.infoPop.remove();
+            });
+
+            this.before.stages.push(...stages);
+            stages.length = 0;
+
+            setEnv4NonEdt(true);     // Exit edit status
+
+            removeStageMapNChartMarkers();
+
+            removeStageProfileControl();
+
+            removeRouteMapNChartMarkers();
+
+            removeRouteProfileControl();
+
+            context.editedStage = null;
+
+            displayGlobalInfo();
+        }
+    }
+
+    //---------------------------------------------------
+    // Reversible command to reverse a stage's direction
+    //---------------------------------------------------
+    class ReverseStage {
+        constructor(stage, stageIdx, before, after) {
+            this.stage = stage;
+            this.stageIdx = stageIdx;
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            // Find out stage
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            stage.points.forEach((point, i) => {
+                point.marker.setLatLng(this.before.stage.points[i].latlng);
+            })
+
+            stage.sections.forEach((section, i) => {
+                section.polyline.setLatLngs(this.before.stage.sections[i].latlngs);
+            })
+
+            stage.distance = calculateStageDistance(stage);
+
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update stage ascent/descent
+
+            updateDetailedInfo(stage, true, false);  // Update information about the stage to be displayed in popup
+            
+            displayGlobalInfo();
+        }
+
+        redo() {
+            // Find out stage
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            stage.points.forEach((point, i) => {
+                point.marker.setLatLng(this.after.stage.points[i].latlng);
+            })
+
+            stage.sections.forEach((section, i) => {
+                section.polyline.setLatLngs(this.after.stage.sections[i].latlngs);
+            })
+
+            stage.distance = calculateStageDistance(stage);
+
+            [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update stage ascent/descent
+
+            updateDetailedInfo(stage, true, false);  // Update information about the stage to be displayed in popup
+            
+            displayGlobalInfo();
+        }
+    }
+
+    //-------------------------------------------
+    // Reversible command to change stage's name
+    //-------------------------------------------
+    class SetStageName {
+        constructor(stage, stageIdx, before, after) {
+            this.stage = stage;
+            this.stageIdx = stageIdx;
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            // Find out stage
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Restore name
+            stage.name = this.before.name;
+
+            // Update information to be displayed for the stage
+            updateDetailedInfo(stage, true, false);
+        }
+
+        redo() {
+            // Find out stage
+            const stage = this.stage;
+
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage(true);
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            // Change name
+            stage.name = this.after.name;
+                        
+            // Update information to be displayed for the stage
+            updateDetailedInfo(stage, true, false);
+        }
+    }
+
+    //***********************
+    // ADDITIONAL FUNCTIONS *
+    //***********************
+
+    //----------------------------
+    // Calculate stage's distance
+    //----------------------------
+    function calculateStageDistance(stage) {
+        let distance = 0;
+
+        for (let i = 0; i < stage.sections.length; i++) {
+            const points = stage.sections[i].polyline.getLatLngs();
+            distance = distance + calculateDistance(points);
+        }
+
+        return distance;
+
+        //------------------------------------------------------------
+        // Calculate the length of a path defined with several points
+        //------------------------------------------------------------
+        function calculateDistance(points) { 
+            let dist = 0;
+
+            for (let i = 1; i < points.length; i++) {
+                dist = dist + haversine(points[i - 1], points[i]);  // Use the haversine function to add the distance between two points
+            }
+        
+            return dist;
+        }
+    }
+
+    //----------------------------------------------------------------------------------------
+    // Calculate stage's ascent and descent with smoothing the elevations returned by BRouter
+    //----------------------------------------------------------------------------------------
+    function calculateAscentAndDescent(stage) {
+        const SMOOTH_WINDOW = 2;    // A sample of n preceding and n following points surrounding the current point will be used to smooth the calculated ascent and descent
+
+        let ascent = null;     // Calculated ascent
+        let descent = null;    // Calculated descent
+
+        let sample = [];    // Array of the altitudes of the points surrounding the current point
+        let sampTotal = 0;   // Total of the altitudes of the points in "sample" array
+        let sampNotNullNb = 0;      // Nb of not null altitudes in "sample" array
+        let prevSmoothAlt = null;
+        if (stage.sections[0] && stage.sections[0].polyline) {
+            if (stage.sections[0].polyline.getLatLngs()[0].alt)
+                prevSmoothAlt = stage.sections[0].polyline.getLatLngs()[0].alt;     // Smoothed altitude of the preceding point, initialized to the alt of the first point
+        } else
+            return [null, null];
+
+        for (let k = 0; k < SMOOTH_WINDOW + 1; k++)     // Add ghost points at the left of the sample
+            sample.push(null);
+
+        let i = 0;
+        let j = -1;
+        while(true) {
+            // Remove first point of sample
+            if (sample[0] != null) {
+                sampTotal = sampTotal - sample[0];  // Update sum of altitudes for sample
+                sampNotNullNb--;    // Update number of not null altitudes for the sample
+            }
+            sample.shift();
+
+            // If sample is not complete, add another point if available
+            while (sample.length < (2 * SMOOTH_WINDOW) + 1) {
+                j++;
+                const latlngs = stage.sections[i].polyline.getLatLngs();
+                if (j < latlngs.length || (j === latlngs.length && i < stage.sections.length - 1)) { // End of stage points not reached
+                    if (j === latlngs.length && i < stage.sections.length - 1) {     // End of section reached, go to next one
+                        i++;
+                        j = 0;
+                        continue;     // Skip first point of section ignored because the same as last point of previous section
+                    }
+
+                    // Add point to sample if its altitude is known
+                    if (latlngs[j].alt) {
+                        sample.push(latlngs[j].alt);
+                        sampTotal = sampTotal + sample[sample.length - 1];
+                        sampNotNullNb++;
+                    }
+
+                    // Add ghost points when section has 2 points only of when last stage point reached
+                    if ((j === 0 && latlngs.length === 2) || (j === latlngs.length - 1 && i < stage.sections.length - 1 && stage.sections[i + 1].polyline.getLatLngs().length === 2)) {
+                        for (let k = 0; k < 2 * SMOOTH_WINDOW; k++)      // Add ghost points at the right of the current point
+                            sample.push(null); 
+                    } else if (j === latlngs.length - 1 && i === stage.sections.length - 1) {
+                        for (let k = 0; k < SMOOTH_WINDOW; k++)     // Add ghost points at the right of the sample
+                            sample.push(null);
+                    } 
+                } else    // End of stage points reached, no point added to sample
+                    break;
+            }
+
+            if (sample.length < (2 * SMOOTH_WINDOW) + 1)    // End of ascent/descent calculation reached
+                break;
+            
+            let smoothAlt = null;
+            let diff = null;
+            if (sampNotNullNb > 0 )
+                smoothAlt = sampTotal / sampNotNullNb;      // Calculate smoothed altitude for the point as the average altitude of the sample
+            if (smoothAlt != null && prevSmoothAlt != null) {
+                diff = smoothAlt - prevSmoothAlt;     // Calculate smoothed altitude difference with the previous point
+                // Initialize ascent and descent if needed
+                if (ascent === null)
+                    ascent = 0;
+                if (descent === null)
+                    descent = 0;
+                // Update ascent and descent
+                if (diff > 0)
+                    ascent = ascent + diff;
+                else
+                    descent = descent + diff;
+            }
+            if (smoothAlt != null)    // Save point smoothed altitude for future use with next point
+                prevSmoothAlt = smoothAlt;
+/*
+            console.log("i , j = " + i + ", " + j);
+            console.log("section nb: " + stage.sections.length);
+            console.log("point nb: " + stage.sections[i].polyline.getLatLngs().length);
+            for (let l = 0; l < sample.length; l++) {
+                console.log("sample[" + l + "] = " + sample[l]);
+            }
+            console.log("sampTotal = " + sampTotal);
+            console.log("sampNotNullNb = " + sampNotNullNb);
+            console.log("smoothAlt: " + smoothAlt);
+            console.log("diff: " + diff);
+            console.log("ascent: " + ascent);
+            console.log("descent: " + descent);
+            console.log("____________________________________________________________________________________________________________________________________________________");
+*/       
+        }
+
+        let diff = null;
+        let stageSectionsLength = stage.sections.length;
+        let polylineLength = stage.sections[stageSectionsLength - 1].polyline.getLatLngs().length;
+        let smoothAlt = stage.sections[stageSectionsLength - 1].polyline.getLatLngs()[polylineLength - 1].alt;
+        if (smoothAlt == null)
+            smoothAlt = prevSmoothAlt;
+        if (smoothAlt != null && prevSmoothAlt != null) {
+            diff = smoothAlt - prevSmoothAlt;     // Calculate smoothed altitude difference with the previous point
+            // Initialize ascent and descent if needed
+            if (ascent === null)
+                ascent = 0;
+            if (descent === null)
+                descent = 0;
+            // Update ascent and descent
+            if (diff > 0)
+                ascent = ascent + diff;
+            else
+                descent = descent + diff;
+         }
+/*        console.log("smoothAlt: " + smoothAlt);
+        console.log("diff: " + diff);
+        console.log("ascent: " + ascent);
+        console.log("descent: " + descent);
+        console.log("*****************************************************************************************************************************************************");
+*/
+        return [ascent, descent];
+    }
+
+    //----------------------------------------------
+    // Query BRouter to find a route between points
+    //----------------------------------------------
+    async function fetchBRouterRoute(coordinates) {
+        // Prepare request to BRouter
+        const url = "https://brouter.de/brouter?lonlats=" + coordinates +
+            "&profile=" + context.routerProfile +"&alternativeidx=0&format=geojson";
+
+        try {
+            // Fetch BRouter GeoJSON
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                if (response.status === 400)
+                    throw new Error(context.language === 'EN' ? "Failed to find a path to this location" : "Pas de chemin trouvé pour ce lieu");
+                else 
+                    throw new Error(context.language === 'EN' ? `HTTP error, status: ${response.status}` : `Erreur HTTP, état: ${response.status}`);
+            }
+
+            // Parse JSON
+            const geojson = await response.json();
+
+            // Extract coordinates from the first LineString
+            const coords = geojson.features[0].geometry.coordinates;
+
+            // Convert to {lat: ..., lng: ..., alt: ...} objects
+            return coords.map(([lon, lat, alt]) => ({
+                lat: lat,
+                lng: lon,
+                alt: alt
+            }));
+        } catch (err) {
+            console.error(context.language === 'EN' ? "Error fetching BRouter route: " : "Erreur lors de l'interrogation de BRouter : ", err.message);
+            alert(context.language === 'EN' ? "Error fetching BRouter route: " + err.message : "Erreur lors de l\'interrogation de BRouter : " + err.message);
+            return null;
+        }
+    }
+
+    //-------------------------------------------------------------
+    // Query Open-Meteo Elevation to find the elevation of a point
+    //-------------------------------------------------------------
+    async function fetchOpenMeteoElevation(latlng) {
+        // Prepare request to Open-Meteo Elevation
+        const url = "https://api.open-meteo.com/v1/elevation?latitude=" + latlng.lat + "&longitude=" + latlng.lng;
+
+        try {
+            // Fetch Open Elevation
+            const response = await fetch(url);
+
+            // Check response
+            if (!response.ok)
+                throw new Error(context.language === 'EN' ? "HTTP error: ${response.status}" : "Erreur HTTP : ${response.status}");
+
+            // Parse JSON
+            const data = await response.json();
+
+            return {
+                lat: latlng.lat,
+                lng: latlng.lng,
+                alt: data.elevation[0]
+            };
+        } catch (err) {
+            console.error(context.language === 'EN' ? "Open Elevation error: " : "Erreur Open Elevation : ", err.message);
+            
+            return latlng;
+        }
+    }
+
+    //-----------------------------------------
+    // Query Nominatim to geolocate an address
+    //-----------------------------------------
+    async function fetchCoordinatesWithNominatim(address) {
+        // Nominatim's URL
+        const url = "https://nominatim.openstreetmap.org/search?q=" + address +
+            "&format=json&polygon_geojson=1&dedupe&limit=10";
+
+        try {
+            // Fetch Nominatim
+            const response = await fetch(url);
+
+            // When Nominatim query failed
+            if (!response.ok) {
+                throw new Error(context.language === 'EN' ? `HTTP error! Status: ${response.status}` : `Erreur HTTP! Etat : ${response.status}`);
+            }
+
+            // Parse JSON
+            const respJSON = await response.json();
+
+            if (respJSON.length === 0)
+                throw new Error(context.language === 'EN' ? "No location found tor this address: " : "Pas de lieu trouvé pour cette adresse : " + address);
+
+            const respData = []
+            respJSON.forEach((item) => {    // Process the locations found by Nominatim
+                let polygonJSON = null;
+                if (item.geojson.type === 'Polygon' || item.geojson.type === 'MultiPolygon') {  // Did Nominatim return an area for the location?
+                    polygonJSON = JSON.parse('{"type": "FeatureCollection", "features": [{"type": "Feature", "properties": {}}]}');
+                    polygonJSON.features[0].geometry = item.geojson;
+                }
+
+                respData.push([[item.lat, item.lon], item.display_name, polygonJSON]);
+            });
+
+            return respData;
+        } catch (err) {
+            alert(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
+            console.error(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " : "Erreur lors de l'interrogation de Monimatim : ", err.message);
+            return null;
+        }
+    }
+
+    //--------------------------------------------------
+    // Fetch city name from coordinates using Nominatim
+    //--------------------------------------------------
+    async function fetchCityWithNominatim(latlng) {
+        // Nominatim's reverse geocoding URL
+        const url = "https://nominatim.openstreetmap.org/reverse?lat=" + latlng.lat + "&lon=" + latlng.lng + "&zoom=10&addressdetails=0&format=json";
+
+        try {
+            // Fetch Nominatim
+            const response = await fetch(url);
+
+            // When Nominatim query failed
+            if (!response.ok) {
+                throw new Error(context.language === 'EN' ? `HTTP error! Status: ${response.status}` : `Erreur HTTP! Etat : ${response.status}`);
+            }
+
+            // Parse JSON
+            const respJSON = await response.json();
+
+            // Extract and return location name
+            if (respJSON.name) return respJSON.name;
+            else return null;
+        } catch (err) {
+            alert(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
+            console.error(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " : "Erreur lors de l'interrogation de Monimatim : ", err.message);
+            return null;
+        }
+    }
+
+    //-------------------------------------------------
+    // Find closest section part from clicked position
+    //-------------------------------------------------
+    function findClosestSectionAndPoint(latlngs, clickLatLng) {
+        let minDistance = Infinity;
+        let closestIdx = -1;
+
+        // Find closest section segment
+        for (let i = 0; i < latlngs.length - 1; i++) {
+            const segStart = latlngs[i];
+            const segEnd = latlngs[i + 1];
+        
+            // Distance from point to segment
+            const distance = L.LineUtil.pointToSegmentDistance(
+                map.latLngToLayerPoint(clickLatLng),
+                map.latLngToLayerPoint(segStart),
+                map.latLngToLayerPoint(segEnd)
+            );
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestIdx = i;
+            }
+        }
+
+        // Find closest point in section part
+        const closestPoint = closestPointOnSection(clickLatLng, latlngs[closestIdx], latlngs[closestIdx + 1]);
+
+        return {index: closestIdx, point: closestPoint}; // Index of the section part and closest point
+
+        //------------------------------------------------
+        // Function to find closest point on section part
+        //------------------------------------------------
+        function closestPointOnSection(p, p1, p2) {
+            const dLng = p2.lng - p1.lng;
+            const dLat = p2.lat - p1.lat;
+            const dAlt = p2.alt - p1.alt;
+
+            const l2 = dLng * dLng + dLat * dLat;   // Square of the distance between p1 and p2
+            if (l2 === 0) 
+                return { lat: p1.lat, lng: p1.lng }; // p1 == p2
+
+            // Projection parameter t (scalar product of two vectors clamped to [0, 1]) - 
+            let t = ((p.lng - p1.lng) * dLng + (p.lat - p1.lat) * dLat) / l2;
+            t = Math.max(0, Math.min(1, t));
+
+            return {
+                lat: p1.lat + t * dLat,
+                lng: p1.lng + t * dLng,
+                alt: p1.alt + t * dAlt
+            };
+        }
+    }
+
+    //-------------------------------------------------------------
+    // Find closest closest registered point from hovered position
+    //-------------------------------------------------------------
+    function findClosestRegisteredPoint(latlngs, latlng) {
+        let minDistance = Infinity;
+        let closestIdx = -1;
+
+        // Find closest section segment
+        for (let i = 0; i < latlngs.length - 1; i++) {           
+            const distance = haversine(latlngs[i], latlng);     // Distance from point to segment
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestIdx = i;
+            }
+        }
+
+        return { index: closestIdx, point: latlngs[closestIdx], distance: minDistance };      // Index of the closest registered point
+    }
+
+    //--------------------------------------------------------------------------
+    // Find stage closest section, point and distance (from hovered position)
+    //--------------------------------------------------------------------------
+    function findClosestSectPointDistOnRoute(latlng) {
+        let closestStageIdx = -1;
+        let closestSectIdx = -1;
+        let closestPtIdx = -1;
+        let minDistance = Infinity;
+        const latlngPix = map.latLngToLayerPoint(latlng);
+
+        // Find closest stage, point and distance
+        for (let h = 0; h < stages.length; h++) {
+            for (let i = 0; i < stages[h].sections.length; i++) {
+                const latlngs = stages[h].sections[i].polyline.getLatLngs();
+                for (let j = 0; j < latlngs.length; j++) {
+                    const latlng2Pix = map.latLngToLayerPoint(latlngs[j]);
+                    const dist = latlngPix.distanceTo(latlng2Pix);     // Distance from hovered point to stage point
+                    if (dist < minDistance) {
+                        closestStageIdx = h;
+                        closestSectIdx = i;
+                        closestPtIdx = j;
+                        minDistance = dist;
+                    }
+                }
+            }
+        }
+
+        return { stageIdx: closestStageIdx, sectionIdx: closestSectIdx, pointIdx: closestPtIdx, distance: minDistance };      // Index of the closest registered point
+    }
+
+    //--------------------------------------------------------------------------
+    // Find stage closest section, point and distance (from hovered position)
+    //--------------------------------------------------------------------------
+    function findClosestSectPointDistOnStage(stage, latlng) {
+        let closestSectIdx = -1;
+        let closestPtIdx = -1;
+        let minDistance = Infinity;
+        const latlngPix = map.latLngToLayerPoint(latlng);
+
+        // Find closest stage, point and distance
+        for (let i = 0; i < stage.sections.length; i++) {
+            const latlngs = stage.sections[i].polyline.getLatLngs();
+            for (let j = 0; j < latlngs.length; j++) {
+                const latlng2Pix = map.latLngToLayerPoint(latlngs[j]);
+                const dist = latlngPix.distanceTo(latlng2Pix);     // Distance from hovered point to stage point
+                if (dist < minDistance) {
+                    closestSectIdx = i;
+                    closestPtIdx = j;
+                    minDistance = dist;
+                }
+            }
+        }
+
+        return { sectionIdx: closestSectIdx, pointIdx: closestPtIdx, distance: minDistance };      // Index of the closest registered point
+    }
+
+    //-----------------------------------------------------------------
+    // Find medium position on a stage to display information about it
+    //-----------------------------------------------------------------
+    function findMediumPosition(stage) {
+        if (stage.points && stage.points.length > 1) {
+            if (stage.points.length % 2 != 0) { // Odd number of points
+                const midPtIdx = ~~(stage.points.length / 2);
+                return point = stage.points[midPtIdx].marker.getLatLng() ;  // Return point in middle position
+            } else {    // Even number of points
+                const midSegIdx = ~~(stage.sections.length / 2);
+                const pts = stage.sections[midSegIdx].polyline.getLatLngs();
+                if (pts.length % 2 === 0) {
+                    const midPtIdx = ~~(pts.length / 2) - 1;
+                    return {    // Return point in the middle of the section in the middle position
+                        lat: (pts[midPtIdx].lat + pts[midPtIdx + 1].lat) / 2, 
+                        lng:  (pts[midPtIdx].lng + pts[midPtIdx + 1].lng) / 2
+                    }
+                } else {
+                    const midPtIdx = ~~(pts.length / 2);
+                    return pts[midPtIdx];
+                }
+            }
+        } else if (stage.points && stage.points.length === 1)
+            return stage.points[0].marker.getLatLng();
+        else
+            return null;
+    }
+
+    //------------------------------------------------------------------------------------------------------
+    // Find position in the middle of the last but one section of the stage to display information about it
+    //------------------------------------------------------------------------------------------------------
+    function findNearbyPosition(stage) {
+        if (stage.points && stage.points.length > 2) {
+            const pts = stage.sections[stage.sections.length - 2].polyline.getLatLngs();
+            if (pts.length % 2 === 0) {
+                const midPtIdx = ~~(pts.length / 2) - 1;
+                return {    // Return point in the middle of the section in the middle position
+                    lat: (pts[midPtIdx].lat + pts[midPtIdx + 1].lat) / 2, 
+                    lng:  (pts[midPtIdx].lng + pts[midPtIdx + 1].lng) / 2
+                }
+            } else {
+                const midPtIdx = ~~(pts.length / 2);
+                return pts[midPtIdx];
+            }
+        } else if (stage.points && (stage.points.length === 1 || stage.points.length === 2))
+            return stage.points[0].marker.getLatLng();
+        else 
+            return null;
+    }
+
+    //----------------------------
+    // Focus the map on the route
+    //----------------------------
+    function focusOnRoute() {
+        let bounds = L.latLngBounds([]);    // Initialize an array of all polyline bounds
+
+        stages.forEach(stage => {   // Store the bounds of all polylines of all stages
+            stage.sections.forEach(section => {
+                bounds.extend(section.polyline.getBounds());
+            });
+        });
+
+        if (bounds.isValid())
+            map.fitBounds(bounds);  // Focus the map on the polylines
+    }
+
+    //----------------------------
+    // Focus the map on the route
+    //----------------------------
+    function focusOnStage() {
+        const stage = stages[context.editedStage];
+
+        let bounds = L.latLngBounds([]);    // Initialize an array of all polyline bounds
+
+        stage.sections.forEach(section => {
+            bounds.extend(section.polyline.getBounds());
+        });
+
+        if (bounds.isValid())
+            map.fitBounds(bounds);  // Focus the map on the polylines
+    }
+
+    //---------------------------------------------------------------
+    // Calculate distance between two points using haversine formula 
+    //---------------------------------------------------------------
+    function haversine(latlng1, latlng2) {
+        const R = 6371; // Earth's radius in kilometers
+        //const R = 3959; // Earth's radius in miles
+
+        const toRad = angle => angle * Math.PI / 180;
+
+        const dLat = toRad(latlng2.lat - latlng1.lat);
+        const dLon = toRad(latlng2.lng - latlng1.lng);
+
+        const phi1 = toRad(latlng1.lat);
+        const phi2 = toRad(latlng2.lat);
+
+        const a = Math.sin(dLat / 2) ** 2 +
+            Math.cos(phi1) * Math.cos(phi2) *
+            Math.sin(dLon / 2) ** 2;
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c;
+    }
+
+    //------------------------------
+    // Remove stage profile control 
+    //------------------------------
+    function removeStageProfileControl() {
+        if (context.stageProfileControl) {
+            // Remove stage profile chart
+            if (context.stageProfileChart) {
+                context.stageProfileChart.destroy();
+                context.stageProfileChart = null;
+            }
+
+            // Remove reversed index and points
+            context.stageProfileChartRevIdx = null;
+            context.stageProfileChartPoints = null;
+            
+            // Remove stage profile control
+            context.stageProfileControl.remove();
+            context.stageProfileControl = null;
+        }
+    }
+
+    //------------------------------
+    // Remove route profile control 
+    //------------------------------
+    function removeRouteProfileControl() {
+        if (context.routeProfileControl) {
+            // Remove stage profile chart
+            if (context.routeProfileChart) {
+                context.routeProfileChart.destroy();
+                context.routeProfileChart = null;
+            }
+
+            // Remove reversed index and points
+            context.routeProfileChartRevIdx = null;
+            context.routeProfileChartPoints = null;
+            
+            // Remove stage profile control
+            context.routeProfileControl.remove();
+            context.routeProfileControl = null;
+        }
+    }
+
+    //-----------------------------------------
+    // Remove route markers from map and chart 
+    //-----------------------------------------
+    function removeRouteMapNChartMarkers() {
+        if (context.routeProfileMapMarker) {
+            context.routeProfileMapMarker.remove();
+            context.routeProfileMapMarker = null;
+        }
+
+        // Remove point from chart
+        if (context.routeProfileChart) {
+            context.routeProfileChart.setActiveElements([]);
+            context.routeProfileChart.tooltip.setActiveElements([], { x: 0, y: 0 });
+            context.routeProfileChart.update();
+        }
+    }
+
+    //-----------------------------------------
+    // Remove stage markers from map and chart 
+    //-----------------------------------------
+    function removeStageMapNChartMarkers() {
+        if (context.stageProfileMapMarker) {
+            context.stageProfileMapMarker.remove();
+            context.stageProfileMapMarker = null;
+        }
+
+        // Remove point from chart
+        if (context.stageProfileChart) {
+            context.stageProfileChart.setActiveElements([]);
+            context.stageProfileChart.tooltip.setActiveElements([], { x: 0, y: 0 });
+            context.stageProfileChart.update();
+        }
+    }
+
+    //---------------------------------------------------------------------------------
+    // Simplify the geometry of a section returned by BRouter by decimating the points
+    //---------------------------------------------------------------------------------
+    function simplifyPolyGeom(latlngs) {
+        // Project the points on the map (to make the simplification independent of the map's zoom level)
+        const projected = latlngs.map(ll => {
+            const p = map.options.crs.project(ll);
+            p.alt = ll.alt;
+            return p;
+        });
+
+        const simplifiedPoints = L.LineUtil.simplify(projected, 5);     // Simplify the way with precision = 5 meters
+
+        // Unproject the points from the map to retrieve their coordinates
+        const simplifiedLatLngs = simplifiedPoints.map(p => {   
+            const ll = map.options.crs.unproject(p);
+            return L.latLng(ll.lat, ll.lng, p.alt);
+        });
+        
+        // Add altitudes
+        simplifiedLatLngs.forEach(ll => {
+            ll.alt = interpolateAltitude(ll, latlngs);
+        });
+
+        return simplifiedLatLngs;
+
+        //------------------------------------------------------------
+        // Retrieve altitude of the points obtained by simplification
+        //------------------------------------------------------------
+        function interpolateAltitude(latlng, originalTrack) {
+            let bestDist = Infinity;
+            let bestAlt = 0;
+
+            for (let i = 0; i < originalTrack.length - 1; i++) {
+                const a = originalTrack[i];
+                const b = originalTrack[i + 1];
+
+                const d = latlng.distanceTo(a);
+                if (d < bestDist) {
+                    bestDist = d;
+                    bestAlt = a.alt;
+                }
+            }
+
+            return bestAlt;
+        }
+    }
+
+    //-----------------------------------------------------------
+    // Update information about stage name and distance as popup
+    //-----------------------------------------------------------
+    function updateDetailedInfo(stage, editMode, removeChart) {
+        if (context.displayInfo < 1) 
+            return;
+        
+        if (stage.points.length === 0) {    // No stage information displayed if stage has no point
+            if (stage.infoPop)
+                stage.infoPop.remove();
+
+            return;
+        }
+
+        // Find position where to display stage information on map
+        let pos = null;
+        if (editMode) 
+            pos = findNearbyPosition(stage);
+        else 
+            pos = findMediumPosition(stage);
+        if (pos === null) return;
+
+        // Find stage number
+        let num = stages.indexOf(stage) + 1;  // Retrieve stage index
+        if (context.editedStage != null && context.editedStage !== undefined && stages[context.editedStage] && stages[context.editedStage].points.length === 0 && context.editedStage < num)
+            num--;
+
+        // Find elevation of first and last points
+        const elevation = stage.points[0].marker.getLatLng().alt;
+        let elevation2 = null;
+        if (stage.points.length >= 2)
+            elevation2 = stage.points[stage.points.length - 1].marker.getLatLng().alt;
+
+        // Remove previous stage information popup
+        if (stage.infoPop)
+            stage.infoPop.remove();
+
+        // Create popup with stage information content
+        stage.infoPop = L.popup(
+            { closeOnClick: false, autoClose: false, autoPan: false, className: 'solid-popup' })
+            .setLatLng(pos)
+            .setContent(`<div style="text-align:left; font-size:12px; line-height:12px;">${
+                stage.name && stage.name.length > 0 
+                    ? `<span style="font-size:16px; line-height:24px;"><b>${num}. ${stage.name}</b></span><br>` 
+                    : `<span style="font-size:16px; line-height:24px;"><b>${num}.</b></span><br>`
+            }
+            ${
+                stage.distance > 0 
+                ? `<b>Distance${context.language === 'EN' ? ':' : ' :'} </b> ${
+                    context.metricUnits 
+                        ? `${context.language === 'EN' ? stage.distance.toFixed(3) : stage.distance.toFixed(3).replace('.', ',')} km` 
+                        : `${context.language === 'EN' ? (stage.distance/1.609344).toFixed(3) : (stage.distance/1.609344).toFixed(3).replace('.', ',')} mi`
+                }<br>` 
+                : ''
+            }
+            <b>Altitude${context.language === 'EN' ? ':' : ' :'} </b> ${
+                elevation !== null && elevation !== undefined
+                ? context.metricUnits 
+                    ? `${Math.round(elevation)} m` 
+                    : `${Math.round(elevation/0.3048)} ft`                 
+                : '?'
+            }
+            ${
+                stage.points.length >= 2 
+                    ? `<span style="font-size:20px;">&#8594;</span> ${
+                        elevation2 !== null && elevation2 !== undefined 
+                        ? context.metricUnits 
+                            ? `${Math.round(elevation2)} m` 
+                            : `${Math.round(elevation2/0.3048)} ft`
+                        : '?'
+                    }`
+                    : ''
+            }
+            ${
+                stage.ascent != null && stage.descent != null 
+                    ? `<br><b>${
+                        context.language === 'EN' 
+                            ? 'Elevation:' 
+                            : 'Dénivelé :'
+                    }</b> ${
+                        stage.ascent != null 
+                            ? `<span style="font-size:20px;">&#8593;</span> ${
+                                context.metricUnits
+                                    ? `${Math.round(stage.ascent)} m`
+                                    : `${Math.round(stage.ascent/0.3048)} ft`
+                            }` 
+                            : ''
+                    } ${
+                        stage.descent != null 
+                            ? ` <span style="font-size:20px;">&#8595;</span> ${
+                                context.metricUnits
+                                    ? `${Math.round(-stage.descent)} m` 
+                                    : `${Math.round(-stage.descent/0.3048)} ft`
+                            }`
+                            : ''
+                    }`
+                    : ''
+            }
+            </div>`);
+
+        // Add popup to map if requested
+        stage.infoPop.addTo(map);
+
+        // Display stage profile control
+        if (editMode && !removeChart)
+            displayStageProfile(stage);
+        
+        if (removeChart) {
+            removeStageMapNChartMarkers();
+
+            removeStageProfileControl();
+        }
+    }
+
+    //**************
+    // ONLINE HELP *
+    //**************
+
+    //--------------------------------
+    // Prepare help content (english)
+    //--------------------------------
+    function getHelpContentEn() {
+        return (`
+<h1>GPX Route Planner</h1>
+<p>The purpose of the application is to create walking, cycling, or driving routes by plotting them on a map. The routes created can be exported in GPX format, allowing them to be used next with a GPS or mobile navigation and guidance application.</p>
+<p>The application only allows you to create or modify one route at a time. This route consists of:</p>
+<ul>
+<li>One or more stages. A stage is a journey that you plan to complete in one go or in one day. It consists of:
+<ul>
+<li>A starting point, an end point, and may also include waypoints.</li>
+<li>One or more sections (curved or straight) corresponding to the paths connecting these points.</li>
+</ul>
+</li>
+</ul>
+<p>This application was developed entirely with open-source tools and services.</p>
+<h2>Maps</h2>
+<p>Maps are used to create routes (the route is plotted on the map).</p>
+<p>The application offers several map styles:</p>
+<ul>
+<li>A topographic map (displayed by default) highlighting the natural features of the terrain (relief, waterways, coastlines, etc.) and showing contour lines. </li>
+<li>A general map (from OpenStreetMap).</li>
+<li>A map with hiking trails (Waymarked Trails - Hiking).</li>
+<li>A map with cycling tracks (Waymarked Trails - Cycling).</li>
+<li>A map in the form of satellite views.</li> 
+</ul>
+<p>You can zoom in and out on the maps using the mouse wheel or the + and - controls (displayed at the top left).</p>
+<p>You can also move the map in any direction by dragging and dropping.</p>
+<h2>Working modes</h2>
+<p>The application offers two working modes:</p>
+<ul>
+<li>The “create/edit stage” mode, which allows you to create a new stage or edit an existing stage of the route.</li>
+<li>The “supervision” mode: the stages of the route are displayed, but none are being edited. </li>
+</ul>
+<p>When you open the application, you are in stage create/edit mode, allowing you to create a first stage by adding points (and sections) to the map using the mouse.</p>
+<ul>
+<li>To switch to supervision mode, click the "Quit stage edition" button or press the Escape key.</li>
+<li>To switch back to create/edit mode, either click the "Start creating new stage" button or double-click on the map (to create a new stage) or double-click on an existing stage (to edit it).</li>
+</ul>
+<h3>Stage create/edit mode</h3>
+<p>This mode allows you to create a new stage or to edit an existing stage of the route. By clicking repeatedly on the map, points are added to the stage, with sections connecting them to the previous points. The other stages are displayed but cannot be modified. This is the default mode when the application is launched (you are supposed to start by creating a stage).</p>
+<p>The actions available when creating/editing the stage are:</p>
+<ul>
+<li>Click on the map to add an additional point to the stage. If other points already exist, a section is also created to connect the previous point to this new point. The path used between these two points is determined by the chosen travel mode:
+<ul>
+<li>Walking/hiking (default): paths and small roads are preferred. </li>
+<li>Mountain biking: paths and trails are preferred. </li>
+<li>Road cycling: paved roads are used, excluding highways.</li>
+<li>Car route: paved roads and major roads are used.</li>
+<li>-- crow --: allows you to plot a straight line between two points, whether or not a path exists.</li>
+</ul>
+For the first four travel modes, the route is calculated using the BRouter routing service and the resulting paths are curved. For the last one, a straight segment is plotted between the two points.
+</li>
+<li>Double-click on a section of the stage to insert a new point.</li>
+<li>Double-click on a point in the stage to delete it.</li>
+<li>Drag and drop a point on the stage to move it.</li>
+<li>Drag and drop a section of the stage to insert a new point and move it.</li>
+<li>Click the "Set stage name" button or press the “n” key to assign a name to the stage.</li>
+<li>Click the "Reverse stage direction" button or press the "r" key to reverse the stage's direction.</li>
+<li>Click the "Split stage" button or press the "s" key to split the stage into two stages at a place pointed with the mouse.</li>
+<li>Click the "Merge stage with another one" button or press the "m" key to merge the stage with a nearby stage. To be eligible for merging, the other stages must:
+<ul>
+<li>Either have their end point less than 2 km from the start point of the edited stage. Such stages are candidates for merging <strong>before</strong> the edited stage and highlighted in green.</li>
+<li>Or have their start point less than 2 km from the end point of the edited stage. Such stages are candidates for merging <strong>after</strong> the edited stage and highlighted in red.</li>
+</ul> 
+<li>Click the "Focus on stage" button or press the "f" key to focus the map on the edited stage.</li>
+<li>Click the "Change stage position" button to move the stage forward or backward in the sequence of stages of the route. A dropdown menu then enables you to select the move direction: before, after, first or last.</li>
+<li>Press the “Ctrl + b” key combination to move the stage before (one step backward in the list of stages).</li>
+<li>Press the “Ctrl + a” key combination to move the stage after (one step forward in the list of stages).</li>
+<li>Press the “u” key to delete the last point on the stage.</li>
+<li>Press the “v” key to delete the first point on the stage.</li>
+<li>Click the "Delete stage" button or press the “d” key to delete all points (and all sections) from the stage. This action also switches to supervision mode.</li>
+<li>Click the "Quit stage edition" button or press the “Escape” key to finish creating/editing the stage and switch to supervision mode. </li>
+<li>Click the "Start creating a new stage" button or double-click on the map to finish creating/editing the current stage and switch to create/edit mode for a new stage. </li>
+<li>Double-click on a point or section of another stage to finish creating/editing the current stage and switch to create/edit mode for that stage. </li>
+<li>Click the "Import stages from GPX" to import additional stages from a GPX file (without deleting the stages already defined). </li>
+<li>Click the "Export route to GPX" to export the route to a GPX file. </li>
+<li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
+<li>Click the "Undo last action" or press the "Ctrl + z" key combination to undo the last action.</li>
+<li>Click the "Redo last action" or press the "Ctrl + y" key combination to redo the last action undone.</li>
+<li>Click the "Reset route" to reset the route (i.e., delete all the stages).</li>
+</ul>
+<h3>Supervision mode</h3>
+<p>This mode allows you to view the stages of the route without any being created/edited. The start and end points of each stage are shown, but not the waypoints. </p> 
+<p>The available actions are:</p>
+<ul>
+<li>Click the "Start creating a new stage" button or double-click on the map to switch to create/edit mode for a new stage. </li>
+<li>Double-click on a point or section of a stage to switch to create/edit mode for that stage. </li>
+<li>Click the "Import stages from GPX" to import additional stages from a GPX file (without deleting the stages already defined). </li>
+<li>Click the "Export route to GPX" to export the route to a GPX file. </li>
+<li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
+<li>Click the "Undo last action" or press the "Ctrl + z" key combination to undo the last action.</li>
+<li>Click the "Redo last action" or press the "Ctrl + y" key combination to redo the last action undone.</li>
+<li>Click the "Reset route" to reset the route (i.e., delete all the stages).</li>
+</ul>
+<h2>Miscellaneous</h2>
+<p>The user interface language can be selected: English (default) or French.</p>
+<p>The measurement units can be chosen using the "Measurement units" radio buttons: metric (default) or imperial.</p>
+<p>Information can be displayed or hidden for a stage or the whole route: name (for a stage), length, starting and finishing altitudes, positive and negative elevation gains, and profile.</p>
+<p>A geolocation function is provided (top left). It allows you to determine the user's position and center the map on it. The browser's Geolocation API is used for that purpose. </p>
+<p>A location search function based on an address is provided (top left). It allows you to search for a location using a more or less detailed address and center the map on it. Several locations matching the search can be found and displayed in a list. The Nominatim geocoding service is used for that purpose.</p>
+        `);
+    }
+
+    //-------------------------------
+    // Prepare help content (french)
+    //-------------------------------
+    function getHelpContentFr() {
+        return (`
+<h1>Planificateur d'Itinéraires GPX</h1>
+<p>L'objectif de l'application et de créer des itinéraires piétons, cyclistes ou automobile en les traçant sur une carte. Les itinéraires créés peuvent être exportés en format GPX, ce qui permet de les utiliser ensuite avec un GPS ou une application mobile de navigation et de guidage.</p>
+<p>L'application ne permet de créer ou modifier qu'un itinéraire à la fois. Cet itinéraire est composé :</p>
+<ul>
+<li>D'une ou plusieurs étapes. Une étape est un parcours que l'on prévoit de réaliser d'une traite ou en une journée. Elle est composée :
+<ul>
+<li>D'un point de départ, d'un point d'arrivée et peut comprendre aussi des points de passage.</li>
+<li>D'une ou plusieurs sections (courbes ou droites) correspondant aux chemins reliant ces points.</li>
+</ul>
+</li>
+</ul>
+<p>Cette application a été entièrement réalisée avec des outils et services open-source.</p>
+<h2>Cartes</h2>
+<p>Des cartes servent de support à la création d'itinéraires (on trace l'itinéraire sur la carte).</p>
+<p>Plusieurs styles de carte sont offerts par l'application :</p>
+<ul>
+<li>Une carte topographique (présentée par défaut) mettant en évidence les caractéristiques naturelles du terrain (relief, cours d'eau, côtes...) et représentant les courbes de niveau.</li>
+<li>Une carte généraliste (celle d'OpenStreetMap).</li>
+<li>Une carte avec des sentiers de randonnée (Waymarked Trails - Hiking).</li>
+<li>Une carte avec des pistes de cyclotourisme (Waymarked Trails - Cycling).</li>
+<li>Une carte sous forme de vues satellite.</li> 
+</ul>
+<p>On peut zoomer et dézoomer les cartes en utilisant la molette de la souris ou les contrôles + et - (affichés en haut à gauche de la carte).</p>
+<p>On peut aussi déplacer la carte dans toutes les directions par tirer-déposer.</p>
+<h2>Modes de travail</h2>
+<p>L'application offre deux modes de travail :</p>
+<ul>
+<li>Le mode "création/modification d'étape", permettant de créer une nouvelle étape ou de modifier une étape existante de l'itinéraire.</li>
+<li>Le mode "supervision" : les étapes de l'itinéraire sont affichées, mais aucune n'est en cours de modification.</li>
+</ul>
+<p>En ouvrant l'application, on est en mode création/modification d'étape, afin de créer une première étape en ajoutant des points (et des sections) sur la carte à l'aide de la souris.</p>
+<ul>
+<li>Pour passer en mode supervision, il faut cliquer le bouton "Quitter édition de l'étape" ou presser la touche Echappement</li>
+<li>Pour repasser en mode création/modification, il faut soit cliquer sur le bouton "Démarrer création nouvelle étape" ou double cliquer sur la carte (pour créer une nouvelle étape), soit double-cliquer sur une étape existante (afin de la modifier).</li>
+</ul>
+<h3>Mode création/modification d'étape</h3>
+<p>Ce mode permet de créer une nouvelle étape ou de modifier une étape existante de l'itinéraire. En cliquant de manière répétée sur la carte, on ajoute des points à l'étape, et des sections les reliant aux points précédents. Les autres étapes sont affichées, mais ne peuvent pas être modifiées. C'est le mode par défaut au lancement de l'application (on est censé commencer par créer une étape).</p>
+<p>Les actions disponibles en mode édition/modification d'étape sont :</p>
+<ul>
+<li>Cliquer sur la carte pour ajouter un point supplémentaire à l'étape en cours d'édition. Si d'autres points existent déjà, une section est aussi créée pour relier le point précédent à ce nouveau point. Le chemin utilisé entre ces deux points est déterminé par le mode de voyage choisi :
+<ul>
+<li>Marche/randonnée (par défaut) : les chemins et les petites routes sont choisis de préférence.</li>
+<li>VTT : les chemins et sentiers sont choisis de préférence.</li>
+<li>Cyclisme sur route : les routes goudronnées sont utilisées, à l'exclusion des autoroutes.</li>
+<li>Automobile : les routes goudronnées et les grands axes sont utilisés.</li>
+<li>Aucun : permet de tracer un trajet en ligne droite entre deux points, qu'il existe ou non un chemin.</li>
+</ul>
+Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du service de routage BRouter etles chemins résultants sont courbes. Pour le dernier, un segment de droite est tracé entre les deux points.
+</li>
+<li>Double-cliquer sur une section de l'étape pour insérer un nouveau point.</li>
+<li>Double-cliquer sur un point de l'étape pour le supprimer.</li>
+<li>Tirer-déposer un point de l'étape pour le déplacer.</li>
+<li>Tirer-déposer une section de l'étape pour insérer un nouveau point et le déplacer.</li>
+<li>Cliquer sur le bouton "Attribuer nom à l'étape" ou presser la touche "n" pour attribuer un nom à l'étape.</li>
+<li>Cliquer sur le bouton "Inverser direction de l'étape" ou presser la touche "r" pour inverser la direction de l'étape.</li>
+<li>Cliquer sur le bouton "Partager l'étape en deux" ou presser la touche "s" pour partager l'étape en deux à un point désigné avec la souris.</li>
+<li>Cliquer sur le bouton "Fusionner l'étape avec une autre" ou presser la touche "m" pour fusionner l'étape avec une autre étape voisine désignée avec la souris. Pour être éligibles à la fusion, les autres étapes doivent :
+<ul>
+<li>Soit avoir leur point d'arrivée distant de moins de 2 km du point de départ de l'étape en cours d'édition. De telles étapes sont candidates à la fusion <strong>avant</strong> l'étape éditée et mises en évidence par la couleur verte.</li>
+<li>Soit avoir leur point de départ distant de moins de 2 km du point d'arrivée de l'étape en cours d'édition. De telles étapes sont candidates à la fusion <strong>après</strong> l'étape éditée et mises en évidence par la couleur rouge.</li>
+</ul> 
+<li>Cliquer sur le bouton "Focaliser sur l'étape" ou presser la touche "f" pour focaliser la carte sur l'étape en cours d'édition.</li>
+<li>Cliquer sur le bouton "Modifier la position de l'étape" pour déplacer l'étape vers l'avant ou l'arrière dans la séquence des étapes de l'itinéraire. Un menu déroulant permet ensuite de choisir la direction du déplacement : avant, après, au début ou à la fin.</li>
+<li>Presser la combinaison de touches "Ctrl + b" pour déplacer l'étape d'un pas vers l'arrière (dans la séquence des étapes).</li>
+<li>Presser la combinaison de touches "Ctrl + a" pour déplacer l'étape d'un pas vers l'avant (dans la séquence des étapes).</li>
+<li>Presser la touche "u" pour supprimer le dernier point de l'étape.</li>
+<li>Presser la touche "v" pour supprimer le premier point de l'étape.</li>
+<li>Cliquer sur le bouton "Supprimer l'étape" ou presser la touche "d" pour supprimer tous les points (et toutes les sections) de l'étape. Cette action fait également passer en mode supervision.</li>
+<li>Cliquer sur le bouton "Quitter édition de l'étape" ou presser la touche "Echappement" pour terminer la création/modification de l'étape et passer en mode supervision.</li>
+<li>Cliquer sur le bouton "Démarrer création nouvelle étape" ou double-cliquer sur la carte pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'une nouvelle étape.</li>
+<li>Double-cliquer sur un point ou une section d'une autre étape pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour l'autre étape.</li>
+<li>Cliquer sur le boutton "Importer étapes de GPX" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
+<li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
+<li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
+<li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
+<li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
+<li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes).</li>
+</ul>
+<h3>Mode supervision</h3>
+<p>Ce mode permet de visualiser les étapes de l'itinéraire sans qu'aucune ne soit en cours de création/modification. Les points de départ et d'arrivée de chaque étape sont représentés, mais pas les points de passage.</p> 
+<p>Les actions disponibles sont :</p>
+<ul>
+<li>Cliquer sur le bouton "Démarrer création nouvelle étape" ou double-cliquer sur la carte pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'une nouvelle étape.</li>
+<li>Double-cliquer sur un point ou une section d'une autre étape pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour l'autre étape.</li>
+<li>Cliquer sur le boutton "Importer étapes de GPX" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
+<li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
+<li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
+<li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
+<li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
+<li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes).</li>
+</ul>
+<h2>Divers</h2>
+<p>La langue de l'interface utilisateur peut être choisie : anglais (par défaut) ou français.</p>
+<p>Les unités de mesure peuvent être choisies à l'aide des boutons radio "Unités de mesure" : métriques (par default) ou impériales.</p>
+<p>Des informations peuvent être affichées ou masquées pour une étape ou l'ensemble de l'itinéraire : nom (pour une étape), longueur, altitudes de départ et d'arrivée, dénivelés positif et négatif et profil.</p>
+<p>Une fonction de géolocalisation est fournie (en haut à gauche). Elle permet de déterminer la position de l'utilisateur et de centrer la carte dessus. L'API de géolocalisation du navigateur est utilisée pour cela.</p>
+<p>Une fonction de recherche de lieu à partir d'une adresse est fournie (en haut à gauche). Elle permet de rechercher un lieu à partir d'une adresse plus ou moins détaillée et de centrer la carte dessus. Plusieurs lieux correspondant à la recherche peuvent être trouvés et affichés sous forme de liste. Le service de géocodage Nominatim est utilisé pour cela.</p>
+        `);
+    }

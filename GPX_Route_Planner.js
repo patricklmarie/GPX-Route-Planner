@@ -9064,8 +9064,8 @@ For the first four travel modes, the route is calculated using the BRouter routi
 </ul> 
 <li>Click the "Focus on stage" button or press the "f" key to focus the map on the edited stage.</li>
 <li>Click the "Change stage position" button to move the stage forward or backward in the sequence of stages of the route. A dropdown menu then enables you to select the move direction: before, after, first or last.</li>
-<li>Press the “Ctrl + b” key combination to move the stage before (one step backward in the list of stages).</li>
-<li>Press the “Ctrl + a” key combination to move the stage after (one step forward in the list of stages).</li>
+<li>Press the “b” key to move the stage before (one step backward in the list of stages).</li>
+<li>Press the “a” key to move the stage after (one step forward in the list of stages).</li>
 <li>Press the “u” key to delete the last point on the stage.</li>
 <li>Press the “v” key to delete the first point on the stage.</li>
 <li>Click the "Delete stage" button or press the “d” key to delete all points (and all sections) from the stage. This action also switches to supervision mode.</li>

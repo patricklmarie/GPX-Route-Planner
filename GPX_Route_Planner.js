@@ -389,7 +389,8 @@
         metricUnits: true,              // Flag used to specify whether the metric unit system or the imperial unit system must be used 
         displayInfo: 2,                 // Flag: info (stage distances and ascents/descents) displayed
         language: 'EN',                 // Language to be used for the UI (English or French)
-        stageProfileIndexes: null       // Used to build stage profile chart
+        stageProfileIndexes: null,      // Used to build stage profile chart
+        mouseCoordControl: null         // Control hosting latitude and longitude of the mouse cursor on the map
     };
 
     // OpenStreetMap tile layer
@@ -731,7 +732,7 @@
             const mapContainer = map.getContainer(); // Leaflet map container
             const mapHeight = mapContainer.clientHeight;
             const containerRect = container.getBoundingClientRect();
-            const availableHeight = mapHeight - containerRect.top - 10; // 10px padding
+            const availableHeight = mapHeight - containerRect.top - 80; // 10px padding
             content.style.maxHeight = availableHeight + 'px';   // Expand
             content.style.overflowY = 'auto';
             });
@@ -752,7 +753,7 @@
                 const mapContainer = map.getContainer(); // Leaflet map container
                 const mapHeight = mapContainer.clientHeight;
                 const containerRect = container.getBoundingClientRect();
-                const availableHeight = mapHeight - containerRect.top - 10; // 10px padding
+                const availableHeight = mapHeight - containerRect.top - 80; // 10px padding
 
                 content.style.maxHeight = availableHeight + 'px';   // Expand
                 content.style.overflowY = 'auto';
@@ -2183,7 +2184,7 @@
 
         context.globalInfoControl = L.control({ position: 'bottomleft' });  // Create new menu control
 
-        context.globalInfoControl.onAdd = function (map) {      // Set content into menu control            
+        context.globalInfoControl.onAdd = function(map) {      // Set content into menu control            
             // Create white box hosting the menu
             const wrapper = L.DomUtil.create('div', 'leaflet-bar unified-control');
             wrapper.style.background = 'white';
@@ -2374,6 +2375,74 @@
         }
 
         context.globalInfoControl.addTo(map);
+    }
+
+    //-----------------------------------------------------------------------------
+    // Create/recreate control to display mouse coordinates (latitude & longitude) 
+    //-----------------------------------------------------------------------------
+    function displayMouseCoordinates(e, latlng) {
+        if (context.mouseCoordControl) {
+            context.mouseCoordControl.remove();
+            context.mouseCoordControl = null;
+        }
+
+        const overMap = map.getContainer().contains(e.target);  // Pointer is on map OR on any map layer
+     
+        const overControl =                                     // Pointer is on control (zoom, geoloc, menu, etc.)
+            e.target.closest('.leaflet-control') ||
+            e.target.closest('.leaflet-control-row');
+
+        const overPopup =                                       // Pointer is on popup
+                e.target.closest('.leaflet-popup');
+
+        // Do not display coordinates if mouse pointer is not on map, polyline or marker
+        if (!overMap || overControl || overPopup) {
+            map_mouseleave(e);
+            return;
+        }
+
+        const lat = latlng.lat;
+        const lng = latlng.lng;
+
+        context.mouseCoordControl = L.control({ position: 'bottomright' });  // Create new menu control
+
+        context.mouseCoordControl.onAdd = function(map) {      // Set content into menu control            
+            // Create white box hosting the menu
+            const wrapper = L.DomUtil.create('div', 'leaflet-bar unified-control');
+            wrapper.style.background = 'white';
+            wrapper.style.padding = '8px';
+            wrapper.style.display = 'flex';
+            wrapper.style.flexDirection = 'column';
+            wrapper.style.gap = '8px';
+            wrapper.style.maxWidth = '300px';
+            
+            // Prevent map interaction
+            L.DomEvent.disableClickPropagation(wrapper);
+            L.DomEvent.disableScrollPropagation(wrapper);
+
+            // Add number of coordinates
+            const container = document.createElement('div');
+            container.style.display = "inline-block";
+            container.style.whiteSpace = "pre";
+            container.style.alignItems = 'center';
+            container.style.gap = '8px';
+
+            /*container.append(
+                document.createTextNode(latToDMS(lat) + ", " + lngToDMS(lng) + " (" + lat.toFixed(6) + ", " + lng.toFixed(6) + ")")
+            );*/
+            container.innerHTML =
+                `${context.language === 'EN'
+                    ? "<strong>" + latToDMS(lat) + ", " + lngToDMS(lng) + "</strong>" + " (" + lat.toFixed(6) + ", " + lng.toFixed(6) + ")"
+                    : "<strong>" + latToDMS(lat) + ", " + lngToDMS(lng) + "</strong>" + 
+                        " (" + lat.toFixed(6).replace('.', ',') + ", " + lng.toFixed(6).replace('.', ',') + ")"
+                }`;
+ 
+            wrapper.appendChild(container);
+
+            return wrapper;
+        }
+
+        context.mouseCoordControl.addTo(map);
     }
 
     //--------------------------------------------------
@@ -3776,6 +3845,64 @@
             }
             document.addEventListener('keydown', doc_keydown_perm);  // Add event listener to document
 
+            const doc_pointermove = (function() {
+                return function(e) {
+                    // Convert screen coordinates to map container coordinates
+                    const containerPoint = map.mouseEventToContainerPoint(e);
+
+                    // Convert container coordinates to geographic coordinates
+                    const latlng = map.containerPointToLatLng(containerPoint);
+
+                    displayMouseCoordinates(e, latlng);
+
+                    if (context.displayInfo < 2 || context.editedStage !== null) return;
+
+                    stages.forEach((stage, i) => {
+                        let { stageIdx: stageIdx, sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnRoute(latlng);
+                        if (sectIdx > 0) ptIdx--;   // First point of section is indexed only for the first section
+
+                        if (distance <= 30) {
+                            const latlng = stages[stageIdx].sections[sectIdx].polyline.getLatLngs()[ptIdx];
+
+                            if (context.routeProfileMapMarker)
+                                context.routeProfileMapMarker.setLatLng(latlng);
+                            else
+                                context.routeProfileMapMarker = L.circleMarker(latlng, { pane: 'markerNEPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
+
+                            if (context.routeProfileChartRevIdx && context.routeProfileChartRevIdx[stageIdx] && context.routeProfileChartRevIdx[stageIdx][sectIdx] && context.routeProfileChartRevIdx[stageIdx][sectIdx][ptIdx] != undefined) {
+                                const idx = context.routeProfileChartRevIdx[stageIdx][sectIdx][ptIdx];
+
+                                const dist = context.routeProfileChartPoints[idx].x;
+                                const alt = context.routeProfileChartPoints[idx].y;
+
+                                const chart = context.routeProfileChart;
+
+                                chart.setActiveElements([{
+                                    datasetIndex: 0,
+                                    index: idx
+                                }]);
+
+                                chart.tooltip.setActiveElements([{
+                                    datasetIndex: 0,
+                                    index: idx
+                                }], {
+                                    x: dist,
+                                    y: alt
+                                });
+
+                                chart.update();
+                            }
+                        } else {
+                            if (!context.routeProfileControl || !context.routeProfileMapMarker) 
+                                return;
+                            else 
+                                removeRouteMapNChartMarkers();
+                        }
+                    });
+                }
+            })();
+            document.addEventListener("pointermove", doc_pointermove);
+
             context.initializationInProcess = false;
         }
 
@@ -3984,60 +4111,6 @@
         }
         map.addEventListener('mouseup', map_mouseup);   // Add event listener to map
         mapEvtList.push({ target: map, type: 'mouseup', handler: map_mouseup });    //Register listener
-
-
-        // Set event listener on section for mouseout
-        const map_mousemove = (function() {
-            return function(e) {
-                if (context.displayInfo < 2 || context.editedStage === null) return;
-
-                const stageRef = stages[context.editedStage];
-                const iRef = context.editedStage;
-
-                let { sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnStage(stageRef, e.latlng);
-                if (sectIdx > 0) ptIdx--;   // First point of section is indexed only for the first section
-
-                if (distance <= 30) {
-                    const latlng = stageRef.sections[sectIdx].polyline.getLatLngs()[ptIdx];
-
-                    if (context.stageProfileMapMarker)
-                        context.stageProfileMapMarker.setLatLng(latlng);
-                    else
-                        context.stageProfileMapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
-
-                    if (context.stageProfileChartRevIdx && context.stageProfileChartRevIdx[sectIdx] && context.stageProfileChartRevIdx[sectIdx][ptIdx] != undefined) {
-                        const idx = context.stageProfileChartRevIdx[sectIdx][ptIdx];
-
-                        const dist = context.stageProfileChartPoints[idx].x;
-                        const alt = context.stageProfileChartPoints[idx].y;
-
-                        const chart = context.stageProfileChart;
-
-                        chart.setActiveElements([{
-                            datasetIndex: 0,
-                            index: idx
-                        }]);
-
-                        chart.tooltip.setActiveElements([{
-                            datasetIndex: 0,
-                            index: idx
-                        }], {
-                            x: dist,
-                            y: alt
-                        });
-
-                        chart.update();
-                    }
-                } else {
-                    if (!context.stageProfileControl || !context.stageProfileMapMarker) 
-                        return;
-                    else 
-                        removeStageMapNChartMarkers();
-                }
-            }
-        })(stages[i]);
-        map.addEventListener('mousemove', map_mousemove);    // Add event listener  to map
-        mapEvtList.push({ target: map, type: 'mousemove', handler: map_mousemove });  // Register event listener    
     }
 
     //-----------------------------------------
@@ -4064,59 +4137,6 @@
         }
         map.addEventListener('dblclick', map_dblclick);     // Add listener to map
         mapEvtList.push({ target: map, type: 'dblclick', handler: map_dblclick });    //Register listener
-
-
-        // Set event listener on map when mouse cursor hovers a section of the route
-        const map_mousemove = (function() {
-            return function(e) {
-                if (context.displayInfo < 2 || context.editedStage !== null) return;
-
-                stages.forEach((stage, i) => {
-                    let { stageIdx: stageIdx, sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnRoute(e.latlng);
-                    if (sectIdx > 0) ptIdx--;   // First point of section is indexed only for the first section
-
-                    if (distance <= 30) {
-                        const latlng = stages[stageIdx].sections[sectIdx].polyline.getLatLngs()[ptIdx];
-
-                        if (context.routeProfileMapMarker)
-                            context.routeProfileMapMarker.setLatLng(latlng);
-                        else
-                            context.routeProfileMapMarker = L.circleMarker(latlng, { pane: 'markerNEPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
-
-                        if (context.routeProfileChartRevIdx && context.routeProfileChartRevIdx[stageIdx] && context.routeProfileChartRevIdx[stageIdx][sectIdx] && context.routeProfileChartRevIdx[stageIdx][sectIdx][ptIdx] != undefined) {
-                            const idx = context.routeProfileChartRevIdx[stageIdx][sectIdx][ptIdx];
-
-                            const dist = context.routeProfileChartPoints[idx].x;
-                            const alt = context.routeProfileChartPoints[idx].y;
-
-                            const chart = context.routeProfileChart;
-
-                            chart.setActiveElements([{
-                                datasetIndex: 0,
-                                index: idx
-                            }]);
-
-                            chart.tooltip.setActiveElements([{
-                                datasetIndex: 0,
-                                index: idx
-                            }], {
-                                x: dist,
-                                y: alt
-                            });
-
-                            chart.update();
-                        }
-                    } else {
-                        if (!context.routeProfileControl || !context.routeProfileMapMarker) 
-                            return;
-                        else 
-                            removeRouteMapNChartMarkers();
-                    }
-                });
-            }
-        })();
-        map.addEventListener('mousemove', map_mousemove);    // Add event listener  to map
-        mapEvtList.push({ target: map, type: 'mousemove', handler: map_mousemove });  // Register event listener    
     }
 
     //---------------------------------------
@@ -8524,6 +8544,7 @@
         let closestSectIdx = -1;
         let closestPtIdx = -1;
         let minDistance = Infinity;
+
         const latlngPix = map.latLngToLayerPoint(latlng);
 
         // Find closest stage, point and distance
@@ -8677,6 +8698,61 @@
 
         return R * c;
     }
+
+    //-------------------------------------------------------------------
+    // Conrvert latitude in decimal format to degrees, minutes & seconds 
+    //-------------------------------------------------------------------
+    function latToDMS(dec) {
+        const latHem = dec < 0 ? "S" : "N";
+        dec = Math.abs(dec);
+
+        const deg = Math.floor(dec);
+        const minFloat = (dec - deg) * 60;
+        const min = Math.floor(minFloat);
+        const minStr = String(min).padStart(2, "0");
+        const secFloat = (minFloat - min) * 60;
+        let secStr = Number(secFloat).toFixed(1);
+        if (context.language !== 'EN') {
+            secStr = secStr.replace('.', ',');
+        }
+        secStr = secStr.padStart(4, "0");
+
+        return deg + "°" + minStr + "'" + secStr + "\"" + latHem;
+    }
+
+    //-------------------------------------------------------------------
+    // Conrvert longitude in decimal format to degrees, minutes & seconds 
+    //-------------------------------------------------------------------
+    function lngToDMS(dec) {
+        const lngHem = `${context.language === 'EN'
+            ? dec < 0 ? "W" : "E"
+            : dec < 0 ? "O" : "E"
+        }`;
+        dec = Math.abs(dec);
+
+        const deg = Math.floor(dec);
+        const minFloat = (dec - deg) * 60;
+        const min = Math.floor(minFloat);
+        const minStr = String(min).padStart(2, "0");
+        const secFloat = (minFloat - min) * 60;
+        let secStr = Number(secFloat).toFixed(1);
+        if (context.language !== 'EN') {
+            secStr = secStr.replace('.', ',');
+        }
+        secStr = secStr.padStart(4, "0");
+
+        return deg + "°" + minStr + "'" + secStr + "\"" + lngHem;
+    }
+
+    //-------------------------------------------------------------------
+    // Close the mouse coordinates control when the mouse leaves the map
+    //-------------------------------------------------------------------
+    function map_mouseleave(e) {
+        if (context.mouseCoordControl) {
+            context.mouseCoordControl.remove();
+            context.mouseCoordControl = null;
+        }
+    };
 
     //------------------------------
     // Remove stage profile control 

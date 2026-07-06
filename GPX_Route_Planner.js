@@ -3854,51 +3854,6 @@
                     const latlng = map.containerPointToLatLng(containerPoint);
 
                     displayMouseCoordinates(e, latlng);
-
-                    if (context.displayInfo < 2 || context.editedStage !== null) return;
-
-                    stages.forEach((stage, i) => {
-                        let { stageIdx: stageIdx, sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnRoute(latlng);
-                        if (sectIdx > 0) ptIdx--;   // First point of section is indexed only for the first section
-
-                        if (distance <= 30) {
-                            const latlng = stages[stageIdx].sections[sectIdx].polyline.getLatLngs()[ptIdx];
-
-                            if (context.routeProfileMapMarker)
-                                context.routeProfileMapMarker.setLatLng(latlng);
-                            else
-                                context.routeProfileMapMarker = L.circleMarker(latlng, { pane: 'markerNEPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
-
-                            if (context.routeProfileChartRevIdx && context.routeProfileChartRevIdx[stageIdx] && context.routeProfileChartRevIdx[stageIdx][sectIdx] && context.routeProfileChartRevIdx[stageIdx][sectIdx][ptIdx] != undefined) {
-                                const idx = context.routeProfileChartRevIdx[stageIdx][sectIdx][ptIdx];
-
-                                const dist = context.routeProfileChartPoints[idx].x;
-                                const alt = context.routeProfileChartPoints[idx].y;
-
-                                const chart = context.routeProfileChart;
-
-                                chart.setActiveElements([{
-                                    datasetIndex: 0,
-                                    index: idx
-                                }]);
-
-                                chart.tooltip.setActiveElements([{
-                                    datasetIndex: 0,
-                                    index: idx
-                                }], {
-                                    x: dist,
-                                    y: alt
-                                });
-
-                                chart.update();
-                            }
-                        } else {
-                            if (!context.routeProfileControl || !context.routeProfileMapMarker) 
-                                return;
-                            else 
-                                removeRouteMapNChartMarkers();
-                        }
-                    });
                 }
             })();
             document.addEventListener("pointermove", doc_pointermove);
@@ -4111,6 +4066,59 @@
         }
         map.addEventListener('mouseup', map_mouseup);   // Add event listener to map
         mapEvtList.push({ target: map, type: 'mouseup', handler: map_mouseup });    //Register listener
+
+        // Set event listener on section for mousemove
+        const map_mousemove = (function() {
+            return function(e) {
+                if (context.displayInfo < 2 || context.editedStage === null) return;
+
+                const stageRef = stages[context.editedStage];
+                const iRef = context.editedStage;
+
+                let { sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnStage(stageRef, e.latlng);
+                if (sectIdx > 0) ptIdx--;   // First point of section is indexed only for the first section
+
+                if (distance <= 30) {
+                    const latlng = stageRef.sections[sectIdx].polyline.getLatLngs()[ptIdx];
+
+                    if (context.stageProfileMapMarker)
+                        context.stageProfileMapMarker.setLatLng(latlng);
+                    else
+                        context.stageProfileMapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
+
+                    if (context.stageProfileChartRevIdx && context.stageProfileChartRevIdx[sectIdx] && context.stageProfileChartRevIdx[sectIdx][ptIdx] != undefined) {
+                        const idx = context.stageProfileChartRevIdx[sectIdx][ptIdx];
+
+                        const dist = context.stageProfileChartPoints[idx].x;
+                        const alt = context.stageProfileChartPoints[idx].y;
+
+                        const chart = context.stageProfileChart;
+
+                        chart.setActiveElements([{
+                            datasetIndex: 0,
+                            index: idx
+                        }]);
+
+                        chart.tooltip.setActiveElements([{
+                            datasetIndex: 0,
+                            index: idx
+                        }], {
+                            x: dist,
+                            y: alt
+                        });
+
+                        chart.update();
+                    }
+                } else {
+                    if (!context.stageProfileControl || !context.stageProfileMapMarker) 
+                        return;
+                    else 
+                        removeStageMapNChartMarkers();
+                }
+            }
+        })(stages[i]);
+        map.addEventListener('mousemove', map_mousemove);    // Add event listener  to map
+        mapEvtList.push({ target: map, type: 'mousemove', handler: map_mousemove });  // Register event listener    
     }
 
     //-----------------------------------------
@@ -4137,6 +4145,58 @@
         }
         map.addEventListener('dblclick', map_dblclick);     // Add listener to map
         mapEvtList.push({ target: map, type: 'dblclick', handler: map_dblclick });    //Register listener
+
+        // Set event listener on map when mouse cursor hovers a section of the route
+        const map_mousemove = (function() {
+            return function(e) {
+                if (context.displayInfo < 2 || context.editedStage !== null) return;
+
+                stages.forEach((stage, i) => {
+                    let { stageIdx: stageIdx, sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnRoute(e.latlng);
+                    if (sectIdx > 0) ptIdx--;   // First point of section is indexed only for the first section
+
+                    if (distance <= 30) {
+                        const latlng = stages[stageIdx].sections[sectIdx].polyline.getLatLngs()[ptIdx];
+
+                        if (context.routeProfileMapMarker)
+                            context.routeProfileMapMarker.setLatLng(latlng);
+                        else
+                            context.routeProfileMapMarker = L.circleMarker(latlng, { pane: 'markerNEPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
+
+                        if (context.routeProfileChartRevIdx && context.routeProfileChartRevIdx[stageIdx] && context.routeProfileChartRevIdx[stageIdx][sectIdx] && context.routeProfileChartRevIdx[stageIdx][sectIdx][ptIdx] != undefined) {
+                            const idx = context.routeProfileChartRevIdx[stageIdx][sectIdx][ptIdx];
+
+                            const dist = context.routeProfileChartPoints[idx].x;
+                            const alt = context.routeProfileChartPoints[idx].y;
+
+                            const chart = context.routeProfileChart;
+
+                            chart.setActiveElements([{
+                                datasetIndex: 0,
+                                index: idx
+                            }]);
+
+                            chart.tooltip.setActiveElements([{
+                                datasetIndex: 0,
+                                index: idx
+                            }], {
+                                x: dist,
+                                y: alt
+                            });
+
+                            chart.update();
+                        }
+                    } else {
+                        if (!context.routeProfileControl || !context.routeProfileMapMarker) 
+                            return;
+                        else 
+                            removeRouteMapNChartMarkers();
+                    }
+                });
+            }
+        })();
+        map.addEventListener('mousemove', map_mousemove);    // Add event listener  to map
+        mapEvtList.push({ target: map, type: 'mousemove', handler: map_mousemove });  // Register event listener    
     }
 
     //---------------------------------------

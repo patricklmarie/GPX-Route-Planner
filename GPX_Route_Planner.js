@@ -4382,7 +4382,9 @@
             wrapper.style.flexDirection = 'column';
             wrapper.style.gap = '8px';
             wrapper.style.minWidth = '150px';
-            wrapper.style.maxWidth = '225px';
+            wrapper.style.maxWidth = '220px';
+            wrapper.style.maxHeight = '620px';
+            wrapper.style.overflowY = 'auto';
 
             // Prevent map interaction
             L.DomEvent.disableClickPropagation(wrapper);
@@ -4405,12 +4407,12 @@
 
             // Create label
             const label = document.createElement('span');
-            label.textContent = context.language === 'EN' ? 'Address:' : 'Adresse :';
+            label.textContent = context.language === 'EN' ? 'Address (or coordinates):' : 'Adresse (ou coordonnées) :';
             row.appendChild(label);
 
             // Create submit button
             const submitButton = document.createElement('button');
-            submitButton.textContent = context.language === 'EN' ? 'Search' : 'Rechercher';
+            submitButton.textContent = context.language === 'EN' ? 'Search' : 'Chercher';
             submitButton.style.width = '80px';
             row.appendChild(submitButton);
 
@@ -4561,6 +4563,7 @@
                     // Display the position of a location found on the map
                     function onLocationSelected(loc) {
                         const [lat, lng] = loc[0];
+                        console.log("lng: " + lng);
 
                         map.setView([lat, lng], 15, { 'animate': false });      // Center the map on the location
 
@@ -9157,7 +9160,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <p>The measurement units can be chosen using the "Measurement units" radio buttons: metric (default) or imperial.</p>
 <p>Information can be displayed or hidden for a stage or the whole route: name (for a stage), length, starting and finishing altitudes, positive and negative elevation gains, and profile.</p>
 <p>A geolocation function is provided (top left). It allows you to determine the user's position and center the map on it. The browser's Geolocation API is used for that purpose. </p>
-<p>A location search function based on an address is provided (top left). It allows you to search for a location using a more or less detailed address and center the map on it. Several locations matching the search can be found and displayed in a list. The Nominatim geocoding service is used for that purpose.</p>
+<p>A location search function based on an address is provided (top left). It allows you to search for a location using a more or less detailed address and center the map on it. Several locations matching the search can be found and displayed in a list. Locations can also be searched via geographic coordinates using either the format: 45°10'20.0"N, 5°30'40.0"E, or the format: 45.172222, 5.511111. The Nominatim geocoding service is used for that purpose.</p>
         `);
     }
 
@@ -9262,6 +9265,6 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <p>Les unités de mesure peuvent être choisies à l'aide des boutons radio "Unités de mesure" : métriques (par default) ou impériales.</p>
 <p>Des informations peuvent être affichées ou masquées pour une étape ou l'ensemble de l'itinéraire : nom (pour une étape), longueur, altitudes de départ et d'arrivée, dénivelés positif et négatif et profil.</p>
 <p>Une fonction de géolocalisation est fournie (en haut à gauche). Elle permet de déterminer la position de l'utilisateur et de centrer la carte dessus. L'API de géolocalisation du navigateur est utilisée pour cela.</p>
-<p>Une fonction de recherche de lieu à partir d'une adresse est fournie (en haut à gauche). Elle permet de rechercher un lieu à partir d'une adresse plus ou moins détaillée et de centrer la carte dessus. Plusieurs lieux correspondant à la recherche peuvent être trouvés et affichés sous forme de liste. Le service de géocodage Nominatim est utilisé pour cela.</p>
+<p>Une fonction de recherche de lieu à partir d'une adresse est fournie (en haut à gauche). Elle permet de rechercher un lieu à partir d'une adresse plus ou moins détaillée et de centrer la carte dessus. Plusieurs lieux correspondant à la recherche peuvent être trouvés et affichés sous forme de liste. Des lieux peuvent aussi être recherchés via des coordonnées geographiques en utilisant soit le format: 45°10'20.0"N, 5°30'40.0"E ou le format: 45.172222, 5.511111. Le service de géocodage Nominatim est utilisé pour cela.</p>
         `);
     }

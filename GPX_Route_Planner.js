@@ -4444,6 +4444,8 @@
                 input.value = '';   // Clear the input field
                 if (window.searchMarker) 
                     window.searchMarker.remove();   // Remove the marker identifying a place found from the map
+                if (window.coordMarker) 
+                    window.coordMarker.remove();   // Remove the marker identifying a place found from the map
                 if (window.searchPolygon) 
                     window.searchPolygon.remove();  // Remove the polygon identifying an area found from the map
                 for (const { target, type, handler } of docLocFindEvtList)
@@ -4464,6 +4466,21 @@
                 let locs = [];
                 if (value) {
                     locs = await fetchCoordinatesWithNominatim(value);  // Retrieve coordinates matching the location address using Nominatim
+
+                    const re1 = /^(\d{1,3}°\d{1,2}'\d{1,2}(\.\d{1,3})?"[NS]|-?\d{1,3}.\d+)$/;
+                    const re2 = /^(\d{1,3}°\d{1,2}'\d{1,2}(\.\d{1,3})?"[EW]|-?\d{1,3}.\d+)$/;
+                    
+                    const parts = value.split(',', 2);
+                    let part1 = "";
+                    let part2 = "";
+                    if (parts.length > 1) {
+                        part1 = parts[0].trim();
+                        part2 = parts[1].trim();
+                    }
+                    let valueIsCoordinates = false;
+                    if (re1.test(part1) && re2.test(part2)) {
+                        valueIsCoordinates = true;
+                    }
 
                     let container = wrapper.querySelector('#search-results');
 
@@ -4551,7 +4568,7 @@
 
                         div.classList.add('selected');
             
-                        onLocationSelected(loc);    // Display the selected location on the map
+                        onLocationSelected(loc, valueIsCoordinates, part1, part2);    // Display the selected location on the map
 
                         // Ensure visibility
                         div.scrollIntoView({
@@ -4561,13 +4578,28 @@
                     }
 
                     // Display the position of a location found on the map
-                    function onLocationSelected(loc) {
+                    function onLocationSelected(loc, valueIsCoordinates, coord1, coord2) {
                         const [lat, lng] = loc[0];
-                        console.log("lng: " + lng);
 
                         map.setView([lat, lng], 15, { 'animate': false });      // Center the map on the location
 
-                        // Add marker
+                        // If value searched is coordinates, add marker at these coordinates
+                        if (valueIsCoordinates) {
+                            if (window.coordMarker)
+                                map.removeLayer(window.coordMarker);       // Remove marker for previous position (if any)
+
+                            window.coordMarker = L.circleMarker([L.Util.formatNum(dmsToDecimal(coord1)), L.Util.formatNum(dmsToDecimal(coord2))], {
+                                radius: 6, 
+                                color: "darkorange",
+                                weight: 2,
+                                fillColor: "darkorange",
+                                fillOpacity: 1,
+                                interactive: false,
+                            })
+                            .addTo(map);
+                        }
+
+                        // Add marker for location found by Nominatim
                         if (window.searchMarker)
                             map.removeLayer(window.searchMarker);       // Remove marker for previous position (if any)
 
@@ -4587,6 +4619,24 @@
 
                             map.fitBounds(window.searchPolygon.getBounds());    // Adjust the map zoom level for the polygon
                         }
+                    }
+
+                    // Convert from degrees, minutes, seconds to decimal
+                    function dmsToDecimal(dms) {
+                        const regex = /(\d{1,3})°(\d{1,2})'(\d{1,2}(?:\.\d+)?)"([NSEW])/;
+                        const m = dms.match(regex);
+                        if (!m) return dms;
+
+                        let deg = parseFloat(m[1]);
+                        let min = parseFloat(m[2]);
+                        let sec = parseFloat(m[3]);
+                        let dir = m[4];
+
+                        let dec = deg + min / 60 + sec / 3600;
+
+                        if (dir === "S" || dir === "W") dec = -dec;
+
+                        return dec;
                     }
                 }
             }

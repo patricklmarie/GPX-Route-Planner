@@ -4467,21 +4467,21 @@
                 if (value) {
                     locs = await fetchCoordinatesWithNominatim(value);  // Retrieve coordinates matching the location address using Nominatim
 
+                    // Check whether search value entered by user was geographic coordinates and process accordingly
                     const re1 = /^(\d{1,3}°\d{1,2}'\d{1,2}(\.\d{1,3})?"[NS]|-?\d{1,3}.\d+)$/;
                     const re2 = /^(\d{1,3}°\d{1,2}'\d{1,2}(\.\d{1,3})?"[EW]|-?\d{1,3}.\d+)$/;
                     
+                    let exactLatlng = null;
                     const parts = value.split(',', 2);
-                    let part1 = "";
-                    let part2 = "";
                     if (parts.length > 1) {
-                        part1 = parts[0].trim();
-                        part2 = parts[1].trim();
-                    }
-                    let valueIsCoordinates = false;
-                    if (re1.test(part1) && re2.test(part2)) {
-                        valueIsCoordinates = true;
+                        const part0 = parts[0].trim();
+                        const part1 = parts[1].trim();
+
+                        if (re1.test(part0) && re2.test(part1))
+                            exactLatlng = L.latLng(L.Util.formatNum(dmsToDecimal(part0)), L.Util.formatNum(dmsToDecimal(part1)));
                     }
 
+                    // Display search results
                     let container = wrapper.querySelector('#search-results');
 
                     if (!container) {
@@ -4568,7 +4568,7 @@
 
                         div.classList.add('selected');
             
-                        onLocationSelected(loc, valueIsCoordinates, part1, part2);    // Display the selected location on the map
+                        onLocationSelected(loc, exactLatlng);    // Display the selected location on the map
 
                         // Ensure visibility
                         div.scrollIntoView({
@@ -4578,52 +4578,57 @@
                     }
 
                     // Display the position of a location found on the map
-                    function onLocationSelected(loc, valueIsCoordinates, coord1, coord2) {
+                    function onLocationSelected(loc, exactLatlng) {
                         const [lat, lng] = loc[0];
 
-                        map.setView([lat, lng], 15, { 'animate': false });      // Center the map on the location
+                        const featGroup = L.featureGroup().addTo(map);
 
                         // If value searched is coordinates, add marker at these coordinates
-                        if (valueIsCoordinates) {
-                            if (window.coordMarker)
-                                map.removeLayer(window.coordMarker);       // Remove marker for previous position (if any)
+                        if (exactLatlng) {
+                            if (window.exactMarker)
+                                map.removeLayer(window.exactMarker);       // Remove marker for previous position (if any)
 
-                            window.coordMarker = L.circleMarker([L.Util.formatNum(dmsToDecimal(coord1)), L.Util.formatNum(dmsToDecimal(coord2))], {
+                            window.exactMarker = L.circleMarker(exactLatlng, {
                                 radius: 6, 
-                                color: "darkorange",
+                                color: "darkblue",
                                 weight: 2,
-                                fillColor: "darkorange",
+                                fillColor: "darkblue",
                                 fillOpacity: 1,
                                 interactive: false,
-                            })
-                            .addTo(map);
+                            });
+
+                            featGroup.addLayer(window.exactMarker);
                         }
 
                         // Add marker for location found by Nominatim
-                        if (window.searchMarker)
-                            map.removeLayer(window.searchMarker);       // Remove marker for previous position (if any)
+                        if (window.foundMarker)
+                            map.removeLayer(window.foundMarker);       // Remove marker for previous position (if any)
 
-                        window.searchMarker = L.marker([lat, lng], {interactive: false}).addTo(map);    // Add new marker at the location
+                        window.foundMarker = L.marker([lat, lng], {interactive: false});    // Add new marker at the location
 
-                        if (window.searchPolygon)
-                            map.removeLayer(window.searchPolygon);      // Remove polygon for previous area (if any)
+                        featGroup.addLayer(window.foundMarker);
+
+                        if (window.foundPolygon)
+                            map.removeLayer(window.foundPolygon);      // Remove polygon for previous area (if any)
 
                         if (loc[2] != null) {       // Add new polygon around the location (if area information provided by Nominatim)
-                            window.searchPolygon = L.geoJSON(loc[2], {
+                            window.foundPolygon = L.geoJSON(loc[2], {
                                 style: {
                                     color: 'blue', 
                                     weight: 2
                                 },
                                 interactive: false
-                            }).addTo(map);
+                            });
 
-                            map.fitBounds(window.searchPolygon.getBounds());    // Adjust the map zoom level for the polygon
+                            featGroup.addLayer(window.foundPolygon);
                         }
+
+                        map.fitBounds(featGroup.getBounds());
                     }
 
                     // Convert from degrees, minutes, seconds to decimal
                     function dmsToDecimal(dms) {
-                        const regex = /(\d{1,3})°(\d{1,2})'(\d{1,2}(?:\.\d+)?)"([NSEW])/;
+                        const regex = /(\d{1,3})°(\d{1,2})'(\d{1,2}(\.\d+)?)"([NSEW])/;
                         const m = dms.match(regex);
                         if (!m) return dms;
 

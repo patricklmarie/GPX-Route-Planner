@@ -4442,12 +4442,12 @@
                 if (container) 
                     container.remove(); // Remove the results
                 input.value = '';   // Clear the input field
-                if (window.searchMarker) 
-                    window.searchMarker.remove();   // Remove the marker identifying a place found from the map
-                if (window.coordMarker) 
-                    window.coordMarker.remove();   // Remove the marker identifying a place found from the map
-                if (window.searchPolygon) 
-                    window.searchPolygon.remove();  // Remove the polygon identifying an area found from the map
+                if (window.exactMarker) 
+                    window.exactMarker.remove();   // Remove the marker identifying a place found from the map
+                if (window.foundMarker) 
+                    window.foundMarker.remove();   // Remove the marker identifying a place found from the map
+                if (window.foundPolygon) 
+                    window.foundPolygon.remove();  // Remove the polygon identifying an area found from the map
                 for (const { target, type, handler } of docLocFindEvtList)
                     target.removeEventListener(type, handler);  // Remove all event listeners associated with places found
                 docLocFindEvtList.splice(0);  // Clear registered event listeners

@@ -4465,8 +4465,6 @@
                 const value = input.value.trim();   // Retrieve content of input field (location address)
                 let locs = [];
                 if (value) {
-                    locs = await fetchCoordinatesWithNominatim(value);  // Retrieve coordinates matching the location address using Nominatim
-
                     // Check whether search value entered by user was geographic coordinates and process accordingly
                     const re1 = /^(\d{1,3}°\d{1,2}'\d{1,2}(\.\d{1,3})?"[NS]|-?\d{1,3}.\d+)$/;
                     const re2 = /^(\d{1,3}°\d{1,2}'\d{1,2}(\.\d{1,3})?"[EW]|-?\d{1,3}.\d+)$/;
@@ -4480,6 +4478,8 @@
                         if (re1.test(part0) && re2.test(part1))
                             exactLatlng = L.latLng(L.Util.formatNum(dmsToDecimal(part0)), L.Util.formatNum(dmsToDecimal(part1)));
                     }
+
+                    [locs, msg] = await fetchCoordinatesWithNominatim(value, exactLatlng);  // Retrieve coordinates matching the location address using Nominatim
 
                     // Display search results
                     let container = wrapper.querySelector('#search-results');
@@ -4506,7 +4506,7 @@
                     let selectedIndex = -1;
 
                     // Iterate on location found by Nominatim
-                    if (locs != null) {
+                    if (locs != null) {     // One or several locations found by Nominatim
                         locs.forEach((loc, index) => {
                             // Add the location name in the location finder control
                             const div = document.createElement('div');
@@ -4528,6 +4528,34 @@
 
                             container.appendChild(div);
                         });
+                    } else {
+                        if (window.exactMarker) 
+                            window.exactMarker.remove();   // Remove the marker identifying a place found from the map
+                        if (window.foundMarker) 
+                            window.foundMarker.remove();   // Remove the marker identifying a place found from the map
+                        if (window.foundPolygon) 
+                            window.foundPolygon.remove();  // Remove the polygon identifying an area found from the map
+
+                        if (exactLatlng) {   // No location found by Nominati, but query string is a valid coordinates pair
+                            const featGroup = L.featureGroup().addTo(map);
+
+                            window.exactMarker = L.circleMarker(exactLatlng, {
+                                radius: 6, 
+                                color: "darkblue",
+                                weight: 2,
+                                fillColor: "darkblue",
+                                fillOpacity: 1,
+                                interactive: false,
+                            });
+
+                            featGroup.addLayer(window.exactMarker);
+
+                            map.fitBounds(featGroup.getBounds());
+                        }
+
+                        setTimeout(() => {
+                            alert(msg);
+                        }, 50);
                     }
 
                     // Escape, arrow down and arrow up keys handler just for this wrapper
@@ -4584,9 +4612,10 @@
                         const featGroup = L.featureGroup().addTo(map);
 
                         // If value searched is coordinates, add marker at these coordinates
+                        if (window.exactMarker)
+                            map.removeLayer(window.exactMarker);       // Remove marker for previous position (if any)
+                        
                         if (exactLatlng) {
-                            if (window.exactMarker)
-                                map.removeLayer(window.exactMarker);       // Remove marker for previous position (if any)
 
                             window.exactMarker = L.circleMarker(exactLatlng, {
                                 radius: 6, 
@@ -8513,7 +8542,7 @@
     //-----------------------------------------
     // Query Nominatim to geolocate an address
     //-----------------------------------------
-    async function fetchCoordinatesWithNominatim(address) {
+    async function fetchCoordinatesWithNominatim(address, coordinates) {
         // Nominatim's URL
         const url = "https://nominatim.openstreetmap.org/search?q=" + address +
             "&format=json&polygon_geojson=1&dedupe&limit=10";
@@ -8530,8 +8559,12 @@
             // Parse JSON
             const respJSON = await response.json();
 
-            if (respJSON.length === 0)
-                throw new Error(context.language === 'EN' ? "No location found tor this address: " : "Pas de lieu trouvé pour cette adresse : " + address);
+            if (respJSON.length === 0) {
+                if (!coordinates)
+                    throw new Error(context.language === 'EN' ? "No location found tor this address: " + address : "Pas de lieu trouvé pour cette adresse : " + address);
+                else
+                    throw new Error(context.language === 'EN' ? "No known location found tor these coordinates: " + address : "Pas de lieu connu trouvé pour ces coordonnées : " + address);
+            }
 
             const respData = []
             respJSON.forEach((item) => {    // Process the locations found by Nominatim
@@ -8544,11 +8577,11 @@
                 respData.push([[item.lat, item.lon], item.display_name, polygonJSON]);
             });
 
-            return respData;
+            return [respData, null];
         } catch (err) {
-            alert(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
             console.error(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " : "Erreur lors de l'interrogation de Monimatim : ", err.message);
-            return null;
+
+            return [null, context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message];
         }
     }
 

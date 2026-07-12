@@ -407,23 +407,35 @@
             'Map style: &copy; OpenTopoMap (CC-BY-SA)'
     });
 
-    // Aerial views tile layer
-    const esriTL = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 19,
-        attribution:
-            'Tiles &copy; Esri — Source: Esri, Maxar, Earthstar Geographics'
-    });
-
     // Waymarked trails - Hiking
     const wmt_hiking = L.tileLayer('https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png', {
 	    maxZoom: 18,
 	    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; <a href="https://waymarkedtrails.org">waymarkedtrails.org</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
     });
 
+    // Thunderforest outdoors - Hiking
+    const thunder_out = L.tileLayer('https://api.thunderforest.com/outdoors/{z}/{x}/{y}{r}.png?apikey=a77fe180fb614588b28384de71330390', {
+    	attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	    apikey: '<your apikey>',
+	    maxZoom: 22
+    });
+
     // Waymarked trails - Cycling
     const wmt_cycling = L.tileLayer('https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png', {
 	    maxZoom: 18,
 	    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; <a href="https://waymarkedtrails.org">waymarkedtrails.org</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+    });
+
+    // CyclOSM - Cycling
+    const cyclOSM = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+	    maxZoom: 20,
+	    attribution: '<a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases" title="CyclOSM - Open Bicycle render">CyclOSM</a> | Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+
+    // Aerial views tile layer
+    const esriTL = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19,
+        attribution: 'Tiles &copy; Esri — Source: Esri, Maxar, Earthstar Geographics'
     });
 
     // Waymarked trails for cyking
@@ -433,23 +445,29 @@
         otm: otmTL,
         osm: osmTL,
         hiking: wmt_hiking,
+        hiking2: thunder_out,
         cycling: wmt_cycling,
+        cycling2: cyclOSM,
         esri: esriTL
     };
 
     const baseMapLabels = {
         EN: {
-            otm: "Topographic",
-            osm: "General Map",
-            hiking: "Hiking Trails",
-            cycling: "Cycling Routes",
+            otm: "Topographic (OpenTopoMap)",
+            osm: "General Map (OSM Mapnik)",
+            hiking: "Hiking Trails (WMT Hiking)",
+            hiking2: "Hiking Trails (TF Outdoors)",
+            cycling: "Cycling Routes (WMT Cycling)",
+            cycling2: "Cycling Routes (CyclOSM)",
             esri: "Satellite Imagery (Esri)"
         },
         FR: {
-            otm: "Topographique",
-            osm: "Généraliste",
-            hiking: "Sentiers de randonnée",
-            cycling: "Itinéraires de cyclotourisme",
+            otm: "Topographique (OpenTopoMap)",
+            osm: "Généraliste (OSM Mapnik)",
+            hiking: "Sentiers de randonnée (WMT Hiking)",
+            hiking2: "Sentiers de randonnée (TF Outdoors)",
+            cycling: "Itinéraires cyclo (WMT Cycling)",
+            cycling2: "Itinéraires cyclo (CyclOSM)",
             esri: "Images satellite (Esri)"
         }
     };
@@ -458,16 +476,24 @@
     const routerProfilesEn = {
         "Walking / hiking": "trekking",
         "Mountain biking": "mtb",
-        "Road cycling": "fastbike",
-        "Car route": "car-fast",
+        "Road cycling (fast)": "fastbike",
+        "Road cycling (low traffic)": "fastbike-lowtraffic",
+        "Road cycling (very low traffic)": "fastbike-verylowtraffic",
+        "Car route": "car-vario",
+        "Car route (fast)": "car-fast",
+        "Car route (economic)": "car-eco",
         "-- crow --": "crow"
     };
 
     const routerProfilesFr = {
         "Marche / randonnée": "trekking",
         "VTT": "mtb",
-        "Cyclisme sur route": "fastbike",
-        "Automobile": "car-fast",
+        "Cyclisme sur route (rapide)": "fastbike",
+        "Cyclisme sur route (trafic bas)": "fastbike-lowtraffic",
+        "Cyclisme sur route (très bas trafic)": "fastbike-verylowtraffic",
+        "Automobile": "car-vario",
+        "Automobile (rapide)": "car-fast",
+        "Automobile (économique)": "car-eco",
         "-- vol d\'oiseau --": "crow"
     };
 
@@ -4075,6 +4101,8 @@
                 const stageRef = stages[context.editedStage];
                 const iRef = context.editedStage;
 
+                if (!stageRef) return;
+
                 let { sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnStage(stageRef, e.latlng);
                 if (sectIdx > 0) ptIdx--;   // First point of section is indexed only for the first section
 
@@ -4733,7 +4761,7 @@
             wrapper.style.flexDirection = 'column';
             wrapper.style.gap = '8px';
             wrapper.style.minWidth = '200px';
-            wrapper.style.maxWidth = '310px';
+            wrapper.style.maxWidth = '350px';
             wrapper.style.width = '100%';
 
             // Prevent map interaction
@@ -4796,7 +4824,7 @@
             wrapper.style.flexDirection = 'column';
             wrapper.style.gap = '8px';
             wrapper.style.minWidth = '200px';
-            wrapper.style.maxWidth = '310px';
+            wrapper.style.maxWidth = '350px';
             wrapper.style.width = '100%';
             
             // Prevent map interaction

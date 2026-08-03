@@ -386,11 +386,21 @@
         clickTimeout: null,             // Timeout used to distinguish simple clicks from double clicks
         mouseOutTimeout: null,
         suppressNextClick: false,       // Flag used not to take into account next click
-        metricUnits: true,              // Flag used to specify whether the metric unit system or the imperial unit system must be used 
-        displayInfo: 2,                 // Flag: info (stage distances and ascents/descents) displayed
         language: 'EN',                 // Language to be used for the UI (English or French)
+        measurementUnits: 'ME',         // Measurement units to work with (by default, metric units)
+        menuDisplayed: true,            // 
+        geolocationDisplayed: true,     // 
+        locationFinderDisplayed: true,  // 
+        stageNRouteDataDisplayed: true, // 
+        stageNRouteProfileDisplayed: true, // 
         stageProfileIndexes: null,      // Used to build stage profile chart
-        mouseCoordControl: null         // Control hosting latitude and longitude of the mouse cursor on the map
+        mouseCoordControl: null,        // Control hosting latitude and longitude of the mouse cursor on the map
+        userLocationMarker: null,       // Used to display the user's position after geolocalization
+        userAccuracyCircle: null,       // Also used to display the user's position after geolocalization
+        foundMarker: null,              // Used to mark nearest OSM known object after location search
+        foundPolygon: null,             // Used to highlight area around nearest OSM known object after location search
+        exactMarker: null,              // Used to mark exact coordinates entered after coordinates search
+        settingsBtnActivated: null      // Settings button must be activated only once
     };
 
     // OpenStreetMap tile layer
@@ -474,8 +484,11 @@
 
     // Router profiles available
     const routerProfilesEn = {
-        "Walking / hiking": "trekking",
+        "Trekking": "trekking",
+        "Hiking": "hiking-beta",
+        "Hiking (mountain)": "hiking-mountain",
         "Mountain biking": "mtb",
+        "Gravel cycling": "gravel",
         "Road cycling (fast)": "fastbike",
         "Road cycling (low traffic)": "fastbike-lowtraffic",
         "Road cycling (very low traffic)": "fastbike-verylowtraffic",
@@ -486,11 +499,14 @@
     };
 
     const routerProfilesFr = {
-        "Marche / randonnée": "trekking",
+        "Randonnée itinérante": "trekking",
+        "Randonnée": "hiking-beta",
+        "Randonnée (montagne)": "hiking-mountain",
         "VTT": "mtb",
+        "Cyclisme de style gravel": "gravel",
         "Cyclisme sur route (rapide)": "fastbike",
         "Cyclisme sur route (trafic bas)": "fastbike-lowtraffic",
-        "Cyclisme sur route (très bas trafic)": "fastbike-verylowtraffic",
+        "Cyclisme sur route (trafic très bas)": "fastbike-verylowtraffic",
         "Automobile": "car-vario",
         "Automobile (rapide)": "car-fast",
         "Automobile (économique)": "car-eco",
@@ -507,6 +523,259 @@
     //*****************
     // MAIN FUNCTIONS *
     //*****************
+
+    function activateSettingsBtn() {
+        if (context.settingsBtnActivated) return;
+
+        const settingsBtn = document.getElementById("settingsBtn");
+        const sidePanel = document.getElementById("sidePanel");
+
+        settingsBtn.addEventListener("click", () => {
+            if (context.operationWithButtonInProcess)
+                return;
+
+            sidePanel.classList.toggle("open");
+
+            if (sidePanel.classList.contains("open"))
+                generateSidePanelContents();
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!sidePanel.contains(e.target) && !settingsBtn.contains(e.target)) {
+                sidePanel.classList.remove("open");
+            }
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                sidePanel.classList.remove("open");
+            }
+        });
+
+        sidePanel.addEventListener("click", (e) => {
+            e.stopPropagation();
+        });
+
+        sidePanel.addEventListener("mousedown", (e) => {
+            e.stopPropagation();
+        });
+
+        sidePanel.addEventListener("touchstart", (e) => {
+            e.stopPropagation();
+        });
+
+        context.settingsBtnActivated = true; 
+    }
+
+    function generateSidePanelContents() {
+        sidePanel.innerHTML = `
+            <h2>${context.language === 'EN' ? "Settings" : "Préférences" }</h2>
+            <h3>${context.language === 'EN' ? "Language:" : "Langue :" }</h3>
+            <div>
+            <input type="radio" id="english" name="language" value="EN" ${context.language === 'EN' ? "checked" : "" } />
+            <label for="english">
+                <img src="https://flagcdn.com/gb.svg" width="24" height="18" />
+                <img src="https://flagcdn.com/us.svg" width="24" height="18" />
+            </label>                  
+            <input type="radio" id="french" name="language" value="FR" ${context.language === 'FR' ? "checked" : "" }/>
+            <label for="french">
+                <img src="https://flagcdn.com/fr.svg" width="24" height="18" />
+            </label>
+            </div>
+            <h3>${context.language === 'EN' ? "Measurement units:" : "Unités de mesure :" }</h3>
+            <div>
+            <input type="radio" id="metric" name="units" value="EN" ${context.measurementUnits === 'ME' ? "checked" : "" } />
+            <label for="metric">${context.language === 'EN' ? "Metric" : "Métriques" }</label>                  
+            <input type="radio" id="imperial" name="units" value="FR" ${context.measurementUnits === 'IM' ? "checked" : "" }/>
+            <label for="imperial">${context.language === 'EN' ? "Imperial" : "Impériales" }</label>
+            </div>
+            <h3>${context.language === 'EN' ? "Information and tools displayed:" : "Informations et outils affichés :" }</h3>
+            <div>
+            <input type="checkbox" id="menu" name="menu" value="menu" ${context.menuDisplayed ? "checked" : "" } />
+            <label for="menu">${context.language === 'EN' ? "Menu" : "Menu" }</label>
+            <br/>                 
+            <input type="checkbox" id="geolocation" name="geolocation" value="geolocation" ${context.geolocationDisplayed ? "checked" : "" } />
+            <label for="geolocation">${context.language === 'EN' ? "Geolocation" : "Géolocalisation" }</label>                  
+            <br/>                 
+            <input type="checkbox" id="locationFinder" name="locationFinder" value="locationFinder" ${context.locationFinderDisplayed ? "checked" : "" } />
+            <label for="locationFinder">${context.language === 'EN' ? "Location finder" : "Recherche de lieux" }</label>                  
+            <br/>                 
+            <input type="checkbox" id="stageNRouteData" name="stageNRouteData" value="stageNRouteData" ${context.stageNRouteDataDisplayed ? "checked" : "" } />
+            <label for="stageNRouteData">${context.language === 'EN' ? "Stage and route data" : "Données d'étape et d'itinéraire'" }</label>                  
+            <br/>                 
+            <input type="checkbox" id="stageNRouteProfile" name="stageNRouteProfile" value="stageNRouteProfile" ${context.stageNRouteProfileDisplayed ? "checked" : "" } />
+            <label for="stageNRouteProfile">${context.language === 'EN' ? "Stage and route profile" : "Profil d'étape et d'itinéraire'" }</label>                  
+            </div>
+        `;
+
+        document.getElementById("english").addEventListener("click", () => setLanguage('EN'));
+        document.getElementById("french").addEventListener("click", () => setLanguage('FR'));
+        document.getElementById("metric").addEventListener("click", () => setMeasurementUnits('ME'));
+        document.getElementById("imperial").addEventListener("click", () => setMeasurementUnits('IM'));
+        document.getElementById("menu").addEventListener("click", (e) => setMenu(e.target.checked));
+        document.getElementById("geolocation").addEventListener("click", (e) => setGeolocation(e.target.checked));
+        document.getElementById("locationFinder").addEventListener("click", (e) => setLocationFinder(e.target.checked));
+        document.getElementById("stageNRouteData").addEventListener("click", (e) => setStageNRouteData(e.target.checked));
+        document.getElementById("stageNRouteProfile").addEventListener("click", (e) => setStageNRouteProfile(e.target.checked));
+    }
+
+    function setLanguage(lang) {
+        if (lang === 'EN')
+            context.language = 'EN';
+        else
+            context.language = 'FR';
+
+        if (context.menuDisplayed) {
+            if (context.editedStage !== null) 
+                setMenu4EdtStg();
+            else 
+                setMenu4NonEdt();
+        }
+
+        if (context.geolocationDisplayed)
+            setGeolocationControl();
+
+        if (context.locationFinderDisplayed)
+            setLocationFinderControl();
+
+        if (context.stageNRouteDataDisplayed) {
+            for (let i = 0; i < stages.length; i++) {
+                if (context.editedStage === i)
+                    updateStageDataNProfile(stages[i], true);
+                else
+                    updateStageDataNProfile(stages[i], false);
+            }
+
+            displayGlobalInfo();
+        }
+
+        if (context.stageNRouteProfileDisplayed) {
+            if (context.editedStage !== null) {
+                displayStageProfile();
+            } else {
+                displayRouteProfile();
+            }
+        }
+
+        generateSidePanelContents();
+    }
+
+    function setMeasurementUnits(measurementUnits) {
+        if (measurementUnits === 'ME')
+            context.measurementUnits = 'ME';
+        else
+            context.measurementUnits = 'IM';
+
+        if (context.stageNRouteDataDisplayed) {
+            for (let i = 0; i < stages.length; i++) {
+                if (context.editedStage === i)
+                    updateStageDataNProfile(stages[i], true);
+                else
+                    updateStageDataNProfile(stages[i], false);
+            }
+
+            displayGlobalInfo();
+        }
+
+        if (context.stageNRouteProfileDisplayed) {
+            if (context.editedStage !== null) {
+                displayStageProfile();
+            } else {
+                displayRouteProfile();
+            }
+        }
+
+        generateSidePanelContents();
+    }
+
+    function setMenu(checked) {
+        if (checked) {
+            context.menuDisplayed = true;
+
+            if (context.editedStage !== null) 
+                setMenu4EdtStg();
+            else 
+                setMenu4NonEdt();
+        } else {
+            context.menuDisplayed = false;
+
+            if (context.menuControl) 
+                context.menuControl.remove();      // Remove menu control
+        }
+    }
+
+    function setGeolocation(checked) {
+        if (checked) {
+            context.geolocationDisplayed = true;
+
+           setGeolocationControl();
+        } else {
+            context.geolocationDisplayed = false;
+
+            if (context.geolocControl) context.geolocControl.remove();  // Remove geolocalizer control
+        }
+    }
+
+    function setLocationFinder(checked) {
+        if (checked) {
+            context.locationFinderDisplayed = true;
+
+           setLocationFinderControl();
+        } else {
+            context.locationFinderDisplayed = false;
+
+            if (context.locFinderControl) context.locFinderControl.remove();  // Remove location finder control
+        }
+    }
+
+    function setStageNRouteData(checked) {
+        if (checked) {
+            context.stageNRouteDataDisplayed = true;
+
+            for (let i = 0; i < stages.length; i++) {
+                if (context.editedStage === i)
+                    updateStageDataNProfile(stages[i], true);
+                else
+                    updateStageDataNProfile(stages[i], false);
+            }
+
+            displayGlobalInfo();
+        } else {
+            context.stageNRouteDataDisplayed = false;
+
+            for (let i = 0; i < stages.length; i++) {
+                if (stages[i].infoPop)
+                    stages[i].infoPop.remove();
+            }
+
+            if (context.globalInfoControl)
+                context.globalInfoControl.remove();
+        }
+    }
+
+    function setStageNRouteProfile(checked) {
+        if (checked) {
+            context.stageNRouteProfileDisplayed = true;
+
+            if (context.editedStage != null) {
+                displayStageProfile(stages[context.editedStage]);
+            } else {
+                displayRouteProfile();
+            }
+        } else {
+            context.stageNRouteProfileDisplayed = false;
+            
+            if (context.editedStage != null) {
+                removeStageMapNChartMarkers();
+
+                removeStageProfileControl();
+            } else {
+                removeRouteMapNChartMarkers();
+
+                removeRouteProfileControl();
+            }
+        }
+    }
 
     //-----------------------------------
     // Change stage position in the list
@@ -545,7 +814,7 @@
     function createCmdListEdtStgControl() {
         // Create global container
         const container = L.DomUtil.create('div', 'info menu');
-        container.style.maxWidth = '310px';
+        container.style.maxWidth = '350px';
         container.style.boxSizing = 'border-box';
         container.style.display = 'flex';
         container.style.flexDirection = 'column';
@@ -654,6 +923,10 @@
                     <td><strong>Ctrl + r</strong></td>
                     <td>Reset the route</td>
                 </tr>
+                <tr>
+                    <td><strong>h</strong></td>
+                    <td>Help</td>
+                </tr>
             </table>
         ` : `
             <br><strong>Création/modification d'étape:</strong><br>
@@ -746,6 +1019,10 @@
                     <td><strong>Ctrl + r</strong></td>
                     <td>Réinitialiser l'itinéraire</td>
                 </tr>
+                <tr>
+                    <td><strong>h</strong></td>
+                    <td>Aide</td>
+                </tr>
             </table>
         `;
 
@@ -800,7 +1077,7 @@
     function createCmdListNonEdtControl() {
         // Create global container
         const container = L.DomUtil.create('div', 'info menu');
-        container.style.maxWidth = '300px';
+        container.style.maxWidth = '350px';
         container.style.boxSizing = 'border-box';
         container.style.display = 'flex';
         container.style.flexDirection = 'column';
@@ -809,7 +1086,7 @@
         const header = L.DomUtil.create('div', 'menu-header', container);
         header.style.cursor = 'pointer';
         header.style.fontSize = '14px';
-        header.innerHTML = context.language === 'EN' ? '<strong>Other commands</strong> <span>▼</span>' : '<strong>Autres commandes</strong> <span>▼</span>';
+        header.innerHTML = context.language === 'EN' ? '<strong>Mouse actions & keyboard shortcuts</strong> <span>▼</span>' : '<strong>Actions avec souris & raccourcis clavier</strong> <span>▼</span>';
         const arrow = header.querySelector('span');
 
         // Create command list
@@ -853,6 +1130,10 @@
                     <td><strong>Ctrl + r</strong></td>
                     <td>Reset the current route</td>
                 </tr>
+                <tr>
+                    <td><strong>h</strong></td>
+                    <td>Help</td>
+                </tr>
             </table>
         ` : `
             <br><strong>Générales :</strong><br><br>
@@ -888,6 +1169,10 @@
                 <tr>
                     <td><strong>Ctrl + r</strong></td>
                     <td>Réinitialiser l'itinéraire<br>en cours</td>
+                </tr>
+                <tr>
+                    <td><strong>h</strong></td>
+                    <td>Aide</td>
                 </tr>
             </table>
         `;
@@ -935,175 +1220,6 @@
 
             arrow.textContent = context.spannedCommand ? '▲' : '▼';
         });
-
-        return container;
-    }
-
-    //-----------------------------
-    // Create display info control
-    //-----------------------------
-    function createDisplayInfoControl() {
-        // Create division
-        const container = document.createElement('div');
-        container.style.display = 'flex';
-        container.style.alignItems = 'center';
-        container.style.gap = '8px';
-
-        // Create global label
-        const globalLabel = document.createElement('span');
-        globalLabel.textContent = context.language === 'EN' ? 'Displayed info.:' : 'Infos : ';
-        globalLabel.style.fontSize = '12px';
-
-        // Create radios container
-        const radios = document.createElement('div');
-        radios.style.display = 'flex';
-        radios.style.gap = '6px';
-
-        // Create data & profile radio button
-        const dataNprofileLabel = document.createElement('label');
-        const dataNprofileRadio = document.createElement('input');
-        dataNprofileRadio.type = 'radio';
-        dataNprofileRadio.name = 'displayInfo';
-        dataNprofileRadio.value = 2;
-        dataNprofileRadio.checked = context.displayInfo === 2;    // Restore selection
-
-        dataNprofileLabel.appendChild(dataNprofileRadio);
-        dataNprofileLabel.append(context.language === 'EN' ? ' Data & profile' : ' Données & profil');
-
-        // Create data radio button
-        const dataLabel = document.createElement('label');
-        const dataRadio = document.createElement('input');
-        dataRadio.type = 'radio';
-        dataRadio.name = 'displayInfo';
-        dataRadio.value = 1;
-        dataRadio.checked = context.displayInfo === 1;    // Restore selection
-
-        dataLabel.appendChild(dataRadio);
-        dataLabel.append(context.language === 'EN' ? ' Data' : ' Données');
-
-        // Create none radio button
-        const noneLabel = document.createElement('label');
-        const noneRadio = document.createElement('input');
-        noneRadio.type = 'radio';
-        noneRadio.name = 'displayInfo';
-        noneRadio.value = 0;
-        noneRadio.checked = context.displayInfo === 0;    // Restore selection
-
-        noneLabel.appendChild(noneRadio);
-        noneLabel.append(context.language === 'EN' ? ' None' : ' Aucune');
-
-         // Disable when other operation in process
-        dataNprofileRadio.addEventListener('click', function (e) {
-            if (context.operationWithButtonInProcess) {
-                e.preventDefault();
-        
-                return;
-            }
-        });
-
-         // Handle changes
-        dataNprofileRadio.addEventListener('change', () => {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
-    
-            if (dataNprofileRadio.checked) {
-                context.displayInfo = 2;
-
-                for (let i = 0; i < stages.length; i++) {
-                    if (context.editedStage === i)
-                        updateDetailedInfo(stages[i], true, false);
-                    else
-                        updateDetailedInfo(stages[i], false, false);
-                }
-
-                displayGlobalInfo();
-
-                if (context.editedStage != null) {
-                    displayStageProfile(stages[context.editedStage]);
-                } else {
-                    displayRouteProfile();
-                }
-            }
-        });
-
-         // Disable when other operation in process
-        dataRadio.addEventListener('click', function (e) {
-            if (context.operationWithButtonInProcess) {
-                e.preventDefault();
-        
-                return;
-            }
-        });
-
-         // Handle changes
-        dataRadio.addEventListener('change', () => {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
-    
-            if (dataRadio.checked) {
-                context.displayInfo = 1;
-
-                for (let i = 0; i < stages.length; i++) {
-                    if (context.editedStage === i)
-                        updateDetailedInfo(stages[i], true, true);
-                    else
-                        updateDetailedInfo(stages[i], false, true);
-                }
-
-                displayGlobalInfo();
-
-                if (context.editedStage != null) {
-                    removeStageMapNChartMarkers();
-
-                    removeStageProfileControl();
-                } else {
-                    removeRouteMapNChartMarkers();
-
-                    removeRouteProfileControl();
-                }
-            }
-        });
-
-         // Disable when other operation in process
-        noneRadio.addEventListener('click', function (e) {
-            if (context.operationWithButtonInProcess) {
-                e.preventDefault();
-        
-                return;
-            }
-        });
-
-        // Handle changes
-        noneRadio.addEventListener('change', () => {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
-    
-            if (noneRadio.checked) {
-                context.displayInfo = 0;
-                
-                for (let i = 0; i < stages.length; i++) {
-                    if (stages[i].infoPop)
-                        stages[i].infoPop.remove();
-                }
-
-                if (context.editedStage != null) {
-                    removeStageMapNChartMarkers();
-
-                    removeStageProfileControl();
-                } else {
-                    removeRouteMapNChartMarkers();
-
-                    removeRouteProfileControl();
-                }
-
-                if (context.globalInfoControl)
-                    context.globalInfoControl.remove();
-            }
-        });
-
-        radios.appendChild(dataNprofileLabel);
-        radios.appendChild(dataLabel);
-        radios.appendChild(noneLabel);
-
-        container.appendChild(globalLabel);
-        container.appendChild(radios);
 
         return container;
     }
@@ -1458,7 +1574,7 @@
         async function quitEdtHandler() {
             if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
     
-            quitEditStage(true);
+            quitEditStage();
         }
         quitEdtButton.addEventListener('click', quitEdtHandler);  // Associate submit handler with button
        
@@ -1469,19 +1585,25 @@
     // Create general buttons control
     //--------------------------------
     function createGenButtonsControl() {
-        // Create division
-        const container = document.createElement('div');
-        container.style.display = 'flex';
-        container.style.alignItems = 'center';
-        container.style.gap = '8px';
+        // Create title division
+        const titleContainer = document.createElement('div');
+        titleContainer.style.display = 'flex';
+        titleContainer.style.alignItems = 'center';
+        titleContainer.style.gap = '8px';
 
         // Create global label
         const globalLabel = document.createElement('span');
-        globalLabel.textContent = context.language === 'EN' ? 'Global\nactions:' : 'Actions\ngénér. : ';
+        globalLabel.textContent = context.language === 'EN' ? 'Global actions:' : 'Actions générales : ';
         globalLabel.style.fontSize = '14px';
         globalLabel.style.fontWeight = 'bold';
         globalLabel.style.whiteSpace = 'pre-line';
-        container.appendChild(globalLabel);
+        titleContainer.appendChild(globalLabel);
+
+        // Create buttons division
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.style.display = 'flex';
+        buttonsContainer.style.alignItems = 'center';
+        buttonsContainer.style.gap = '8px';
 
         // Create create new stage icon
         const nstIcon = document.createElement('i');
@@ -1505,7 +1627,7 @@
         newStgButton.style.alignItems = 'center';
         newStgButton.style.justifyContent = 'center';
         newStgButton.title = context.language === 'EN' ? 'Start creating new stage' : 'Démarrer création nouvelle étape';
-        container.appendChild(newStgButton);
+        buttonsContainer.appendChild(newStgButton);
 
         // Define submit handler (for creating a new stage)
         async function newStgHandler() {
@@ -1538,7 +1660,7 @@
         importGPXButton.style.alignItems = 'center';
         importGPXButton.style.justifyContent = 'center';
         importGPXButton.title = context.language === 'EN' ? 'Import stages from GPX' : 'Importer étapes de GPX';        
-        container.appendChild(importGPXButton);
+        buttonsContainer.appendChild(importGPXButton);
 
         // Define submit handler (for exporting to a GPX file)
         async function importGPXHandler() {
@@ -1569,7 +1691,7 @@
         exportGPXButton.style.alignItems = 'center';
         exportGPXButton.style.justifyContent = 'center';
         exportGPXButton.title = context.language === 'EN' ? 'Export route to GPX' : 'Exporter l\'itinéraire vers GPX';
-        container.appendChild(exportGPXButton);
+        buttonsContainer.appendChild(exportGPXButton);
 
         // Define submit handler (for exporting to a GPX file)
         async function exportGPXHandler() {
@@ -1600,7 +1722,7 @@
         focusButton.style.alignItems = 'center';
         focusButton.style.justifyContent = 'center';
         focusButton.title = context.language === 'EN' ? 'Focus on route' : 'Focaliser sur l\'itinéraire';
-        container.appendChild(focusButton);
+        buttonsContainer.appendChild(focusButton);
 
         // Define submit handler (for focusing to a GPX file)
         async function focusHandler() {
@@ -1631,7 +1753,7 @@
         undoButton.style.alignItems = 'center';
         undoButton.style.justifyContent = 'center';
         undoButton.title = context.language === 'EN' ? 'Undo last action' : 'Défaire la dernière action';
-        container.appendChild(undoButton);
+        buttonsContainer.appendChild(undoButton);
 
         // Define submit handler (for exporting to a GPX file)
         async function undoHandler() {
@@ -1663,7 +1785,7 @@
         redoButton.style.alignItems = 'center';
         redoButton.style.justifyContent = 'center';
         redoButton.title = context.language === 'EN' ? 'Redo last action' : 'Refaire la dernière action';
-        container.appendChild(redoButton);
+        buttonsContainer.appendChild(redoButton);
 
         // Define submit handler (for exporting to a GPX file)
         async function redoHandler() {
@@ -1695,7 +1817,7 @@
         resetRteButton.style.alignItems = 'center';
         resetRteButton.style.justifyContent = 'center';
         resetRteButton.title = context.language === 'EN' ? 'Reset route' : 'Réinitialiser l\'itinéraire';
-        container.appendChild(resetRteButton);
+        buttonsContainer.appendChild(resetRteButton);
 
         // Define submit handler (for resetting the route)
         async function resetRteHandler() {
@@ -1706,166 +1828,13 @@
         }
         resetRteButton.addEventListener('click', resetRteHandler);  // Associate submit handler with button
     
-        return container;
+        return [titleContainer, buttonsContainer];
     }
 
     //-----------------------------
     // Create display info control
     //-----------------------------
-    function createLanguageAndHelpControl(isTrkEdited) {
-        // Create division
-        const container = document.createElement('div');
-        container.style.display = 'flex';
-        container.style.alignItems = 'center';
-        container.style.gap = '8px';
-
-        // Create global label
-        const globalLabel = document.createElement('span');
-        globalLabel.textContent = context.language === 'EN' ? 'Language:' : 'Langue :';
-        globalLabel.style.fontSize = '12px';
-
-        // Create radios container
-        const radios = document.createElement('div');
-        radios.style.display = 'flex';
-        radios.style.gap = '6px';
-        radios.style.flex = '1';
-
-        // Create English radio button
-        const enLabel = document.createElement('label');
-        const enRadio = document.createElement('input');
-        enRadio.type = 'radio';
-        enRadio.name = 'language';
-        enRadio.value = 'true';
-        enRadio.checked = context.language === 'EN';    // Restore selection
-
-        const enFlag = document.createElement('img');
-        enFlag.src = 'https://flagcdn.com/gb.svg';
-        enFlag.alt = 'English';
-        enFlag.style.width = '24px';
-        enFlag.style.height = '18px';
-        enFlag.style.objectFit = 'contain';
-
-        const usFlag = document.createElement('img');
-        usFlag.src = 'https://flagcdn.com/us.svg';
-        usFlag.alt = 'English';
-        usFlag.style.width = '24px';
-        usFlag.style.height = '18px';
-        usFlag.style.objectFit = 'contain';
-
-        enLabel.appendChild(enRadio);
-        enLabel.append(enFlag);
-        enLabel.append(usFlag);
-        enLabel.style.fontSize = '22px';
-        enLabel.style.display = 'flex';
-        enLabel.style.alignItems = 'center';
-        enLabel.style.gap = '6px';
-
-        // Create French radio button
-        const frLabel = document.createElement('label');
-        const frRadio = document.createElement('input');
-        frRadio.type = 'radio';
-        frRadio.name = 'language';
-        frRadio.value = 'false';
-        frRadio.checked = context.language === 'FR';    // Restore selection
-
-        const frFlag = document.createElement('img');
-        frFlag.src = 'https://flagcdn.com/fr.svg';
-        frFlag.alt = 'Français';
-        frFlag.style.width = '24px';
-        frFlag.style.height = '18px';
-        frFlag.style.objectFit = 'contain';
-
-        frLabel.appendChild(frRadio);
-        frLabel.append(frFlag);
-        frLabel.style.fontSize = '22px';
-        frLabel.style.display = 'flex';
-        frLabel.style.alignItems = 'center';
-        frLabel.style.gap = '6px';
-
-         // Disable when other operation in process
-        enRadio.addEventListener('click', function (e) {
-            if (context.operationWithButtonInProcess) {
-                e.preventDefault();
-        
-                return;
-            }
-        });
-
-         // Handle changes
-        enRadio.addEventListener('change', () => {
-            if (enRadio.checked) {
-                context.language = 'EN';
-
-                if (isTrkEdited) setMenu4EdtStg();
-                else setMenu4NonEdt();
-
-                setGeolocator();
-
-                setLocationFinder();
-
-                if (context.displayInfo > 0) {
-                    for (let i = 0; i < stages.length; i++) {
-                        if (context.editedStage === i)
-                            updateDetailedInfo(stages[i], true, false);
-                        else
-                            updateDetailedInfo(stages[i], false, false);
-                    }
-
-                    displayGlobalInfo();
-                }
-
-                if (context.displayInfo > 1) {
-                    if (context.editedStage !== null) {
-                        displayStageProfile();
-                    } else {
-                        displayRouteProfile();
-                    }
-                }
-            }
-        });
-
-         // Disable when other operation in process
-        frRadio.addEventListener('click', function (e) {
-            if (context.operationWithButtonInProcess) {
-                e.preventDefault();
-        
-                return;
-            }
-        });
-
-        // Handle changes
-        frRadio.addEventListener('change', () => {
-            if (frRadio.checked) {
-                context.language = 'FR';
-                
-                if (isTrkEdited) setMenu4EdtStg();
-                else setMenu4NonEdt();
-
-                setGeolocator();
-
-                setLocationFinder();
-
-                if (context.displayInfo) {
-                    for (let i = 0; i < stages.length; i++) {
-                        if (context.editedStage === i)
-                            updateDetailedInfo(stages[i], true, false);
-                        else
-                            updateDetailedInfo(stages[i], false, false);
-                    }
-
-                    displayGlobalInfo();
-                }
-
-                if (context.displayInfo > 1) {
-                    if (context.editedStage !== null) {
-                        displayStageProfile();
-                    } else {
-                        displayRouteProfile();
-                    }
-                }
-            }
-        });
-
+    function createHelpControl() {
         // Create help button
         const helpButton = document.createElement('button');
         helpButton.textContent = context.language === 'EN' ? 'Help' : 'Aide';
@@ -1881,14 +1850,7 @@
         }
         helpButton.addEventListener('click', helpHandler);  // Associate handler with button
 
-        radios.appendChild(enLabel);
-        radios.appendChild(frLabel);
-        radios.appendChild(helpButton);
-
-        container.appendChild(globalLabel);
-        container.appendChild(radios);
-
-        return container;
+        return helpButton;
     }
 
     //------------------------
@@ -2008,137 +1970,6 @@
         return container;
     }
 
-    //----------------------
-    // Create units control
-    //----------------------
-    function createUnitsControl() {
-        // Create division
-        const container = document.createElement('div');
-        container.style.display = 'flex';
-        container.style.alignItems = 'center';
-        container.style.gap = '8px';
-
-        // Create global label
-        const globalLabel = document.createElement('span');
-        globalLabel.textContent = context.language === 'EN' ? 'Measurement units:' : 'Unités de mesure : ';
-        globalLabel.style.fontSize = '12px';
-
-        // Create radios container
-        const radios = document.createElement('div');
-        radios.style.display = 'flex';
-        radios.style.gap = '6px';
-
-        // Create metric radio button
-        const metricLabel = document.createElement('label');
-        const metricRadio = document.createElement('input');
-        metricRadio.type = 'radio';
-        metricRadio.name = 'units';
-        metricRadio.value = true;
-        metricRadio.checked = context.metricUnits === true;    // Restore selection
-
-        metricLabel.appendChild(metricRadio);
-        metricLabel.append(context.language === 'EN' ? ' Metric' : ' Métriques');
-
-        // Create imperial radio button
-        const imperLabel = document.createElement('label');
-        const imperRadio = document.createElement('input');
-        imperRadio.type = 'radio';
-        imperRadio.name = 'units';
-        imperRadio.value = false;
-        imperRadio.checked = context.metricUnits === false;    // Restore selection
-
-        imperLabel.appendChild(imperRadio);
-        imperLabel.append(context.language === 'EN' ? ' Imperial' : ' Impériales');
-
-         // Disable when other operation in process
-        metricRadio.addEventListener('click', function (e) {
-            if (context.operationWithButtonInProcess) {
-                e.preventDefault();
-        
-                return;
-            }
-        });
-
-         // Handle changes
-        metricRadio.addEventListener('change', () => {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
-    
-            if (metricRadio.checked) {
-                context.metricUnits = true;
-
-                map.removeControl(scaleControl);
-                scaleControl = L.control.scale({ metric: true, imperial: false }).addTo(map);
-
-                if (context.displayInfo > 0) {
-                    for (let i = 0; i < stages.length; i++) {
-                        if (context.editedStage === i)
-                            updateDetailedInfo(stages[i], true, false);
-                        else
-                            updateDetailedInfo(stages[i], false, false);
-                    }
-
-                    displayGlobalInfo();
-                }
-
-                if (context.displayInfo > 1) {
-                    if (context.editedStage !== null) {
-                        displayStageProfile();
-                    } else {
-                        displayRouteProfile();
-                    }
-                }
-            }
-        });
-
-         // Disable when other operation in process
-        imperRadio.addEventListener('click', function (e) {
-            if (context.operationWithButtonInProcess) {
-                e.preventDefault();
-        
-                return;
-            }
-        });
-
-        // Handle changes
-        imperRadio.addEventListener('change', () => {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
-    
-            if (imperRadio.checked) {
-                context.metricUnits = false;
-
-                map.removeControl(scaleControl);
-                scaleControl = L.control.scale({ metric: false, imperial: true }).addTo(map);
-                
-                if (context.displayInfo > 0) {
-                    for (let i = 0; i < stages.length; i++) {
-                        if (context.editedStage === i)
-                            updateDetailedInfo(stages[i], true, false);
-                        else
-                            updateDetailedInfo(stages[i], false, false);
-                    }
-
-                    displayGlobalInfo();
-                }
-
-                if (context.displayInfo > 1) {
-                    if (context.editedStage !== null) {
-                        displayStageProfile();
-                    } else {
-                        displayRouteProfile();
-                    }
-                }
-            }
-        });
-
-        radios.appendChild(metricLabel);
-        radios.appendChild(imperLabel);
-
-        container.appendChild(globalLabel);
-        container.appendChild(radios);
-
-        return container;
-    }
-
     //---------------------------------
     // Delete first point of the stage
     //---------------------------------
@@ -2197,7 +2028,7 @@
     // Create/recreate control to display global information about route 
     //-------------------------------------------------------------------
     function displayGlobalInfo() {
-        if (context.displayInfo === 0) return;
+        if (!context.stageNRouteDataDisplayed) return;
 
         if (context.globalInfoControl)
             context.globalInfoControl.remove();
@@ -2262,9 +2093,9 @@
                 container.append(
                     document.createTextNode(
                         `${context.language === 'EN'
-                            ? (context.metricUnits ? distance.toFixed(3) : (distance/1.609344).toFixed(3))
-                            : (context.metricUnits ? distance.toFixed(3) : (distance/1.609344).toFixed(3)).replace('.', ',')
-                        } ${context.metricUnits ? 'km' : 'mi'}`
+                            ? (context.measurementUnits === 'ME' ? distance.toFixed(3) : (distance/1.609344).toFixed(3))
+                            : (context.measurementUnits === 'ME' ? distance.toFixed(3) : (distance/1.609344).toFixed(3)).replace('.', ',')
+                        } ${context.measurementUnits === 'ME' ? 'km' : 'mi'}`
                     ),
                     document.createElement("br")
                 );
@@ -2299,7 +2130,7 @@
             container.append(
                 document.createTextNode(
                     `${elevation !== null && elevation !== undefined
-                        ? context.metricUnits 
+                        ? context.measurementUnits === 'ME' 
                             ? `${Math.round(elevation)} m` 
                             : `${Math.round(elevation/0.3048)} ft`                 
                         : '?'
@@ -2314,7 +2145,7 @@
                     document.createTextNode(" "),   // ← space AFTER arrow                
                     document.createTextNode(
                         ` ${elevation2 !== null && elevation2 !== undefined
-                            ? context.metricUnits 
+                            ? context.measurementUnits === 'ME' 
                                 ? `${Math.round(elevation2)} m` 
                                 : `${Math.round(elevation2/0.3048)} ft`                 
                             : '?'
@@ -2364,7 +2195,7 @@
                             uparrow,
                             document.createTextNode(" "),   // ← space AFTER arrow
                             document.createTextNode(
-                                `${context.metricUnits
+                                `${context.measurementUnits === 'ME'
                                         ? `${Math.round(ascent)} m`
                                         : `${Math.round(ascent/0.3048)} ft`
                                 }`
@@ -2385,7 +2216,7 @@
                             dnarrow,
                             document.createTextNode(" "),   // ← space AFTER arrow
                             document.createTextNode(
-                                `${context.metricUnits
+                                `${context.measurementUnits === 'ME'
                                         ? `${Math.round(-descent)} m`
                                         : `${Math.round(-descent/0.3048)} ft`
                                 }`
@@ -2421,8 +2252,10 @@
         const overPopup =                                       // Pointer is on popup
                 e.target.closest('.leaflet-popup');
 
+        const overSidePanel = e.target.closest('#sidePanel');
+
         // Do not display coordinates if mouse pointer is not on map, polyline or marker
-        if (!overMap || overControl || overPopup) {
+        if (!overMap || overControl || overPopup || overSidePanel) {
             map_mouseleave(e);
             return;
         }
@@ -2475,7 +2308,7 @@
     // Create/recreate control to display route profile 
     //--------------------------------------------------
     function displayRouteProfile() {
-        if (context.displayInfo < 2) return;
+        if (!context.stageNRouteProfileDisplayed) return;
 
         let pointsNb = 0;
         stages.forEach(stage => {
@@ -2557,7 +2390,7 @@
                                 },
                                 title: {
                                     display: true,
-                                    text: context.metricUnits ? "km" : "mi"
+                                    text: context.measurementUnits === 'ME' ? "km" : "mi"
                                 },
                                 min: 0
                             },
@@ -2635,14 +2468,14 @@
                                         const x = tooltipItems[0].parsed.x;   // the real distance
                                         if (x == null) return "";                              
                                         const label = context.language === 'EN' ? 'Distance: ' : 'Distance : ';
-                                        const unit  = context.metricUnits ? ' km' : ' mi';
+                                        const unit  = context.measurementUnits === 'ME' ? ' km' : ' mi';
                                         return label + x.toFixed(3) + unit;
                                     },
                                     label: function(tooltipItem) {
                                         const y = tooltipItem.parsed.y;
                                         if (y == null) return "";                              
                                         const label = context.language === 'EN' ? 'Altitude: ' : 'Altitude : ';
-                                        const unit  = context.metricUnits ? ' m' : ' ft';
+                                        const unit  = context.measurementUnits === 'ME' ? ' m' : ' ft';
                                         return label + y.toFixed(0) + unit;
                                     }
                                 }
@@ -2664,7 +2497,7 @@
                                 ctx.fillStyle = "#333";
                                 ctx.textAlign = "center";
                                 ctx.fillText(
-                                    context.metricUnits ? "m" : "ft",
+                                    context.measurementUnits === 'ME' ? "m" : "ft",
                                     chartArea.left - 50,
                                     (chartArea.top + chartArea.bottom) / 2
                                 );
@@ -2741,7 +2574,7 @@
             context.routeProfileChart.data.datasets[0].data = context.routeProfileChartPoints;
             context.routeProfileChart.options.scales.y.min = Math.max(Math.round((yMin - (yMax - yMin) * 0.08)/10)*10, 0);
             context.routeProfileChart.options.scales.y.max = Math.round((yMax + (yMax - yMin) * 0.08)/10)*10;
-            context.routeProfileChart.options.scales.x.title.text = context.metricUnits ? "km" : "mi";
+            context.routeProfileChart.options.scales.x.title.text = context.measurementUnits === 'ME' ? "km" : "mi";
             context.routeProfileChart.update();
         }
 
@@ -2765,7 +2598,7 @@
                     context.routeProfileIndexes.push(null);
                 }
                 
-                let alt = context.metricUnits ? stage.points[0].marker.getLatLng().alt : stage.points[0].marker.getLatLng().alt/0.3048;
+                let alt = context.measurementUnits === 'ME' ? stage.points[0].marker.getLatLng().alt : stage.points[0].marker.getLatLng().alt/0.3048;
                 context.routeProfileChartPoints.push({ x: dist, y: alt });
                 context.routeProfileIndexes.push({ stageNum: h, sectNum: 0, ptNum: 0 });
                 
@@ -2793,10 +2626,10 @@
 
                     for (let j = 1; j < sectPoints.length; j++) {
                         k++;
-                        let delta = context.metricUnits ? haversine(sectPoints[j - 1], sectPoints[j]) : haversine(sectPoints[j - 1], sectPoints[j])/1.609344;
+                        let delta = context.measurementUnits === 'ME' ? haversine(sectPoints[j - 1], sectPoints[j]) : haversine(sectPoints[j - 1], sectPoints[j])/1.609344;
                         dist += delta;  // Use the haversine function to add the distance between two points
                         if (sectPoints[j].alt) {    // When alt not available, the previous value is used
-                            alt = context.metricUnits ? sectPoints[j].alt : sectPoints[j].alt/0.3048;
+                            alt = context.measurementUnits === 'ME' ? sectPoints[j].alt : sectPoints[j].alt/0.3048;
                         }
                         context.routeProfileChartPoints.push({ x: dist, y: alt });
                         context.routeProfileIndexes.push({ stageNum: h, sectNum: i, ptNum: j });
@@ -2911,7 +2744,7 @@
                                 },
                                 title: {
                                     display: true,
-                                    text: context.metricUnits ? "km" : "mi"
+                                    text: context.measurementUnits === 'ME' ? "km" : "mi"
                                 },
                                 min: 0
                             },
@@ -2987,13 +2820,13 @@
                                     title: function(tooltipItems) {
                                         const x = tooltipItems[0].parsed.x;   // the real distance                               
                                         const label = context.language === 'EN' ? 'Distance: ' : 'Distance : ';
-                                        const unit  = context.metricUnits ? ' km' : ' mi';
+                                        const unit  = context.measurementUnits === 'ME' ? ' km' : ' mi';
                                         return label + x.toFixed(3) + unit;
                                     },
                                     label: function(tooltipItem) {
                                         const y = tooltipItem.parsed.y;
                                         const label = context.language === 'EN' ? 'Altitude: ' : 'Altitude : ';
-                                        const unit  = context.metricUnits ? ' m' : ' ft';
+                                        const unit  = context.measurementUnits === 'ME' ? ' m' : ' ft';
                                         return label + y.toFixed(0) + unit;
                                     }
                                 }
@@ -3010,7 +2843,7 @@
                                 ctx.fillStyle = "#333";
                                 ctx.textAlign = "center";
                                 ctx.fillText(
-                                    context.metricUnits ? "m" : "ft",
+                                    context.measurementUnits === 'ME' ? "m" : "ft",
                                     chartArea.left - 50,
                                     (chartArea.top + chartArea.bottom) / 2
                                 );
@@ -3057,7 +2890,7 @@
             context.stageProfileChart.data.datasets[0].data = context.stageProfileChartPoints;
             context.stageProfileChart.options.scales.y.min = Math.max(Math.round((yMin - (yMax - yMin) * 0.08)/10)*10, 0);
             context.stageProfileChart.options.scales.y.max = Math.round((yMax + (yMax - yMin) * 0.08)/10)*10;
-            context.stageProfileChart.options.scales.x.title.text = context.metricUnits ? "km" : "mi";
+            context.stageProfileChart.options.scales.x.title.text = context.measurementUnits === 'ME' ? "km" : "mi";
             context.stageProfileChart.update();
         }
 
@@ -3066,7 +2899,7 @@
         //-------------------------
         function calculateStageProfile(stage) {
             let dist = 0;
-            let alt = context.metricUnits ? stage.points[0].marker.getLatLng().alt : stage.points[0].marker.getLatLng().alt/0.3048;
+            let alt = context.measurementUnits === 'ME' ? stage.points[0].marker.getLatLng().alt : stage.points[0].marker.getLatLng().alt/0.3048;
             
             context.stageProfileChartPoints = [{ x: 0, y: alt }];
             context.stageProfileIndexes = [ { sectNum: 0, ptNum: 0 }];
@@ -3083,10 +2916,10 @@
 
                 for (let j = 1; j < sectPoints.length; j++) {
                     k++;
-                    let delta = context.metricUnits ? haversine(sectPoints[j - 1], sectPoints[j]) : haversine(sectPoints[j - 1], sectPoints[j])/1.609344;
+                    let delta = context.measurementUnits === 'ME' ? haversine(sectPoints[j - 1], sectPoints[j]) : haversine(sectPoints[j - 1], sectPoints[j])/1.609344;
                     dist = dist + delta;  // Use the haversine function to add the distance between two points
                     if (sectPoints[j].alt) {    // When alt not available, the previous value is used
-                        alt = context.metricUnits ? sectPoints[j].alt : sectPoints[j].alt/0.3048;
+                        alt = context.measurementUnits === 'ME' ? sectPoints[j].alt : sectPoints[j].alt/0.3048;
                     }
                     context.stageProfileChartPoints.push({ x: dist, y: alt });
                     context.stageProfileIndexes.push({ sectNum: i, ptNum: j });
@@ -3721,13 +3554,23 @@
     //-----------------
     // Quit edit stage
     //-----------------
-    function quitEditStage(removeChart) {
-        if (context.editedStage != null && stages[context.editedStage] && stages[context.editedStage].points && stages[context.editedStage].points.length === 0) {
-            stages.splice(context.editedStage, 1);  // Remove empty stage
-            context.editedStage = null;
+    function quitEditStage() {
+        if (context.editedStage !== null) {
+            const stage = stages[context.editedStage];
+
+            if (stage.points && stage.points.length >= 2 && context.stageNRouteProfileDisplayed) {
+                removeStageMapNChartMarkers();
+
+                removeStageProfileControl();
+            }
+
+            if (stage.points && stage.points.length === 0) {
+                stages.splice(context.editedStage, 1);  // Remove empty stage
+                context.editedStage = null;
+            }
         }
 
-        setEnv4NonEdt(removeChart);
+        setEnv4NonEdt();
     }
 
    //---------------------------------
@@ -3846,6 +3689,19 @@
                     e.preventDefault();
                     if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
                     importRouteFromGPX();
+                } else if (key === 'h') {   // When user presses 'h' (to request help)
+                    e.preventDefault();
+                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+                    const w = window.open('', '_blank');
+                    w.document.title = context.language === 'EN'
+                        ? 'GPX Route Planner – Help'
+                        : 'Planificateur d’Itinéraires GPX – Aide';
+
+                    w.document.body.innerHTML = context.language === 'EN'
+                        ? getHelpContentEn()
+                        : getHelpContentFr();
+
+                    w.document.close();
                 } else if (e.ctrlKey && key === 'z') {   // When user presses Ctrl + 'z' (to undo last action)
                     e.preventDefault();
                     const cmd = undoStack.pop();
@@ -3906,7 +3762,7 @@
 
             if (key === 'escape') {     // When user presses 'escape' (to quit edit mode)
                 e.preventDefault();
-                quitEditStage(true);
+                quitEditStage();
             } else if (key === 'd') {     // When user presses 'd' (to delete current stage)
                 e.preventDefault();
                 if (confirm(context.language === 'EN' ? "Are you sure you want to delete the edited stage?" : "Etes-vous sûr de vouloir supprimer l'étape en cours d'édition ?")) 
@@ -4043,7 +3899,7 @@
                 context.clickTimeout = null;
             }
 
-            quitEditStage(true);    // Finish editing the current stage
+            quitEditStage();    // Finish editing the current stage
                     
             setEnv4EdtStg(null);    // Start editing a new stage
         }
@@ -4052,7 +3908,8 @@
 
         // On real pan start
         function map_dragstart(e) {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationWithButtonInProcess) 
+                return;   // Ignore if a save or rename operation is in process
     
             map.getContainer().style.cursor = 'grabbing';
             //context.suppressNextClick = true;
@@ -4071,7 +3928,8 @@
         mapEvtList.push({ target: map, type: 'dragend', handler: map_dragend });    //Register listener
 
         function map_mousedown(e) {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationWithButtonInProcess) 
+                return;   // Ignore if a save or rename operation is in process
     
             longPressTriggered = false;
 
@@ -4085,7 +3943,8 @@
         mapEvtList.push({ target: map, type: 'mousedown', handler: map_mousedown });    //Register listener
 
         function map_mouseup(e) {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationWithButtonInProcess) 
+                return;   // Ignore if a save or rename operation is in process
     
             clearTimeout(holdTimer);
             map.getContainer().style.cursor = 'crosshair';
@@ -4096,15 +3955,18 @@
         // Set event listener on section for mousemove
         const map_mousemove = (function() {
             return function(e) {
-                if (context.displayInfo < 2 || context.editedStage === null) return;
+                if (!context.stageNRouteProfileDisplayed || context.editedStage === null) 
+                    return;
 
                 const stageRef = stages[context.editedStage];
                 const iRef = context.editedStage;
 
-                if (!stageRef) return;
+                if (!stageRef) 
+                    return;
 
                 let { sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnStage(stageRef, e.latlng);
-                if (sectIdx > 0) ptIdx--;   // First point of section is indexed only for the first section
+                if (sectIdx > 0) 
+                    ptIdx--;   // First point of section is indexed only for the first section
 
                 if (distance <= 30) {
                     const latlng = stageRef.sections[sectIdx].polyline.getLatLngs()[ptIdx];
@@ -4167,7 +4029,8 @@
 
         // Set event listener on map for double-click
         function map_dblclick(e) {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationWithButtonInProcess) 
+                return;   // Ignore if a save or rename operation is in process
     
             setEnv4EdtStg(null);    // Start editing a new stage
         }
@@ -4177,11 +4040,13 @@
         // Set event listener on map when mouse cursor hovers a section of the route
         const map_mousemove = (function() {
             return function(e) {
-                if (context.displayInfo < 2 || context.editedStage !== null) return;
+                if (!context.stageNRouteProfileDisplayed || context.editedStage !== null) 
+                    return;
 
                 stages.forEach((stage, i) => {
                     let { stageIdx: stageIdx, sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnRoute(e.latlng);
-                    if (sectIdx > 0) ptIdx--;   // First point of section is indexed only for the first section
+                    if (sectIdx > 0) 
+                        ptIdx--;   // First point of section is indexed only for the first section
 
                     if (distance <= 30) {
                         const latlng = stages[stageIdx].sections[sectIdx].polyline.getLatLngs()[ptIdx];
@@ -4231,7 +4096,8 @@
     // Set environment for edit stage status
     //---------------------------------------
     function setEnv4EdtStg(i) {
-        setMenu4EdtStg();     // Set menu for edit stage status
+        if (context.menuDisplayed)
+            setMenu4EdtStg();     // Set menu for edit stage status
 
         // Add new empty stage to the route if arg is null
         if (i === null) {
@@ -4252,25 +4118,23 @@
     //-------------------------------------
     // Set environment for non edit status
     //-------------------------------------
-    function setEnv4NonEdt(removeChart) {
-        setMenu4NonEdt();     // Set menu for non edit status
+    function setEnv4NonEdt() {
+        if (context.menuDisplayed)
+            setMenu4NonEdt();     // Set menu for non edit status
 
         setDocMap4NonEdt();     // Set document and map event listeners for non edit status
 
-        if (context.editedStage != null)
-            if (removeChart)
-                setStg4NonEdt(context.editedStage, true);     // Set layout and event listeners on currently edited stage
-            else
-                setStg4NonEdt(context.editedStage, false);     // Set layout and event listeners on currently edited stage
+        if (context.editedStage !== null)
+            setStg4NonEdt(context.editedStage);     // Set layout and event listeners on currently edited stage
 
-        if (context.displayInfo === 2)
+        if (context.stageNRouteProfileDisplayed)
             displayRouteProfile();
     }
 
     //----------------------------
     // Create geolocation control
     //----------------------------
-    function setGeolocator() {
+    function setGeolocationControl() {
         if (context.geolocControl) context.geolocControl.remove();  // Remove previous geolocalizer control
 
         context.geolocControl = L.control({ position: 'topleft' });     // Create new geolocalizer control
@@ -4317,7 +4181,7 @@
             submitButton.addEventListener('click', submitHandler);  // Associate submit handler with button
 
             //-------------------------------------------------------------
-            // Create create two circles on map at the geolocated position
+            // Create two circles on map at the geolocated position
             //-------------------------------------------------------------
             function setPositionOnMap(position) {
                 const lat = position.coords.latitude;
@@ -4326,15 +4190,15 @@
                 map.setView([lat, lng], 15, { 'animate': false });  // Center map on geolocated position
                 
                 // Remove previous layers if any
-                if (window.userLocationMarker) {    
-                    map.removeLayer(window.userLocationMarker);
+                if (context.userLocationMarker) {    
+                    map.removeLayer(context.userLocationMarker);
                 }
-                if (window.userAccuracyCircle) {
-                    map.removeLayer(window.userAccuracyCircle);
+                if (context.userAccuracyCircle) {
+                    map.removeLayer(context.userAccuracyCircle);
                 }
 
                 // Add small filled black circle to the map at user's position
-                window.userLocationMarker = L.circleMarker([lat, lng], {
+                context.userLocationMarker = L.circleMarker([lat, lng], {
                     radius: 5,
                     fillColor: 'red',
                     fillOpacity: 1,
@@ -4343,7 +4207,7 @@
                 }).addTo(map);
 
                 // Add larger accuracy circle
-                window.userAccuracyCircle = L.circleMarker([lat, lng], {
+                context.userAccuracyCircle = L.circleMarker([lat, lng], {
                     radius: 12,
                     color: 'red',
                     fillOpacity: 0,
@@ -4392,7 +4256,7 @@
     //--------------------------------
     // Create location finder control
     //--------------------------------
-    function setLocationFinder() {
+    function setLocationFinderControl() {
         if (context.locFinderControl) context.locFinderControl.remove();    // Remove previous location finder control
 
         for (const { target, type, handler } of docLocFindEvtList)  // Remove event listeners associated with the location finder control
@@ -4470,12 +4334,12 @@
                 if (container) 
                     container.remove(); // Remove the results
                 input.value = '';   // Clear the input field
-                if (window.exactMarker) 
-                    window.exactMarker.remove();   // Remove the marker identifying a place found from the map
-                if (window.foundMarker) 
-                    window.foundMarker.remove();   // Remove the marker identifying a place found from the map
-                if (window.foundPolygon) 
-                    window.foundPolygon.remove();  // Remove the polygon identifying an area found from the map
+                if (context.exactMarker) 
+                    context.exactMarker.remove();   // Remove the marker identifying a place found from the map
+                if (context.foundMarker) 
+                    context.foundMarker.remove();   // Remove the marker identifying a place found from the map
+                if (context.foundPolygon) 
+                    context.foundPolygon.remove();  // Remove the polygon identifying an area found from the map
                 for (const { target, type, handler } of docLocFindEvtList)
                     target.removeEventListener(type, handler);  // Remove all event listeners associated with places found
                 docLocFindEvtList.splice(0);  // Clear registered event listeners
@@ -4557,17 +4421,17 @@
                             container.appendChild(div);
                         });
                     } else {
-                        if (window.exactMarker) 
-                            window.exactMarker.remove();   // Remove the marker identifying a place found from the map
-                        if (window.foundMarker) 
-                            window.foundMarker.remove();   // Remove the marker identifying a place found from the map
-                        if (window.foundPolygon) 
-                            window.foundPolygon.remove();  // Remove the polygon identifying an area found from the map
+                        if (context.exactMarker) 
+                            context.exactMarker.remove();   // Remove the marker identifying a place found from the map
+                        if (context.foundMarker) 
+                            context.foundMarker.remove();   // Remove the marker identifying a place found from the map
+                        if (context.foundPolygon) 
+                            context.foundPolygon.remove();  // Remove the polygon identifying an area found from the map
 
                         if (exactLatlng) {   // No location found by Nominati, but query string is a valid coordinates pair
                             const featGroup = L.featureGroup().addTo(map);
 
-                            window.exactMarker = L.circleMarker(exactLatlng, {
+                            context.exactMarker = L.circleMarker(exactLatlng, {
                                 radius: 6, 
                                 color: "darkblue",
                                 weight: 2,
@@ -4576,7 +4440,7 @@
                                 interactive: false,
                             });
 
-                            featGroup.addLayer(window.exactMarker);
+                            featGroup.addLayer(context.exactMarker);
 
                             map.fitBounds(featGroup.getBounds());
                         }
@@ -4640,12 +4504,12 @@
                         const featGroup = L.featureGroup().addTo(map);
 
                         // If value searched is coordinates, add marker at these coordinates
-                        if (window.exactMarker)
-                            map.removeLayer(window.exactMarker);       // Remove marker for previous position (if any)
+                        if (context.exactMarker)
+                            map.removeLayer(context.exactMarker);       // Remove marker for previous position (if any)
                         
                         if (exactLatlng) {
 
-                            window.exactMarker = L.circleMarker(exactLatlng, {
+                            context.exactMarker = L.circleMarker(exactLatlng, {
                                 radius: 6, 
                                 color: "darkblue",
                                 weight: 2,
@@ -4654,22 +4518,22 @@
                                 interactive: false,
                             });
 
-                            featGroup.addLayer(window.exactMarker);
+                            featGroup.addLayer(context.exactMarker);
                         }
 
                         // Add marker for location found by Nominatim
-                        if (window.foundMarker)
-                            map.removeLayer(window.foundMarker);       // Remove marker for previous position (if any)
+                        if (context.foundMarker)
+                            map.removeLayer(context.foundMarker);       // Remove marker for previous position (if any)
 
-                        window.foundMarker = L.marker([lat, lng], {interactive: false});    // Add new marker at the location
+                        context.foundMarker = L.marker([lat, lng], {interactive: false});    // Add new marker at the location
 
-                        featGroup.addLayer(window.foundMarker);
+                        featGroup.addLayer(context.foundMarker);
 
-                        if (window.foundPolygon)
-                            map.removeLayer(window.foundPolygon);      // Remove polygon for previous area (if any)
+                        if (context.foundPolygon)
+                            map.removeLayer(context.foundPolygon);      // Remove polygon for previous area (if any)
 
                         if (loc[2] != null) {       // Add new polygon around the location (if area information provided by Nominatim)
-                            window.foundPolygon = L.geoJSON(loc[2], {
+                            context.foundPolygon = L.geoJSON(loc[2], {
                                 style: {
                                     color: 'blue', 
                                     weight: 2
@@ -4677,7 +4541,7 @@
                                 interactive: false
                             });
 
-                            featGroup.addLayer(window.foundPolygon);
+                            featGroup.addLayer(context.foundPolygon);
                         }
 
                         map.fitBounds(featGroup.getBounds());
@@ -4768,15 +4632,21 @@
             L.DomEvent.disableClickPropagation(wrapper);
             L.DomEvent.disableScrollPropagation(wrapper);
 
+            // Create header row
+            const headerRow = L.DomUtil.create('div', 'menu-header', wrapper);
+            headerRow.style.display = 'flex';
+            headerRow.style.alignItems = 'center';
+            headerRow.style.justifyContent = 'space-between';
+            headerRow.style.marginBottom = '8px';
+
             // Create title
-            const title = L.DomUtil.create('div', 'menu-title', wrapper);
+            const title = L.DomUtil.create('div', 'menu-title', headerRow);
             title.textContent = context.language === 'EN' ? 'Plot your route on the map' : 'Tracez votre itinéraire sur la carte';
             title.style.fontSize = '18px';
             title.style.fontWeight = 'bold';
-            title.style.marginBottom = '4px';
 
-            // Create language control
-            wrapper.appendChild(createLanguageAndHelpControl(true));
+            // Create help control
+            headerRow.appendChild(createHelpControl());
 
             // Create map style contol
             wrapper.appendChild(createMapStyleControl(map));
@@ -4784,19 +4654,15 @@
             // Create router profile control
             wrapper.appendChild(createRouterProfileControl());
 
-            // Create units control
-            wrapper.appendChild(createUnitsControl());
-
-            // Create display info control
-            wrapper.appendChild(createDisplayInfoControl());
-
             // Create edit stage buttons control
             const edtStgButtonsContainers = createEdtStgButtonsControl();
             wrapper.appendChild(edtStgButtonsContainers[0]);
             wrapper.appendChild(edtStgButtonsContainers[1]);
 
             // Create general buttons control
-            wrapper.appendChild(createGenButtonsControl());
+            const genButtonsContainers = createGenButtonsControl();
+            wrapper.appendChild(genButtonsContainers[0]);
+            wrapper.appendChild(genButtonsContainers[1]);
 
             // Create command list for edit stage control
             wrapper.appendChild(createCmdListEdtStgControl());
@@ -4831,15 +4697,21 @@
             L.DomEvent.disableClickPropagation(wrapper);
             L.DomEvent.disableScrollPropagation(wrapper);
 
+            // Create header row
+            const headerRow = L.DomUtil.create('div', 'menu-header', wrapper);
+            headerRow.style.display = 'flex';
+            headerRow.style.alignItems = 'center';
+            headerRow.style.justifyContent = 'space-between';
+            headerRow.style.marginBottom = '8px';
+
             // Create title
-            const title = L.DomUtil.create('div', 'menu-title', wrapper);
+            const title = L.DomUtil.create('div', 'menu-title', headerRow);
             title.textContent = context.language === 'EN' ? 'Plot your route on the map' : 'Tracez votre itinéraire sur la carte';
             title.style.fontSize = '18px';
             title.style.fontWeight = 'bold';
-            title.style.marginBottom = '4px';
 
-            // Create language control
-            wrapper.appendChild(createLanguageAndHelpControl(false));
+            // Create help control
+            headerRow.appendChild(createHelpControl());
 
             // Create map style control
             wrapper.appendChild(createMapStyleControl(map));
@@ -4847,14 +4719,10 @@
             // Create router profile control
             wrapper.appendChild(createRouterProfileControl());
 
-            // Create units control
-            wrapper.appendChild(createUnitsControl());
-
-            // Create display info control
-            wrapper.appendChild(createDisplayInfoControl());
-
             // Create general buttons control
-            wrapper.appendChild(createGenButtonsControl());
+            genButtonsContainers = createGenButtonsControl();
+            wrapper.appendChild(genButtonsContainers[0]);
+            wrapper.appendChild(genButtonsContainers[1]);
 
             // Create command list for non edit control
             wrapper.appendChild(createCmdListNonEdtControl());
@@ -5727,10 +5595,10 @@
 
         if (stages[i] && stages[i].points.length > 0) {
             // Update stage information to be displayed in popup and show it (if selected)
-            updateDetailedInfo(stages[i], true, false);
+            updateStageDataNProfile(stages[i], true);
         }
 
-        if (context.displayInfo === 2)
+        if (context.stageNRouteProfileDisplayed)
             displayStageProfile(stages[i]);
         else {
             removeStageProfileControl();
@@ -5744,7 +5612,7 @@
     //------------------------------------------------
     // Set previously edited stage to non edit status
     //------------------------------------------------
-    function setStg4NonEdt(i, removeChart) {
+    function setStg4NonEdt(i) {
         if (i === null || i < 0 || i > stages.length - 1)
             return;
            
@@ -5798,7 +5666,8 @@
     
                         L.DomEvent.stopPropagation(e);  // Do not propagate event to map and document
         
-                        quitEditStage(true);    // If another stage was being edited, set it to non edit status
+                        if (context.editedStage !== null) 
+                            quitEditStage();    // If another stage was being edited, set it to non edit status
                         
                         iRef = stages.indexOf(stageRef);    // A stage may have been removed preceding the current stage
 
@@ -5901,7 +5770,7 @@
     
                         L.DomEvent.stopPropagation(e);  // Do not propagate event to map and document
         
-                        quitEditStage(true);
+                        quitEditStage();
 
                         iRef = stages.indexOf(stageRef);
 
@@ -5913,10 +5782,7 @@
             }
             
             // Update stage information to be displayed in popup and show it (if selected)
-            if (removeChart)
-                updateDetailedInfo(stages[i], false, true);
-            else
-                updateDetailedInfo(stages[i], false, false);
+            updateStageDataNProfile(stages[i], false);
         } else {
             stages.splice(i, 1);   // If the stage is empty, delete it
         }
@@ -6071,7 +5937,7 @@
             const newStageIdx = this.after.newStageIdx;
 
             if (newStageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(newStageIdx);
             }
@@ -6080,15 +5946,15 @@
             stages.splice(stageIdx, 0, stage);       // Insert it at new position
             context.editedStage = stageIdx;
 
-            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage
+            updateStageDataNProfile(stage, true);  // Update information to be displayed about the stage
 
             if (stageIdx < newStageIdx) {
                 for (let i = stageIdx + 1; i < newStageIdx + 1; i++) {
-                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                    updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
                 }
             } else {
                 for (let i = newStageIdx; i < stageIdx; i++) {
-                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                    updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
                 }
             }
 
@@ -6100,7 +5966,7 @@
             const newStageIdx = this.after.newStageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -6109,15 +5975,15 @@
             stages.splice(newStageIdx, 0, stage);       // Insert it at new position
             context.editedStage = newStageIdx;
 
-            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage
+            updateStageDataNProfile(stage, true);  // Update information to be displayed about the stage
 
             if (newStageIdx < stageIdx) {
                 for (let i = newStageIdx + 1; i < stageIdx + 1; i++) {
-                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                    updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
                 }
             } else {
                 for (let i = stageIdx; i < newStageIdx; i++) {
-                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                    updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
                 }
             }
 
@@ -6144,7 +6010,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -6192,10 +6058,7 @@
                     stage.descent = null;
                 }
                 
-                if (stage.points.length > 1)
-                    updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage
-                else
-                    updateDetailedInfo(stage, true, true);  // Update information to be displayed about the stage
+                updateStageDataNProfile(stage, true);  // Update information to be displayed about the stage
 
                 displayGlobalInfo();
 
@@ -6215,7 +6078,7 @@
                 setEnv4NonEdt(true);
 
                 for (let i = stageIdx; i < stages.length; i++) {
-                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                    updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
                 }
 
                 displayGlobalInfo();
@@ -6233,7 +6096,7 @@
             }
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -6280,11 +6143,11 @@
                 [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
             }
                   
-            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage
+            updateStageDataNProfile(stage, true);  // Update information to be displayed about the stage
             
             if (stage.points.length === 1) {
                 for (let i = stageIdx + 1; i < stages.length; i++) {
-                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                    updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
                 }
             }
 
@@ -6310,7 +6173,7 @@
             let stageIdx = stages.indexOf(stage);
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -6380,16 +6243,18 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate stage ascent and descent
                 
-            updateDetailedInfo(stage, true, false);   // Update stage information to be displayed in popup and show it (if selected)
-            updateDetailedInfo(stage2, false, false);   // Update stage information to be displayed in popup and show it (if selected)
+            updateStageDataNProfile(stage, true);   // Update stage information to be displayed in popup and show it (if selected)
+            updateStageDataNProfile(stage2, false);   // Update stage information to be displayed in popup and show it (if selected)
 
             if (stageIdx < stageIdx2) {
                 for (let i = stageIdx + 1; i < stages.length; i++) {
-                    if (i != stageIdx2) updateDetailedInfo(stages[i], false, false);
+                    if (i != stageIdx2) 
+                        updateStageDataNProfile(stages[i], false);
                 }
             } else {
                 for (let i = stageIdx2; i < stages.length; i++) {
-                    if (i != stageIdx) updateDetailedInfo(stages[i], false, false);
+                    if (i != stageIdx) 
+                        updateStageDataNProfile(stages[i], false);
                 }
             }
 
@@ -6402,7 +6267,7 @@
             let stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -6467,15 +6332,16 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate stage ascent and descent
                 
-            updateDetailedInfo(stage, true, false);   // Update stage information to be displayed in popup and show it (if selected)
+            updateStageDataNProfile(stage, true);   // Update stage information to be displayed in popup and show it (if selected)
 
             if (stageIdx < stageIdx2) {
                 for (let i = stageIdx + 1; i < stages.length; i++) {
-                    updateDetailedInfo(stages[i], false, false);
+                    updateStageDataNProfile(stages[i], false);
                 }
             } else {
                 for (let i = stageIdx2; i < stages.length; i++) {
-                    if (i != stageIdx) updateDetailedInfo(stages[i], false, false);
+                    if (i != stageIdx) 
+                        updateStageDataNProfile(stages[i], false);
                 }
             }
 
@@ -6501,7 +6367,7 @@
             let stageIdx= stages.indexOf(stage);
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -6568,16 +6434,18 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate stage ascent and descent
                 
-            updateDetailedInfo(stage, true, false);   // Update stage information to be displayed in popup and show it (if selected)
-            updateDetailedInfo(stage2, false, false);   // Update stage information to be displayed in popup and show it (if selected)
+            updateStageDataNProfile(stage, true);   // Update stage information to be displayed in popup and show it (if selected)
+            updateStageDataNProfile(stage2, false);   // Update stage information to be displayed in popup and show it (if selected)
 
             if (stageIdx < stageIdx2) {
                 for (let i = stageIdx + 1; i < stages.length; i++) {
-                    if (i != stageIdx2) updateDetailedInfo(stages[i], false, false);
+                    if (i != stageIdx2) 
+                        updateStageDataNProfile(stages[i], false);
                 }
             } else {
                 for (let i = stageIdx2; i < stages.length; i++) {
-                    if (i != stageIdx) updateDetailedInfo(stages[i], false, false);
+                    if (i != stageIdx) 
+                        updateStageDataNProfile(stages[i], false);
                 }
             }
 
@@ -6591,7 +6459,7 @@
             let stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -6654,15 +6522,16 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate stage ascent and descent
                 
-            updateDetailedInfo(stage, true, false);   // Update stage information to be displayed in popup and show it (if selected)
+            updateStageDataNProfile(stage, true);   // Update stage information to be displayed in popup and show it (if selected)
 
             if (stageIdx < stageIdx2) {
                 for (let i = stageIdx + 1; i < stages.length; i++) {
-                    updateDetailedInfo(stages[i], false, false);
+                    updateStageDataNProfile(stages[i], false);
                 }
             } else {
                 for (let i = stageIdx2; i < stages.length; i++) {
-                    if (i != stageIdx - 1) updateDetailedInfo(stages[i], false, false);
+                    if (i != stageIdx - 1) 
+                        updateStageDataNProfile(stages[i], false);
                 }
             }
 
@@ -6691,7 +6560,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -6734,10 +6603,10 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
                 
             // Update stage information to be displayed in popup and show it (if selected)
-            updateDetailedInfo(stage, true, false);
+            updateStageDataNProfile(stage, true);
 
             for (let i = stageIdx + 1; i < stages.length; i++) {
-                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
             }
 
             displayGlobalInfo();
@@ -6753,7 +6622,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -6800,16 +6669,16 @@
 
             stage.distance = calculateStageDistance(stage);   // Calculate old stage distance
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
-            updateDetailedInfo(stage, false, true);
+            updateStageDataNProfile(stage, false);
 
             if (!stageRestored) {
                 stage2.distance = calculateStageDistance(stage2);  // Calculate new stage distance
                 [stage2.ascent, stage2.descent] = calculateAscentAndDescent(stage2);    // Calculate new stage ascent and descent
             }
-            updateDetailedInfo(stage2, true, false);
+            updateStageDataNProfile(stage2, true);
 
             for (let i = stageIdx + 2; i < stages.length; i++) {
-                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
             }
 
             displayGlobalInfo();
@@ -6837,7 +6706,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -6890,10 +6759,10 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
                 
             // Update stage information to be displayed in popup and show it (if selected)
-            updateDetailedInfo(stage, true, false);
+            updateStageDataNProfile(stage, true);
 
             for (let i = stageIdx + 1; i < stages.length; i++) {
-                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
             }
 
             displayGlobalInfo();
@@ -6910,7 +6779,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -6971,16 +6840,16 @@
 
             stage.distance = calculateStageDistance(stage);   // Calculate old stage distance
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
-            updateDetailedInfo(stage, false, true);
+            updateStageDataNProfile(stage, false);
 
             if (!stageRestored) {
                 stage2.distance = calculateStageDistance(stage2);  // Calculate new stage distance
                 [stage2.ascent, stage2.descent] = calculateAscentAndDescent(stage2);    // Calculate new stage ascent and descent
             }
-            updateDetailedInfo(stage2, true, false);
+            updateStageDataNProfile(stage2, true);
 
             for (let i = stageIdx + 2; i < stages.length; i++) {
-                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
             }
 
             displayGlobalInfo();
@@ -7010,7 +6879,7 @@
             }
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -7049,11 +6918,11 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
 
             // Update information to be displayed about the stage
-            updateDetailedInfo(stage, true, false);
+            updateStageDataNProfile(stage, true);
 
             if (stage.points.length === 1) {
                 for (let i = stageIdx + 1; i < stages.length; i++) {
-                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                    updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
                 }
             }
 
@@ -7067,7 +6936,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -7117,7 +6986,7 @@
                 [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
 
                 // Update information to be displayed about the stage
-                updateDetailedInfo(stage, true, false);
+                updateStageDataNProfile(stage, true);
 
                 displayGlobalInfo();
             } else {
@@ -7133,7 +7002,7 @@
                 context.editedStage = null;
 
                 for (let i = stageIdx; i < stages.length; i++) {
-                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                    updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
                 }
 
                 displayGlobalInfo();
@@ -7164,7 +7033,7 @@
             }
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -7203,11 +7072,11 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
 
             // Update information to be displayed about the stage
-            updateDetailedInfo(stage, true, false);
+            updateStageDataNProfile(stage, true);
 
             if (stage.points.length === 1) {
                 for (let i = stageIdx + 1; i < stages.length; i++) {
-                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                    updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
                 }
             }
 
@@ -7221,7 +7090,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -7271,7 +7140,7 @@
                 [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
 
                 // Update information to be displayed about the stage
-                updateDetailedInfo(stage, true, false);
+                updateStageDataNProfile(stage, true);
 
                 displayGlobalInfo();
             } else {
@@ -7291,7 +7160,7 @@
                 context.editedStage = null;
 
                 for (let i = stageIdx; i < stages.length; i++) {
-                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                    updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
                 }
 
                 displayGlobalInfo();
@@ -7314,7 +7183,7 @@
             const stageIdx = this.stageIdx;
 
             if (context.editedStage != null)
-                quitEditStage(true);
+                quitEditStage();
                 
             stages.splice(stageIdx, 0, stage);
 
@@ -7346,11 +7215,11 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
                   
-            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage        
+            updateStageDataNProfile(stage, true);  // Update information to be displayed about the stage        
 
             if (stage.points.length > 0) {
                 for (let i = stageIdx + 1; i < stages.length; i++) {
-                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                    updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
                 }
             }
 
@@ -7366,7 +7235,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -7411,7 +7280,7 @@
             context.editedStage = null;
 
             for (let i = stageIdx; i < stages.length; i++) {
-                updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
             }
 
             displayGlobalInfo();
@@ -7442,7 +7311,7 @@
             }
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -7524,11 +7393,11 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
             
             // Update information to be displayed for the stage
-            updateDetailedInfo(stage, true, false);
+            updateStageDataNProfile(stage, true);
 
             if (stage.points.length === 1) {
                 for (let i = stageIdx + 1; i < stages.length; i++) {
-                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                    updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
                 }
             }
 
@@ -7542,7 +7411,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -7620,7 +7489,7 @@
                 setEnv4NonEdt(true);
 
                 for (let i = stageIdx; i < stages.length; i++) {
-                    updateDetailedInfo(stages[i], false, false);  // Update information to be displayed about the stage
+                    updateStageDataNProfile(stages[i], false);  // Update information to be displayed about the stage
                 }
 
                 displayGlobalInfo();
@@ -7643,7 +7512,7 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
             
             // Update information to be displayed for the stage
-            updateDetailedInfo(stage, true, false);
+            updateStageDataNProfile(stage, true);
 
             displayGlobalInfo();
         }
@@ -7667,7 +7536,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -7693,7 +7562,7 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
                   
-            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage        
+            updateStageDataNProfile(stage, true);  // Update information to be displayed about the stage        
 
             displayGlobalInfo();
         }
@@ -7704,7 +7573,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -7732,7 +7601,7 @@
             setPoint4Edt(stageIdx, this.sectionIdx + 1);   // Set new point's layout and event listeners for edit mode
 
             // Update stage information to be displayed in popup and show it (if selected)
-            updateDetailedInfo(stage, true, false);
+            updateStageDataNProfile(stage, true);
 
             displayGlobalInfo();
         }
@@ -7756,7 +7625,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -7807,7 +7676,7 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
             
             // Update information to be displayed for the stage
-            updateDetailedInfo(stage, true, false);
+            updateStageDataNProfile(stage, true);
 
             displayGlobalInfo();
         }
@@ -7818,7 +7687,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -7868,7 +7737,7 @@
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);
             
             // Update information to be displayed for the stage
-            updateDetailedInfo(stage, true, false);
+            updateStageDataNProfile(stage, true);
 
             displayGlobalInfo();
         }
@@ -7892,7 +7761,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -7939,7 +7808,7 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
                   
-            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage     
+            updateStageDataNProfile(stage, true);  // Update information to be displayed about the stage     
 
             displayGlobalInfo();
         }
@@ -7950,7 +7819,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -8003,7 +7872,7 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update ascent and descent for the stage
                   
-            updateDetailedInfo(stage, true, false);  // Update information to be displayed about the stage     
+            updateStageDataNProfile(stage, true);  // Update information to be displayed about the stage     
 
             displayGlobalInfo();
         }
@@ -8057,7 +7926,7 @@
                         
             displayGlobalInfo();
 
-            if (context.displayInfo === 2 && context.editedStage === null) {
+            if (context.stageNRouteProfileDisplayed && context.editedStage === null) {
                 if (stages.length > 0)
                     displayRouteProfile();
                 else {
@@ -8070,7 +7939,7 @@
 
         redo() {
             if (context.editedStage != null && stages[context.editedStage].points.length === 0)
-                quitEditStage(true);
+                quitEditStage();
 
             const initStagesNb = stages.length;
             stages.push(...this.after.importedStages);  // Restore stages from backup
@@ -8111,12 +7980,12 @@
 
                 setStg4NonEdt(i, false);   // Set stage to non edit mode
 
-                updateDetailedInfo(stage, false, false);     // Update stage's information popup                
+                updateStageDataNProfile(stage, false);     // Update stage's information popup                
             };
             
             displayGlobalInfo();
 
-            if (context.editedStage === null && context.displayInfo === 2)
+            if (context.editedStage === null && context.stageNRouteProfileDisplayed)
                 displayRouteProfile();
         }
     }
@@ -8160,7 +8029,7 @@
 
                 setStg4NonEdt(i, false);
 
-                updateDetailedInfo(stage, false, true);
+                updateStageDataNProfile(stage, false);
             });
             
             displayGlobalInfo();
@@ -8237,7 +8106,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -8254,7 +8123,7 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update stage ascent/descent
 
-            updateDetailedInfo(stage, true, false);  // Update information about the stage to be displayed in popup
+            updateStageDataNProfile(stage, true);  // Update information about the stage to be displayed in popup
             
             displayGlobalInfo();
         }
@@ -8266,7 +8135,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -8283,7 +8152,7 @@
 
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate/update stage ascent/descent
 
-            updateDetailedInfo(stage, true, false);  // Update information about the stage to be displayed in popup
+            updateStageDataNProfile(stage, true);  // Update information about the stage to be displayed in popup
             
             displayGlobalInfo();
         }
@@ -8307,7 +8176,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -8316,7 +8185,7 @@
             stage.name = this.before.name;
 
             // Update information to be displayed for the stage
-            updateDetailedInfo(stage, true, false);
+            updateStageDataNProfile(stage, true);
         }
 
         redo() {
@@ -8326,7 +8195,7 @@
             const stageIdx = this.stageIdx;
 
             if (stageIdx != context.editedStage) {
-                quitEditStage(true);
+                quitEditStage();
 
                 setEnv4EdtStg(stageIdx);
             }
@@ -8335,7 +8204,7 @@
             stage.name = this.after.name;
                         
             // Update information to be displayed for the stage
-            updateDetailedInfo(stage, true, false);
+            updateStageDataNProfile(stage, true);
         }
     }
 
@@ -9060,10 +8929,22 @@
     //-----------------------------------------------------------
     // Update information about stage name and distance as popup
     //-----------------------------------------------------------
-    function updateDetailedInfo(stage, editMode, removeChart) {
-        if (context.displayInfo < 1) 
+    function updateStageDataNProfile(stage, editMode) {
+        if (!context.stageNRouteDataDisplayed) 
             return;
         
+        // Update stage profile control
+        if (editMode) { 
+            if (stage.points.length < 2 || !context.stageNRouteProfileDisplayed) {
+                removeStageMapNChartMarkers();
+
+                removeStageProfileControl();
+            }
+            else
+                displayStageProfile(stage);    
+        }
+
+        // Update stage data popup
         if (stage.points.length === 0) {    // No stage information displayed if stage has no point
             if (stage.infoPop)
                 stage.infoPop.remove();
@@ -9071,7 +8952,7 @@
             return;
         }
 
-        // Find position where to display stage information on map
+        // Find position where to display stage data on map
         let pos = null;
         if (editMode) 
             pos = findNearbyPosition(stage);
@@ -9106,7 +8987,7 @@
             ${
                 stage.distance > 0 
                 ? `<b>Distance${context.language === 'EN' ? ':' : ' :'} </b> ${
-                    context.metricUnits 
+                    context.measurementUnits === 'ME' 
                         ? `${context.language === 'EN' ? stage.distance.toFixed(3) : stage.distance.toFixed(3).replace('.', ',')} km` 
                         : `${context.language === 'EN' ? (stage.distance/1.609344).toFixed(3) : (stage.distance/1.609344).toFixed(3).replace('.', ',')} mi`
                 }<br>` 
@@ -9114,7 +8995,7 @@
             }
             <b>Altitude${context.language === 'EN' ? ':' : ' :'} </b> ${
                 elevation !== null && elevation !== undefined
-                ? context.metricUnits 
+                ? context.measurementUnits === 'ME' 
                     ? `${Math.round(elevation)} m` 
                     : `${Math.round(elevation/0.3048)} ft`                 
                 : '?'
@@ -9123,7 +9004,7 @@
                 stage.points.length >= 2 
                     ? `<span style="font-size:20px;">&#8594;</span> ${
                         elevation2 !== null && elevation2 !== undefined 
-                        ? context.metricUnits 
+                        ? context.measurementUnits === 'ME' 
                             ? `${Math.round(elevation2)} m` 
                             : `${Math.round(elevation2/0.3048)} ft`
                         : '?'
@@ -9139,7 +9020,7 @@
                     }</b> ${
                         stage.ascent != null 
                             ? `<span style="font-size:20px;">&#8593;</span> ${
-                                context.metricUnits
+                                context.measurementUnits === 'ME'
                                     ? `${Math.round(stage.ascent)} m`
                                     : `${Math.round(stage.ascent/0.3048)} ft`
                             }` 
@@ -9147,7 +9028,7 @@
                     } ${
                         stage.descent != null 
                             ? ` <span style="font-size:20px;">&#8595;</span> ${
-                                context.metricUnits
+                                context.measurementUnits === 'ME'
                                     ? `${Math.round(-stage.descent)} m` 
                                     : `${Math.round(-stage.descent/0.3048)} ft`
                             }`
@@ -9157,18 +9038,8 @@
             }
             </div>`);
 
-        // Add popup to map if requested
+        // Add popup to map
         stage.infoPop.addTo(map);
-
-        // Display stage profile control
-        if (editMode && !removeChart)
-            displayStageProfile(stage);
-        
-        if (removeChart) {
-            removeStageMapNChartMarkers();
-
-            removeStageProfileControl();
-        }
     }
 
     //**************
@@ -9196,11 +9067,13 @@
 <p>Maps are used to create routes (the route is plotted on the map).</p>
 <p>The application offers several map styles:</p>
 <ul>
-<li>A topographic map (displayed by default) highlighting the natural features of the terrain (relief, waterways, coastlines, etc.) and showing contour lines. </li>
+<li>A topographic map (from OpenTopoMap and displayed by default) highlighting the natural features of the terrain (relief, waterways, coastlines, etc.) and showing contour lines. </li>
 <li>A general map (from OpenStreetMap).</li>
-<li>A map with hiking trails (Waymarked Trails - Hiking).</li>
-<li>A map with cycling tracks (Waymarked Trails - Cycling).</li>
-<li>A map in the form of satellite views.</li> 
+<li>A map with hiking trails (from Waymarked Trails).</li>
+<li>A map with hiking trails (from Thunderforest Outdoors).</li>
+<li>A map with cycling tracks (from Waymarked Trails).</li>
+<li>A map with cycling tracks (from CyclOSM).</li>
+<li>A map in the form of satellite views (from Esri).</li> 
 </ul>
 <p>You can zoom in and out on the maps using the mouse wheel or the + and - controls (displayed at the top left).</p>
 <p>You can also move the map in any direction by dragging and dropping.</p>
@@ -9223,8 +9096,12 @@
 <ul>
 <li>Walking/hiking (default): paths and small roads are preferred. </li>
 <li>Mountain biking: paths and trails are preferred. </li>
-<li>Road cycling: paved roads are used, excluding highways.</li>
+<li>Road cycling (fast): paved roads are used, excluding highways. The shortest route is prefered.</li>
+<li>Road cycling (low traffic): paved roads are used, excluding highways. Routes with low traffic are prefered.</li>
+<li>Road cycling (very low traffic): paved roads are used, excluding highways. Routes with low traffic are strongly prefered.</li>
 <li>Car route: paved roads and major roads are used.</li>
+<li>Car route (fast): paved roads and major roads are used. The shortest route is prefered.</li>
+<li>Car route (economic): paved roads and major roads are used. The route with the lowest energy consumption is prefered.</li>
 <li>-- crow --: allows you to plot a straight line between two points, whether or not a path exists.</li>
 </ul>
 For the first four travel modes, the route is calculated using the BRouter routing service and the resulting paths are curved. For the last one, a straight segment is plotted between the two points.
@@ -9251,12 +9128,13 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Click the "Quit stage edition" button or press the “Escape” key to finish creating/editing the stage and switch to supervision mode. </li>
 <li>Click the "Start creating a new stage" button or double-click on the map to finish creating/editing the current stage and switch to create/edit mode for a new stage. </li>
 <li>Double-click on a point or section of another stage to finish creating/editing the current stage and switch to create/edit mode for that stage. </li>
-<li>Click the "Import stages from GPX" to import additional stages from a GPX file (without deleting the stages already defined). </li>
-<li>Click the "Export route to GPX" to export the route to a GPX file. </li>
+<li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages from a GPX file (without deleting the stages already defined). </li>
+<li>Click the "Export route to GPX" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
 <li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
-<li>Click the "Undo last action" or press the "Ctrl + z" key combination to undo the last action.</li>
-<li>Click the "Redo last action" or press the "Ctrl + y" key combination to redo the last action undone.</li>
-<li>Click the "Reset route" to reset the route (i.e., delete all the stages).</li>
+<li>Click the "Undo last action" button or press the "Ctrl + z" key combination to undo the last action.</li>
+<li>Click the "Redo last action" button or press the "Ctrl + y" key combination to redo the last action undone.</li>
+<li>Click the "Reset route" button to reset the route (i.e., delete all the stages).</li>
+<li>Click the "Help" button or press the "h" key to open the Help panel.</li>
 </ul>
 <h3>Supervision mode</h3>
 <p>This mode allows you to view the stages of the route without any being created/edited. The start and end points of each stage are shown, but not the waypoints. </p> 
@@ -9264,19 +9142,32 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <ul>
 <li>Click the "Start creating a new stage" button or double-click on the map to switch to create/edit mode for a new stage. </li>
 <li>Double-click on a point or section of a stage to switch to create/edit mode for that stage. </li>
-<li>Click the "Import stages from GPX" to import additional stages from a GPX file (without deleting the stages already defined). </li>
-<li>Click the "Export route to GPX" to export the route to a GPX file. </li>
+<li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages from a GPX file (without deleting the stages already defined). </li>
+<li>Click the "Export route to GPX" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
 <li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
 <li>Click the "Undo last action" or press the "Ctrl + z" key combination to undo the last action.</li>
 <li>Click the "Redo last action" or press the "Ctrl + y" key combination to redo the last action undone.</li>
 <li>Click the "Reset route" to reset the route (i.e., delete all the stages).</li>
+<li>Click the "Help" button or press the "h" key to open the Help panel.</li>
 </ul>
 <h2>Miscellaneous</h2>
-<p>The user interface language can be selected: English (default) or French.</p>
-<p>The measurement units can be chosen using the "Measurement units" radio buttons: metric (default) or imperial.</p>
-<p>Information can be displayed or hidden for a stage or the whole route: name (for a stage), length, starting and finishing altitudes, positive and negative elevation gains, and profile.</p>
 <p>A geolocation function is provided (top left). It allows you to determine the user's position and center the map on it. The browser's Geolocation API is used for that purpose. </p>
 <p>A location search function based on an address is provided (top left). It allows you to search for a location using a more or less detailed address and center the map on it. Several locations matching the search can be found and displayed in a list. Locations can also be searched via geographic coordinates using either the format: 45°10'20.0"N, 5°30'40.0"E, or the format: 45.172222, 5.511111. The Nominatim geocoding service is used for that purpose.</p>
+<p>A Settings panel can be displayed by clicking on the three-bar icon on the left of the page title. Several options can be selected in this panel:</p>
+<ul>
+<li>The user interface language can be chosen: English (default) or French.</li>
+<li>The measurement units can be chosen: metric (default) or imperial.</li>
+<li>Components and information can be displayed or hidden for a stage or the whole route: 
+<ul>
+<li>Main menu</li>
+<li>Geolocation tool</li>
+<li>Location finder tool</li>
+<li>Stage and route information: name (stages), length, starting and finishing altitudes, and positive and negative elevation gains.</li>
+<li>Stage or route profile, displayed as a graph.</li>
+</ul>
+</ul>
+<p>A distance scale is included in the lower left corner.</p>
+<p>While the mouse pointer moves on the map, its geographic coordinates are displayed in the lower right corner.</p>
         `);
     }
 
@@ -9301,11 +9192,13 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <p>Des cartes servent de support à la création d'itinéraires (on trace l'itinéraire sur la carte).</p>
 <p>Plusieurs styles de carte sont offerts par l'application :</p>
 <ul>
-<li>Une carte topographique (présentée par défaut) mettant en évidence les caractéristiques naturelles du terrain (relief, cours d'eau, côtes...) et représentant les courbes de niveau.</li>
-<li>Une carte généraliste (celle d'OpenStreetMap).</li>
-<li>Une carte avec des sentiers de randonnée (Waymarked Trails - Hiking).</li>
-<li>Une carte avec des pistes de cyclotourisme (Waymarked Trails - Cycling).</li>
-<li>Une carte sous forme de vues satellite.</li> 
+<li>Une carte topographique (d'OpenTopoMap, présentée par défaut) mettant en évidence les caractéristiques naturelles du terrain (relief, cours d'eau, côtes...) et représentant les courbes de niveau.</li>
+<li>Une carte généraliste (d'OpenStreetMap).</li>
+<li>Une carte avec des sentiers de randonnée (de Waymarked Trails).</li>
+<li>Une carte avec des sentiers de randonnée (de Thunderforest Outdoors).</li>
+<li>Une carte avec des pistes de cyclotourisme (de Waymarked Trails).</li>
+<li>Une carte avec des pistes de cyclotourisme (de CyclOSM).</li>
+<li>Une carte sous forme de vues satellite (d'Esri).</li> 
 </ul>
 <p>On peut zoomer et dézoomer les cartes en utilisant la molette de la souris ou les contrôles + et - (affichés en haut à gauche de la carte).</p>
 <p>On peut aussi déplacer la carte dans toutes les directions par tirer-déposer.</p>
@@ -9328,9 +9221,13 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <ul>
 <li>Marche/randonnée (par défaut) : les chemins et les petites routes sont choisis de préférence.</li>
 <li>VTT : les chemins et sentiers sont choisis de préférence.</li>
-<li>Cyclisme sur route : les routes goudronnées sont utilisées, à l'exclusion des autoroutes.</li>
+<li>Cyclisme sur route (rapide) : les routes goudronnées sont utilisées, à l'exclusion des autoroutes. L'itinéraire le plus court est préféré.</li>
+<li>Cyclisme sur route (trafic bas) : les routes goudronnées sont utilisées, à l'exclusion des autoroutes. Les itinéraires avec trafic bas sont préférés>.</li>
+<li>Cyclisme sur route (trafic très bas): les routes goudronnées sont utilisées, à l'exclusion des autoroutes. Les itinéraires avec trafic bas sont fortement privilégiés>.</li>
 <li>Automobile : les routes goudronnées et les grands axes sont utilisés.</li>
-<li>Aucun : permet de tracer un trajet en ligne droite entre deux points, qu'il existe ou non un chemin.</li>
+<li>Automobile (rapide) : les routes goudronnées et les grands axes sont utilisés. L'itinéraire le plus court est préféré.</li>
+<li>Automobile (économique) : les routes goudronnées et les grands axes sont utilisés. L'itinéraire avec la plus faible consommation d'énergie est préféré.</li>
+<li>-- vol d'oiseau -- : permet de tracer un trajet en ligne droite entre deux points, qu'il existe ou non un chemin.</li>
 </ul>
 Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du service de routage BRouter etles chemins résultants sont courbes. Pour le dernier, un segment de droite est tracé entre les deux points.
 </li>
@@ -9356,12 +9253,13 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Cliquer sur le bouton "Quitter édition de l'étape" ou presser la touche "Echappement" pour terminer la création/modification de l'étape et passer en mode supervision.</li>
 <li>Cliquer sur le bouton "Démarrer création nouvelle étape" ou double-cliquer sur la carte pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'une nouvelle étape.</li>
 <li>Double-cliquer sur un point ou une section d'une autre étape pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour l'autre étape.</li>
-<li>Cliquer sur le boutton "Importer étapes de GPX" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
-<li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
+<li>Cliquer sur le boutton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
+<li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
 <li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
 <li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
 <li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
 <li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes).</li>
+<li>Cliquer sur le bouton "Help" ou presser la touche "h" pour ouvrir le panneau d'Aide.</li>
 </ul>
 <h3>Mode supervision</h3>
 <p>Ce mode permet de visualiser les étapes de l'itinéraire sans qu'aucune ne soit en cours de création/modification. Les points de départ et d'arrivée de chaque étape sont représentés, mais pas les points de passage.</p> 
@@ -9369,18 +9267,31 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <ul>
 <li>Cliquer sur le bouton "Démarrer création nouvelle étape" ou double-cliquer sur la carte pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'une nouvelle étape.</li>
 <li>Double-cliquer sur un point ou une section d'une autre étape pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour l'autre étape.</li>
-<li>Cliquer sur le boutton "Importer étapes de GPX" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
-<li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
+<li>Cliquer sur le boutton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
+<li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
 <li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
 <li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
 <li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
 <li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes).</li>
+<li>Cliquer sur le bouton "Help" ou presser la touche "h" pour ouvrir le panneau d'Aide.</li>
 </ul>
 <h2>Divers</h2>
-<p>La langue de l'interface utilisateur peut être choisie : anglais (par défaut) ou français.</p>
-<p>Les unités de mesure peuvent être choisies à l'aide des boutons radio "Unités de mesure" : métriques (par default) ou impériales.</p>
-<p>Des informations peuvent être affichées ou masquées pour une étape ou l'ensemble de l'itinéraire : nom (pour une étape), longueur, altitudes de départ et d'arrivée, dénivelés positif et négatif et profil.</p>
 <p>Une fonction de géolocalisation est fournie (en haut à gauche). Elle permet de déterminer la position de l'utilisateur et de centrer la carte dessus. L'API de géolocalisation du navigateur est utilisée pour cela.</p>
 <p>Une fonction de recherche de lieu à partir d'une adresse est fournie (en haut à gauche). Elle permet de rechercher un lieu à partir d'une adresse plus ou moins détaillée et de centrer la carte dessus. Plusieurs lieux correspondant à la recherche peuvent être trouvés et affichés sous forme de liste. Des lieux peuvent aussi être recherchés via des coordonnées geographiques en utilisant soit le format: 45°10'20.0"N, 5°30'40.0"E ou le format: 45.172222, 5.511111. Le service de géocodage Nominatim est utilisé pour cela.</p>
+<p>Un panneau de Préférences peut être affiché en cliquant sur l'icone à trois barres à la gauche du titre de la page. Plusieurs options peuvent être sélectionnées dans ce panneau :</p>
+<ul>
+<li>La langue de l'interface utilisateur peut être choisie : anglais (par défaut) ou français.</li>
+<li>Les unités de mesure peuvent être choisies : métriques (par default) ou impériales.</li>
+<li>Des components et des informations peuvent être affichés ou cachés pour une étape ou l'ensemble de l'itinéraire: 
+<ul>
+<li>Menu principal</li>
+<li>Outil de géolocalisation</li>
+<li>Outil de recherche de lieu</li>
+<li>Informations sur les étapes et l'ensemble de l'itinéraire: nom (étapes), distance, altitudes de départ et d'arrivée et dénivelés positif et negatif.</li>
+<li>Profil de l'étape ou de l'ensemble de l'itinéraire affiché comme graphe.</li>
+</ul>
+</ul>
+<p>Une échelle des distances est incluse dans le coin du bas gauche.</p>
+<p>Pendant que le pointeur de la souris est déplacé sur la carte, ses coordonnées géographiques sont affichées dans le coin du bas droit.</p>
         `);
     }

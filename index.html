@@ -7,10 +7,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     html, body { height: 100%; margin: 0; display: flex; flex-direction: column;}
-    body { margin:0; font-family:sans-serif; }
+    body { margin:0; font-family:sans-serif}
     h3 { margin: 0; padding: 0.5em; }
     #map { height:calc(100vh - 3em); width: 100%; }
-    .command-table { border-collapse: collapse; border: none; font-size: 12px }
+    .command-table { width: 320px; table-layout: fixed; border-collapse: collapse; border: none; font-size: 12px }
     .command-table th, td { border: 1px solid #333; padding: 4px 6px; line-height: 1.2; vertical-align: top; }
     .command-table td:first-child { white-space: nowrap; padding-right: 10px; }
     .header-table { border-collapse: collapse; border: none; width: auto; }
@@ -18,26 +18,35 @@
     .header-table .title { text-align: left; font-size: 20px; font-weight: bold; white-space: nowrap; }
     .header-table .author { text-align: right; font-size: 12px; font-style: italic; }
 	.menu {background: white; padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    border-radius: 5px; line-height: 18px; color: #555; }
+        border-radius: 5px; line-height: 18px; color: #555; }
 	.menu i {width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 1.7; }
     .collapsible-menu {cursor: default; }
     .menu-header {cursor: pointer; }
     .solid-popup .leaflet-popup-content-wrapper,
     .solid-popup .leaflet-popup-tip { opacity: 1; }
-    .location-item { padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; background: #ededed; cursor: pointer; user-select: none; transition: background-color 0.2s, border-color 0.2s; }
+    .location-item { padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; background: #ededed; cursor: pointer; user-select: none; 
+        transition: background-color 0.2s, border-color 0.2s; }
     .location-item:hover { background: #cacaca; }
     .location-item.selected { background: #b0b0b0; border-color: #3399ff; }
     .leaflet-center { left: 50%; transform: translateX(-50%); }
+    .settingsBtn { border: none; background-color: ghostwhite; color: black; font-size: 15px; cursor: pointer; }
+    .side-panel { position: fixed; top: 0; left: -1000px; /* hidden by default */ width: 250px; height: 100%; background: #f8f8f8; box-shadow: none;
+        transition: left 0.3s ease; padding: 15px; z-index: 9999;  box-shadow: 2px 0 5px rgba(0,0,0,0.3); }
+    .side-panel.open { left: 0; /* slide in */}
   </style>
 </head>
 <body>
     <table class="header-table">
     <tr>
+    <td style="width: 2%"><button id="settingsBtn" class="settingsBtn"><i class="fa fa-bars"></i></button></td>
     <td class="title">GPX Route Planner</td>
     <td class="author">Developed by Patrick Marie</td>
     </tr>
     </table>
-    <div id="map"></div>
+
+    <div id="map"/>
+    
+    <div id="sidePanel" class="side-panel"/>
 
     <script src=https://unpkg.com/leaflet@1.9.4/dist/leaflet.js 
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
@@ -69,8 +78,8 @@
     //*************
     try {
         // Create map
-        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
-//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
+//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
+        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
 
         // Create specific layers for the markers, so that are always on top of the polylines
         map.createPane('markerNEPane');
@@ -83,13 +92,14 @@
         scaleControl = L.control.scale({ metric: true, imperial: false }).addTo(map);
  
         // Create geolocation control
-        setGeolocator();
+        setGeolocationControl();
         
         // Create location finder dialog
-        setLocationFinder();
+        setLocationFinderControl();
     
-        //setEnv4NonEdt();    // Set environment with non edit features
-        setEnv4EdtStg(null);    // Start editing a new stage    
+        activateSettingsBtn();
+
+        setEnv4EdtStg(null);    // Start editing a new stage
     } catch(e) {   
         // Remove map 
         if (typeof map !== 'undefined' && map) { map.remove(); }

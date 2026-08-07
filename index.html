@@ -44,14 +44,13 @@
     </tr>
     </table>
 
-    <div id="map"/>
+    <div id="map"></div>
     
-    <div id="sidePanel" class="side-panel"/>
+    <div id="sidePanel" class="side-panel"></div>
 
     <script src=https://unpkg.com/leaflet@1.9.4/dist/leaflet.js 
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
-	    crossorigin="">
-    </script>
+	    crossorigin=""></script>
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
     <script src="GPX_Route_Planner.js"></script>
@@ -78,8 +77,8 @@
     //*************
     try {
         // Create map
-        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
-//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
+//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
+        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
 
         // Create specific layers for the markers, so that are always on top of the polylines
         map.createPane('markerNEPane');
@@ -90,12 +89,17 @@
 
         // Add a scale bar
         scaleControl = L.control.scale({ metric: true, imperial: false }).addTo(map);
- 
+
+        // Retrieve settings from cookies
+        retrieveSettingsFromCookies();
+
         // Create geolocation control
-        setGeolocationControl();
+        if (context.geolocationDisplayed) 
+            setGeolocationControl();
         
         // Create location finder dialog
-        setLocationFinderControl();
+        if (context.locationFinderDisplayed) 
+            setLocationFinderControl();
     
         activateSettingsBtn();
 

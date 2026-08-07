@@ -1,3 +1,12 @@
+    ///////////////////////////////
+    // GPX ROUTE PLANNER library //
+    ///////////////////////////////
+
+
+    //**************************
+    // CONSTANTS AND VARIABLES *
+    //**************************
+
     // Custom namespace
     const RP_NS = "https://patrickmarie.dev/ns/routeplanner/extensions";
 
@@ -524,6 +533,9 @@
     // MAIN FUNCTIONS *
     //*****************
 
+    //---------------------------------------------------
+    // Define settings button to open ettings side panel
+    //---------------------------------------------------
     function activateSettingsBtn() {
         if (context.settingsBtnActivated) return;
 
@@ -567,63 +579,38 @@
         context.settingsBtnActivated = true; 
     }
 
-    function generateSidePanelContents() {
-        sidePanel.innerHTML = `
-            <h2>${context.language === 'EN' ? "Settings" : "Préférences" }</h2>
-            <h3>${context.language === 'EN' ? "Language:" : "Langue :" }</h3>
-            <div>
-            <input type="radio" id="english" name="language" value="EN" ${context.language === 'EN' ? "checked" : "" } />
-            <label for="english">
-                <img src="https://flagcdn.com/gb.svg" width="24" height="18" />
-                <img src="https://flagcdn.com/us.svg" width="24" height="18" />
-            </label>                  
-            <input type="radio" id="french" name="language" value="FR" ${context.language === 'FR' ? "checked" : "" }/>
-            <label for="french">
-                <img src="https://flagcdn.com/fr.svg" width="24" height="18" />
-            </label>
-            </div>
-            <h3>${context.language === 'EN' ? "Measurement units:" : "Unités de mesure :" }</h3>
-            <div>
-            <input type="radio" id="metric" name="units" value="EN" ${context.measurementUnits === 'ME' ? "checked" : "" } />
-            <label for="metric">${context.language === 'EN' ? "Metric" : "Métriques" }</label>                  
-            <input type="radio" id="imperial" name="units" value="FR" ${context.measurementUnits === 'IM' ? "checked" : "" }/>
-            <label for="imperial">${context.language === 'EN' ? "Imperial" : "Impériales" }</label>
-            </div>
-            <h3>${context.language === 'EN' ? "Information and tools displayed:" : "Informations et outils affichés :" }</h3>
-            <div>
-            <input type="checkbox" id="menu" name="menu" value="menu" ${context.menuDisplayed ? "checked" : "" } />
-            <label for="menu">${context.language === 'EN' ? "Menu" : "Menu" }</label>
-            <br/>                 
-            <input type="checkbox" id="geolocation" name="geolocation" value="geolocation" ${context.geolocationDisplayed ? "checked" : "" } />
-            <label for="geolocation">${context.language === 'EN' ? "Geolocation" : "Géolocalisation" }</label>                  
-            <br/>                 
-            <input type="checkbox" id="locationFinder" name="locationFinder" value="locationFinder" ${context.locationFinderDisplayed ? "checked" : "" } />
-            <label for="locationFinder">${context.language === 'EN' ? "Location finder" : "Recherche de lieux" }</label>                  
-            <br/>                 
-            <input type="checkbox" id="stageNRouteData" name="stageNRouteData" value="stageNRouteData" ${context.stageNRouteDataDisplayed ? "checked" : "" } />
-            <label for="stageNRouteData">${context.language === 'EN' ? "Stage and route data" : "Données d'étape et d'itinéraire'" }</label>                  
-            <br/>                 
-            <input type="checkbox" id="stageNRouteProfile" name="stageNRouteProfile" value="stageNRouteProfile" ${context.stageNRouteProfileDisplayed ? "checked" : "" } />
-            <label for="stageNRouteProfile">${context.language === 'EN' ? "Stage and route profile" : "Profil d'étape et d'itinéraire'" }</label>                  
-            </div>
-        `;
+    //-------------------------------------------------------------------------------
+    // Display or hide geolocation control as requested from the settings side panel
+    //-------------------------------------------------------------------------------
+    function changeGeolocation(checked) {
+        if (checked) {
+            context.geolocationDisplayed = true;
 
-        document.getElementById("english").addEventListener("click", () => setLanguage('EN'));
-        document.getElementById("french").addEventListener("click", () => setLanguage('FR'));
-        document.getElementById("metric").addEventListener("click", () => setMeasurementUnits('ME'));
-        document.getElementById("imperial").addEventListener("click", () => setMeasurementUnits('IM'));
-        document.getElementById("menu").addEventListener("click", (e) => setMenu(e.target.checked));
-        document.getElementById("geolocation").addEventListener("click", (e) => setGeolocation(e.target.checked));
-        document.getElementById("locationFinder").addEventListener("click", (e) => setLocationFinder(e.target.checked));
-        document.getElementById("stageNRouteData").addEventListener("click", (e) => setStageNRouteData(e.target.checked));
-        document.getElementById("stageNRouteProfile").addEventListener("click", (e) => setStageNRouteProfile(e.target.checked));
+            setCookie("GeolocationDisplayed", '1', 60)
+
+            setGeolocationControl();
+        } else {
+            context.geolocationDisplayed = false;
+
+            setCookie("GeolocationDisplayed", '0', 60)
+
+            if (context.geolocControl) context.geolocControl.remove();  // Remove geolocalizer control
+        }
     }
 
-    function setLanguage(lang) {
-        if (lang === 'EN')
+    //-------------------------------------------------------------
+    // Change language when requested from the settings side panel
+    //-------------------------------------------------------------
+    function changeLanguage(lang) {
+        if (lang === 'EN') {
             context.language = 'EN';
-        else
+
+            setCookie("Language", 'EN', 60);
+        } else {
             context.language = 'FR';
+
+            setCookie("Language", 'FR', 60);
+        }
 
         if (context.menuDisplayed) {
             if (context.editedStage !== null) 
@@ -660,11 +647,38 @@
         generateSidePanelContents();
     }
 
-    function setMeasurementUnits(measurementUnits) {
-        if (measurementUnits === 'ME')
+    //-----------------------------------------------------------------------------------
+    // Display or hide location finder control as requested from the settings side panel
+    //-----------------------------------------------------------------------------------
+    function changeLocationFinder(checked) {
+        if (checked) {
+            context.locationFinderDisplayed = true;
+
+            setCookie("LocationFinderDisplayed", '1', 60);
+            
+            setLocationFinderControl();
+        } else {
+            context.locationFinderDisplayed = false;
+
+            setCookie("LocationFinderDisplayed", '0', 60);
+            
+            if (context.locFinderControl) context.locFinderControl.remove();  // Remove location finder control
+        }
+    }
+
+    //----------------------------------------------------------------------
+    // Change measurement units when requested from the settings side panel
+    //----------------------------------------------------------------------
+    function changeMeasurementUnits(measurementUnits) {
+        if (measurementUnits === 'ME') {
             context.measurementUnits = 'ME';
-        else
+
+            setCookie("MeasurementUnits", 'ME', 60);
+        } else {
             context.measurementUnits = 'IM';
+
+            setCookie("MeasurementUnits", 'IM', 60);
+        }
 
         if (context.stageNRouteDataDisplayed) {
             for (let i = 0; i < stages.length; i++) {
@@ -688,9 +702,14 @@
         generateSidePanelContents();
     }
 
-    function setMenu(checked) {
+    //-----------------------------''-----------------------------------------
+    // Display or hide main control as requested from the settings side panel
+    //-------------------------------''---------------------------------------
+    function changeMenu(checked) {
         if (checked) {
             context.menuDisplayed = true;
+
+            setCookie("MainMenuDisplayed", '1', 60);
 
             if (context.editedStage !== null) 
                 setMenu4EdtStg();
@@ -699,38 +718,21 @@
         } else {
             context.menuDisplayed = false;
 
+            setCookie("MainMenuDisplayed", '0', 60);
+
             if (context.menuControl) 
                 context.menuControl.remove();      // Remove menu control
         }
     }
 
-    function setGeolocation(checked) {
-        if (checked) {
-            context.geolocationDisplayed = true;
-
-           setGeolocationControl();
-        } else {
-            context.geolocationDisplayed = false;
-
-            if (context.geolocControl) context.geolocControl.remove();  // Remove geolocalizer control
-        }
-    }
-
-    function setLocationFinder(checked) {
-        if (checked) {
-            context.locationFinderDisplayed = true;
-
-           setLocationFinderControl();
-        } else {
-            context.locationFinderDisplayed = false;
-
-            if (context.locFinderControl) context.locFinderControl.remove();  // Remove location finder control
-        }
-    }
-
-    function setStageNRouteData(checked) {
+    //--------------------------------------------------------------------------------
+    // Display or hide stage and route data as requested from the settings side panel
+    //--------------------------------------------------------------------------------
+    function changeStageNRouteData(checked) {
         if (checked) {
             context.stageNRouteDataDisplayed = true;
+
+            setCookie("StageAndRouteDataDisplayed", '1', 60);
 
             for (let i = 0; i < stages.length; i++) {
                 if (context.editedStage === i)
@@ -743,6 +745,8 @@
         } else {
             context.stageNRouteDataDisplayed = false;
 
+            setCookie("StageAndRouteDataDisplayed", '0', 60);
+
             for (let i = 0; i < stages.length; i++) {
                 if (stages[i].infoPop)
                     stages[i].infoPop.remove();
@@ -753,9 +757,14 @@
         }
     }
 
-    function setStageNRouteProfile(checked) {
+    //----------------------------------------------------------------------------------
+    // Display or hide stage or route profile as requested from the settings side panel
+    //----------------------------------------------------------------------------------
+    function changeStageNRouteProfile(checked) {
         if (checked) {
             context.stageNRouteProfileDisplayed = true;
+
+            setCookie("StageAndRouteProfileDisplayed", '1', 60);
 
             if (context.editedStage != null) {
                 displayStageProfile(stages[context.editedStage]);
@@ -765,6 +774,8 @@
         } else {
             context.stageNRouteProfileDisplayed = false;
             
+            setCookie("StageAndRouteProfileDisplayed", '0', 60);
+
             if (context.editedStage != null) {
                 removeStageMapNChartMarkers();
 
@@ -780,7 +791,7 @@
     //-----------------------------------
     // Change stage position in the list
     //-----------------------------------
-    function changeStgPos(newPosition) {
+    function changeStagePosition(newPosition) {
         if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
 
         if (context.editedStage === null) return;
@@ -1452,10 +1463,10 @@
 
             // Add the options
             const options = [
-                { label: context.language === 'EN' ? "Move before" : "Placer avant", action: () => changeStgPos('before') },
-                { label: context.language === 'EN' ? "Move after" : "Placer après", action: () => changeStgPos('after') },
-                { label: context.language === 'EN' ? "Move first" : "Placer au début", action: () => changeStgPos('first') },
-                { label: context.language === 'EN' ? "Move last" : "Placer à la fin", action: () => changeStgPos('last') }
+                { label: context.language === 'EN' ? "Move before" : "Placer avant", action: () => changeStagePosition('before') },
+                { label: context.language === 'EN' ? "Move after" : "Placer après", action: () => changeStagePosition('after') },
+                { label: context.language === 'EN' ? "Move first" : "Placer au début", action: () => changeStagePosition('first') },
+                { label: context.language === 'EN' ? "Move last" : "Placer à la fin", action: () => changeStagePosition('last') }
             ];
 
             options.forEach(opt => {
@@ -1824,7 +1835,7 @@
             if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
     
             if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
-                resetRte();
+                resetRoute();
         }
         resetRteButton.addEventListener('click', resetRteHandler);  // Associate submit handler with button
     
@@ -1895,11 +1906,6 @@
             select.appendChild(option);
         });
 
-        // Default value
-        if (!context.baseMap)
-            context.baseMap = 'otm';
-        baseMaps[context.baseMap].addTo(map);
-
         // Restore selection
         select.value = context.baseMap;
 
@@ -1916,6 +1922,7 @@
                 if (map.hasLayer(layer)) map.removeLayer(layer);
             });
             context.baseMap = this.value;
+            setCookie("BaseMap", context.baseMap, 60);
             if (context.baseMap === 'hiking' || context.baseMap === 'cycling')
                 baseMaps.osm.addTo(map);
             baseMaps[context.baseMap].addTo(map);
@@ -1948,10 +1955,6 @@
             select.appendChild(option);
         });
 
-        // Default value
-        if (!context.routerProfile)
-            context.routerProfile = 'trekking';
-
         // Restore selection
         select.value = context.routerProfile;
 
@@ -1965,6 +1968,7 @@
         // Handle selection changes
         select.onchange = function () {
             context.routerProfile = this.value; // ✔ string stored
+            setCookie("RouterProfile", context.routerProfile, 60);
         };
 
         return container;
@@ -3038,6 +3042,81 @@
         }
     }
 
+    //--------------------------------------
+    // Generate setings side panel contents
+    //--------------------------------------
+    function generateSidePanelContents() {
+        sidePanel.innerHTML = `
+            <h2>${context.language === 'EN' ? "Settings" : "Préférences" }</h2>
+            <h3>${context.language === 'EN' ? "Language:" : "Langue :" }</h3>
+            <div>
+            <input type="radio" id="english" name="language" value="EN" ${context.language === 'EN' ? "checked" : "" } />
+            <label for="english">
+                <img src="https://flagcdn.com/gb.svg" width="24" height="18" />
+                <img src="https://flagcdn.com/us.svg" width="24" height="18" />
+            </label>                  
+            <input type="radio" id="french" name="language" value="FR" ${context.language === 'FR' ? "checked" : "" }/>
+            <label for="french">
+                <img src="https://flagcdn.com/fr.svg" width="24" height="18" />
+            </label>
+            </div>
+            <h3>${context.language === 'EN' ? "Measurement units:" : "Unités de mesure :" }</h3>
+            <div>
+            <input type="radio" id="metric" name="units" value="EN" ${context.measurementUnits === 'ME' ? "checked" : "" } />
+            <label for="metric">${context.language === 'EN' ? "Metric" : "Métriques" }</label>                  
+            <input type="radio" id="imperial" name="units" value="FR" ${context.measurementUnits === 'IM' ? "checked" : "" }/>
+            <label for="imperial">${context.language === 'EN' ? "Imperial" : "Impériales" }</label>
+            </div>
+            <h3>${context.language === 'EN' ? "Information and tools displayed:" : "Informations et outils affichés :" }</h3>
+            <div>
+            <input type="checkbox" id="menu" name="menu" value="menu" ${context.menuDisplayed ? "checked" : "" } />
+            <label for="menu">${context.language === 'EN' ? "Main menu" : "Menu principal" }</label>
+            <br/>                 
+            <input type="checkbox" id="geolocation" name="geolocation" value="geolocation" ${context.geolocationDisplayed ? "checked" : "" } />
+            <label for="geolocation">${context.language === 'EN' ? "Geolocation" : "Géolocalisation" }</label>                  
+            <br/>                 
+            <input type="checkbox" id="locationFinder" name="locationFinder" value="locationFinder" ${context.locationFinderDisplayed ? "checked" : "" } />
+            <label for="locationFinder">${context.language === 'EN' ? "Location finder" : "Recherche de lieux" }</label>                  
+            <br/>                 
+            <input type="checkbox" id="stageNRouteData" name="stageNRouteData" value="stageNRouteData" ${context.stageNRouteDataDisplayed ? "checked" : "" } />
+            <label for="stageNRouteData">${context.language === 'EN' ? "Stage and route data" : "Données d'étape et d'itinéraire'" }</label>                  
+            <br/>                 
+            <input type="checkbox" id="stageNRouteProfile" name="stageNRouteProfile" value="stageNRouteProfile" ${context.stageNRouteProfileDisplayed ? "checked" : "" } />
+            <label for="stageNRouteProfile">${context.language === 'EN' ? "Stage and route profile" : "Profil d'étape et d'itinéraire'" }</label>                  
+            </div>
+        `;
+
+        document.getElementById("english").addEventListener("click", () => changeLanguage('EN'));
+        document.getElementById("french").addEventListener("click", () => changeLanguage('FR'));
+        document.getElementById("metric").addEventListener("click", () => changeMeasurementUnits('ME'));
+        document.getElementById("imperial").addEventListener("click", () => changeMeasurementUnits('IM'));
+        document.getElementById("menu").addEventListener("click", (e) => changeMenu(e.target.checked));
+        document.getElementById("geolocation").addEventListener("click", (e) => changeGeolocation(e.target.checked));
+        document.getElementById("locationFinder").addEventListener("click", (e) => changeLocationFinder(e.target.checked));
+        document.getElementById("stageNRouteData").addEventListener("click", (e) => changeStageNRouteData(e.target.checked));
+        document.getElementById("stageNRouteProfile").addEventListener("click", (e) => changeStageNRouteProfile(e.target.checked));
+    }
+
+    //------------
+    // Get cookie
+    //------------
+    function getCookie(cname) {
+        let name = cname + "=";
+        let ca = document.cookie.split(';');
+
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+
+        return "";
+    }
+
     //--------------------------
     // Load route from GXP file
     //--------------------------
@@ -3576,7 +3655,7 @@
    //---------------------------------
     // Reset route (delete all stages)
     //---------------------------------
-    function resetRte() {
+    function resetRoute() {
         if (context.editedStage != null)
             setStg4NonEdt(context.editedStage, true);
 
@@ -3586,6 +3665,94 @@
         const beforeState = { stages: stagesBackup };
         const afterState = null;
         execute(new ResetRoute(beforeState, afterState));        
+    }
+
+   //---------------------------------
+    // Retrieve settings from cookies
+    //---------------------------------
+    function retrieveSettingsFromCookies() {
+        let language = getCookie("Language");
+        if (language === '') {
+            const navigatorLanguage = navigator.language;
+            if (navigatorLanguage === 'fr' || navigatorLanguage === 'fr-FR' || navigatorLanguage === 'fr-fr')
+                language = 'FR';
+        }
+        if (language === "FR")
+            context.language = "FR";
+        else
+            context.language = "EN";
+
+        const measurementUnits = getCookie("MeasurementUnits");
+        if (measurementUnits === "IM")
+            context.measurementUnits = 'IM';
+        else
+            context.measurementUnits = "ME";
+
+        const menuDisplayed = getCookie("MainMenuDisplayed");
+        if (menuDisplayed === '0')
+            context.menuDisplayed = false;
+        else
+            context.menuDisplayed = true;
+
+        const geolocationDisplayed = getCookie("GeolocationDisplayed");
+        if (geolocationDisplayed === '0')
+            context.geolocationDisplayed = false;
+        else
+            context.geolocationDisplayed = true;
+
+        const locationFinderDisplayed = getCookie("LocationFinderDisplayed");
+        if (locationFinderDisplayed === '0')
+            context.locationFinderDisplayed = false;
+        else
+            context.locationFinderDisplayed = true;
+
+        const stageNRouteDataDisplayed = getCookie("StageAndRouteDataDisplayed");
+        if (stageNRouteDataDisplayed === '0')
+            context.stageNRouteDataDisplayed = false;
+        else
+            context.stageNRouteDataDisplayed = true;
+
+        const stageNRouteProfileDisplayed = getCookie("StageAndRouteProfileDisplayed");
+        if (stageNRouteProfileDisplayed === '0')
+            context.stageNRouteProfileDisplayed = false;
+        else
+            context.stageNRouteProfileDisplayed = true;
+
+        const baseMap = getCookie("BaseMap");
+        let found = false;
+        if (baseMap !== '') {
+            Object.keys(baseMaps).forEach(bm => {
+                if (baseMap === bm)
+                    found = true;
+            });
+        }
+        if (found)
+            context.baseMap = baseMap;
+        else
+            context.baseMap = 'otm';
+        if (context.baseMap === 'hiking' || context.baseMap === 'cycling')
+            baseMaps.osm.addTo(map);
+        baseMaps[context.baseMap].addTo(map);
+
+        const routerProfile = getCookie("RouterProfile");
+        found = false;
+        if (routerProfile !== '') {
+            if (context.language === 'FR') {
+                Object.values(routerProfilesFr).forEach(rp => {
+                    if (routerProfile === rp)
+                        found = true;
+                });
+            } else {
+                Object.values(routerProfilesEn).forEach(rp => {
+                    if (routerProfile === rp)
+                        found = true;
+                });
+            }
+        }
+        if (found)
+            context.routerProfile = routerProfile;
+        else
+            context.routerProfile = 'trekking';
     }
 
     //-------------------------
@@ -3664,6 +3831,16 @@
         }
     }
 
+    //------------
+    // Set cookie
+    //------------
+    function setCookie(cname, cvalue, exdays) {
+        const d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        let expires = "expires="+d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
     //------------------------------------------------------------
     // Set document and map event listeners for edit stage status
     //------------------------------------------------------------
@@ -3722,7 +3899,7 @@
                     e.preventDefault();
                     if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
                     if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
-                        resetRte();
+                        resetRoute();
                 }
             }
             document.addEventListener('keydown', doc_keydown_perm);  // Add event listener to document
@@ -3775,10 +3952,10 @@
                 setStgName();
             } else if (key === 'b') {     // When user presses 'b' (to move the stage to the previous position in the list)
                 e.preventDefault();
-                changeStgPos('before');
+                changeStagePosition('before');
             } else if (key === 'a') {     // When user presses 'a' (to move the stage to the next position in the list)
                 e.preventDefault();
-                changeStgPos('after');
+                changeStagePosition('after');
             } else if (key === 'u') {     // When user presses 'u' (to delete stage's last point)
                 e.preventDefault();
                 deleteLastPt();
@@ -4612,7 +4789,8 @@
     // Set menu fpr edit stage status
     //----------------------------------
     function setMenu4EdtStg() {
-        if (context.menuControl) context.menuControl.remove();      // Remove previous menu control
+        if (context.menuControl) 
+            context.menuControl.remove();    // Remove previous menu control
 
         context.menuControl = L.control({ position: 'topright' });    // Create new menu control
 
@@ -4677,7 +4855,8 @@
     // Set menu for non edit status
     //--------------------------------
     function setMenu4NonEdt() {
-        if (context.menuControl) context.menuControl.remove();    // Remove previous menu control
+        if (context.menuControl)
+            context.menuControl.remove();    // Remove previous menu control
 
         context.menuControl = L.control({ position: 'topright' });  // Create new menu control
 

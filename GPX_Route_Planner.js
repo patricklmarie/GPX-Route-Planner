@@ -4747,12 +4747,22 @@
 
             // Keydown handler (another way to submit the location search)
             function keydownInputHandler(e) {
+                if (e.key.length === 1 ||      // 'a', 'h', '5', '.', etc.
+                 e.key === 'Backspace' || e.key === 'Delete' || e.key === 'Tab') {
+                    e.stopPropagation();
+                    return;
+                }
+
                 if (e.key === 'Enter') {
                     if (context.operationWithButtonInProcess) return;
                 
                     L.DomEvent.stop(e);
                     submitHandler();
+                    return;
                 }
+                
+                e.stopPropagation();
+                L.DomEvent.stop(e);
             }
             input.addEventListener('keydown', keydownInputHandler);
                     

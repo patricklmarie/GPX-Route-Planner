@@ -29,7 +29,7 @@
     .location-item:hover { background: #cacaca; }
     .location-item.selected { background: #b0b0b0; border-color: #3399ff; }
     .leaflet-center { left: 50%; transform: translateX(-50%); }
-    .settingsBtn { border: none; background-color: ghostwhite; color: black; font-size: 15px; cursor: pointer; }
+    .settingsBtn { border: none; background-color: ghostwhite; color: black; font-size: 15px; cursor: pointer; position: relative; }
     .side-panel { position: fixed; top: 0; left: -1000px; /* hidden by default */ width: 250px; height: 100%; background: #f8f8f8; box-shadow: none;
         transition: left 0.3s ease; padding: 15px; z-index: 9999;  box-shadow: 2px 0 5px rgba(0,0,0,0.3); }
     .side-panel.open { left: 0; /* slide in */}
@@ -40,8 +40,8 @@
     <table class="header-table">
     <tr>
     <td style="width: 2%"><button id="settingsBtn" class="settingsBtn"><i class="fa fa-bars"></i></button></td>
-    <td class="title">GPX Route Planner</td>
-    <td class="author">Developed by Patrick Marie</td>
+    <td class="title" id="page_title">GPX Route Planner</td>
+    <td class="author" id="author">Developed by Patrick Marie</td>
     </tr>
     </table>
 

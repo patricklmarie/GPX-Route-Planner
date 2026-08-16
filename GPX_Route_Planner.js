@@ -542,6 +542,30 @@
         const settingsBtn = document.getElementById("settingsBtn");
         const sidePanel = document.getElementById("sidePanel");
 
+        settingsBtn.addEventListener("mouseenter", () => {
+            const bubble = document.createElement("div");
+            bubble.id = "settingsTooltip";
+            bubble.textContent = context.language === "EN" ? "Settings" : "Préférences";
+            bubble.style.position = "absolute";
+            bubble.style.top = "120%";
+            bubble.style.left = "50%";
+            bubble.style.transform = "translateX(-50%)";
+            bubble.style.transform = "translateX(-20%)";
+            bubble.style.background = "#333";
+            bubble.style.color = "white";
+            bubble.style.padding = "6px 10px";
+            bubble.style.borderRadius = "4px";
+            bubble.style.fontSize = "12px";
+            bubble.style.whiteSpace = "nowrap";
+            bubble.style.zIndex = "9999";
+            settingsBtn.appendChild(bubble);
+        });
+
+        settingsBtn.addEventListener("mouseleave", () => {
+            const bubble = document.getElementById("settingsTooltip");
+            if (bubble) bubble.remove();
+        });
+
         settingsBtn.addEventListener("click", () => {
             if (context.operationWithButtonInProcess)
                 return;
@@ -606,10 +630,18 @@
             context.language = 'EN';
 
             setCookie("Language", 'EN', 60);
+        
+            document.getElementById("page_title").innerHTML = 'GPX Route Planner';
+       
+            document.getElementById("author").innerHTML = 'Developed by Patrick Marie';
         } else {
             context.language = 'FR';
 
             setCookie("Language", 'FR', 60);
+        
+            document.getElementById("page_title").innerHTML = 'Planificateur d\'itinéraires GPX';
+
+            document.getElementById("author").innerHTML = 'Développé par Patrick Marie';
         }
 
         if (context.menuDisplayed) {
@@ -3677,10 +3709,19 @@
             if (navigatorLanguage === 'fr' || navigatorLanguage === 'fr-FR' || navigatorLanguage === 'fr-fr')
                 language = 'FR';
         }
-        if (language === "FR")
+        if (language === "FR") {
             context.language = "FR";
-        else
+                    
+            document.getElementById("page_title").innerHTML = 'Planificateur d\'itinéraire GPX';
+       
+            document.getElementById("author").innerHTML = 'Développé par Patrick Marie';
+        } else {
             context.language = "EN";
+                    
+            document.getElementById("page_title").innerHTML = 'GPX Route Planner';
+       
+            document.getElementById("author").innerHTML = 'Developed by Patrick Marie';
+        }
 
         const measurementUnits = getCookie("MeasurementUnits");
         if (measurementUnits === "IM")

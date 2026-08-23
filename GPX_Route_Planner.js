@@ -1650,8 +1650,7 @@
 
         // Create create new stage icon
         const nstIcon = document.createElement('i');
-        //nstIcon.classList.add('fa-regular', 'fa-square-plus');
-        nstIcon.classList.add('fa-solid', 'fa-arrow-right-to-bracket');
+        nstIcon.classList.add('fa-solid', 'fa-route');
         nstIcon.style.fontSize = '20px';
         nstIcon.style.lineHeight = '20px';
         nstIcon.style.width = '27px';
@@ -1702,7 +1701,7 @@
         importGPXButton.style.display = 'flex';
         importGPXButton.style.alignItems = 'center';
         importGPXButton.style.justifyContent = 'center';
-        importGPXButton.title = context.language === 'EN' ? 'Import stages from GPX' : 'Importer étapes de GPX';        
+        importGPXButton.title = context.language === 'EN' ? 'Import route from GPX' : 'Importer itinéraire de GPX';        
         buttonsContainer.appendChild(importGPXButton);
 
         // Define submit handler (for exporting to a GPX file)

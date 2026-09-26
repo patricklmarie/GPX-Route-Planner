@@ -41,16 +41,16 @@
         html: `
             <div style="
                 position: relative;
-                width: 18px;
-                height: 18px;
+                width: 14px;
+                height: 14px;
             ">
                 <!-- Base square -->
                 <div style="
                     position: absolute;
                     top: 50%;
                     left: 50%;
-                    width: 14px;
-                    height: 14px;
+                    width: 11px;
+                    height: 11px;
                     background: transparent;
                     border: 3px solid ${routeColors.lightPurple};
                     transform: translate(-50%, -50%);
@@ -61,16 +61,16 @@
                     position: absolute;
                     top: 50%;
                     left: 50%;
-                    width: 14px;
-                    height: 14px;
+                    width: 11px;
+                    height: 11px;
                     background: transparent;
                     border: 3px solid ${routeColors.lightPurple};
                     transform: translate(-50%, -50%) rotate(45deg);
                 "></div>
             </div>
         `,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
     });
 
     const PurpleDoubleSquareIcon = L.divIcon({
@@ -78,16 +78,16 @@
         html: `
             <div style="
                 position: relative;
-                width: 18px;
-                height: 18px;
+                width: 14px;
+                height: 14px;
             ">
                 <!-- Base square -->
                 <div style="
                     position: absolute;
                     top: 50%;
                     left: 50%;
-                    width: 14px;
-                    height: 14px;
+                    width: 11px;
+                    height: 11px;
                     background: transparent;
                     border: 3px solid ${routeColors.Purple};
                     transform: translate(-50%, -50%);
@@ -98,90 +98,16 @@
                     position: absolute;
                     top: 50%;
                     left: 50%;
-                    width: 14px;
-                    height: 14px;
+                    width: 11px;
+                    height: 11px;
                     background: transparent;
                     border: 3px solid ${routeColors.Purple};
                     transform: translate(-50%, -50%) rotate(45deg);
                 "></div>
             </div>
         `,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
-    });
-
-    const lightGreenDoubleSquareIcon = L.divIcon({
-        className: '',
-        html: `
-            <div style="
-                position: relative;
-                width: 18px;
-                height: 18px;
-            ">
-                <!-- Base square -->
-                <div style="
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 14px;
-                    height: 14px;
-                    background: transparent;
-                    border: 3px solid ${routeColors.lightGreen};
-                    transform: translate(-50%, -50%);
-                "></div>
-
-                <!-- Rotated square -->
-                <div style="
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 14px;
-                    height: 14px;
-                    background: transparent;
-                    border: 3px solid ${routeColors.lightGreen};
-                    transform: translate(-50%, -50%) rotate(45deg);
-                "></div>
-            </div>
-        `,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
-    });
-
-    const lightRedDoubleSquareIcon = L.divIcon({
-        className: '',
-        html: `
-            <div style="
-                position: relative;
-                width: 18px;
-                height: 18px;
-            ">
-                <!-- Base square -->
-                <div style="
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 14px;
-                    height: 14px;
-                    background: transparent;
-                    border: 3px solid ${routeColors.lightRed};
-                    transform: translate(-50%, -50%);
-                "></div>
-
-                <!-- Rotated square -->
-                <div style="
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 14px;
-                    height: 14px;
-                    background: transparent;
-                    border: 3px solid ${routeColors.lightRed};
-                    transform: translate(-50%, -50%) rotate(45deg);
-                "></div>
-            </div>
-        `,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
     });
 
     const lightGreenDiamondIcon = L.divIcon({
@@ -190,14 +116,14 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 14px;
-            height: 14px;
+            width: 11px;
+            height: 11px;
             background: transparent;
-            border: 4px solid ${routeColors.lightGreen};
+            border: 3px solid ${routeColors.lightGreen};
             transform: translate(-50%, -50%) rotate(45deg);
         "></div>`,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
     });
 
     const GreenDiamondIcon = L.divIcon({
@@ -206,14 +132,14 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 14px;
-            height: 14px;
+            width: 11px;
+            height: 11px;
             background: transparent;
-            border: 4px solid ${routeColors.Green};
+            border: 3px solid ${routeColors.Green};
             transform: translate(-50%, -50%) rotate(45deg);
         "></div>`,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
     });
 
     const lightRedDiamondIcon = L.divIcon({
@@ -222,27 +148,27 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 14px;
-            height: 14px;
+            width: 11px;
+            height: 11px;
             background: transparent;
-            border: 4px solid ${routeColors.lightRed};
+            border: 3px solid ${routeColors.lightRed};
             transform: translate(-50%, -50%) rotate(45deg);
         "></div>`,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
     });
 
     const circleIconEdit = L.divIcon({
         className: '',
         html: `<div style="
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             background: transparent;
-            border: 4px solid ${routeColors.lightBlue};
+            border: 3px solid ${routeColors.lightBlue};
             border-radius: 50%;
         "></div>`,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
     });
 
     const transparentIcon = L.divIcon({
@@ -251,119 +177,368 @@
             width: 1px;
             height: 1px;
             background: transparent;²
-            border: 4px solid transparent;
+            border: 3px solid transparent;
         "></div>`,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
     });
 
     const lightGreenCircleIcon = L.divIcon({
         className: '',
         html: `<div style="
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background: transparent;
-            border: 4px solid ${routeColors.lightGreen};
+            border: 3px solid ${routeColors.lightGreen};
             border-radius: 50%;
         "></div>`,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
     });
 
     const lightRedCircleIcon = L.divIcon({
         className: '',
         html: `<div style="
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background: transparent;
-            border: 4px solid ${routeColors.lightRed};
+            border: 3px solid ${routeColors.lightRed};
             border-radius: 50%;
         "></div>`,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
     });
 
     const lightPurpleCircleIcon = L.divIcon({
         className: '',
         html: `<div style="
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background: transparent;
-            border: 4px solid ${routeColors.lightPurple};
+            border: 3px solid ${routeColors.lightPurple};
             border-radius: 50%;
         "></div>`,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
     });
 
     const lightRedSquareIcon = L.divIcon({
         className: '',
         html: `<div style="
             position: relative;
-            width: 18px;
-            height: 18px;
+            width: 14px;
+            height: 14px;
         ">
             <div style="
                 position: absolute;
                 top: 50%;
                 left: 50%;
-                width: 14px;
-                height: 14px;
+                width: 11px;
+                height: 11px;
                 background: transparent;
-                border: 4px solid ${routeColors.lightRed};
+                border: 3px solid ${routeColors.lightRed};
                 transform: translate(-50%, -50%);
             "></div>
         </div>`,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
     });
 
     const RedSquareIcon = L.divIcon({
         className: '',
         html: `<div style="
             position: relative;
-            width: 18px;
-            height: 18px;
+            width: 14px;
+            height: 14px;
         ">
             <div style="
                 position: absolute;
                 top: 50%;
                 left: 50%;
-                width: 14px;
-                height: 14px;
+                width: 11px;
+                height: 11px;
                 background: transparent;
-                border: 4px solid ${routeColors.Red};
+                border: 3px solid ${routeColors.Red};
                 transform: translate(-50%, -50%);
             "></div>
         </div>`,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
     });
 
     const lightGreenSquareIcon = L.divIcon({
         className: '',
         html: `<div style="
             position: relative;
-            width: 18px;
-            height: 18px;
+            width: 14px;
+            height: 14px;
         ">
             <div style="
                 position: absolute;
                 top: 50%;
                 left: 50%;
-                width: 14px;
-                height: 14px;
+                width: 11px;
+                height: 11px;
                 background: transparent;
-                border: 4px solid ${routeColors.lightGreen};
+                border: 3px solid ${routeColors.lightGreen};
                 transform: translate(-50%, -50%);
             "></div>
         </div>`,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
     });
 
-    // Route (defined as an array of stages)
+    const GreenSquareIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            position: relative;
+            width: 11px;
+            height: 11px;
+        ">
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 11px;
+                height: 11px;
+                background: transparent;
+                border: 3px solid ${routeColors.Green};
+                transform: translate(-50%, -50%);
+            "></div>
+        </div>`,
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
+    });
+
+    const lightGreenStarIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            ">
+                <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <polygon
+                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
+                        fill=transparent
+                        stroke="${routeColors.lightGreen}"
+                        stroke-width=3px
+                    />
+                </svg>
+            </div>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    const GreenStarIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            ">
+                <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <polygon
+                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
+                        fill=transparent
+                        stroke="${routeColors.Green}"
+                        stroke-width=3px
+                    />
+                </svg>
+            </div>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    const lightBlueStarIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            ">
+                <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <polygon
+                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
+                        fill=transparent
+                        stroke="${routeColors.lightBlue}"
+                        stroke-width=3px
+                    />
+                </svg>
+            </div>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    const BlueStarIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            ">
+                <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <polygon
+                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
+                        fill=transparent
+                        stroke="${routeColors.Blue}"
+                        stroke-width=3px
+                    />
+                </svg>
+            </div>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    const lightRedStarIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            ">
+                <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <polygon
+                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
+                        fill=transparent
+                        stroke="${routeColors.lightRed}"
+                        stroke-width=3px
+                    />
+                </svg>
+            </div>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    const RedStarIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            ">
+                <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <polygon
+                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
+                        fill=transparent
+                        stroke="${routeColors.Red}"
+                        stroke-width=3px
+                    />
+                </svg>
+            </div>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    const lightPurpleStarIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            ">
+                <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <polygon
+                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
+                        fill=transparent
+                        stroke="${routeColors.lightPurple}"
+                        stroke-width=3px
+                    />
+                </svg>
+            </div>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    const PurpleStarIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            ">
+                <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <polygon
+                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
+                        fill=transparent
+                        stroke="${routeColors.Purple}"
+                        stroke-width=3px
+                    />
+                </svg>
+            </div>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    // Stages
     let stages = [];
+
+    // Remarkable places
+    let interestPlaces = [];
 
     // Events registered for the document and for the map
     let documentEvtList = [];
@@ -372,44 +547,45 @@
     
     // Context variables
     let context = {
-        menuControl: null,              // Control hosting the menu: option selectors and list of commands
-        locFinderControl: null,         // Control hosting the location finder function
-        geolocControl: null,            // Control hosting the geolocation function
-        globalInfoControl: null,        // Control hosting the global information about the route
-        stageProfileControl: null,      // Control hosting the stage profile diagram
-        stageProfileChart: null,        // Stage profile diagram
-        stageProfileMapMarker: null,    // Marker added on map when hovering on a stage profile curve
-        stageProfileChartRevIdx: null,
-        stageProfileChartPoints: null,
-        routeProfileControl: null,      // Control hosting the route profile diagram
-        routeProfileChart: null,        // Route profile diagram
-        routeProfileMapMarker: null,    // Marker added on map when hovering on a route profile curve
-        routeProfileChartRevIdx: null,
-        routeProfileChartPoints: null,
         baseMap: null,                  // Base map style
-        routerProfile: null,            // Router profile
-        spannedCommand: false,          // Flag: commands spanned or not in the menu
-        editedStage: null,              // Currently edited stage
-        initializationInProcess: true,  // Initialization in process
-        operationWithButtonInProcess: false,    // Flag: operation such as save, load or set name in process
         clickTimeout: null,             // Timeout used to distinguish simple clicks from double clicks
-        mouseOutTimeout: null,
-        suppressNextClick: false,       // Flag used not to take into account next click
-        language: 'EN',                 // Language to be used for the UI (English or French)
-        measurementUnits: 'ME',         // Measurement units to work with (by default, metric units)
-        menuDisplayed: true,            // 
-        geolocationDisplayed: true,     // 
-        locationFinderDisplayed: true,  // 
-        stageNRouteDataDisplayed: true, // 
-        stageNRouteProfileDisplayed: true, // 
-        stageProfileIndexes: null,      // Used to build stage profile chart
-        mouseCoordControl: null,        // Control hosting latitude and longitude of the mouse cursor on the map
-        userLocationMarker: null,       // Used to display the user's position after geolocalization
-        userAccuracyCircle: null,       // Also used to display the user's position after geolocalization
+        editedIntPl: null,                 // Currently edited interest place
+        editedStage: null,              // Currently edited stage
+        exactMarker: null,              // Used to mark exact coordinates entered after coordinates search
         foundMarker: null,              // Used to mark nearest OSM known object after location search
         foundPolygon: null,             // Used to highlight area around nearest OSM known object after location search
-        exactMarker: null,              // Used to mark exact coordinates entered after coordinates search
-        settingsBtnActivated: null      // Settings button must be activated only once
+        initializationInProcess: true,  // Initialization in process
+        geolocationDisplayed: true,     // 
+        geolocControl: null,            // Control hosting the geolocation function
+        globalInfoControl: null,        // Control hosting the global information about the route
+        language: 'EN',                 // Language to be used for the UI (English or French)
+        locationFinderDisplayed: true,  // 
+        locFinderControl: null,         // Control hosting the location finder function
+        measurementUnits: 'ME',         // Measurement units to work with (by default, metric units)
+        menuControl: null,              // Control hosting the menu: option selectors and list of commands
+        menuDisplayed: true,            // 
+        mouseCoordControl: null,        // Control hosting latitude and longitude of the mouse cursor on the map
+        mouseOutTimeout: null,
+        operationInProcess: false,      // Flag: operation such as save, load or set name in process
+        routeProfileChart: null,        // Route profile diagram
+        routeProfileChartPoints: null,
+        routeProfileChartRevIdx: null,
+        routeProfileControl: null,      // Control hosting the route profile diagram
+        routeProfileMapMarker: null,    // Marker added on map when hovering on a route profile curve
+        routerProfile: null,            // Router profile
+        settingsBtnActivated: null,     // Settings button must be activated only once
+        spannedCommand: false,          // Flag: commands spanned or not in the menu
+        stageNRouteDataDisplayed: true, // 
+        stageNRouteProfileDisplayed: true, // 
+        stageProfileChart: null,        // Stage profile diagram
+        stageProfileChartPoints: null,
+        stageProfileChartRevIdx: null,
+        stageProfileControl: null,      // Control hosting the stage profile diagram
+        stageProfileIndexes: null,      // Used to build stage profile chart
+        stageProfileMapMarker: null,    // Marker added on map when hovering on a stage profile curve
+        suppressNextClick: false,       // Flag used not to take into account next click
+        userLocationMarker: null,       // Used to display the user's position after geolocalization
+        userAccuracyCircle: null        // Also used to display the user's position after geolocalization
     };
 
     // OpenStreetMap tile layer
@@ -537,7 +713,8 @@
     // Define settings button to open ettings side panel
     //---------------------------------------------------
     function activateSettingsBtn() {
-        if (context.settingsBtnActivated) return;
+        if (context.settingsBtnActivated) 
+            return;
 
         const settingsBtn = document.getElementById("settingsBtn");
         const sidePanel = document.getElementById("sidePanel");
@@ -567,7 +744,7 @@
         });
 
         settingsBtn.addEventListener("click", () => {
-            if (context.operationWithButtonInProcess)
+            if (context.operationInProcess)
                 return;
 
             sidePanel.classList.toggle("open");
@@ -734,9 +911,36 @@
         generateSidePanelContents();
     }
 
-    //-----------------------------''-----------------------------------------
+    //-------------------------------
+    // Change interest place color
+    //-------------------------------
+    function changeIntPlColor(color) {
+        context.operationInProcess = true;
+
+        if (context.editedIntPl === null || context.editedIntPl < 0 || context.editedIntPl >= interestPlaces.length) {
+            context.operationInProcess = false;
+
+            return;
+        }
+
+        const intPl = interestPlaces[context.editedIntPl];
+        const i = context.editedIntPl;
+
+        let prevColor = 'green';        // Default color is green
+        if (intPl.color)
+            prevColor = intPl.color;
+
+        const beforeState = { color: prevColor };
+        const afterState = { color: color };
+
+        execute(new ChangeIntPlColor(intPl, i, beforeState, afterState));
+
+        context.operationInProcess = false;
+    }
+
+    //------------------------------------------------------------------------
     // Display or hide main control as requested from the settings side panel
-    //-------------------------------''---------------------------------------
+    //------------------------------------------------------------------------
     function changeMenu(checked) {
         if (checked) {
             context.menuDisplayed = true;
@@ -745,6 +949,8 @@
 
             if (context.editedStage !== null) 
                 setMenu4EdtStg();
+            else if (context.editedIntPl !== null) 
+                setMenu4EdtIntPl();
             else 
                 setMenu4NonEdt();
         } else {
@@ -773,6 +979,13 @@
                     updateStageDataNProfile(stages[i], false);
             }
 
+            for (let i = 0; i < interestPlaces.length; i++) {
+                if (context.editedIntPl === i)
+                    updateIntPlData(interestPlaces[i], true);
+                else
+                    updateIntPlData(interestPlaces[i], false);
+            }
+
             displayGlobalInfo();
         } else {
             context.stageNRouteDataDisplayed = false;
@@ -782,6 +995,11 @@
             for (let i = 0; i < stages.length; i++) {
                 if (stages[i].infoPop)
                     stages[i].infoPop.remove();
+            }
+
+            for (let i = 0; i < interestPlaces.length; i++) {
+                if (interestPlaces[i].infoPop)
+                    interestPlaces[i].infoPop.remove();
             }
 
             if (context.globalInfoControl)
@@ -824,31 +1042,295 @@
     // Change stage position in the list
     //-----------------------------------
     function changeStagePosition(newPosition) {
-        if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+        context.operationInProcess = true;
 
-        if (context.editedStage === null) return;
+        if (context.editedStage === null) {
+            context.operationInProcess = false;
+
+            return;
+        }
 
         const stage = stages[context.editedStage];
         const stageIdx = context.editedStage;
 
         let newStageIdx = null;
         if (newPosition === 'before') {
-            if (context.editedStage === 0) return;
+            if (context.editedStage === 0) {
+                context.operationInProcess = false;
+
+                return;
+            }
             newStageIdx = context.editedStage - 1;
         } else if (newPosition === 'first') {
-            if (context.editedStage === 0) return;
+            if (context.editedStage === 0) { 
+                context.operationInProcess = false;
+
+                return;
+            }
             newStageIdx = 0;
         } else if (newPosition === 'after') {
-            if (context.editedStage === stages.length - 1) return;
+            if (context.editedStage === stages.length - 1) {
+                context.operationInProcess = false;
+
+                return;
+            }
             newStageIdx = context.editedStage + 1;
         } else if (newPosition === 'last') {
-            if (context.editedStage === stages.length - 1) return;
+            if (context.editedStage === stages.length - 1) {
+                context.operationInProcess = false;
+
+                return;
+            }
             newStageIdx = stages.length - 1;
-        } else return;
+        } else {
+            context.operationInProcess = false;
+
+            return;
+        }
 
         const beforeState = null;
         const afterState = { newStageIdx: newStageIdx };
         execute(new ChangeStagePosition(stage, stageIdx, beforeState, afterState));        
+
+        context.operationInProcess = false;
+    }
+
+    //--------------------------------------------------------
+    // Create command list control for interest places edit
+    //--------------------------------------------------------
+    function createCmdListEdtIntPlControl() {
+        // Create global container
+        const container = L.DomUtil.create('div', 'info menu');
+        container.style.maxWidth = '350px';
+        container.style.boxSizing = 'border-box';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+
+        // Create header with arrow
+        const header = L.DomUtil.create('div', 'menu-header', container);
+        header.style.cursor = 'pointer';
+        header.fontSize = '14px';
+        header.fontWeight = 'bold';
+        header.innerHTML = context.language === 'EN' ? '<strong>Mouse actions & keyboard shortcuts</strong> <span>▼</span>' : '<strong>Actions avec souris & raccourcis clavier</strong> <span>▼</span>';
+        const arrow = header.querySelector('span');
+
+        // Create list of commands
+        const content = L.DomUtil.create('div', 'menu-content', container);
+        content.style.fontSize = '12px';
+        content.style.overflowY = context.spannedCommand ? 'auto' : 'hidden'; // scroll when expanded
+        content.style.transition = 'max-height 0.3s ease';
+
+        content.innerHTML = context.language === 'EN' ? `
+            <br><strong>Create/edit interest place:</strong><br>
+            <table class="command-table">
+                <tr>
+                    <td><strong>Click on the map</strong></td>
+                    <td>Create a new interest<br>place</td>
+                </tr>
+                <tr>
+                    <td><strong>Double click on an<br>interest place</strong></td>
+                    <td>Delete the interest place</td>
+                </tr>
+                <tr>
+                    <td><strong>Drag & drop an interest<br>place</strong></td>
+                    <td>Move the interest place</td>
+                </tr>
+                <tr>
+                    <td><strong>n</strong></td>
+                    <td>Set a name to the interest<br>place</td>
+                </tr>
+                <tr>
+                    <td><strong>c</strong></td>
+                    <td>Change the color of the<br>interest place</td>
+                </tr>
+                <tr>
+                    <td><strong>f</strong></td>
+                    <td>Focus on the interest place</td>
+                </tr>
+                <tr>
+                    <td><strong>d</strong></td>
+                    <td>Delete the interest place</td>
+                </tr>
+                <tr>
+                    <td><strong>Escape</strong></td>
+                    <td>Quit editing the interest place</td>
+                </tr>
+            </table>
+            <br><strong>Global:</strong><br>
+            <table class="command-table">
+                <tr>
+                    <td><strong>Double click on<br>the map</strong></td>
+                    <td>Start creating a new stage</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + p</strong></td>
+                    <td>Start creating a new<br>interest place</td>
+                </tr>
+                <tr>
+                    <td><strong>Double click on<br>a stage</strong></td>
+                    <td>Edit the stage</td>
+                </tr>
+                <tr>
+                    <td><strong>Double click on<br>an interest place</strong></td>
+                    <td>Edit the interest place</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + i</strong></td>
+                    <td>Import a route from a GPX file</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + e</strong></td>
+                    <td>Export the route to a GPX file</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + f</strong></td>
+                    <td>Focus on route</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + z</strong></td>
+                    <td>Undo last action</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + y</strong></td>
+                    <td>Redo last action</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + r</strong></td>
+                    <td>Reset the route</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + h</strong> or <strong>h</strong></td>
+                    <td>Help</td>
+                </tr>
+            </table>
+        ` : `
+            <br><strong>Création/modification de lieu d'intérêt:</strong><br>
+            <table class="command-table">
+                <tr>
+                    <td><strong>Cliquer sur la carte</strong></td>
+                    <td>Créer un nouveau lieu d'intérêt</td>
+                </tr>
+                <tr>
+                    <td><strong>Double cliquer sur un<br>lieu d'intérêt</strong></td>
+                    <td>Supprimer le lieu d'intérêt</td>
+                </tr>
+                <tr>
+                    <td><strong>Tirer-déposer un lieu<br>d'intérêt</strong></td>
+                    <td>Déplacer le lieu d'intérêt</td>
+                </tr>
+                <tr>
+                    <td><strong>n</strong></td>
+                    <td>Attribuer un nom au lieu<br>d'intérêt</td>
+                </tr>
+                <tr>
+                    <td><strong>c</strong></td>
+                    <td>Modifier la couleur du<br>lieu d'intérêt</td>
+                </tr>
+                <tr>
+                    <td><strong>f</strong></td>
+                    <td>Focaliser sur le lieu d'intérêt</td>
+                </tr>
+                <tr>
+                    <td><strong>d</strong></td>
+                    <td>Supprimer le lieu d'intérêt</td>
+                </tr>
+                <tr>
+                    <td><strong>Echappement</strong></td>
+                    <td>Terminer la création<br>modification de lieu d'intérêt</td>
+                </tr>
+            </table>
+            <br><strong>Générales :</strong><br>
+            <table class="command-table">
+                <tr>
+                    <td><strong>Double cliquer sur la<br>carte</strong></td>
+                    <td>Commencer la création d'une nouvelle étape</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + p</strong></td>
+                    <td>Commencer la création d'un nouveau lieu d'intérêt</td>
+                </tr>
+                <tr>
+                    <td><strong>Double cliquer sur une<br>étape</strong></td>
+                    <td>Modifier l'étape</td>
+                </tr>
+                <tr>
+                    <td><strong>Double cliquer sur un<br>lieu d'intérêt</strong></td>
+                    <td>Modifier le lieu d'intérêt</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + i</strong></td>
+                    <td>Importer un itinéraire d'un fichier GPX</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + e</strong></td>
+                    <td>Exporter l'itinéraire dans un fichier GPX</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + f</strong></td>
+                    <td>Focaliser sur l'itinéraire</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + z</strong></td>
+                    <td>Défaire la dernière action</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + y</strong></td>
+                    <td>Refaire la dernière action</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + r</strong></td>
+                    <td>Réinitialiser l'itinéraire</td>
+                </tr>
+                <tr>
+                    <td><strong>h</strong></td>
+                    <td>Aide</td>
+                </tr>
+            </table>
+        `;
+
+        // Adjust max height to content
+        if (context.spannedCommand) {
+            content.style.maxHeight = '0';       // collapse
+            content.style.overflow = 'hidden';
+
+            requestAnimationFrame(() => {
+            const mapContainer = map.getContainer(); // Leaflet map container
+            const mapHeight = mapContainer.clientHeight;
+            const containerRect = container.getBoundingClientRect();
+            const availableHeight = mapHeight - containerRect.top - 80; // 10px padding
+            content.style.maxHeight = availableHeight + 'px';   // Expand
+            content.style.overflowY = 'auto';
+            });
+        } else {
+            content.style.maxHeight = '0';       // Collapse
+            content.style.overflow = 'hidden';
+        }
+
+        // Select arrow shape
+        arrow.textContent = context.spannedCommand ? '▲' : '▼';
+
+        // Handle clicks on the arrow
+        L.DomEvent.on(header, 'click', () => {
+            context.spannedCommand = !context.spannedCommand;
+
+            // Adjust max height to content
+            if (context.spannedCommand) {
+                const mapContainer = map.getContainer(); // Leaflet map container
+                const mapHeight = mapContainer.clientHeight;
+                const containerRect = container.getBoundingClientRect();
+                const availableHeight = mapHeight - containerRect.top - 80; // 10px padding
+
+                content.style.maxHeight = availableHeight + 'px';   // Expand
+                content.style.overflowY = 'auto';
+            } else {
+                content.style.maxHeight = '0';       // Collapse
+                content.style.overflow = 'hidden';
+            }
+
+            arrow.textContent = context.spannedCommand ? '▲' : '▼';
+        });
+
+        return container;
     }
 
     //--------------------------------------------
@@ -935,20 +1417,28 @@
             <br><strong>Global:</strong><br>
             <table class="command-table">
                 <tr>
-                    <td><strong>Double click on the<br>map</strong></td>
+                    <td><strong>Double click on<br>the map</strong></td>
                     <td>Start creating a new stage</td>
                 </tr>
                 <tr>
-                    <td><strong>Double click on a<br>stage</strong></td>
+                    <td><strong>Ctrl + p</strong></td>
+                    <td>Start creating a new<br>interest place</td>
+                </tr>
+                <tr>
+                    <td><strong>Double click on<br>a stage</strong></td>
                     <td>Edit the stage</td>
                 </tr>
                 <tr>
-                    <td><strong>Ctrl + e</strong></td>
-                    <td>Export the route to a GPX file</td>
+                    <td><strong>Double click on<br>an interest place</strong></td>
+                    <td>Edit the interest place</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + i</strong></td>
                     <td>Import a route from a GPX file</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + e</strong></td>
+                    <td>Export the route to a GPX file</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + f</strong></td>
@@ -967,7 +1457,7 @@
                     <td>Reset the route</td>
                 </tr>
                 <tr>
-                    <td><strong>h</strong></td>
+                    <td><strong>Ctrl + h</strong> or <strong>h</strong></td>
                     <td>Help</td>
                 </tr>
             </table>
@@ -1035,16 +1525,24 @@
                     <td>Commencer la création d'une nouvelle étape</td>
                 </tr>
                 <tr>
+                    <td><strong>Ctrl + p</strong></td>
+                    <td>Commencer la création d'un nouveau lieu d'intérêt</td>
+                </tr>
+                <tr>
                     <td><strong>Double cliquer sur une<br>étape</strong></td>
                     <td>Modifier l'étape</td>
                 </tr>
                 <tr>
-                    <td><strong>Ctrl + e</strong></td>
-                    <td>Exporter l'itinéraire dans un fichier GPX</td>
+                    <td><strong>Double cliquer sur un<br>lieu d'intérêt</strong></td>
+                    <td>Modifier le lieu d'intérêt</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + i</strong></td>
                     <td>Importer un itinéraire d'un fichier GPX</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + e</strong></td>
+                    <td>Exporter l'itinéraire dans un fichier GPX</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + f</strong></td>
@@ -1146,16 +1644,24 @@
                     <td>Start creating a new stage</td>
                 </tr>
                 <tr>
+                    <td><strong>Ctrl + p</strong></td>
+                    <td>Start creating a new<br>interest place</td>
+                </tr>
+                <tr>
                     <td><strong>Double click on<br>a stage</strong></td>
                     <td>Edit the stage</td>
                 </tr>
                 <tr>
-                    <td><strong>Ctrl + e</strong></td>
-                    <td>Export the route to a GPX file</td>
+                    <td><strong>Double click on<br>an interest place</strong></td>
+                    <td>Edit the interest place</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + i</strong></td>
                     <td>Import a route from a GPX file</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + e</strong></td>
+                    <td>Export the route to a GPX file</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + f</strong></td>
@@ -1174,7 +1680,7 @@
                     <td>Reset the current route</td>
                 </tr>
                 <tr>
-                    <td><strong>h</strong></td>
+                    <td><strong>Ctrl + h</strong> or <strong>h</strong></td>
                     <td>Help</td>
                 </tr>
             </table>
@@ -1182,20 +1688,28 @@
             <br><strong>Générales :</strong><br><br>
             <table class="command-table">
                 <tr>
-                    <td><strong>Double cliquer sur<br>la carte</strong></td>
-                    <td>Commencer la création<br>d'une nouvelle étape</td>
+                    <td><strong>Double cliquer sur la<br>carte</strong></td>
+                    <td>Commencer la création d'une nouvelle étape</td>
                 </tr>
                 <tr>
-                    <td><strong>Double cliquer sur<br>une étape</strong></td>
+                    <td><strong>Ctrl + p</strong></td>
+                    <td>Commencer la création d'un nouveau lieu d'intérêt</td>
+                </tr>
+                <tr>
+                    <td><strong>Double cliquer sur une<br>étape</strong></td>
                     <td>Modifier l'étape</td>
                 </tr>
                 <tr>
-                    <td><strong>Ctrl + e</strong></td>
-                    <td>Exporter l'itinéraire dans un<br>fichier GPX</td>
+                    <td><strong>Double cliquer sur un<br>lieu d'intérêt</strong></td>
+                    <td>Modifier le lieu d'intérêt</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + i</strong></td>
                     <td>Importer un itinéraire d'un<br>fichier GPX</td>
+                </tr>
+                <tr>
+                    <td><strong>Ctrl + e</strong></td>
+                    <td>Exporter l'itinéraire dans un<br>fichier GPX</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + f</strong></td>
@@ -1267,6 +1781,277 @@
         return container;
     }
 
+    //-----------------------------------------------
+    // Create edit interest places buttons control
+    //-----------------------------------------------
+    function createEdtIntPlButtonsControl() {
+        // Create title division
+        const titleContainer = document.createElement('div');
+        titleContainer.style.display = 'flex';
+        titleContainer.style.alignItems = 'center';
+        titleContainer.style.gap = '8px';
+
+        // Create global label
+        const globalLabel = document.createElement('span');
+        globalLabel.textContent = context.language === 'EN' ? 'Edit interest places actions:' : 'Actions d\'édition de lieux d\'intérêt : ';
+        globalLabel.style.fontSize = '14px';
+        globalLabel.style.fontWeight = 'bold';
+        titleContainer.appendChild(globalLabel);
+
+        // Create buttons division
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.style.display = 'flex';
+        buttonsContainer.style.alignItems = 'center';
+        buttonsContainer.style.gap = '8px';
+
+        // Create set name icon
+        const snIcon = document.createElement('i');
+        snIcon.classList.add('fa-solid', 'fa-n');
+        snIcon.style.fontSize = '20px';
+        snIcon.style.lineHeight = '20px';
+        snIcon.style.width = '27px';
+        snIcon.style.height = '20px';
+        snIcon.style.display = 'inline-flex';
+        snIcon.style.alignItems = 'center';
+        snIcon.style.justifyContent = 'center';
+
+        // Create submit button for setting the stage's name
+        const setNameButton = document.createElement('button');
+        setNameButton.appendChild(snIcon);
+        setNameButton.style.width = '29px';
+        setNameButton.style.height = '30px';
+        setNameButton.style.padding = '0';
+        setNameButton.style.display = 'flex';
+        setNameButton.style.alignItems = 'center';
+        setNameButton.style.justifyContent = 'center';
+        setNameButton.title = context.language === 'EN' ? 'Set interest place name' : 'Attribuer un nom au lieu d\'intérêt';
+        buttonsContainer.appendChild(setNameButton);
+
+        // Define submit handler (for setting the stage's name)
+        async function setNameHandler() {
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+    
+            setIntPlName();
+        }
+        setNameButton.addEventListener('click', setNameHandler);  // Associate submit handler with button
+    
+        // Create set color icon
+        const scIcon = document.createElement('i');
+        scIcon.classList.add('fa-solid', 'fa-c');
+        scIcon.style.fontSize = '20px';
+        scIcon.style.lineHeight = '20px';
+        scIcon.style.width = '27px';
+        scIcon.style.height = '20px';
+        scIcon.style.display = 'inline-flex';
+        scIcon.style.alignItems = 'center';
+        scIcon.style.justifyContent = 'center';
+
+        // Create submit button for change stage order
+        const setColorButton = document.createElement('button');
+        setColorButton.appendChild(scIcon);
+        setColorButton.style.width = '32px';
+        setColorButton.style.height = '30px';
+        setColorButton.style.padding = '0';
+        setColorButton.style.display = 'flex';
+        setColorButton.style.alignItems = 'center';
+        setColorButton.style.justifyContent = 'center';
+        setColorButton.title = context.language === 'EN' ? 'Change interest place color' : 'Modifier la couleur du lieu d\'intérêt';
+        setColorButton.addEventListener('click', (e) => {
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+    
+            e.stopPropagation(); // Prevent click outside to close immediately
+
+            // If the menu already exists, delete it
+            let existingMenu = document.getElementById('set-color-menu');
+            if (existingMenu) {
+                existingMenu.remove();
+                return;
+            }
+
+            // Create menu
+            const menu = document.createElement('div');
+            menu.id = 'set-color-menu';
+            menu.style.position = 'absolute';
+            menu.style.background = '#fff';
+            menu.style.border = '1px solid #ccc';
+            menu.style.padding = '5px';
+            menu.style.zIndex = 1000;
+            menu.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
+            menu.style.borderRadius = '4px';
+            menu.style.fontSize = '12px';
+
+            // Position menu under button
+            const rect = setColorButton.getBoundingClientRect();
+            menu.style.left = rect.left + 'px';
+            menu.style.top = (rect.bottom + window.scrollY) + 'px';
+
+            // Add the options
+            const options = [
+                { label: context.language === 'EN' ? "Green" : "Vert", action: () => changeIntPlColor('green') },
+                { label: context.language === 'EN' ? "Blue" : "Bleu", action: () => changeIntPlColor('blue') },
+                { label: context.language === 'EN' ? "Red" : "Rouge", action: () => changeIntPlColor('red') },
+                { label: context.language === 'EN' ? "Purple" : "Violet", action: () => changeIntPlColor('purple') }
+            ];
+
+            options.forEach(opt => {
+                const item = document.createElement('div');
+                item.textContent = opt.label;
+                item.style.padding = '4px 8px';
+                item.style.cursor = 'pointer';
+
+                item.addEventListener('click', (ev) => {
+                    ev.stopPropagation();
+                    opt.action();
+                    menu.remove();
+                });
+
+                item.addEventListener('mouseover', () => item.style.background = '#eee');
+                item.addEventListener('mouseout', () => item.style.background = '');
+
+                menu.appendChild(item);
+            });
+
+            document.body.appendChild(menu);
+
+            //------------------------
+            // Automatic menu closure
+            //------------------------
+
+            let inside = true;
+
+            const setInside = () => inside = true;
+            const setOutside = () => {
+                inside = false;
+                setTimeout(() => {
+                    if (!inside) menu.remove();
+                }, 150);
+            };
+
+            // Button hovering
+            setColorButton.addEventListener('pointerenter', setInside);
+            setColorButton.addEventListener('pointerleave', setOutside);
+
+            // Survol du menu
+            menu.addEventListener('pointerenter', setInside);
+            menu.addEventListener('pointerleave', setOutside);
+
+            // Close if the user clicks elsewhere
+            const closeOnClickOutside = (ev) => {
+                if (!menu.contains(ev.target) && ev.target !== setColorButton) {
+                    menu.remove();
+                    document.removeEventListener('click', closeOnClickOutside);
+                }
+            };
+
+            // Wait a tick to avoid immediate closure
+            setTimeout(() => {
+                document.addEventListener('click', closeOnClickOutside);
+            }, 0);
+        });
+        buttonsContainer.appendChild(setColorButton);
+
+        // Create focus icon
+        const focusIcon = document.createElement('i');
+        focusIcon.classList.add('fa-solid', 'fa-arrows-to-circle');
+        focusIcon.style.fontSize = '20px';
+        focusIcon.style.lineHeight = '20px';
+        focusIcon.style.width = '27px';
+        focusIcon.style.height = '20px';
+        focusIcon.style.display = 'inline-flex';
+        focusIcon.style.alignItems = 'center';
+        focusIcon.style.justifyContent = 'center';
+
+        // Create submit button for focusing to a GPX file
+        const focusButton = document.createElement('button');
+        focusButton.appendChild(focusIcon);
+        focusButton.style.width = '29px';
+        focusButton.style.height = '30px';
+        focusButton.style.padding = '0';
+        focusButton.style.display = 'flex';
+        focusButton.style.alignItems = 'center';
+        focusButton.style.justifyContent = 'center';
+        focusButton.title = context.language === 'EN' ? 'Focus on interest place' : 'Focaliser sur le lieu d\'intérêt';
+        buttonsContainer.appendChild(focusButton);
+
+        // Define submit handler (for focusing to a GPX file)
+        async function focusHandler() {
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+    
+            focusOnIntPl();
+        }
+        focusButton.addEventListener('click', focusHandler);  // Associate submit handler with button
+    
+        // Create delete interest place icon
+        const dsIcon = document.createElement('i');
+        dsIcon.classList.add('fa-regular', 'fa-trash-can');
+        dsIcon.style.fontSize = '20px';
+        dsIcon.style.lineHeight = '20px';
+        dsIcon.style.width = '27px';
+        dsIcon.style.height = '20px';
+        dsIcon.style.display = 'inline-flex';
+        dsIcon.style.alignItems = 'center';
+        dsIcon.style.justifyContent = 'center';
+
+        // Create submit button for deleting the interest place
+        const delIntPlButton = document.createElement('button');
+        delIntPlButton.appendChild(dsIcon);
+        delIntPlButton.style.width = '29px';
+        delIntPlButton.style.height = '30px';
+        delIntPlButton.style.padding = '0';
+        delIntPlButton.style.display = 'flex';
+        delIntPlButton.style.alignItems = 'center';
+        delIntPlButton.style.justifyContent = 'center';
+        delIntPlButton.title = context.language === 'EN' ? 'Delete interest place' : 'Supprimer le lieu d\'intérêt';
+        buttonsContainer.appendChild(delIntPlButton);
+
+        // Define submit handler (for deleting the interest place)
+        async function delIntPlHandler() {
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+    
+            if (confirm(context.language === 'EN' ? "Are you sure you want to delete the edited interest place?" : "Etes-vous sûr de vouloir supprimer le lieu d\'intérêt en cours d'édition ?")) 
+                deleteIntPl(context.editedIntPl);
+        }
+        delIntPlButton.addEventListener('click', delIntPlHandler);  // Associate submit handler with button
+    
+        // Create quit edition icon
+        const qeIcon = document.createElement('i');
+        qeIcon.classList.add('fa-solid', 'fa-arrow-right-from-bracket');
+        qeIcon.style.fontSize = '20px';
+        qeIcon.style.lineHeight = '20px';
+        qeIcon.style.width = '27px';
+        qeIcon.style.height = '20px';
+        qeIcon.style.display = 'inline-flex';
+        qeIcon.style.alignItems = 'center';
+        qeIcon.style.justifyContent = 'center';
+
+        // Create submit button for quitting edit mode
+        const quitEdtButton = document.createElement('button');
+        quitEdtButton.appendChild(qeIcon);
+        quitEdtButton.style.width = '29px';
+        quitEdtButton.style.height = '30px';
+        quitEdtButton.style.padding = '0';
+        quitEdtButton.style.display = 'flex';
+        quitEdtButton.style.alignItems = 'center';
+        quitEdtButton.style.justifyContent = 'center';
+        quitEdtButton.title = context.language === 'EN' ? 'Quit interest place edition' : 'Quitter l\'édition du lieu d\'intérêt';
+        buttonsContainer.appendChild(quitEdtButton);
+
+        // Define submit handler (for quitting edit mode)
+        async function quitEdtHandler() {
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+    
+            quitEditIntPl();
+        }
+        quitEdtButton.addEventListener('click', quitEdtHandler);  // Associate submit handler with button
+       
+        return [titleContainer, buttonsContainer];
+    }
+
     //--------------------------------
     // Create edit stage buttons control
     //--------------------------------
@@ -1315,7 +2100,8 @@
 
         // Define submit handler (for setting the stage's name)
         async function setNameHandler() {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
     
             setStgName();
         }
@@ -1346,7 +2132,8 @@
 
         // Define submit handler (for reverse stage direction)
         async function revStgHandler() {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
     
             reverseStg();
         }
@@ -1377,7 +2164,8 @@
 
         // Define submit handler (for split stage)
         async function splitStgHandler() {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
 
             splitStage();
         }
@@ -1408,7 +2196,8 @@
 
         // Define submit handler (for merge before)
         async function mergeStgHandler() {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
 
             mergeStage();
         }
@@ -1439,7 +2228,8 @@
 
         // Define submit handler (for focusing to a GPX file)
         async function focusHandler() {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
     
             focusOnStage();
         }
@@ -1467,6 +2257,9 @@
         changeStgPosButton.style.justifyContent = 'center';
         changeStgPosButton.title = context.language === 'EN' ? 'Change stage position (in the list of stages)' : 'Modifier la position de l\'étape (dans la liste des étapes)';
         changeStgPosButton.addEventListener('click', (e) => {
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+    
             e.stopPropagation(); // Prevent click outside to close immediately
 
             // If the menu already exists, delete it
@@ -1583,7 +2376,8 @@
 
         // Define submit handler (for deleting the stage)
         async function delStgHandler() {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
     
             if (confirm(context.language === 'EN' ? "Are you sure you want to delete the edited stage?" : "Etes-vous sûr de vouloir supprimer l'étape en cours d'édition ?")) 
                 deleteStg(context.editedStage);
@@ -1615,7 +2409,8 @@
 
         // Define submit handler (for quitting edit mode)
         async function quitEdtHandler() {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
     
             quitEditStage();
         }
@@ -1673,13 +2468,54 @@
 
         // Define submit handler (for creating a new stage)
         async function newStgHandler() {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
-    
-            setEnv4NonEdt(true);    // Finish editing the current stage
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+
+            if (context.editedStage !== null)
+                quitEditStage();
+            else if (context.editedIntPl !== null)
+                quitEditIntPl();
 
             setEnv4EdtStg(null);    // Start editing a new stage
         }
         newStgButton.addEventListener('click', newStgHandler);  // Associate submit handler with button
+    
+        // Create new interest place icon
+        const nintPlIcon = document.createElement('i');
+        nintPlIcon.classList.add('fa-solid', 'fa-star');
+        nintPlIcon.style.fontSize = '20px';
+        nintPlIcon.style.lineHeight = '20px';
+        nintPlIcon.style.width = '27px';
+        nintPlIcon.style.height = '20px';
+        nintPlIcon.style.display = 'inline-flex';
+        nintPlIcon.style.alignItems = 'center';
+        nintPlIcon.style.justifyContent = 'center';
+
+        // Create button for creating a new interest place
+        const newIntPlButton = document.createElement('button');
+        newIntPlButton.appendChild(nintPlIcon);
+        newIntPlButton.style.width = '29px';
+        newIntPlButton.style.height = '30px';
+        newIntPlButton.style.padding = '0';
+        newIntPlButton.style.display = 'flex';
+        newIntPlButton.style.alignItems = 'center';
+        newIntPlButton.style.justifyContent = 'center';
+        newIntPlButton.title = context.language === 'EN' ? 'Start creating new interest place' : 'Démarrer création nouveau lieu d\'intérêt';
+        buttonsContainer.appendChild(newIntPlButton);
+
+        // Define submit handler (for creating a new interest place)
+        async function newIntPlHandler() {
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+    
+            if (context.editedStage !== null)
+                quitEditStage();
+            else if (context.editedIntPl !== null)
+                quitEditIntPl();
+
+            setEnv4EdtIntPl(null);    // Start editing a new interest place
+        }
+        newIntPlButton.addEventListener('click', newIntPlHandler);  // Associate submit handler with button
     
         // Create import icon
         const importIcon = document.createElement('i');
@@ -1706,7 +2542,8 @@
 
         // Define submit handler (for exporting to a GPX file)
         async function importGPXHandler() {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
     
             importRouteFromGPX();
         }
@@ -1737,7 +2574,8 @@
 
         // Define submit handler (for exporting to a GPX file)
         async function exportGPXHandler() {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
     
             exportRouteToGPX();
         }
@@ -1768,7 +2606,8 @@
 
         // Define submit handler (for focusing to a GPX file)
         async function focusHandler() {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
     
             focusOnRoute();
         }
@@ -1799,8 +2638,12 @@
 
         // Define submit handler (for exporting to a GPX file)
         async function undoHandler() {
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+    
             const cmd = undoStack.pop();
-            if (!cmd) return;
+            if (!cmd) 
+                return;
             cmd.undo();
             redoStack.push(cmd);
         }
@@ -1831,8 +2674,12 @@
 
         // Define submit handler (for exporting to a GPX file)
         async function redoHandler() {
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+    
             const cmd = redoStack.pop();
-            if (!cmd) return;
+            if (!cmd) 
+                return;
             cmd.redo();
             undoStack.push(cmd);
         }
@@ -1863,7 +2710,8 @@
 
         // Define submit handler (for resetting the route)
         async function resetRteHandler() {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
     
             if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
                 resetRoute();
@@ -1895,11 +2743,26 @@
         return helpButton;
     }
 
+    //-----------------------------------
+    // Create new empty interest place
+    //-----------------------------------
+    function createNewEmptyIntPl() {
+        const intPl = {  // New empty interest place
+            name: null,     // Remarkable place name
+            color: null,    // Lat and lng
+            marker: null,    // Marker
+            infoPop: null,  // Information to be displayed when requested about the stage
+            evtList: null    // Event list
+        };
+    
+        return intPl;
+    }
+
     //------------------------
     // Create new empty stage
     //------------------------
     function createNewEmptyStage() {
-        const stage = {   // New empty stage
+        const stage = {     // New empty stage
             name: null,     // Stage name
             points: [],     // Points defined by the user (not calculated by the router). Represented by circle markers on the map
             sections: [],   // Sections between points (straight or calculated by router). Represented by polylines on the map
@@ -1942,7 +2805,7 @@
 
         // Disable when other operation in process
         select.addEventListener('mousedown', e => {
-            if (context.operationWithButtonInProcess) {
+            if (context.operationInProcess) {
                 e.preventDefault();
             }
         });
@@ -1991,7 +2854,7 @@
 
         // Disable when other operation in process
         select.addEventListener('mousedown', e => {
-            if (context.operationWithButtonInProcess) {
+            if (context.operationInProcess) {
                 e.preventDefault();
             }
         });
@@ -2009,7 +2872,15 @@
     // Delete first point of the stage
     //---------------------------------
     function deleteFirstPt() {
-        if (context.editedStage === null) return;
+        context.operationInProcess = true;
+            
+        if (context.editedStage === null) {
+            context.operationInProcess = false;
+
+            return;
+        }
+
+        map.getContainer().style.cursor = 'progress';
 
         const i = context.editedStage;  // Retrieve stage to be edited
         const stage = stages[i];
@@ -2023,13 +2894,25 @@
         const beforeState = { section: sectionPoints0, point: point0 };
         const afterState = null;
         execute(new DeleteFirstPoint(stage, i, beforeState, afterState));        
+
+        map.getContainer().style.cursor = 'crosshair';
+
+        context.operationInProcess = false;
     }
 
     //--------------------------------
     // Delete last point of the stage
     //--------------------------------
     function deleteLastPt() {
-        if (context.editedStage === null) return;
+        context.operationInProcess = true;
+            
+        if (context.editedStage === null) {
+            context.operationInProcess = false;
+
+            return;
+        }
+
+        map.getContainer().style.cursor = 'progress';
 
         // Retrieve stage and point to be edited
         const i = context.editedStage;
@@ -2044,26 +2927,65 @@
         const beforeState = { section: sectionPoints0, point: point0 };
         const afterState = null;
         execute(new DeleteLastPoint(stage, i, beforeState, afterState));        
+
+        map.getContainer().style.cursor = 'crosshair';
+
+        context.operationInProcess = false;
+    }
+
+    //-------------------------
+    // Delete interest place
+    //-------------------------
+    function deleteIntPl(i) {
+        context.operationInProcess = true;
+            
+        if (i === null || i < 0 || i > interestPlaces.length - 1) {
+            context.operationInProcess = false;
+
+            return;
+        }
+
+        map.getContainer().style.cursor = 'progress';
+
+        const intPl = interestPlaces[i];
+        const latlng = intPl.marker.getLatLng();
+
+        const beforeState = { point: latlng };
+        const afterState = { };
+        execute(new DoubleClickIntPl2RemoveIt(intPl, i, beforeState, afterState));
+
+        map.getContainer().style.cursor = 'crosshair';
+
+        context.operationInProcess = false;
     }
 
     //--------------
     // Delete stage
     //--------------
     function deleteStg(i) {
-        if (i === null) return;
+        context.operationInProcess = true;
+            
+        if (i === null) { 
+            context.operationInProcess = false;
+
+            return;
+        }
 
         const stage = stages[i];
 
         const beforeState = null;
         const afterState = null;
         execute(new DeleteStage(stage, i, beforeState, afterState));        
+
+        context.operationInProcess = false;
     }
 
     //-------------------------------------------------------------------
     // Create/recreate control to display global information about route 
     //-------------------------------------------------------------------
     function displayGlobalInfo() {
-        if (!context.stageNRouteDataDisplayed) return;
+        if (!context.stageNRouteDataDisplayed) 
+            return;
 
         if (context.globalInfoControl)
             context.globalInfoControl.remove();
@@ -2072,7 +2994,8 @@
         if (context.editedStage !== null && context.editedStage !== undefined && stages[context.editedStage]?.points?.length === 0) 
             stageNb--;
 
-        if (stageNb < 1) return;
+        if (stageNb < 1) 
+            return;
 
         context.globalInfoControl = L.control({ position: 'bottomleft' });  // Create new menu control
 
@@ -2273,6 +3196,9 @@
     // Create/recreate control to display mouse coordinates (latitude & longitude) 
     //-----------------------------------------------------------------------------
     function displayMouseCoordinates(e, latlng) {
+        if (!e.target || !e.target.closest)
+            return;
+
         if (context.mouseCoordControl) {
             context.mouseCoordControl.remove();
             context.mouseCoordControl = null;
@@ -2284,14 +3210,16 @@
             e.target.closest('.leaflet-control') ||
             e.target.closest('.leaflet-control-row');
 
-        const overPopup =                                       // Pointer is on popup
-                e.target.closest('.leaflet-popup');
+        const overPopup = e.target.closest('.leaflet-popup');   // Pointer is on popup
 
         const overSidePanel = e.target.closest('#sidePanel');
 
         // Do not display coordinates if mouse pointer is not on map, polyline or marker
         if (!overMap || overControl || overPopup || overSidePanel) {
-            map_mouseleave(e);
+            if (context.mouseCoordControl) {
+                context.mouseCoordControl.remove();
+                context.mouseCoordControl = null;
+            }
             return;
         }
 
@@ -2321,9 +3249,6 @@
             container.style.alignItems = 'center';
             container.style.gap = '8px';
 
-            /*container.append(
-                document.createTextNode(latToDMS(lat) + ", " + lngToDMS(lng) + " (" + lat.toFixed(6) + ", " + lng.toFixed(6) + ")")
-            );*/
             container.innerHTML =
                 `${context.language === 'EN'
                     ? "<strong>" + latToDMS(lat) + ", " + lngToDMS(lng) + "</strong>" + " (" + lat.toFixed(6) + ", " + lng.toFixed(6) + ")"
@@ -2343,7 +3268,8 @@
     // Create/recreate control to display route profile 
     //--------------------------------------------------
     function displayRouteProfile() {
-        if (!context.stageNRouteProfileDisplayed) return;
+        if (!context.stageNRouteProfileDisplayed) 
+            return;
 
         let pointsNb = 0;
         stages.forEach(stage => {
@@ -2501,14 +3427,16 @@
                                 callbacks: {
                                     title: function(tooltipItems) {
                                         const x = tooltipItems[0].parsed.x;   // the real distance
-                                        if (x == null) return "";                              
+                                        if (x == null) 
+                                            return "";                              
                                         const label = context.language === 'EN' ? 'Distance: ' : 'Distance : ';
                                         const unit  = context.measurementUnits === 'ME' ? ' km' : ' mi';
                                         return label + x.toFixed(3) + unit;
                                     },
                                     label: function(tooltipItem) {
                                         const y = tooltipItem.parsed.y;
-                                        if (y == null) return "";                              
+                                        if (y == null) 
+                                            return "";                              
                                         const label = context.language === 'EN' ? 'Altitude: ' : 'Altitude : ';
                                         const unit  = context.measurementUnits === 'ME' ? ' m' : ' ft';
                                         return label + y.toFixed(0) + unit;
@@ -2543,7 +3471,8 @@
                             id: 'hoverPoint',
                             afterDraw(chart) {
                                 const active = chart.getActiveElements();
-                                if (!active.length) return;
+                                if (!active.length) 
+                                    return;
 
                                 const {ctx} = chart;
                                 const el = active[0].element;
@@ -2577,7 +3506,8 @@
 
                                         // Use previous real point's x-value
                                         const prev = data[idx - 1];
-                                        if (!prev || prev.x == null) return;
+                                        if (!prev || prev.x == null) 
+                                            return;
 
                                         const x = xScale.getPixelForValue(prev.x);
 
@@ -2626,7 +3556,8 @@
             let k = -1;
 
             stages.forEach((stage, h) => {
-                if (stage.points.length === 0) return;
+                if (stage.points.length === 0) 
+                    return;
                 if (h > 0) {
                     k++;
                     context.routeProfileChartPoints.push({ x: null, y: null });
@@ -2889,7 +3820,8 @@
                             id: 'hoverPoint',
                             afterDraw(chart) {
                                 const active = chart.getActiveElements();
-                                if (!active.length) return;
+                                if (!active.length) 
+                                    return;
 
                                 const {ctx} = chart;
                                 const el = active[0].element;
@@ -2995,11 +3927,13 @@
     }
 
     //-------------------
-    // Save route to GPX
+    // Export route to GPX
     //-------------------
     function exportRouteToGPX() {
-        if (context.operationWithButtonInProcess)
-            return;     // One operation at a time only
+        context.operationInProcess = true;
+            
+        const oldCursor = map.getContainer().style.cursor;
+        map.getContainer().style.cursor = 'progress';
 
         // Create a new file by downloading it
         const blob = new Blob([makeGPX("GPX Route Planner export")], { type: "application/octet-stream" });
@@ -3010,7 +3944,11 @@
         URL.revokeObjectURL(a.href);
         console.log(context.language === 'EN' ? "Route exported as GPX file (in default download directory)" : 
             "Itinéraire exporté sous forme de fichier GPX (dans le répertoire de téléchargement par défaut)");
-
+            
+        map.getContainer().style.cursor = oldCursor;
+            
+        context.operationInProcess = false;
+        
         //----------------------
         // Generate GPX content
         //----------------------
@@ -3026,6 +3964,20 @@
                     
             // Create body
             let body = ``;
+
+            for (let intPl of interestPlaces) {
+                body = body + `\n    <wpt lat="${intPl.marker.getLatLng().lat}" lon="${intPl.marker.getLatLng().lng}">`;    // Create new waypoint
+                if (intPl.name && intPl.name.length > 0)
+                    body = body + `\n        <name>${intPl.name}</name>`;
+                if (intPl.color && intPl.color != null) {
+                    // Add color as extensions
+                    body = body + `\n        <extensions>`;
+                    body = body + `\n            <rp:color>${intPl.color}</rp:color>`;
+                    body = body + `\n        </extensions>`;
+                }
+                body = body + `\n    </wpt>`;   // Finish track
+            }
+
             for (let stage of stages) {
                 body = body + `\n    <trk>`;    // Create new track
                 if (stage.name && stage.name.length > 0)
@@ -3110,10 +4062,10 @@
             <label for="locationFinder">${context.language === 'EN' ? "Location finder" : "Recherche de lieux" }</label>                  
             <br/>                 
             <input type="checkbox" id="stageNRouteData" name="stageNRouteData" value="stageNRouteData" ${context.stageNRouteDataDisplayed ? "checked" : "" } />
-            <label for="stageNRouteData">${context.language === 'EN' ? "Stage and route data" : "Données d'étape et d'itinéraire'" }</label>                  
+            <label for="stageNRouteData">${context.language === 'EN' ? "Stage/route/place data" : "Données d'étapes/d'itinéraire/de lieux" }</label>                  
             <br/>                 
             <input type="checkbox" id="stageNRouteProfile" name="stageNRouteProfile" value="stageNRouteProfile" ${context.stageNRouteProfileDisplayed ? "checked" : "" } />
-            <label for="stageNRouteProfile">${context.language === 'EN' ? "Stage and route profile" : "Profil d'étape et d'itinéraire'" }</label>                  
+            <label for="stageNRouteProfile">${context.language === 'EN' ? "Stage and route profile" : "Profil d'étape et d'itinéraire" }</label>                  
             </div>
         `;
 
@@ -3152,10 +4104,12 @@
     // Load route from GXP file
     //--------------------------
     function importRouteFromGPX() {
-        if (context.operationWithButtonInProcess)
-            return;     // One operation at a time only
+        context.operationInProcess = true;
 
-        // Create wrapper division
+        const oldCursor = map.getContainer().style.cursor;
+        map.getContainer().style.cursor = 'progress';
+        
+            // Create wrapper division
         const wrapper = document.createElement('div');
         wrapper.id = 'gpx-file-wrapper';
         wrapper.style.border = '1px solid #ccc';
@@ -3189,7 +4143,9 @@
                 cancelButton.removeEventListener('click', cancelHandler);                // Remove wrapper from DOM
                 wrapper.remove();
 
-                context.operationWithButtonInProcess = false;
+                map.getContainer().style.cursor = oldCursor;
+
+                context.operationInProcess = false;
             }
         }
         document.addEventListener('keydown', escKeyHandler);        // When a file is chosen, read it then remove the wrapper div
@@ -3197,7 +4153,8 @@
         // Handler triggered when a file has been selected
         async function changeHandler(e) {
             const file = e.target.files[0];
-            if (!file) return;
+            if (!file) 
+                return;
 
             try {
                 status.textContent = context.language === 'EN' ? 'Reading...' : 'Lecture en cours...';
@@ -3213,6 +4170,35 @@
                     status.textContent = context.language === 'EN' ? 'Error parsing GPX' : 'Erreur de parsing GPX';
                     return;
                 }
+
+                const interestPlaces2 = [];
+
+                const wpts = Array.from(xmlDoc.querySelectorAll("wpt"));    // Retrieve waypoints
+                wpts.forEach(wpt => {
+                    // Register waypoint as interest place
+                    const intPl2 = {
+                        name: null,
+                        color: null,
+                        marker: null,
+                        infoPop: null,
+                        latlng: null
+                    };
+                    interestPlaces2.push(intPl2);
+                
+                    // Retrieve waypoint name and set it as interest place name
+                    const names = wpt.getElementsByTagName("name");
+                    if (names.length > 0 && names[0].textContent.length > 0)
+                        intPl2.name = names[0].textContent;
+                    // Retrieve waypoint name and set it as interest place name
+                    const colors = wpt.getElementsByTagNameNS(RP_NS, "color");
+                    if (colors.length > 0 && colors[0].textContent.length > 0)
+                        intPl2.color = colors[0].textContent;
+                    // Retrieve latitude and longitude of wpt/interest place
+                    intPl2.latlng = {
+                        lat: parseFloat(wpt.getAttribute("lat")),
+                        lng: parseFloat(wpt.getAttribute("lon")),
+                    }                
+                });
 
                 const stages2 = [];
 
@@ -3289,7 +4275,7 @@
                 });
 
                 const beforeState = null;
-                const afterState = { importedStages: stages2, importedStagesNb: stages2.length };
+                const afterState = { importedInterestPlaces: interestPlaces2, importedStages: stages2 };
                 execute(new ImportRoute(beforeState, afterState));        
                     
                 console.log((context.language === 'EN' ? "Route imported from GPX file '" : "Itinéraire importé du fichier GPX '") + file.name + "'");
@@ -3302,10 +4288,16 @@
 
                 focusOnRoute();
 
-                context.operationWithButtonInProcess = false;   // Stop blocking the other operations
+                map.getContainer().style.cursor = oldCursor;
+
+                context.operationInProcess = false;   // Stop blocking the other operations
             } catch (err) {     // Error handler
                 console.error(context.language === 'EN' ? 'Error reading file:' : 'Erreur de lecture du fichier : ', err);
                 status.textContent = context.language === 'EN' ? 'Error reading file' : 'Erreur de lecture du fichier';
+
+                map.getContainer().style.cursor = oldCursor;
+
+                context.operationInProcess = false;   // Stop blocking the other operations
             }
         }
         input.addEventListener('change', changeHandler);       // Add event handler to file input
@@ -3324,15 +4316,15 @@
             document.removeEventListener('keydown', escKeyHandler);
             wrapper.remove();
             
-            context.operationWithButtonInProcess = false;   // Stop blocking the other operations
+            map.getContainer().style.cursor = oldCursor;
+
+            context.operationInProcess = false;   // Stop blocking the other operations
         }
         cancelButton.addEventListener('click', cancelHandler);
 
         // Finally, add the wrapper to the page
         document.body.appendChild(wrapper);
-
-        context.operationWithButtonInProcess = true;    // Block other current operations
-                            
+                     
         //--------------------------------------------------------------------------
         // Check whether the point was created by the user or calculated by BRouter
         //--------------------------------------------------------------------------
@@ -3347,12 +4339,18 @@
     // Merge two stages
     //------------------
     function mergeStage() {
+        // Register operation in process (to block other potential concurrent operations)
+        context.operationInProcess = true;
+
         const stage = stages[context.editedStage];
         const stageIdx = stages.indexOf(stage);
 
         // Check that stage has at least one point
         if (!stage.points || stage.points.length < 1) {
             alert(context.language === 'EN' ? 'Stage with no point cannot be merged' : 'Etape sans point ne pouvant pas être fusionnée');
+
+            context.operationInProcess = false;
+
             return;
         }
 
@@ -3401,6 +4399,9 @@
         }
         if (baCandidStgs.length === 0 && beforeCandidStgs.length === 0 && afterCandidStgs.length === 0) {
             alert(context.language === 'EN' ? "No other stage near enough to be merged" : "Pas d\'autre étape assez proche pour être fusionnée");
+
+            context.operationInProcess = false;
+
             return;
         }
 
@@ -3506,13 +4507,10 @@
 
                 map.getContainer().style.cursor = 'crosshair';
 
-                context.operationWithButtonInProcess = false;   // Stop blocking the other operations
+                context.operationInProcess = false;   // Stop blocking the other operations
             }
         }
         document.addEventListener('keydown', escKeyHandler);
-
-        // Register operation in process (to block other potential concurrent operations)
-        context.operationWithButtonInProcess = true;
 
         // Function to process clicks on polylines and markers
         async function clickForMergeBAInfo(stageRef, e) {
@@ -3522,8 +4520,16 @@
 
         // Function to process clicks on polylines and markers
         async function clickForMergeBefore(stageRef, e) {
+            map.getContainer().style.cursor = 'progress';
+
             const iRef = stages.indexOf(stageRef);  // Retrieve stage index
-            if (iRef === -1) return;
+            if (iRef === -1) {
+                map.getContainer().style.cursor = 'crosshair';
+            
+                context.operationInProcess = false;   // To prevent firing the single click handler
+
+                return;
+            }
 
             L.DomEvent.stopPropagation(e);  // Prevent map click from firing
 
@@ -3537,9 +4543,9 @@
             
             document.removeEventListener('keydown', escKeyHandler); //Remove Esc event handler (that were added for merging);
 
-            map.getContainer().style.cursor = 'crosshair';
+//            map.getContainer().style.cursor = 'crosshair';
 
-            context.operationWithButtonInProcess = false;   // To prevent firing the single click handler
+//            context.operationInProcess = false;   // To prevent firing the single click handler
 
             let lastPt = stageRef.points[stageRef.points.length - 1].marker.getLatLng();
             let firstPt = stage.points[0].marker.getLatLng();
@@ -3550,9 +4556,13 @@
                     calculatedPoints = await fetchBRouterRoute(coordinates);    // Find route to new point with BRouter
                     if (!calculatedPoints) {      // When no route is found by BRouter
                         //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
+                        map.getContainer().style.cursor = 'crosshair';
+                        
+                        context.operationInProcess = false;
+                        
                         return;
                     }
-                    calculatedPoints = simplifyPolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
+                    calculatedPoints = improvePolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
 
                     const beforeState = { beforeStage: stageRef, beforeStageIdx: iRef, beforeStageSectNb: stageRef.sections.length, beforePointLatlng: lastPt, 
                         afterPointLatlng: firstPt };
@@ -3571,12 +4581,24 @@
                 const afterState = { beforePointLatlng: null, afterPointLatlng: null, linkSectionLatlngs: null };
                 execute(new Click2MergeBefore(stage, stageIdx, beforeState, afterState));
             }
+
+            map.getContainer().style.cursor = 'crosshair';
+                
+            context.operationInProcess = false;
         }
 
         // Function to process clicks on polylines and markers
         async function clickForMergeAfter(stageRef, e) {
+            map.getContainer().style.cursor = 'progress';
+
             const iRef = stages.indexOf(stageRef);  // Retrieve stage index
-            if (iRef === -1) return;
+            if (iRef === -1) {
+                map.getContainer().style.cursor = 'crosshair';
+            
+                context.operationInProcess = false;
+
+                return;
+            }
 
             L.DomEvent.stopPropagation(e);  // Prevent map click from firing
 
@@ -3590,9 +4612,9 @@
             
             document.removeEventListener('keydown', escKeyHandler); //Remove Esc event handler (that were added for merging);
 
-            map.getContainer().style.cursor = 'crosshair';
+//            map.getContainer().style.cursor = 'crosshair';
 
-            context.operationWithButtonInProcess = false;   // To prevent firing the single click handler
+//            context.operationInProcess = false;   // To prevent firing the single click handler
 
             let lastPt = stage.points[stage.points.length - 1].marker.getLatLng();
             let firstPt = stageRef.points[0].marker.getLatLng();
@@ -3602,9 +4624,13 @@
                         firstPt.lng + "," + firstPt.lat;      // Prepare coordinates to be submitted to BRouter
                     calculatedPoints = await fetchBRouterRoute(coordinates);    // Find route to new point with BRouter
                     if (!calculatedPoints) {      // When no route is found by BRouter
+                        map.getContainer().style.cursor = 'crosshair';
+                        
+                        context.operationInProcess = false;                        
+                        
                         return;
                     }
-                    calculatedPoints = simplifyPolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
+                    calculatedPoints = improvePolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
 
                     const beforeState = { afterStage: stageRef, afterStageIdx: iRef, afterStageSectNb: stageRef.sections.length, beforePointLatlng: lastPt, 
                         afterPointLatlng: firstPt };
@@ -3623,6 +4649,10 @@
                 const afterState = { stageRef, iRef, beforePointLatlng: null, afterPointLatlng: null, linkSectionLatlngs: null };
                 execute(new Click2MergeAfter(stage, stageIdx, beforeState, afterState));
             }
+
+            map.getContainer().style.cursor = 'crosshair';
+                
+            context.operationInProcess = false;
         }
 
         // Function to remove the handlers created for merge
@@ -3661,6 +4691,16 @@
         }
     }
 
+    //-----------------------------
+    // Quit edit interest place
+    //-----------------------------
+    function quitEditIntPl() {
+        if (context.editedIntPl === -1)
+            context.editedIntPl = null;
+
+        setEnv4NonEdt();
+    }
+
     //-----------------
     // Quit edit stage
     //-----------------
@@ -3687,15 +4727,20 @@
     // Reset route (delete all stages)
     //---------------------------------
     function resetRoute() {
+        context.operationInProcess = true;
+
         if (context.editedStage != null)
             setStg4NonEdt(context.editedStage, true);
 
         // Backup stages
         const stagesBackup = [];
+        const interestPlacesBackup = [];
 
-        const beforeState = { stages: stagesBackup };
+        const beforeState = { stages: stagesBackup, interestPlaces: interestPlacesBackup };
         const afterState = null;
-        execute(new ResetRoute(beforeState, afterState));        
+        execute(new ResetRoute(beforeState, afterState));
+        
+        context.operationInProcess = false;
     }
 
    //---------------------------------
@@ -3713,13 +4758,13 @@
                     
             document.getElementById("page_title").innerHTML = 'Planificateur d\'itinéraire GPX';
        
-            document.getElementById("author").innerHTML = 'Développé par Patrick Marie';
+            document.getElementById("author").innerHTML = 'Développé par Patrick Marie<br>(patricklmarie@gmail.com)';
         } else {
             context.language = "EN";
                     
             document.getElementById("page_title").innerHTML = 'GPX Route Planner';
        
-            document.getElementById("author").innerHTML = 'Developed by Patrick Marie';
+            document.getElementById("author").innerHTML = 'Developed by Patrick Marie<br>(patricklmarie@gmail.com)';
         }
 
         const measurementUnits = getCookie("MeasurementUnits");
@@ -3778,13 +4823,13 @@
         found = false;
         if (routerProfile !== '') {
             if (context.language === 'FR') {
-                Object.values(routerProfilesFr).forEach(rp => {
-                    if (routerProfile === rp)
+                Object.values(routerProfilesFr).forEach(intPl => {
+                    if (routerProfile === intPl)
                         found = true;
                 });
             } else {
-                Object.values(routerProfilesEn).forEach(rp => {
-                    if (routerProfile === rp)
+                Object.values(routerProfilesEn).forEach(intPl => {
+                    if (routerProfile === intPl)
                         found = true;
                 });
             }
@@ -3799,7 +4844,15 @@
     // Reverse stage direction
     //-------------------------
     async function reverseStg() {
-        if (context.editedStage === null) return;
+        context.operationInProcess = true;
+
+        if (context.editedStage === null) {
+            context.operationInProcess = false;
+
+            return;
+        }
+
+        map.getContainer().style.cursor = 'progress';
 
         const stage = stages[context.editedStage];
 
@@ -3811,7 +4864,13 @@
         stage.points.forEach(point => {
             latlngs.unshift(point.marker.getLatLng());
         });
-        if (latlngs.length === 0) return;
+        if (latlngs.length === 0) {
+            map.getContainer().style.cursor = 'crosshair';
+
+            context.operationInProcess = false;
+
+            return;
+        }
 
         if (context.routerProfile != 'crow') {    // When BRouter used to find a route
             let coordinates = '';
@@ -3823,6 +4882,10 @@
             });
             let calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
             if (!calculatedPoints) {    // When no route is found by BRouter
+                map.getContainer().style.cursor = 'crosshair';
+
+                context.operationInProcess = false;
+
                 return;
             }
             latlngs.forEach((latlng, j) =>{
@@ -3833,7 +4896,7 @@
                 // Update stage's points and sections
                 if (j > 0) {
                     const calculatedPoints1 = calculatedPoints.slice(0, idx + 1).concat(closestPt);
-                    stageAfter.sections[j - 1].latlngs = simplifyPolyGeom(calculatedPoints1);
+                    stageAfter.sections[j - 1].latlngs = improvePolyGeom(calculatedPoints1);
                 }
                 stageAfter.points[j].latlng = closestPt;
                 calculatedPoints = [closestPt].concat(calculatedPoints.slice(idx + 1));                
@@ -3844,13 +4907,17 @@
                 if (j > 0) 
                     stageAfter.sections[j - 1].latlngs = [latlngs[j - 1], latlngs[j]];
 
-                    stageAfter.points[j].latlng = latlngs[j];
+                stageAfter.points[j].latlng = latlngs[j];
             });
         }
 
         const beforeState = { stage: stageBefore };
         const afterState = { stage: stageAfter };
         execute(new ReverseStage(stage, context.editedStage, beforeState, afterState));
+
+        map.getContainer().style.cursor = 'crosshair';
+        
+        context.operationInProcess = false;
 
         function copy(stage) {
             const stage2 = {
@@ -3881,6 +4948,248 @@
         document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
     }
 
+    //-----------------------------------------------------------------------
+    // Set document and map event listeners for edit interest place status
+    //-----------------------------------------------------------------------
+    function setDocMap4EdtIntPl(i) {
+        context.editedIntPl = i;    // Record edited stage number
+
+        let holdTimer = null;
+        let longPressTriggered = false;
+
+        // Delete non permanent event listeners on doc
+        for (const { target, type, handler } of documentEvtList)
+            target.removeEventListener(type, handler);
+        documentEvtList.splice(0);  // Remove event listeners from registered list
+
+        // Set non permanent event listeners for key down on doc (for stage edition)
+        function doc_keydown(e) {
+            if (context.operationInProcess) 
+                return;   // Do not execute if save of rename operation in process
+
+            const key = (e.key || '').toLowerCase();
+
+            // If the user is typing in an input or textarea, ignore shortcuts
+            const tag = (e.target && e.target.tagName || '').toLowerCase();
+            if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) {
+                return; // don't handle t, r, s, etc.
+            }
+
+            if (key === 'escape') {     // When user presses 'escape' (to quit edit mode)
+                e.preventDefault();
+                
+                quitEditIntPl();
+            } else if (key === 'd') {     // When user presses 'd' (to delete current interest place)
+                e.preventDefault();
+
+                if (confirm(context.language === 'EN' ? "Are you sure you want to delete the edited interest place?" : "Etes-vous sûr de vouloir supprimer le lieu d\'intérêt en cours d'édition ?")) 
+                    deleteIntPl(context.editedIntPl);
+            } else if (key === 'f') {     // When user presses 'f' (to focus on renarkable place)
+                e.preventDefault();
+
+                focusOnIntPl();
+            } else if (key === 'n') {     // When user presses 'n' (to set/change interest place name)
+                e.preventDefault();
+
+                setIntPlName();
+            } else if (key === 'c') {     // When user presses 'c' (to set/change interest place color)
+                e.preventDefault();
+
+                changeIntPlColor();
+            }
+        }
+        document.addEventListener('keydown', doc_keydown);      // Add event listener to document
+        documentEvtList.push({ target: document, type: 'keydown', handler: doc_keydown });  // Record event listener
+
+        map.getContainer().style.cursor = 'crosshair';
+
+        // Delete non permanent event listeners on map
+        for (const { target, type, handler } of mapEvtList)
+            target.removeEventListener(type, handler);
+        mapEvtList.splice(0);  // Remove event listeners from registered list
+
+        // Set event listener on map for simple click
+        const map_click = (function() {
+            return function(e) {
+                if (context.operationInProcess) 
+                    return;
+            
+                let intPlRef = null;
+                let iRef = null;
+                if (context.editedIntPl != null) {
+                    intPlRef = interestPlaces[context.editedIntPl];
+                    iRef = context.editedIntPl;
+                }
+ 
+                // If a double-click is coming, cancel this click
+                if (context.clickTimeout) {
+                    clearTimeout(context.clickTimeout);
+                    context.clickTimeout = null;
+                }
+
+                // If a drag just happened, skip this click
+                if (context.suppressNextClick) {
+                    context.suppressNextClick = false;      // Reset for next time
+                    return;
+                }
+  
+                map.getContainer().style.cursor = 'progress';
+
+                context.clickTimeout = setTimeout(async () => {     // Delay the action of 350 ms to see if a dblclick follows
+                    context.operationInProcess = true;
+
+                    context.clickTimeout = null;
+
+                    if (context.editedIntPl !== null && context.editedIntPl >= 0) {
+                        setIntPl4NonEdt(context.editedIntPl);    // Start editing a new stage
+
+                        context.editedIntPl = -1;
+                    }
+            
+                    const afterState = { point: e.latlng };
+                    execute(new ClickOnMap2AddIntPl(null, null, {}, afterState));
+
+                    map.getContainer().style.cursor = 'crosshair';
+
+                    context.operationInProcess = false;
+                }, 350);
+            };
+        })(interestPlaces[i]);
+        map.addEventListener('click', map_click);       // Add event listener to map
+        mapEvtList.push({ target: map, type: 'click', handler: map_click });    // Register event listener
+
+        // Set event listener on map for double-click
+        function map_dblclick(e) {
+            if (context.operationInProcess) 
+                return;
+            
+            context.operationInProcess = true;
+
+            map.getContainer().style.cursor = 'progress';
+
+            // Cancel single-click if double-click detected
+            if (context.clickTimeout) {
+                clearTimeout(context.clickTimeout);
+                context.clickTimeout = null;
+            }
+
+            quitEditIntPl();    // Finish editing the current stage
+                    
+            setEnv4EdtStg(null);    // Start editing a new stage
+
+            map.getContainer().style.cursor = 'crosshair';
+
+            context.operationInProcess = false;
+        }
+        map.addEventListener('dblclick', map_dblclick);     // Add listener to map
+        mapEvtList.push({ target: map, type: 'dblclick', handler: map_dblclick });    //Register listener
+
+        // On real pan start
+        function map_dragstart(e) {
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+    
+            map.getContainer().style.cursor = 'grabbing';
+            //context.suppressNextClick = true;
+        }
+        map.addEventListener('dragstart', map_dragstart);   // Add event listener to map
+        mapEvtList.push({ target: map, type: 'dragstart', handler: map_dragstart });    //Register listener
+
+        // On pan end
+        function map_dragend(e) {
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+    
+            map.getContainer().style.cursor = 'crosshair';
+            context.suppressNextClick = false;
+        }
+        map.addEventListener('dragend', map_dragend);   // Add event listener to map
+        mapEvtList.push({ target: map, type: 'dragend', handler: map_dragend });    //Register listener
+
+        function map_mousedown(e) {
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+    
+            longPressTriggered = false;
+
+            holdTimer = setTimeout(() => {
+                longPressTriggered = true;
+                map.getContainer().style.cursor = 'grabbing';
+                //context.suppressNextClick = true;   // key line
+            }, 350);
+        }
+        map.addEventListener('mousedown', map_mousedown);   // Add event listener to map
+        mapEvtList.push({ target: map, type: 'mousedown', handler: map_mousedown });    //Register listener
+
+        function map_mouseup(e) {
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+    
+            clearTimeout(holdTimer);
+            map.getContainer().style.cursor = 'crosshair';
+        }
+        map.addEventListener('mouseup', map_mouseup);   // Add event listener to map
+        mapEvtList.push({ target: map, type: 'mouseup', handler: map_mouseup });    //Register listener
+
+        // Set event listener on section for mousemove
+        const map_mousemove = (function() {
+            return function(e) {
+                if (!context.stageNRouteProfileDisplayed || context.editedStage === null) 
+                    return;
+
+                const stageRef = stages[context.editedStage];
+                const iRef = context.editedStage;
+
+                if (!stageRef) 
+                    return;
+
+                let { sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnStage(stageRef, e.latlng);
+                if (sectIdx > 0) 
+                    ptIdx--;   // First point of section is indexed only for the first section
+
+                if (distance <= 30) {
+                    const latlng = stageRef.sections[sectIdx].polyline.getLatLngs()[ptIdx];
+
+                    if (context.stageProfileMapMarker)
+                        context.stageProfileMapMarker.setLatLng(latlng);
+                    else
+                        context.stageProfileMapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
+
+                    if (context.stageProfileChartRevIdx && context.stageProfileChartRevIdx[sectIdx] && context.stageProfileChartRevIdx[sectIdx][ptIdx] != undefined) {
+                        const idx = context.stageProfileChartRevIdx[sectIdx][ptIdx];
+
+                        const dist = context.stageProfileChartPoints[idx].x;
+                        const alt = context.stageProfileChartPoints[idx].y;
+
+                        const chart = context.stageProfileChart;
+
+                        chart.setActiveElements([{
+                            datasetIndex: 0,
+                            index: idx
+                        }]);
+
+                        chart.tooltip.setActiveElements([{
+                            datasetIndex: 0,
+                            index: idx
+                        }], {
+                            x: dist,
+                            y: alt
+                        });
+
+                        chart.update();
+                    }
+                } else {
+                    if (!context.stageProfileControl || !context.stageProfileMapMarker) 
+                        return;
+                    else 
+                        removeStageMapNChartMarkers();
+                }
+            }
+        })(stages[i]);
+        map.addEventListener('mousemove', map_mousemove);    // Add event listener  to map
+        mapEvtList.push({ target: map, type: 'mousemove', handler: map_mousemove });  // Register event listener    
+    }
+
     //------------------------------------------------------------
     // Set document and map event listeners for edit stage status
     //------------------------------------------------------------
@@ -3894,21 +5203,31 @@
         if (context.initializationInProcess) {
             // Set permanent event listeners on doc for key pressed (one time for all time)
             function doc_keydown_perm(e) {    
-                if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+                if (context.operationInProcess) 
+                    return;   // Ignore if another operation is in process
     
                 const key = (e.key || '').toLowerCase();
 
-                if (e.ctrlKey && key === 'e') {   // When user presses Ctrl + 'e' (to export route to GPX file)
+                if (e.ctrlKey && key === 'p') {   // When user presses Ctrl + 'e' (to export route to GPX file)
                     e.preventDefault();
-                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+
+                    if (context.editedStage !== null)
+                        quitEditStage();
+                    else if (context.editedIntPl !== null)
+                        quitEditIntPl();
+
+                    setEnv4EdtIntPl(null);    // Start editing a new interest place
+                } else if (e.ctrlKey && key === 'e') {   // When user presses Ctrl + 'e' (to export route to GPX file)
+                    e.preventDefault();
+
                     exportRouteToGPX();
                 } else if (e.ctrlKey && key === 'i') {   // When user presses Ctrl + 'e' (to export route to GPX file)
                     e.preventDefault();
-                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+
                     importRouteFromGPX();
-                } else if (key === 'h') {   // When user presses 'h' (to request help)
+                } else if (key === 'h'|| (e.ctrlKey && key === 'h')) {   // When user presses 'h' (to request help)
                     e.preventDefault();
-                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+
                     const w = window.open('', '_blank');
                     w.document.title = context.language === 'EN'
                         ? 'GPX Route Planner – Help'
@@ -3921,23 +5240,27 @@
                     w.document.close();
                 } else if (e.ctrlKey && key === 'z') {   // When user presses Ctrl + 'z' (to undo last action)
                     e.preventDefault();
+
                     const cmd = undoStack.pop();
-                    if (!cmd) return;
+                    if (!cmd) 
+                        return;
                     cmd.undo();
                     redoStack.push(cmd);
                 } else if (e.ctrlKey && key === 'y') {   // When user presses Ctrl + 'y' (to redo last action undone)
                     e.preventDefault();
+
                     const cmd = redoStack.pop();
-                    if (!cmd) return;
+                    if (!cmd) 
+                        return;
                     cmd.redo();
                     undoStack.push(cmd);
                 } else if (e.ctrlKey && key === 'f') {   // When user presses Ctrl + 'f' (to focus the map on the route)
                     e.preventDefault();
-                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+
                     focusOnRoute();
                 } else if (e.ctrlKey && key === 'r') {   // When user presses Ctrl + 'r' (to reset the route)
                     e.preventDefault();
-                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+
                     if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
                         resetRoute();
                 }
@@ -3967,7 +5290,8 @@
 
         // Set non permanent event listeners for key down on doc (for stage edition)
         function doc_keydown(e) {
-            if (context.operationWithButtonInProcess) return;   // Do not execute if save of rename operation in process
+            if (context.operationInProcess) 
+                return;   // Do not execute if save of rename operation in process
 
             const key = (e.key || '').toLowerCase();
 
@@ -3982,34 +5306,44 @@
                 quitEditStage();
             } else if (key === 'd') {     // When user presses 'd' (to delete current stage)
                 e.preventDefault();
+
                 if (confirm(context.language === 'EN' ? "Are you sure you want to delete the edited stage?" : "Etes-vous sûr de vouloir supprimer l'étape en cours d'édition ?")) 
                     deleteStg(context.editedStage);
             } else if (key === 'f') {     // When user presses 'f' (to set/change stage name)
                 e.preventDefault();
+
                 focusOnStage();
             } else if (key === 'n') {     // When user presses 'n' (to set/change stage name)
                 e.preventDefault();
+
                 setStgName();
             } else if (key === 'b') {     // When user presses 'b' (to move the stage to the previous position in the list)
                 e.preventDefault();
+
                 changeStagePosition('before');
             } else if (key === 'a') {     // When user presses 'a' (to move the stage to the next position in the list)
                 e.preventDefault();
+
                 changeStagePosition('after');
             } else if (key === 'u') {     // When user presses 'u' (to delete stage's last point)
                 e.preventDefault();
+
                 deleteLastPt();
             } else if (key === 'v') {     // When user presses 'v' (to delete stage's first point)
                 e.preventDefault();
+
                 deleteFirstPt();
             } else if (key === 'r') {   // When user presses 'r' (to reverse the stage's direction)
                 e.preventDefault();
+
                 reverseStg();
             } else if (key === 's') {   // When user presses 's' (to split the stage
                 e.preventDefault();
+
                 splitStage();
             } else if (key === 'm') {   // When user presses 'm' (to merge the stage with another)
                 e.preventDefault();
+
                 mergeStage();
             }
         }
@@ -4026,13 +5360,15 @@
         // Set event listener on map for simple click
         const map_click = (function() {
             return function(e) {
-                if (context.editedStage === null) return;
+                if (context.operationInProcess) 
+                    return;
+
+                if (context.editedStage === null) 
+                    return;
 
                 const stageRef = stages[context.editedStage];
                 const iRef = context.editedStage;
 
-                if (context.operationWithButtonInProcess) return;
-            
                 // If a double-click is coming, cancel this click
                 if (context.clickTimeout) {
                     clearTimeout(context.clickTimeout);
@@ -4044,8 +5380,13 @@
                     context.suppressNextClick = false;      // Reset for next time
                     return;
                 }
-  
+
+                map.getContainer().style.cursor = 'progress';
+            
                 context.clickTimeout = setTimeout(async () => {     // Delay the action of 350 ms to see if a dblclick follows
+                    context.operationInProcess = true;
+                    // map.getContainer().style.cursor = 'progress';
+
                     context.clickTimeout = null;
             
                     let latlng = e.latlng;      // Extract click coordinates
@@ -4061,9 +5402,13 @@
                             calculatedPoints = await fetchBRouterRoute(coordinates);    // Find route to new point with BRouter
                             if (!calculatedPoints) {      // When no route is found by BRouter
                                 //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
+                                map.getContainer().style.cursor = 'crosshair';
+                                
+                                context.operationInProcess = false;
+                                
                                 return;
                             }
-                            calculatedPoints = simplifyPolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
+                            calculatedPoints = improvePolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
                             latlng = calculatedPoints[calculatedPoints.length - 1];     // Adjust new point's position using BRouter response
 
                             // Check whether altitude was found for new point and find it if necessary
@@ -4081,6 +5426,10 @@
                                 latlng.lng + "," + latlng.lat;
                             calculatedPoints = await fetchBRouterRoute(coordinates);
                             if (!calculatedPoints) {   // No route found
+                                map.getContainer().style.cursor = 'crosshair';
+                                
+                                context.operationInProcess = false;
+                                
                                 return;
                             }
                             latlng = calculatedPoints[0];       // Adjust position to be assigned to new point
@@ -4102,6 +5451,10 @@
                     const beforeState = { previousPoint: latlngPrev0 };
                     const afterState = { previousPoint: latlngPrev, nextPoint: latlng, newPoints: calculatedPoints };
                     execute(new ClickOnMap2AddPoint(stageRef, iRef, beforeState, afterState));
+
+                    map.getContainer().style.cursor = 'crosshair';
+
+                    context.operationInProcess = false;
                 }, 350);
             };
         })(stages[i]);
@@ -4110,6 +5463,13 @@
 
         // Set event listener on map for double-click
         function map_dblclick(e) {
+            if (context.operationInProcess) 
+                return;
+
+            context.operationInProcess = true;
+            
+            map.getContainer().style.cursor = 'progress';
+ 
             // Cancel single-click if double-click detected
             if (context.clickTimeout) {
                 clearTimeout(context.clickTimeout);
@@ -4119,24 +5479,28 @@
             quitEditStage();    // Finish editing the current stage
                     
             setEnv4EdtStg(null);    // Start editing a new stage
+
+            map.getContainer().style.cursor = 'crosshair';
+
+            context.operationInProcess = false;
         }
         map.addEventListener('dblclick', map_dblclick);     // Add listener to map
         mapEvtList.push({ target: map, type: 'dblclick', handler: map_dblclick });    //Register listener
 
         // On real pan start
         function map_dragstart(e) {
-            if (context.operationWithButtonInProcess) 
-                return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
     
             map.getContainer().style.cursor = 'grabbing';
-            //context.suppressNextClick = true;
         }
         map.addEventListener('dragstart', map_dragstart);   // Add event listener to map
         mapEvtList.push({ target: map, type: 'dragstart', handler: map_dragstart });    //Register listener
 
         // On pan end
         function map_dragend(e) {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
     
             map.getContainer().style.cursor = 'crosshair';
             context.suppressNextClick = false;
@@ -4145,8 +5509,8 @@
         mapEvtList.push({ target: map, type: 'dragend', handler: map_dragend });    //Register listener
 
         function map_mousedown(e) {
-            if (context.operationWithButtonInProcess) 
-                return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
     
             longPressTriggered = false;
 
@@ -4160,8 +5524,8 @@
         mapEvtList.push({ target: map, type: 'mousedown', handler: map_mousedown });    //Register listener
 
         function map_mouseup(e) {
-            if (context.operationWithButtonInProcess) 
-                return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
     
             clearTimeout(holdTimer);
             map.getContainer().style.cursor = 'crosshair';
@@ -4169,9 +5533,12 @@
         map.addEventListener('mouseup', map_mouseup);   // Add event listener to map
         mapEvtList.push({ target: map, type: 'mouseup', handler: map_mouseup });    //Register listener
 
-        // Set event listener on section for mousemove
+        // Set event listener on map for mousemove
         const map_mousemove = (function() {
             return function(e) {
+                if (context.operationInProcess) 
+                    return;   // Ignore if another operation is in process
+
                 if (!context.stageNRouteProfileDisplayed || context.editedStage === null) 
                     return;
 
@@ -4246,10 +5613,18 @@
 
         // Set event listener on map for double-click
         function map_dblclick(e) {
-            if (context.operationWithButtonInProcess) 
-                return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
     
+            context.operationInProcess = true;
+
+            map.getContainer().style.cursor = 'progress';
+ 
             setEnv4EdtStg(null);    // Start editing a new stage
+
+            map.getContainer().style.cursor = 'crosshair';
+
+            context.operationInProcess = false;
         }
         map.addEventListener('dblclick', map_dblclick);     // Add listener to map
         mapEvtList.push({ target: map, type: 'dblclick', handler: map_dblclick });    //Register listener
@@ -4309,40 +5684,84 @@
         mapEvtList.push({ target: map, type: 'mousemove', handler: map_mousemove });  // Register event listener    
     }
 
+    //--------------------------------------------------
+    // Set environment for edit interest place status
+    //--------------------------------------------------
+    function setEnv4EdtIntPl(i) {
+        if (context.stageNRouteProfileDisplayed) {
+            if (context.editedStage === null && context.editedIntPl === null) {
+                removeRouteMapNChartMarkers();
+                
+                removeRouteProfileControl();
+            }
+        }
+
+        if (context.editedStage !== null)
+            setStg4NonEdt(context.editedStage);     // Set layout and event listeners on currently edited stage
+
+        if (context.editedIntPl !== null)
+            setIntPl4NonEdt(context.editedIntPl);     // Set layout and event listeners on currently edited stage
+
+        if (i === null) {
+            i = -1;
+            context.editedIntPl = i;
+        }
+
+        if (context.menuDisplayed)
+            setMenu4EdtIntPl();     // Set menu for edit stage status
+
+        setDocMap4EdtIntPl(i);    // Set document and map for edit interest place status
+
+        setIntPl4Edt(i);   // Set interest place to be edited for edit status
+    }
+
     //---------------------------------------
     // Set environment for edit stage status
     //---------------------------------------
     function setEnv4EdtStg(i) {
+        if (context.stageNRouteProfileDisplayed) {
+            if (context.editedStage === null && context.editedIntPl === null) {
+                removeRouteMapNChartMarkers();
+                
+                removeRouteProfileControl();
+            }
+        }
+
+        if (context.editedStage !== null)
+            setStg4NonEdt(context.editedStage);     // Set layout and event listeners on currently edited stage
+
+        if (context.editedIntPl !== null)
+            setIntPl4NonEdt(context.editedIntPl);     // Set layout and event listeners on currently edited stage
+
         if (context.menuDisplayed)
             setMenu4EdtStg();     // Set menu for edit stage status
 
         // Add new empty stage to the route if arg is null
         if (i === null) {
             stages.push(createNewEmptyStage());
-            i = stages.length -1;
+            i = stages.length - 1;
             context.editedStage = i;
         }
 
         setDocMap4EdtStg(i);    // Set document and map for edit stage status
 
-        setStg4EdtStg(i);   // Set stage to be edited for edit status
-
-        removeRouteMapNChartMarkers();
-        
-        removeRouteProfileControl();
+        setStg4Edt(i);   // Set stage to be edited for edit status
     }
 
     //-------------------------------------
     // Set environment for non edit status
     //-------------------------------------
     function setEnv4NonEdt() {
+        if (context.editedStage !== null)
+            setStg4NonEdt(context.editedStage);     // Set layout and event listeners on currently edited stage
+
+        if (context.editedIntPl !== null)
+            setIntPl4NonEdt(context.editedIntPl);     // Set layout and event listeners on currently edited stage
+
         if (context.menuDisplayed)
             setMenu4NonEdt();     // Set menu for non edit status
 
         setDocMap4NonEdt();     // Set document and map event listeners for non edit status
-
-        if (context.editedStage !== null)
-            setStg4NonEdt(context.editedStage);     // Set layout and event listeners on currently edited stage
 
         if (context.stageNRouteProfileDisplayed)
             displayRouteProfile();
@@ -4364,8 +5783,8 @@
             wrapper.style.display = 'flex';
             wrapper.style.flexDirection = 'column';
             wrapper.style.gap = '8px';
-            wrapper.style.minWidth = '130px';
-            wrapper.style.maxWidth = '225px';
+            wrapper.style.minWidth = '150px';
+            wrapper.style.maxWidth = '220px';
 
             // Prevent click propagation to map
             L.DomEvent.disableClickPropagation(wrapper);
@@ -4378,18 +5797,35 @@
             title.style.fontWeight = 'bold';
             title.style.marginBottom = '4px';
 
+            // Create row for hosting two buttons
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.alignItems = 'center';
+            row.style.gap = '6px';
+            row.style.justifyContent = 'space-between';
+            row.style.width = '100%';
+
             // Create submit button
             const submitButton = document.createElement('button');
-            submitButton.textContent = context.language === 'EN' ? 'Geolocalize me!' : 'Géolocalise-moi !';
-            submitButton.style.width = '120px';
-            wrapper.appendChild(submitButton);
+            submitButton.textContent = context.language === 'EN' ? 'Geolocalize me!' : 'Localise-moi !';
+            submitButton.style.width = '100px';
+            row.appendChild(submitButton);
 
             // Define submit handler (button)
             async function submitHandler() {
-                if (context.operationWithButtonInProcess) return;
+                if (context.operationInProcess) 
+                    return;
 
                 if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(setPositionOnMap, handleGeolocationError);
+                    context.operationInProcess = true;
+
+                    const oldCursor = map.getContainer().style.cursor;                
+                    map.getContainer().style.cursor = 'progress';
+
+                    context.zoomExtraParam = 15;
+                    context.modeExtraParam = 'geoloc';
+                    context.cursorExtraParam = oldCursor;
+                    navigator.geolocation.getCurrentPosition(setGeolocPositionOnMap, handleGeolocationError);
                 } else {
                     alert(context.language === 'EN' ? "Geolocation is not supported by this browser." : "La géolocalisation n'est pas supportée par ce navigateur.");
                     return;
@@ -4397,56 +5833,31 @@
             }
             submitButton.addEventListener('click', submitHandler);  // Associate submit handler with button
 
-            //-------------------------------------------------------------
-            // Create two circles on map at the geolocated position
-            //-------------------------------------------------------------
-            function setPositionOnMap(position) {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude
+            // Create reset button
+            const resetButton = document.createElement('button');
+            resetButton.textContent = context.language === 'EN' ? 'Reset' : 'Réinitial.';
+            resetButton.style.width = '70px';
+            row.appendChild(resetButton);
 
-                map.setView([lat, lng], 15, { 'animate': false });  // Center map on geolocated position
-                
-                // Remove previous layers if any
+            wrapper.appendChild(row);
+
+            // Define reset handler (button or Escape)
+            function resetHandler() {
+                if (context.operationInProcess) 
+                    return;
+
+                // Remove geolocation markers if any
                 if (context.userLocationMarker) {    
                     map.removeLayer(context.userLocationMarker);
+                    context.userLocationMarker = null;
                 }
                 if (context.userAccuracyCircle) {
                     map.removeLayer(context.userAccuracyCircle);
+                    context.userAccuracyCircle = null;
                 }
-
-                // Add small filled black circle to the map at user's position
-                context.userLocationMarker = L.circleMarker([lat, lng], {
-                    radius: 5,
-                    fillColor: 'red',
-                    fillOpacity: 1,
-                    color: 'red',
-                    interactive: false
-                }).addTo(map);
-
-                // Add larger accuracy circle
-                context.userAccuracyCircle = L.circleMarker([lat, lng], {
-                    radius: 12,
-                    color: 'red',
-                    fillOpacity: 0,
-                    weight: 2,
-                    interactive: false
-                }).addTo(map);
-            }  
-
-            //-------------------------------------------------
-            // Display an alert message when geolocation fails
-            //-------------------------------------------------
-            function handleGeolocationError(error) {
-                if (error.code === 1)
-                    alert(context.language === 'EN' ? 'Permission denied by user' : 'Permission refusée par l\'utilisateur');
-                else if (error.code === 2)
-                    alert(context.language === 'EN' ? 'Position not available' : 'Position non disponible');
-                else if (error.code === 3)
-                    alert(context.language === 'EN' ? 'Timeout exceeded' : 'Délai dépassé');
-                else    
-                    alert(context.language === 'EN' ? 'Unknown error' : 'Erreur inconnue')
-            }  
-
+            }
+            resetButton.addEventListener('click', resetHandler);    // Associate reset handler with reset button
+                    
             return wrapper;
         };
 
@@ -4456,18 +5867,452 @@
         const zoom = map.zoomControl._container;    // Retrieve map zoom control
 
         // Create a horizontal wrapper only once in order to add the geolocation control beside the zoom control
-        let row = corner.querySelector('.leaflet-control-row');
-        if (!row) {
-            row = L.DomUtil.create('div', 'leaflet-control-row', corner);
-            row.style.display = 'flex';
-            row.style.alignItems = 'flex-start';
-            row.style.gap = '4px';
+        let row2 = corner.querySelector('.leaflet-control-row');
+        if (!row2) {
+            row2 = L.DomUtil.create('div', 'leaflet-control-row', corner);
+            row2.style.display = 'flex';
+            row2.style.alignItems = 'flex-start';
+            row2.style.gap = '4px';
 
-            corner.insertBefore(row, zoom);
-            row.appendChild(zoom);  // Add zoom control to row
+            corner.insertBefore(row2, zoom);
+            row2.appendChild(zoom);  // Add zoom control to row
         }
 
-        row.appendChild(context.geolocControl._container);  // Add geolocation control to row 
+        row2.appendChild(context.geolocControl._container);  // Add geolocation control to row 
+    }
+
+    //----------------------------------
+    // Set/change interest place name
+    //----------------------------------
+    function setIntPlName() {
+        context.operationInProcess = true;
+
+        // Create wrapper div
+        const wrapper = document.createElement('div');
+        wrapper.id = 'gpx-file-wrapper';
+        wrapper.style.border = '1px solid #ccc';
+        wrapper.style.padding = '8px';
+        wrapper.style.marginTop = '8px';
+
+        // Create label
+        const label = document.createElement('span');
+        label.textContent = context.language === 'EN' ? 'Enter interest place\'s name: ' : 'Entrer le nom du lieu d\'intérêt :';
+        wrapper.appendChild(label);
+
+        // Create file input
+        const intPl = interestPlaces[context.editedIntPl];
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.style.marginLeft = '15px';
+        input.size = 100;
+        if (intPl.name) {
+            input.value = intPl.name;
+        } else {
+            input.value = '';
+        }
+        wrapper.appendChild(input);
+
+        // Add status span
+        const status = document.createElement('span');
+        status.style.marginLeft = '8px';
+        wrapper.appendChild(status);
+
+        // Create submit button
+        const submitButton = document.createElement('button');
+        submitButton.textContent = context.language === 'EN' ? 'Set' : 'Attribuer';
+        submitButton.style.marginLeft = '8px';
+        wrapper.appendChild(submitButton);
+
+        // Process the entered name
+        function applyName(name) {
+            const beforeState = { name: intPl.name };
+            const afterState = { name: name };
+            execute(new SetIntPlName(intPl, context.editedIntPl, beforeState, afterState));
+
+            status.textContent = context.language === 'EN' ? 'Name set' : 'Nom attribué';
+
+            // Close the small UI:
+            submitButton.removeEventListener('click', submitHandler);
+            cancelButton.removeEventListener('click', cancelHandler);
+            input.removeEventListener('keydown', keydownHandler);
+            document.removeEventListener('keydown', escKeyHandler);
+            wrapper.remove();
+            
+            context.operationInProcess = false;   // Stop blocking the other operations
+        }
+
+        // Submit handler (button or Enter)
+        function submitHandler() {
+            const value = input.value.trim();
+            if (!value) {
+                applyName(null);
+            }
+            applyName(value);
+        }
+        submitButton.addEventListener('click', submitHandler);
+
+        // Keydown handler
+        function keydownHandler(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+
+                submitHandler();
+            }
+        }
+        input.addEventListener('keydown', keydownHandler);
+                    
+        // Create auto fill button
+        const autoFillButton = document.createElement('button');
+        autoFillButton.textContent = context.language === 'EN' ? 'Auto fill' : 'Remplir auto.';
+        autoFillButton.style.marginLeft = '8px';
+        wrapper.appendChild(autoFillButton);
+
+        // Get city name from coordinates
+        async function getLocationName(latlng) {
+            const name = await fetchPlaceWithNominatim(latlng);  // Retrieve city matching the coordinates using Nominatim
+            if (name != null) 
+                return name;
+            else return '?';
+        }
+
+        // Auto fill handler
+        async function autoFillHandler() {
+            if (intPl.marker !== null)
+                input.value = await getLocationName(intPl.marker.getLatLng());    //Fill with start city and end city names
+        }
+        autoFillButton.addEventListener('click', autoFillHandler);
+
+        // Create cancel button
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = context.language === 'EN' ? 'Cancel' : 'Annuler';
+        cancelButton.style.marginLeft = '8px';
+        wrapper.appendChild(cancelButton);
+
+        // Cancel handler
+        function cancelHandler() {
+            // Close the small UI:
+            submitButton.removeEventListener('click', submitHandler);
+            cancelButton.removeEventListener('click', cancelHandler);
+            input.removeEventListener('keydown', keydownHandler);
+            document.removeEventListener('keydown', escKeyHandler);
+            wrapper.remove();
+            
+            context.operationInProcess = false;   // Stop blocking the other operations
+        }
+        cancelButton.addEventListener('click', cancelHandler);
+
+        // Escape key handler just for this wrapper
+        function escKeyHandler(e) {
+            if ((e.key || '').toLowerCase() === 'escape') {
+                L.DomEvent.stopPropagation(e);  // Do not propagate event to map and document
+
+                // Remove handlers and wrapper
+                submitButton.removeEventListener('click', submitHandler);
+                cancelButton.removeEventListener('click', cancelHandler);
+                input.removeEventListener('keydown', keydownHandler);
+                document.removeEventListener('keydown', escKeyHandler);
+                wrapper.remove();
+
+                context.operationInProcess = false;   // Stop blocking the other operations
+            }
+        }
+        document.addEventListener('keydown', escKeyHandler);
+        
+        // Finally, add the wrapper to the page
+        document.body.appendChild(wrapper);
+
+        // Focus after DOM insertion (and after current event loop)
+        setTimeout(() => {
+            input.focus();
+        }, 0);
+    }
+
+    //-----------------------------------------------------------------------
+    // Set interest place layout and event listeners for edit stage status
+    //-----------------------------------------------------------------------
+    function setIntPl4Edt(i) {
+        if (i < -1 || i > interestPlaces.length - 1)
+            return;
+
+        if (i != null && i >= 0) {
+            const intPl = interestPlaces[i];
+
+            intPl.marker.remove();
+
+            let color = 'green';        // Default color is green
+            if (intPl.color)
+                color = intPl.color;
+            const icon = selectIntPlColoredIcon(color, true);
+
+            // Change interest place layout
+            const newMarker = L.marker(intPl.marker.getLatLng(), { 
+                icon: icon, 
+                pane: 'markerEditPane', 
+                draggable: true, 
+                autoPan: false, 
+                bubblingMouseEvents: true 
+            }).addTo(map);    // Create marker to represent the point on the map
+
+            intPl.marker = newMarker;
+
+            // Delete event listeners on interest place
+            if (intPl.evtList) {
+                for (const { target, type, handler } of intPl.evtList) {
+                    target.removeEventListener(type, handler);
+                }
+        
+                intPl.evtList.splice(0);
+            }
+
+            // Set event listener on interest place for click
+            function intPl_click(e) {
+                if (context.operationInProcess) 
+                    return;   // Ignore if load or rename operation in process
+
+                if (context.suppressNextClick) {
+                    context.suppressNextClick = false;
+                    L.DomEvent.stopPropagation(e);      // Do not propagate to the map
+                    L.DomEvent.preventDefault(e);
+                    return;
+                }
+                
+                if (context.clickTimeout) {     // Clear existing tieout if ny
+                    clearTimeout(context.clickTimeout);
+                    context.clickTimeout = null;
+                }
+
+                // Execute a timeout of 350 ms, to make sure it is a simple click and not a double click
+                context.clickTimeout = setTimeout(() => {
+                    context.clickTimeout = null;
+                }, 350);
+            }
+            intPl.marker.addEventListener('click', intPl_click);    // Add event listener  to point
+            intPl.evtList.push({ target: intPl.marker, type: 'click', handler: intPl_click });  // Register event listener    
+
+            // Set event listener on interest place for double-click
+            const intPl_dblclick = (function(intPlRef) {
+                return async function(e) {
+                    if (context.operationInProcess) 
+                        return;   // Ignore if load or rename operation in process
+
+                    context.operationInProcess = true;
+
+                    L.DomEvent.stopPropagation(e);  // Do not propagate to map (stop zooming and bubbling)
+                    L.DomEvent.preventDefault(e);
+                    
+                    // Stop the pending single-click
+                    if (context.clickTimeout) {
+                        clearTimeout(context.clickTimeout);
+                        context.clickTimeout = null;
+                    }
+
+                    const iRef = interestPlaces.indexOf(intPl);  // Retrieve stage index
+                    if (iRef === -1) {
+                        context.operationInProcess = false;
+
+                        return;
+                    }
+
+                    const latlng = intPlRef.marker.getLatLng();
+
+                    const beforeState = { point: latlng };
+                    const afterState = { };
+                    execute(new DoubleClickIntPl2RemoveIt(intPlRef, iRef, beforeState, afterState));
+
+                    context.operationInProcess = false;
+                };
+            })(intPl);
+            intPl.marker.addEventListener('dblclick', intPl_dblclick);      // Add event listener to interest place
+            intPl.evtList.push({ target: intPl.marker, type: 'dblclick', handler: intPl_dblclick });    // Register event listener
+
+            // Set event listener on point for drag and drop
+            const intPl_mousedown = (function(intPlRef) {
+                return function(e) {
+                    if (context.operationInProcess) 
+                        return;   // Ignore if load or rename operation in process
+
+                    context.operationInProcess = true;
+
+                    map.dragging.disable(); // Prevent panning
+
+                    const DRAG_THRESHOLD = 5;    // Minimal move detected: 5 pixels
+                    let startPoint = map.mouseEventToContainerPoint(e);
+                    let isDragging = false;
+                    
+                    const iRef = interestPlaces.indexOf(intPlRef);  // Retrieve stage index
+                    if (iRef === -1) {
+                        context.operationInProcess = false;
+
+                        return;
+                    }
+
+                    const initMarkerLatlng = intPlRef.marker.getLatLng();   // Record initial point coordinates
+
+                    const move = ev => {    // Event: mouse cursor moved
+                        const p = map.mouseEventToContainerPoint(ev);
+                        if (!isDragging && p.distanceTo(startPoint) < DRAG_THRESHOLD) {
+                            return;     // Moved distance too small: still regarded as a click
+                        }
+
+                        if (!isDragging) {
+                            isDragging = true;  // Register dragging in process
+                            //context.suppressNextClick = true;
+
+                            if (intPlRef.infoPop)
+                                intPlRef.infoPop.remove();
+                        
+                            map.dragging.disable();
+                        }
+
+                        // Prevent event propagation to map
+                        L.DomEvent.stopPropagation(ev);
+                        L.DomEvent.preventDefault(ev);
+
+                        // Assign new position to point
+                        intPlRef.marker.setLatLng(ev.latlng);
+                    };
+
+                    const up = async ev => {    // Event: mouse button up
+                        if (!isDragging) {
+                            cleanupDrag();
+
+                            context.operationInProcess = false;
+
+                            return;
+                        }
+
+                        // Prevent event propagation to map
+                        L.DomEvent.stopPropagation(ev);
+                        L.DomEvent.preventDefault(ev);
+
+                        let latlng = map.mouseEventToLatLng(ev);
+
+                        const beforeState = { point: initMarkerLatlng };
+                        const afterState = { point: latlng };
+                        execute(new DragNDropIntPl2MoveIt(intPlRef, iRef, beforeState, afterState));
+
+                        cleanupDrag();
+
+                        context.operationInProcess = false;
+                    };
+
+                    // Use DOM events from the map container to ensure firing consistency
+                    const moveHandler = ev => {
+                        const latlng = map.mouseEventToLatLng(ev);
+                        move({ latlng });
+                    };
+                    const upHandler = up;
+
+                    // Function for cleaning up event listeners from document
+                    const cleanupDrag = () => {
+                        document.removeEventListener('mousemove', moveHandler);
+                        document.removeEventListener('mouseup', upHandler);
+                        map.dragging.enable();
+                    };
+
+                    // Add event listeners to document
+                    document.addEventListener('mousemove', moveHandler);
+                    document.addEventListener('mouseup', upHandler);
+                };
+            })(intPl);
+            intPl.marker.addEventListener('mousedown', intPl_mousedown);    // Add event listener to interest place
+            intPl.evtList.push({ target: intPl.marker, type: 'mousedown', handler: intPl_mousedown });    // Register event listener
+        } 
+
+        context.editedIntPl = i;
+    }
+
+    //-----------------------------------------------------------------------
+    // Set interest place layout and event listeners for edit stage status
+    //-----------------------------------------------------------------------
+    function setIntPl4NonEdt(i) {
+        if (i === null || i < 0 || i > interestPlaces.length - 1)
+            return;
+           
+        const intPl = interestPlaces[i];
+
+        let color = 'green';        // Default color is green
+        if (intPl.color)
+            color = intPl.color;
+        const icon = selectIntPlColoredIcon(color, false);
+
+        const newMarker = L.marker(intPl.marker.getLatLng(), { 
+            icon: icon, 
+            pane: 'markerEditPane', 
+            draggable: false, 
+            autoPan: false, 
+            bubblingMouseEvents: true 
+        }).addTo(map);    // Create marker to represent the point on the map
+
+        intPl.marker.remove();
+
+        intPl.marker = newMarker;
+
+        context.editedIntPl = null;
+
+        // Delete event listeners on interest places
+        for (const { target, type, handler } of intPl.evtList)
+            target.removeEventListener(type, handler);
+        intPl.evtList.splice(0);
+
+        // Set event listener on interest places for click (does nothing, but needed to distinguish simple clicks from double-clicks)
+        function intPl_click(e) {
+            if (context.operationInProcess) 
+                return;   // Not executed if a load or rename operation is in process
+
+            // Stop a pending single-click
+            if (context.clickTimeout) {
+                clearTimeout(context.clickTimeout);
+                context.clickTimeout = null;
+            }
+
+            // Execute a timeout of 350 ms, to make sure it is a simple click and not a double click
+            context.clickTimeout = setTimeout(() => {
+                context.clickTimeout = null;
+            }, 350);
+        };
+        intPl.marker.addEventListener('click', intPl_click);  // Add event listener to the interest place
+        intPl.evtList.push({ target: intPl.marker, type: 'click', handler: intPl_click });      // Register event listener
+
+        // Set event listener on interest place for double-click
+        const intPl_dblclick = (function(intPlRef) {
+            return function(e) {
+                if (context.operationInProcess) 
+                    return;   // Not executed if a load or rename operation is in process
+
+                context.operationInProcess = true;
+
+                // Retrieve stage number
+                let iRef = interestPlaces.indexOf(intPlRef);
+                if (iRef === -1) {
+                    context.operationInProcess = false;
+
+                    return;     // Interest place was removed; do nothing
+                }
+
+                // Stop a pending single-click
+                if (context.clickTimeout) {
+                    clearTimeout(context.clickTimeout);
+                    context.clickTimeout = null;
+                }
+
+                L.DomEvent.stopPropagation(e);  // Do not propagate event to map and document
+
+                if (context.editedStage !== null) 
+                    quitEditStage();    // If a stage was being edited, set it to non edit status
+                else if (context.editedIntPl !== null) 
+                    quitEditIntPl();    // If another interest place was being edited, set it to non edit status
+                
+                iRef = interestPlaces.indexOf(intPlRef);    // An interest place may have been removed preceding the current interest place
+
+                setEnv4EdtIntPl(iRef);    // Set the double clicked stage to edit status
+
+                context.operationInProcess = false;
+            };   
+        })(intPl);
+        intPl.marker.addEventListener('dblclick', intPl_dblclick);  // Add event listener to the interest place
+        intPl.evtList.push({ target: intPl.marker, type: 'dblclick', handler: intPl_dblclick });    // Register event listener
+
     }
 
     //--------------------------------
@@ -4528,7 +6373,7 @@
             // Create reset button
             const resetButton = document.createElement('button');
             resetButton.textContent = context.language === 'EN' ? 'Reset' : 'Réinitial.';
-            resetButton.style.width = '80px';
+            resetButton.style.width = '75px';
             row.appendChild(resetButton);
 
             // Add label and buttons to row and row to wrapper
@@ -4545,7 +6390,8 @@
 
             // Define reset handler (button or Escape)
             function resetHandler() {
-                if (context.operationWithButtonInProcess) return;
+                if (context.operationInProcess) 
+                    return;
                 
                 let container = wrapper.querySelector('#search-results');   // Search for the places found container (if any)
                 if (container) 
@@ -4565,7 +6411,13 @@
                     
             // Submit handler (button or Enter)
             async function submitHandler() {
-                if (context.operationWithButtonInProcess) return;
+                if (context.operationInProcess) 
+                    return;
+
+                context.operationInProcess = true;
+                
+                const oldCursor = map.getContainer().style.cursor;
+                map.getContainer().style.cursor = 'progress';
                 
                 for (const { target, type, handler } of docLocFindEvtList)  // Remove events listeners associated with places found
                     target.removeEventListener(type, handler);
@@ -4628,7 +6480,8 @@
                             }
 
                             L.DomEvent.on(div, 'click', (e) => {    // Define click event handler
-                                if (context.operationWithButtonInProcess) return;
+                                if (context.operationInProcess) 
+                                    return;
                 
                                 L.DomEvent.stop(e);     // Stop map interaction
 
@@ -4667,9 +6520,14 @@
                         }, 50);
                     }
 
+                    map.getContainer().style.cursor = oldCursor;
+                
+                    context.operationInProcess = false;
+                
                     // Escape, arrow down and arrow up keys handler just for this wrapper
                     function keydownDocHandler(e) {
-                        if (context.operationWithButtonInProcess) return;
+                        if (context.operationInProcess) 
+                            return;
                 
                         if ((e.key || '').toLowerCase() === 'escape') {
                             L.DomEvent.stop(e);     // Stop map interaction
@@ -4680,13 +6538,15 @@
                         if (e.key === "ArrowDown" && items.length) {
                             L.DomEvent.stop(e);     // Stop map interaction
 
-                            selectItem(selectedIndex + 1);  // Register next item as selected
+                            if (selectedIndex < items.length - 1)
+                                selectItem(selectedIndex + 1);  // Register next item as selected
                         }
 
                         if (e.key === "ArrowUp" && items.length) {
                             L.DomEvent.stop(e);     // Stop map interaction
 
-                            selectItem(selectedIndex - 1);  // Register previous item as selected
+                            if (selectedIndex > 0)
+                                selectItem(selectedIndex - 1);  // Register previous item as selected
                         }
                     }
                     document.addEventListener('keydown', keydownDocHandler);    // Associate event listener with document
@@ -4694,8 +6554,11 @@
                     
                     // When a result (found location) is selected, register it and display its position on the map
                     function selectItem(index) {
-                        if (index < 0 || index >= items.length) return;
+                        context.operationInProcess = true;
 
+                        const oldCursor = map.getContainer().style.cursor;
+                        map.getContainer().style.cursor = 'progress';
+                
                         if (selectedIndex != -1)
                             items[selectedIndex].div.classList.remove('selected');
     
@@ -4712,6 +6575,10 @@
                             block: 'nearest',
                             behavior: 'smooth'
                         });
+
+                        map.getContainer().style.cursor = oldCursor;
+
+                        context.operationInProcess = false;
                     }
 
                     // Display the position of a location found on the map
@@ -4768,7 +6635,8 @@
                     function dmsToDecimal(dms) {
                         const regex = /(\d{1,3})°(\d{1,2})'(\d{1,2}(\.\d+)?)"([NSEW])/;
                         const m = dms.match(regex);
-                        if (!m) return dms;
+                        if (!m) 
+                            return dms;
 
                         let deg = parseFloat(m[1]);
                         let min = parseFloat(m[2]);
@@ -4787,6 +6655,9 @@
 
             // Keydown handler (another way to submit the location search)
             function keydownInputHandler(e) {
+                if (e.key === 'Escape' || e.key === 'ArrowDown' || e.key === 'ArrowUp')
+                    return;     // do NOT stop propagation
+
                 if (e.key.length === 1 ||      // 'a', 'h', '5', '.', etc.
                  e.key === 'Backspace' || e.key === 'Delete' || e.key === 'Tab') {
                     e.stopPropagation();
@@ -4794,7 +6665,8 @@
                 }
 
                 if (e.key === 'Enter') {
-                    if (context.operationWithButtonInProcess) return;
+                    if (context.operationInProcess) 
+                        return;
                 
                     L.DomEvent.stop(e);
                     submitHandler();
@@ -4833,6 +6705,72 @@
 
             return lines;
         }
+    }
+
+    //-------------------------------------------
+    // Set menu fpr edit interest place status
+    //-------------------------------------------
+    function setMenu4EdtIntPl() {
+        if (context.menuControl) 
+            context.menuControl.remove();    // Remove previous menu control
+
+        context.menuControl = L.control({ position: 'topright' });    // Create new menu control
+
+        context.menuControl.onAdd = function (map) {          // Set content into menu control     
+            // Create white box hosting the menu
+            const wrapper = L.DomUtil.create('div', 'leaflet-bar unified-control');
+            wrapper.style.background = 'white';
+            wrapper.style.padding = '8px';
+            wrapper.style.display = 'flex';
+            wrapper.style.flexDirection = 'column';
+            wrapper.style.gap = '8px';
+            wrapper.style.minWidth = '200px';
+            wrapper.style.maxWidth = '350px';
+            wrapper.style.width = '100%';
+
+            // Prevent map interaction
+            L.DomEvent.disableClickPropagation(wrapper);
+            L.DomEvent.disableScrollPropagation(wrapper);
+
+            // Create header row
+            const headerRow = L.DomUtil.create('div', 'menu-header', wrapper);
+            headerRow.style.display = 'flex';
+            headerRow.style.alignItems = 'center';
+            headerRow.style.justifyContent = 'space-between';
+            headerRow.style.marginBottom = '8px';
+
+            // Create title
+            const title = L.DomUtil.create('div', 'menu-title', headerRow);
+            title.textContent = context.language === 'EN' ? 'Plot your route on the map' : 'Tracez votre itinéraire sur la carte';
+            title.style.fontSize = '18px';
+            title.style.fontWeight = 'bold';
+
+            // Create help control
+            headerRow.appendChild(createHelpControl());
+
+            // Create map style contol
+            wrapper.appendChild(createMapStyleControl(map));
+
+            // Create router profile control
+            wrapper.appendChild(createRouterProfileControl());
+
+            // Create general buttons control
+            const genButtonsContainers = createGenButtonsControl();
+            wrapper.appendChild(genButtonsContainers[0]);
+            wrapper.appendChild(genButtonsContainers[1]);
+
+            // Create edit interest places buttons control
+            const edtIntPlButtonsContainers = createEdtIntPlButtonsControl();
+            wrapper.appendChild(edtIntPlButtonsContainers[0]);
+            wrapper.appendChild(edtIntPlButtonsContainers[1]);
+
+            // Create command list for edit stage control
+            wrapper.appendChild(createCmdListEdtIntPlControl());
+
+            return wrapper;
+        };
+
+        context.menuControl.addTo(map);
     }
 
     //----------------------------------
@@ -4882,15 +6820,15 @@
             // Create router profile control
             wrapper.appendChild(createRouterProfileControl());
 
-            // Create edit stage buttons control
-            const edtStgButtonsContainers = createEdtStgButtonsControl();
-            wrapper.appendChild(edtStgButtonsContainers[0]);
-            wrapper.appendChild(edtStgButtonsContainers[1]);
-
             // Create general buttons control
             const genButtonsContainers = createGenButtonsControl();
             wrapper.appendChild(genButtonsContainers[0]);
             wrapper.appendChild(genButtonsContainers[1]);
+
+            // Create edit stage buttons control
+            const edtStgButtonsContainers = createEdtStgButtonsControl();
+            wrapper.appendChild(edtStgButtonsContainers[0]);
+            wrapper.appendChild(edtStgButtonsContainers[1]);
 
             // Create command list for edit stage control
             wrapper.appendChild(createCmdListEdtStgControl());
@@ -5038,7 +6976,8 @@
 
         // Set event listener on point for click
         function point_click(e) {
-            if (context.operationWithButtonInProcess) return;   // Ignore if load or rename operation in process
+            if (context.operationInProcess) 
+                return;   // Ignore if load or rename operation in process
 
             if (context.suppressNextClick) {
                 context.suppressNextClick = false;
@@ -5063,7 +7002,10 @@
         // Set event listener on point for double-click
         const point_dblclick = (function(stageRef, pointRef) {
             return async function(e) {
-                if (context.operationWithButtonInProcess) return;   // Ignore if load or rename operation in process
+                if (context.operationInProcess) 
+                    return;   // Ignore if load or rename operation in process
+
+                context.operationInProcess = true;
 
                 L.DomEvent.stopPropagation(e);  // Do not propagate to map (stop zooming and bubbling)
                 L.DomEvent.preventDefault(e);
@@ -5075,9 +7017,19 @@
                 }
 
                 const iRef = stages.indexOf(stageRef);  // Retrieve stage index
-                if (iRef === -1) return;
+                if (iRef === -1) {
+                    context.operationInProcess = false;
+                    
+                    return;
+                }
                 const jRef = stageRef.points.indexOf(pointRef); // Retrieve point index
-                if (jRef === -1) return;
+                if (jRef === -1) {
+                    context.operationInProcess = false;
+                    
+                    return;
+                }
+
+                map.getContainer().style.cursor = 'progress';
 
                 if (jRef > 0 && jRef < stageRef.points.length - 1) {     // Not the first nor le last point 
                     let latlngPrev0 = null;        // Initial position of previous point
@@ -5095,9 +7047,13 @@
                             latlngNext0.lng + "," + latlngNext0.lat;
                         calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
                         if (!calculatedPoints) {   // When no route found
+                            map.getContainer().style.cursor = 'crosshair';
+                            
+                            context.operationInProcess = false;
+                    
                             return;
                         }
-                        calculatedPoints = simplifyPolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
+                        calculatedPoints = improvePolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
                                
                         const latlngPrev = calculatedPoints[0];     // Prepare to adjust previous point's and previous section's positions
          
@@ -5137,6 +7093,10 @@
                     const afterState = { prevPoint: null, nextPoint: null, newSection: null };
                     execute(new DoubleClickPoint2RemoveIt(stageRef, iRef, jRef, beforeState, afterState));
                 }
+
+                map.getContainer().style.cursor = 'crosshair';            
+
+                context.operationInProcess = false;
             };
         })(stage, point);
         point.marker.addEventListener('dblclick', point_dblclick);      // Add event listener to point
@@ -5145,7 +7105,10 @@
         // Set event listener on point for drag and drop
         const point_mousedown = (function(stageRef, pointRef) {
             return function(e) {
-                if (context.operationWithButtonInProcess) return;   // Ignore if load or rename operation in process
+                if (context.operationInProcess) 
+                    return;     // Ignore if load or rename operation in process
+
+                context.operationInProcess = true;
 
                 map.dragging.disable(); // Prevent panning
 
@@ -5154,9 +7117,17 @@
                 let isDragging = false;
                 
                 const iRef = stages.indexOf(stageRef);  // Retrieve stage index
-                if (iRef === -1) return;
+                if (iRef === -1) {
+                    context.operationInProcess = false;
+
+                    return;
+                }
                 const jRef = stageRef.points.indexOf(pointRef); // Retrieve point index
-                if (jRef === -1) return;
+                if (jRef === -1) {
+                    context.operationInProcess = false;
+
+                    return;
+                }
 
                 const initMarkerLatlng = pointRef.marker.getLatLng();   // Record initial point coordinates
                 // Record intial position of the preceding section
@@ -5169,8 +7140,6 @@
                     initNextPolylineLatlngs = stageRef.sections[jRef].polyline.getLatLngs(); 
 
                 const move = ev => {    // Event: mouse cursor moved
-                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
-
                     const p = map.mouseEventToContainerPoint(ev);
                     if (!isDragging && p.distanceTo(startPoint) < DRAG_THRESHOLD) {
                         return;     // Moved distance too small: still regarded as a click
@@ -5180,6 +7149,9 @@
                         isDragging = true;  // Register dragging in process
                         //context.suppressNextClick = true;
                     
+                        if (stageRef.infoPop)
+                            stageRef.infoPop.remove();
+                        
                         map.dragging.disable();
                     }
 
@@ -5204,12 +7176,18 @@
                 };
 
                 const up = async ev => {    // Event: mouse button up
-                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
-
                     if (!isDragging) {
                         cleanupDrag();
+
+                        context.operationInProcess = false;
+
                         return;
                     }
+
+                    document.removeEventListener('mousemove', moveHandler);     // Prevent further dragging of the marker
+                    document.removeEventListener('mouseup', upHandler);         // Prevent triggering additional mouse ups
+
+                    map.getContainer().style.cursor = 'progress';
 
                     // Prevent event propagation to map
                     L.DomEvent.stopPropagation(ev);
@@ -5226,7 +7204,9 @@
                             const coordinates = pointBeforeLatlng.lng + "," +       // Prépare request for BRouter
                                 pointBeforeLatlng.lat + "|" + latlng.lng + "," + latlng.lat + "|" + 
                                 pointAfterLatlng.lng + "," + pointAfterLatlng.lat;
+
                             let calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
+
                             if (!calculatedPoints) {    // When no route is found by BRouter
                                 // Restore initial point and sections
                                 pointRef.marker.setLatLng(initMarkerLatlng);
@@ -5235,6 +7215,11 @@
                                 stageRef.sections[jRef].polyline.setLatLngs(initNextPolylineLatlngs)
                                     .setStyle({ dashArray: null });
                                 cleanupDrag();
+
+                                map.getContainer().style.cursor = 'crosshair';
+                                
+                                context.operationInProcess = false;
+
                                 return;
                             }
                             // Find the section's point closest to the dragged point
@@ -5249,10 +7234,10 @@
                             // Prepare set of points to build section before the dragged point
                             calculatedPoints1 = calculatedPoints.slice(0, idx + 1);
                             calculatedPoints1.push(closestPt);
-                            calculatedPoints1 = simplifyPolyGeom(calculatedPoints1);    // Simplify the sections geometry by getting rid of part of the points
+                            calculatedPoints1 = improvePolyGeom(calculatedPoints1);    // Simplify the sections geometry by getting rid of part of the points
                             // Prepare set of points to build section after the dragged point
                             calculatedPoints2 = [closestPt].concat(calculatedPoints.slice(idx + 1));
-                            calculatedPoints2 = simplifyPolyGeom(calculatedPoints2);   // Simplify the sections geometry by getting rid of part of the points
+                            calculatedPoints2 = improvePolyGeom(calculatedPoints2);   // Simplify the sections geometry by getting rid of part of the points
                             latlng = closestPt;     // Replace the coordinates of the dragged point with those of the closest point
         
                             // Adjust previous point's and previous section's positions
@@ -5301,9 +7286,14 @@
                                 stageRef.sections[0].polyline.setLatLngs(initNextPolylineLatlngs)
                                     .setStyle({ dashArray: null });
                                 cleanupDrag();
+
+                                map.getContainer().style.cursor = 'crosshair';
+                                
+                                context.operationInProcess = false;
+
                                 return;
                             }
-                            calculatedPoints = simplifyPolyGeom(calculatedPoints);   // Simplify the sections geometry by getting rid of part of the points
+                            calculatedPoints = improvePolyGeom(calculatedPoints);   // Simplify the sections geometry by getting rid of part of the points
                             latlng = calculatedPoints[0];
                             if (!latlng.alt || latlng.alt == null)    // Find alt if missing
                                 latlng = await fetchOpenMeteoElevation(latlng);
@@ -5343,9 +7333,14 @@
                                     .setLatLngs(initPrevPolylineLatlngs)
                                     .setStyle({ dashArray: null });
                                 cleanupDrag();
+
+                                map.getContainer().style.cursor = 'crosshair';
+                                
+                                context.operationInProcess = false;
+
                                 return;
                             }
-                            calculatedPoints = simplifyPolyGeom(calculatedPoints);   // Simplify the sections geometry by getting rid of part of the points
+                            calculatedPoints = improvePolyGeom(calculatedPoints);   // Simplify the sections geometry by getting rid of part of the points
                             latlng = calculatedPoints[calculatedPoints.length - 1];
                             if (!latlng.alt || latlng.alt == null)    // Find alt if missing
                                 latlng = await fetchOpenMeteoElevation(latlng);
@@ -5379,6 +7374,11 @@
                                 // Restore initial point
                                 pointRef.marker.setLatLng(initMarkerLatlng);
                                 cleanupDrag();
+
+                                map.getContainer().style.cursor = 'crosshair';
+                                
+                                context.operationInProcess = false;
+
                                 return;
                             }
 
@@ -5392,6 +7392,10 @@
                     }
 
                     cleanupDrag();
+                    
+                    map.getContainer().style.cursor = 'crosshair';
+                    
+                    context.operationInProcess = false;
                 };
 
                 // Use DOM events from the map container to ensure firing consistency
@@ -5446,7 +7450,8 @@
 
         // Set event listener on section for click
         function section_click(e) {
-            if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
 
             // If a double-click is coming, cancel this click
             if (context.clickTimeout) {
@@ -5465,12 +7470,23 @@
         // Set event listener on section for double-click
         const section_dblclick = (function(stageRef, sectionRef) {
             return function(e) {
-                if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+                if (context.operationInProcess) 
+                    return;   // Ignore if another operation is in process
+
+                context.operationInProcess = true;
                 
                 const iRef = stages.indexOf(stageRef);  // Retrieve stage index
-                if (iRef === -1) return;
+                if (iRef === -1) {
+                    context.operationInProcess = false;
+
+                    return;
+                }
                 const jRef = stageRef.sections.indexOf(sectionRef); // Retrieve section index
-                if (jRef === -1) return;
+                if (jRef === -1) {
+                    context.operationInProcess = false;
+
+                    return;
+                }
 
                 // Stop the pending single-click
                 if (context.clickTimeout) {
@@ -5484,11 +7500,17 @@
                 const latlngs = sectionRef.polyline.getLatLngs();   // Retrieve section points
                 const {index: idx, point: latlng} = findClosestSectionAndPoint(latlngs, e.latlng);  // Find section point closest to the clicked point
 
-                if (idx < 0) return;     // When closest point was not found
+                if (idx < 0) {
+                    context.operationInProcess = false;
+
+                    return;     // When closest point was not found
+                }
 
                 const beforeState = { sectionPoints: latlngs };
                 const afterState = { prevPointIdx: idx, newPoint: latlng };
                 execute(new DoubleClickSection2InsertPoint(stageRef, iRef, jRef, beforeState, afterState));
+
+                context.operationInProcess = true;
             };
         })(stage, section);
         section.polyline.addEventListener('dblclick', section_dblclick);    // Add event listner to section
@@ -5497,7 +7519,10 @@
         // Set event listener on section for drag and drop
         const section_mousedown = (function(stageRef, sectionRef) {
             return function(e) {
-                if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
+                if (context.operationInProcess) 
+                    return;   // Ignore if another operation is in process
+
+                context.operationInProcess = true;
 
                 map.dragging.disable(); // Prevent map panning
 
@@ -5507,9 +7532,17 @@
                 let firstDrag = true;
                 
                 const iRef = stages.indexOf(stageRef);  // Retrieve stage index
-                if (iRef === -1) return;
+                if (iRef === -1) {
+                    context.operationInProcess = false;
+
+                    return;
+                }
                 const jRef = stageRef.sections.indexOf(sectionRef);     // Retrieve section index
-                if (jRef === -1) return;
+                if (jRef === -1) {
+                    context.operationInProcess = false;
+                    
+                    return;
+                }
 
                 let prevPoint0 = null;
                 let nextPoint0 = null;
@@ -5520,8 +7553,6 @@
                 }
 
                 const move = ev => {    // Event: mouse cursor moved
-                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
-
                     const p = map.mouseEventToContainerPoint(ev);
                     if (!isDragging && p.distanceTo(startPoint) < DRAG_THRESHOLD) {
                         return;     // Move is too small
@@ -5531,6 +7562,9 @@
                         isDragging = true;  // Register dragging in process
                         context.suppressNextClick = true;
                     
+                        if (stageRef.infoPop)
+                            stageRef.infoPop.remove();
+                        
                         map.dragging.disable();
                     }
 
@@ -5563,12 +7597,15 @@
                 };
 
                 const up = async ev => {    // Event: mouse button up
-                    if (context.operationWithButtonInProcess) return;   // Ignore if a save or rename operation is in process
-    
                     if (!isDragging) {  // Ignore if no dragging is in process
                         cleanupDrag();
                         return;
                     }
+
+                    document.removeEventListener('mousemove', moveHandler);     // Prevent further dragging of the marker
+                    document.removeEventListener('mouseup', upHandler);         // Prevent triggering additional mouse ups
+
+                    map.getContainer().style.cursor = 'progress';
 
                     // Prevent event propagation to map
                     L.DomEvent.stopPropagation(e);
@@ -5595,6 +7632,11 @@
                             stageRef.sections[jRef + 1].polyline.remove();
                             stageRef.sections.splice(jRef + 1, 1);
                             cleanupDrag();
+
+                            map.getContainer().style.cursor = 'crosshair';
+
+                            context.operationInProcess = false;
+
                             return;
                         }
                         // Find closest point (from the cursor's position) in the route returned by BRouter
@@ -5607,10 +7649,10 @@
                         // Prepare set of points before the cursor's position (and finishing with it)
                         calculatedPoints1 = calculatedPoints.slice(0, idx + 1);
                         calculatedPoints1.push(closestPt);
-                        calculatedPoints1 = simplifyPolyGeom(calculatedPoints1);    // Get rid of part of the points (not to handle too many data)
+                        calculatedPoints1 = improvePolyGeom(calculatedPoints1);    // Get rid of part of the points (not to handle too many data)
                         // Prepare set of points after the cursor's position (and starting with it)
                         calculatedPoints2 = [closestPt].concat(calculatedPoints.slice(idx + 1));
-                        calculatedPoints2 = simplifyPolyGeom(calculatedPoints2);    // Get rid of part of the points (not to handle too many data)
+                        calculatedPoints2 = improvePolyGeom(calculatedPoints2);    // Get rid of part of the points (not to handle too many data)
                         latlng = closestPt;
                         prevPoint = calculatedPoints1[0];
                         if (!prevPoint.alt || prevPoint.alt == null)    // Find alt if missing
@@ -5635,6 +7677,10 @@
                     execute(new DragNDropSection2BreakIt(stageRef, iRef, jRef, beforeState, afterState));
 
                     cleanupDrag();
+
+                    map.getContainer().style.cursor = 'crosshair';
+
+                    context.operationInProcess = false;
                 };
 
                 // Use DOM events from the map container to ensure firing consistency
@@ -5664,8 +7710,7 @@
     // Set/change stage name
     //-----------------------
     function setStgName() {
-        if (context.operationWithButtonInProcess)
-            return;     // One operation at a time only
+        context.operationInProcess = true;
 
         // Create wrapper div
         const wrapper = document.createElement('div');
@@ -5718,7 +7763,7 @@
             document.removeEventListener('keydown', escKeyHandler);
             wrapper.remove();
             
-            context.operationWithButtonInProcess = false;   // Stop blocking the other operations
+            context.operationInProcess = false;   // Stop blocking the other operations
         }
 
         // Submit handler (button or Enter)
@@ -5750,8 +7795,10 @@
         // Get city name from coordinates
         async function getLocationCityName(latlng) {
             const name = await fetchCityWithNominatim(latlng);  // Retrieve city matching the coordinates using Nominatim
-            if (name != null) return name;
-            else return '?';
+            if (name != null) 
+                return name;
+            else 
+                return '?';
         }
 
         // Auto fill handler
@@ -5779,7 +7826,7 @@
             document.removeEventListener('keydown', escKeyHandler);
             wrapper.remove();
             
-            context.operationWithButtonInProcess = false;   // Stop blocking the other operations
+            context.operationInProcess = false;   // Stop blocking the other operations
         }
         cancelButton.addEventListener('click', cancelHandler);
 
@@ -5795,7 +7842,7 @@
                 document.removeEventListener('keydown', escKeyHandler);
                 wrapper.remove();
 
-                context.operationWithButtonInProcess = false;   // Stop blocking the other operations
+                context.operationInProcess = false;   // Stop blocking the other operations
             }
         }
         document.addEventListener('keydown', escKeyHandler);
@@ -5807,15 +7854,12 @@
         setTimeout(() => {
             input.focus();
         }, 0);
-
-        // Register operation in process (to block other potential concurrent operations)
-        context.operationWithButtonInProcess = true;
     }
 
     //------------------------------------------------------------
     // Set stage layout and event listeners for edit stage status
     //------------------------------------------------------------
-    function setStg4EdtStg(i) {
+    function setStg4Edt(i) {
         if (stages[i] && stages[i].sections)
             setSections4Edit(i);    // Set sections' layout and event listeners for edit status
 
@@ -5861,7 +7905,8 @@
 
                 // Set event listener on section for click (does nothing, but needed to distinguish simple clicks from double-clicks)
                 function section_click(e) {
-                    if (context.operationWithButtonInProcess) return;   // Not executed if a load or rename operation is in process
+                    if (context.operationInProcess) 
+                        return;   // Not executed if a load or rename operation is in process
 
                     // Stop a pending single-click
                     if (context.clickTimeout) {
@@ -5880,12 +7925,18 @@
                 // Set event listener on section for double-click
                 const section_dblclick = (function(stageRef) {
                     return function(e) {
-                        if (context.operationWithButtonInProcess) return;   // Not executed if a load or rename operation is in process
+                        if (context.operationInProcess) 
+                            return;   // Not executed if a load or rename operation is in process
+
+                        context.operationInProcess = true;
 
                         // Retrieve stage number
                         let iRef = stages.indexOf(stageRef);
-                        if (iRef === -1)
+                        if (iRef === -1) {
+                            context.operationInProcess = false;
+
                             return;     // Stage was removed; do nothing
+                        }
 
                         // Stop a pending single-click
                         if (context.clickTimeout) {
@@ -5897,10 +7948,14 @@
         
                         if (context.editedStage !== null) 
                             quitEditStage();    // If another stage was being edited, set it to non edit status
+                        else if (context.editedIntPl !== null) 
+                            quitEditIntPl();    // If an interest place was being edited, set it to non edit status
                         
                         iRef = stages.indexOf(stageRef);    // A stage may have been removed preceding the current stage
 
                         setEnv4EdtStg(iRef);    // Set the double clicked stage to edit status
+
+                        context.operationInProcess = false;
                     };   
                 })(stage);
                 section.polyline.addEventListener('dblclick', section_dblclick);  // Add event listener to the section's polyline
@@ -5967,7 +8022,8 @@
 
                 // Set event listener on point for click
                 function point_click(e) {
-                    if (context.operationWithButtonInProcess) return;   // Not executed if a load or rename operation is in process
+                    if (context.operationInProcess) 
+                        return;   // Not executed if a load or rename operation is in process
 
                     // Stop a pending single-click
                     if (context.clickTimeout) {
@@ -5986,10 +8042,17 @@
                 // Set event listener on point for double-click
                 const point_dblclick = (function(stageRef) {
                     return function (e) {
-                        let iRef = stages.indexOf(stageRef);
-                        if (iRef === -1) return;     // Stage was removed; do nothing
+                        if (context.operationInProcess) 
+                            return;
+                        
+                        context.operationInProcess = true;
 
-                        if (context.operationWithButtonInProcess) return;
+                        let iRef = stages.indexOf(stageRef);
+                        if (iRef === -1) {
+                            context.operationInProcess = false;
+
+                            return;     // Stage was removed; do nothing
+                        }
 
                         // Stop the pending single-click
                         if (context.clickTimeout) {
@@ -6004,6 +8067,8 @@
                         iRef = stages.indexOf(stageRef);
 
                         setEnv4EdtStg(iRef);
+
+                        context.operationInProcess = false;
                     }
                 })(stage);
                 point.marker.addEventListener('dblclick', point_dblclick);  // Add event listener to the section's marker
@@ -6024,11 +8089,17 @@
     // Split stage in two parts at the position clicked
     //--------------------------------------------------
     function splitStage() {
+        // Register operation in process (to block other potential concurrent operations)
+        context.operationInProcess = true;
+
         const stage = stages[context.editedStage];
 
         // Check that stage has at least two points
         if (!stage.points || stage.points.length < 2) {
             alert(context.language === 'EN' ? 'Stage has less than two points and cannot be split' : 'Etape de moins de deux points ne pouvant être partagée');
+            
+            context.operationInProcess = false;
+            
             return;
         }
 
@@ -6050,10 +8121,24 @@
             // Set event listener on section for click
             const section_click_for_split = (function(stageRef, sectionRef) {
                 return function(e) {
+                    map.getContainer().style.cursor = 'progress';
+
                     const iRef = stages.indexOf(stageRef);  // Retrieve stage index
-                    if (iRef === -1) return;
+                    if (iRef === -1) {
+                        map.getContainer().style.cursor = 'crosshair';
+
+                        context.operationInProcess = false;   // To prevent firing the single click handler
+
+                        return;
+                    }
                     const jRef = stageRef.sections.indexOf(sectionRef); // Retrieve section index
-                    if (jRef === -1) return;
+                    if (jRef === -1) {
+                        map.getContainer().style.cursor = 'crosshair';
+
+                        context.operationInProcess = false;   // To prevent firing the single click handler
+
+                        return;
+                    }
 
                     L.DomEvent.stopPropagation(e);  // Prevent map click from firing
 
@@ -6064,8 +8149,14 @@
                     const eLatLng = e.latlng;   // Retrieve clicked coordinates
                     const latlngs = sectionRef.polyline.getLatLngs();   // Retrieve section points
                     const {index: idx, point: latlng} = findClosestSectionAndPoint(latlngs, e.latlng);  // Find section point closest to the clicked point
-                    if (idx < 0) return;     // When closest point was not found
+                    if (idx < 0) {
+                        map.getContainer().style.cursor = 'crosshair';
 
+                        context.operationInProcess = false;   // To prevent firing the single click handler
+
+                        return;     // When closest point was not found
+                    }
+                    
                     const latlngs1 = latlngs.slice(0, idx + 1).concat([latlng]);     // Retrieve the points before the closest point (including it)
                     const latlngs2 = [latlng].concat(latlngs.slice(idx + 1)); // Retrieve the points after the closest points (including it)
                     
@@ -6075,7 +8166,7 @@
 
                     map.getContainer().style.cursor = 'crosshair';
 
-                    context.operationWithButtonInProcess = false;   // To prevent firing the single click handler
+                    context.operationInProcess = false;   // To prevent firing the single click handler
                 };
             })(stage, section);
             section.polyline.addEventListener('click', section_click_for_split);    // Add event listner to section
@@ -6089,11 +8180,31 @@
             // Set event listener on point for click
             const point_click_for_split = (function(stageRef, pointRef) {
                 return function(e) {
+                    map.getContainer().style.cursor = 'progress';
+
                     const iRef = stages.indexOf(stageRef);  // Retrieve stage index
-                    if (iRef === -1) return;
+                    if (iRef === -1) {
+                        map.getContainer().style.cursor = 'crosshair';
+
+                        context.operationInProcess = false;   // To prevent firing the single click handler
+
+                        return;
+                    }
                     const jRef = stageRef.points.indexOf(pointRef); // Retrieve section index
-                    if (jRef === -1) return;
-                    if (jRef === 0 || jRef === stageRef.points.length - 1) return;  // Stage cannot be split at first and last points
+                    if (jRef === -1) {
+                        map.getContainer().style.cursor = 'crosshair';
+
+                        context.operationInProcess = false;   // To prevent firing the single click handler
+
+                        return;
+                    }
+                    if (jRef === 0 || jRef === stageRef.points.length - 1) { 
+                        map.getContainer().style.cursor = 'crosshair';
+
+                        context.operationInProcess = false;   // To prevent firing the single click handler
+
+                        return;  // Stage cannot be split at first and last points
+                    }
 
                     L.DomEvent.stopPropagation(e);  // Prevent map click from firing
 
@@ -6107,7 +8218,7 @@
 
                     map.getContainer().style.cursor = 'crosshair';
 
-                    context.operationWithButtonInProcess = false;   // To prevent firing the single click handler
+                    context.operationInProcess = false;   // To prevent firing the single click handler
                 };
             })(stage, point);
             point.marker.addEventListener('click', point_click_for_split);    // Add event listner to section
@@ -6124,7 +8235,7 @@
 
                 map.getContainer().style.cursor = 'crosshair';
 
-                context.operationWithButtonInProcess = false;   // Stop blocking the other operations
+                context.operationInProcess = false;   // Stop blocking the other operations
             }
         }
         document.addEventListener('keydown', escKeyHandler);
@@ -6143,14 +8254,57 @@
                 }
             }
         }
-        
-        // Register operation in process (to block other potential concurrent operations)
-        context.operationWithButtonInProcess = true;
     }
 
     //*******************************************
     // CLASSES FOR REVERSIBLE ACTION MANAGEMENT *
     //*******************************************
+
+    //----------------------------------------------------------
+    // Reversible command to add point when clicking on the map
+    //----------------------------------------------------------
+    class ChangeIntPlColor {
+        constructor(intPl, intPlIdx, before, after) {
+            this.intPl = intPl;
+            this.intPlIdx = intPlIdx;
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            const intPl = this.intPl;
+            const intPlIdx = this.intPlIdx;
+
+            if (intPlIdx != context.editedIntPl) {
+                quitEditIntPl();
+
+                setEnv4EdtIntPl(intPlIdx);
+            }
+
+            intPl.color = this.before.color;
+
+            const icon = selectIntPlColoredIcon(this.before.color, true);
+
+            intPl.marker.setIcon(icon);
+        }
+
+        redo() {
+            const intPl = this.intPl;
+            const intPlIdx = this.intPlIdx;
+
+            if (intPlIdx != context.editedIntPl) {
+                quitEditIntPl();
+
+                setEnv4EdtIntPl(intPlIdx);
+            }
+
+            intPl.color = this.after.color;
+
+            const icon = selectIntPlColoredIcon(this.after.color, true);
+
+            intPl.marker.setIcon(icon);
+        }
+    }
 
     //----------------------------------------------------------
     // Reversible command to add point when clicking on the map
@@ -6384,6 +8538,67 @@
         }
     }
 
+    //---------------------------------------------------------------------
+    // Reversible command to add interest place when clicking on the map
+    //---------------------------------------------------------------------
+    class ClickOnMap2AddIntPl {
+        constructor(intPl, intPlIdx, before, after) {
+            this.intPl = intPl;
+            this.intPlIdx = intPlIdx;
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            const intPl = this.intPl;
+            const intPlIdx = this.intPlIdx;
+
+            // Remove interest place
+            if (intPl.evList !== null)
+                for (const { target, type, handler } of intPl.evtList)    // Remove event listeners
+                    target.removeEventListener(type, handler);
+
+            // Remove marker
+            intPl.marker.remove();
+
+            // Remove information popup
+            if (intPl.infoPop)
+                intPl.infoPop.remove();
+
+            interestPlaces.splice(intPlIdx, 1);   // Remove interest place from list
+
+            this.intPlIdx = null;
+            this.intPl = null;
+
+            context.editedIntPl = null;
+
+            // Set environment to non edit mode
+            setEnv4NonEdt(true);
+        }
+
+        redo() {
+            // Create and record point
+            const newMarker = L.marker(this.after.point, { 
+                icon: lightGreenStarIcon, 
+                pane: 'markerEditPane', 
+                draggable: true, 
+                autoPan: false, 
+                bubblingMouseEvents: true 
+            }).addTo(map);    // Create marker to represent the point on the map
+            interestPlaces.push({ name: null, marker: newMarker, infoPop: null, evtList: [] });   // Add point to stage
+
+            this.intPlIdx = interestPlaces.length - 1;
+            this.intPl = interestPlaces[this.intPlIdx];
+
+            if (context.editedIntPl !== null)
+                setIntPl4NonEdt(context.editedIntPl);
+
+            setIntPl4Edt(interestPlaces.length - 1);     // Set new point's layout and event listeners for edit mode
+
+//            updateIntPlData(this.intPl, true);  // Update information to be displayed about the interest place
+        }
+    }
+
     //----------------------------------------------------------------
     // Reversible command to a selected stage after the edited stage
     //----------------------------------------------------------------
@@ -6425,7 +8640,12 @@
                     autoPan: false,
                     bubblingMouseEvents: true
                 }).addTo(map);
-                stage.points.splice(stage.sections.length - this.before.afterStageSectNb, 0, { marker: newMarker, evtList: [] });
+                stage.points.splice(stage.sections.length - this.before.afterStageSectNb, 0, {
+                    name: null,
+                    color: null,
+                    marker: newMarker, 
+                    evtList: [] 
+                });
             }
 
             const splicePos = stage.sections.length - this.before.afterStageSectNb;
@@ -6894,7 +9114,7 @@
                 stage2.name = stage.name + ' (2)';
                     
             setStg4NonEdt(stageIdx, false);    // Set old stage layout and event listeners for edit mode
-            setStg4EdtStg(stageIdx + 1);    // Set new stage layout and event listeners for edit mode
+            setStg4Edt(stageIdx + 1);    // Set new stage layout and event listeners for edit mode
 
             stage.distance = calculateStageDistance(stage);   // Calculate old stage distance
             [stage.ascent, stage.descent] = calculateAscentAndDescent(stage);    // Calculate old stage ascent and descent
@@ -7747,6 +9967,65 @@
         }
     }
 
+    //-------------------------------------------------------------------------
+    // Reversible command to remove an interest place when double clicking it
+    //-------------------------------------------------------------------------
+    class DoubleClickIntPl2RemoveIt {
+        constructor(intPl, intPlIdx, before, after) {
+            this.intPl = intPl;
+            this.intPlIdx = intPlIdx;
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            // Create marker to represent the interest place on the map
+            const newMarker = L.marker(this.before.point, { 
+                icon: lightGreenStarIcon, 
+                pane: 'markerEditPane', 
+                draggable: true, 
+                autoPan: false, 
+                bubblingMouseEvents: true 
+            }).addTo(map);
+            interestPlaces.push({ name: null, marker: newMarker, infoPop: null, evtList: [] });   // Add interest place to list
+
+            setIntPl4Edt(interestPlaces.length - 1);     // Set interest place's layout and event listeners for edit mode
+
+            this.intPl = interestPlaces[interestPlaces.length - 1];
+            this.intPlIdx = interestPlaces.length - 1;
+        }
+
+        redo() {
+            // Find out stage
+            const intPl = this.intPl;
+
+            const intPlIdx = this.intPlIdx;
+
+            if (intPlIdx != context.editedIntPl) {
+                quitEditStage();
+
+                setEnv4EdtIntPl(intPlIdx);
+            }
+
+            // Remove event listeners on interest place
+            for (const { target, type, handler } of intPl.evtList)
+                target.removeEventListener(type, handler);
+
+            // Remove interest place
+            intPl.marker.remove();
+            if (intPl.infoPop)
+                intPl.infoPop.remove();
+            interestPlaces.splice(intPlIdx, 1);
+
+            this.intPlRemoved = true;
+
+            context.editedIntPl = null;
+
+            // Set environment to non edit mode
+            setEnv4NonEdt(true);
+        }
+    }
+
     //------------------------------------------------------------------------
     // Reversible command to insert a point when double-clicking on a section
     //------------------------------------------------------------------------
@@ -7972,6 +10251,54 @@
         }
     }
 
+    //-----------------------------------------------------------------------------
+    // Reversible command to move an interest place when dragging and dropping it
+    //-----------------------------------------------------------------------------
+    class DragNDropIntPl2MoveIt {
+        constructor(intPl, intPlIdx, before, after) {
+            this.intPl = intPl;
+            this.intPlIdx = intPlIdx;
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            const intPl = this.intPl;
+
+            const intPlIdx = this.intPlIdx;
+
+            if (intPlIdx != context.editedIntPl) {
+                quitEditIntPl();
+
+                setEnv4EdtIntPl(intPlIdx);
+            }
+
+            // Restore point
+            intPl.marker.setLatLng(this.before.point);
+            
+            // Update information to be displayed for the stage
+            updateIntPlData(intPl, true);
+        }
+
+        redo() {
+            const intPl = this.intPl;
+
+            const intPlIdx = this.intPlIdx;
+
+            if (intPlIdx != context.editedIntPl) {
+                quitEditIntPl();
+
+                setEnv4EdtIntPl(intPlIdx);
+            }
+
+            // Change point's position
+            intPl.marker.setLatLng(this.after.point);
+
+            // Update information to be displayed for the interest place
+            updateIntPlData(intPl, true);
+        }
+    }
+
     //-------------------------------------------------------------------------------------
     // Reversible command to break a polyline and add a point when dragging and dropping it
     //--------------------------------------------------------------------------------------
@@ -8114,10 +10441,13 @@
         constructor(before, after) {
             this.before = before;
             this.after = after;
+            this.importedStagesNb = 0;
+            this.importedInterestPlacesNb = 0;
         }
 
         undo() {
-            for (let i = stages.length - this.after.importedStagesNb; i < stages.length; i++) {        // Iterate over the imported stages
+            // Process stages
+            for (let i = stages.length - this.importedStagesNb; i < stages.length; i++) {        // Iterate over the imported stages
                 const stage = stages[i];
                 // Remove event listeners on all sections and all points
                 for (const point of stage.points)
@@ -8149,8 +10479,7 @@
                     stage.infoPop.remove();
             };
 
-            //stages.length = this.before.stagesLength;   // Remove imported stages from "stages"
-            const movedStages = stages.splice(stages.length - this.after.importedStagesNb);    // Remove imported stages from "stages"
+            const movedStages = stages.splice(stages.length - this.importedStagesNb);    // Remove imported stages from "stages"
             this.after.importedStages.push(...movedStages);     // Add them to backup
                         
             displayGlobalInfo();
@@ -8164,12 +10493,34 @@
                     removeRouteProfileControl();
                 }
             }
+
+            // Process interest places
+            for (let i = interestPlaces.length - this.importedInterestPlacesNb; i < interestPlaces.length; i++) {        // Iterate over the imported stages
+                const intPl = interestPlaces[i];
+                // Remove event listeners
+                for (const { target, type, handler } of intPl.evtList)
+                    target.removeEventListener(type, handler);
+                
+                //Delete interest place
+                intPl.latlng = intPl.marker.getLatLng();
+                intPl.marker.remove();
+                delete intPl.marker;
+                delete intPl.evtList;
+
+                if (intPl.infoPop)      // Remove interest place's information popup
+                    intPl.infoPop.remove();
+            };
+
+            const movedInterestPlaces = interestPlaces.splice(interestPlaces.length - this.importedInterestPlacesNb);    // Remove imported stages from "stages"
+            this.after.importedInterestPlaces.push(...movedInterestPlaces);     // Add them to backup
         }
 
         redo() {
             if (context.editedStage != null && stages[context.editedStage].points.length === 0)
                 quitEditStage();
 
+            // Process stages
+            this.importedStagesNb = this.after.importedStages.length;
             const initStagesNb = stages.length;
             stages.push(...this.after.importedStages);  // Restore stages from backup
             this.after.importedStages.length = 0;   // Clear backup
@@ -8216,6 +10567,36 @@
 
             if (context.editedStage === null && context.stageNRouteProfileDisplayed)
                 displayRouteProfile();
+
+            // Process interest places
+            this.importedInterestPlacesNb = this.after.importedInterestPlaces.length;
+            const initInterestPlacesNb = interestPlaces.length;
+            interestPlaces.push(...this.after.importedInterestPlaces);  // Restore interest places from backup
+            this.after.importedInterestPlaces.length = 0;   // Clear backup
+
+            // Add imported stages to "stages" and to map
+            for (let i = initInterestPlacesNb; i < interestPlaces.length; i++) {
+                const intPl = interestPlaces[i];
+
+                // Restore interest places
+                const icon = selectIntPlColoredIcon(intPl.color, false);
+
+                const newMarker = L.marker(intPl.latlng, {
+                    icon: icon,
+                    pane: 'markerEditPane',
+                    draggable: false,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+                intPl.marker = newMarker;
+                intPl.infoPop = null;
+                intPl.evtList = [];
+                delete intPl.latlng;
+
+                setIntPl4NonEdt(i);   // Set interest place to non edit mode
+
+                updateIntPlData(intPl, false);     // Update stage's information popup                
+            };
         }
     }
 
@@ -8261,6 +10642,33 @@
                 updateStageDataNProfile(stage, false);
             });
             
+            // Restore interest places from backup
+            interestPlaces.push(...this.before.interestPlaces);
+            this.before.interestPlaces.length = 0;
+
+            interestPlaces.forEach((intPl, i) => {
+                let color = 'green';        // Default color is green
+                if (intPl.color)
+                    color = intPl.color;
+                const icon = selectIntPlColoredIcon(color, true);
+
+                // Restore marker
+                const newMarker = L.marker(intPl.latlng, {
+                    icon: icon,
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+                intPl.marker = newMarker;
+                intPl.evtList = [];
+                delete intPl.latlng; 
+
+                setIntPl4NonEdt(i);
+
+                updateIntPlData(intPl, false);
+            });
+            
             displayGlobalInfo();
 
             setEnv4NonEdt(true);
@@ -8301,6 +10709,26 @@
             this.before.stages.push(...stages);
             stages.length = 0;
 
+            interestPlaces.forEach(intPl => {
+                // Remove event listeners on markers
+                for (const { target, type, handler } of intPl.evtList)
+                    target.removeEventListener(type, handler);
+
+                //Delete marker
+                if (intPl.marker)
+                    intPl.latlng = intPl.marker.getLatLng();
+                    intPl.marker.remove();
+                    delete intPl.marker;
+                    delete intPl.evtList;
+                
+                // Delete popup
+                if (intPl.infoPop)
+                    intPl.infoPop.remove();
+            });
+
+            this.before.interestPlaces.push(...interestPlaces);
+            interestPlaces.length = 0;
+
             setEnv4NonEdt(true);     // Exit edit status
 
             removeStageMapNChartMarkers();
@@ -8312,6 +10740,8 @@
             removeRouteProfileControl();
 
             context.editedStage = null;
+
+            context.editedIntPl = null;
 
             displayGlobalInfo();
         }
@@ -8384,6 +10814,54 @@
             updateStageDataNProfile(stage, true);  // Update information about the stage to be displayed in popup
             
             displayGlobalInfo();
+        }
+    }
+
+    //-------------------------------------------
+    // Reversible command to change stage's name
+    //-------------------------------------------
+    class SetIntPlName {
+        constructor(intPl, intPlIdx, before, after) {
+            this.intPl = intPl;
+            this.intPlIdx = intPlIdx;
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            // Find out interest place
+            const intPl = this.intPl;
+
+            const intPlIdx = this.intPlIdx;
+
+            if (intPlIdx != context.editedIntPl) {
+                quitEditIntPl();
+
+                setEnv4EdtIntPl(intPlIdx);
+            }
+
+            // Restore name
+            intPl.name = this.before.name;
+
+            updateIntPlData(intPl, true);
+        }
+
+        redo() {
+            // Find out stage
+            const intPl = this.intPl;
+
+            const intPlIdx = this.intPlIdx;
+
+            if (intPlIdx != context.editedIntPl) {
+                quitEditIntPl();
+
+                setEnv4EdtIntPl(intPlIdx);
+            }
+
+            // Change name
+            intPl.name = this.after.name;
+
+            updateIntPlData(intPl, true);
         }
     }
 
@@ -8731,8 +11209,56 @@
             const respJSON = await response.json();
 
             // Extract and return location name
-            if (respJSON.name) return respJSON.name;
-            else return null;
+            if (respJSON.name) 
+                return respJSON.name;
+            else 
+                return null;
+        } catch (err) {
+            alert(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
+            console.error(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " : "Erreur lors de l'interrogation de Monimatim : ", err.message);
+            return null;
+        }
+    }
+
+    //--------------------------------------------------
+    // Fetch city name from coordinates using Nominatim
+    //--------------------------------------------------
+    async function fetchPlaceWithNominatim(latlng) {
+        // Nominatim's reverse geocoding URL
+        const url = "https://nominatim.openstreetmap.org/reverse?lat=" + latlng.lat + "&lon=" + latlng.lng + "&zoom=18&addressdetails=1&format=json";
+
+        try {
+            // Fetch Nominatim
+            const response = await fetch(url);
+
+            // When Nominatim query failed
+            if (!response.ok) {
+                throw new Error(context.language === 'EN' ? `HTTP error! Status: ${response.status}` : `Erreur HTTP! Etat : ${response.status}`);
+            }
+
+            // Parse JSON
+            const respJSON = await response.json();
+
+            // Extract and return location name
+            let townName = null;
+            if (respJSON.address.village)
+                townName = respJSON.address.village;
+            else if (respJSON.address.town)
+                townName = respJSON.address.town;
+            else if (respJSON.address.city)
+                townName = respJSON.address.city;
+
+            let displayName = null;
+            if (respJSON.display_name) {
+                displayName = respJSON.display_name;
+                if (townName !== null) {
+                    const pos = displayName.search(townName);
+                    if (pos >= 0)
+                        displayName = displayName.slice(0, pos + townName.length);
+                }
+            }
+
+            return displayName;
         } catch (err) {
             alert(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
             console.error(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " : "Erreur lors de l'interrogation de Monimatim : ", err.message);
@@ -8932,8 +11458,27 @@
             });
         });
 
+        interestPlaces.forEach(intPl => {   // Store the bounds of all markers of all interest places
+            bounds.extend(intPl.marker.getLatLng());
+        })
+
         if (bounds.isValid())
             map.fitBounds(bounds);  // Focus the map on the polylines
+    }
+
+    //---------------------------------------
+    // Focus the map on the interest place
+    //---------------------------------------
+    function focusOnIntPl() {
+        if (context.editedIntPl === null || context.editedIntPl === -1)
+            return;
+
+        const intPl = interestPlaces[context.editedIntPl];
+
+        if (!intPl. marker)
+            return;
+
+        map.setView(intPl.marker.getLatLng(), Math.max(15, map.getZoom()));  // Focus the map on the interest place
     }
 
     //----------------------------
@@ -8951,6 +11496,29 @@
         if (bounds.isValid())
             map.fitBounds(bounds);  // Focus the map on the polylines
     }
+
+    //-------------------------------------------------
+    // Display an alert message when geolocation fails
+    //-------------------------------------------------
+    function handleGeolocationError(error) {
+        const cursor = context.cursorExtraParam;
+
+        const message = document.querySelector(".msg-text");
+        message.style.display = "none";
+
+        if (error.code === 1)
+            alert(context.language === 'EN' ? 'Permission denied by user' : 'Permission refusée par l\'utilisateur');
+        else if (error.code === 2)
+            alert(context.language === 'EN' ? 'Position not available' : 'Position non disponible');
+        else if (error.code === 3)
+            alert(context.language === 'EN' ? 'Timeout exceeded' : 'Délai dépassé');
+        else    
+            alert(context.language === 'EN' ? 'Unknown error' : 'Erreur inconnue')
+    
+        map.getContainer().style.cursor = cursor;
+        
+        context.operationInProcess = false;    
+    }  
 
     //---------------------------------------------------------------
     // Calculate distance between two points using haversine formula 
@@ -8976,9 +11544,109 @@
         return R * c;
     }
 
-    //-------------------------------------------------------------------
-    // Conrvert latitude in decimal format to degrees, minutes & seconds 
-    //-------------------------------------------------------------------
+    //---------------------------------------------------------------------------------
+    // Improve the geometry of a section returned by BRouter by decimating the points
+    //---------------------------------------------------------------------------------
+    function improvePolyGeom(latlngs) {
+        // Project the points on the map (to make the improvement independent of the map's zoom level)
+        const projected = latlngs.map(ll => {
+            const p = map.options.crs.project(ll);
+            p.alt = ll.alt;
+            return p;
+        });
+
+        const improvedPoints = L.LineUtil.simplify(projected, 5);     // Simplify the way with precision = 5 meters
+
+        // Unproject the points from the map to retrieve their coordinates
+        const improvedLatLngs = improvedPoints.map(p => {   
+            const ll = map.options.crs.unproject(p);
+            return L.latLng(ll.lat, ll.lng, p.alt);
+        });
+        
+        // Add altitudes
+        improvedLatLngs.forEach(ll => {
+            ll.alt = interpolateAltitude(ll, latlngs);
+        });
+
+        // Insert points by interpolation if some are too distant
+        let improvedLatLngs2 = [];
+        for (let i = 0; i < improvedLatLngs.length - 2; i++) {
+            improvedLatLngs2.push(improvedLatLngs[i]);
+            const nb = compareFlatDistance(improvedLatLngs[i], improvedLatLngs[i + 1], 500);
+            if (nb > 0) {
+                const latStep = (improvedLatLngs[i + 1].lat - improvedLatLngs[i].lat) / (nb + 1); 
+                const lngStep = (improvedLatLngs[i + 1].lng - improvedLatLngs[i].lng) / (nb + 1); 
+                const altStep = (improvedLatLngs[i + 1].alt - improvedLatLngs[i].alt) / (nb + 1); 
+                let lastLat = improvedLatLngs[i].lat;
+                let lastLng = improvedLatLngs[i].lng;
+                let lastAlt = improvedLatLngs[i].alt;
+                for (let j = 0; j < nb; j++) {
+                    lastLat = lastLat + latStep;
+                    lastLng = lastLng + lngStep;
+                    lastAlt = lastAlt + altStep;
+                    improvedLatLngs2.push(L.latLng(lastLat, lastLng, lastAlt));
+                }
+            }
+        }
+        improvedLatLngs2.push(improvedLatLngs[improvedLatLngs.length - 1]);
+
+        return improvedLatLngs2;
+
+        //------------------------------------------------------------
+        // Retrieve altitude of the points obtained by simplification
+        //------------------------------------------------------------
+        function interpolateAltitude(latlng, originalTrack) {
+            let bestDist = Infinity;
+            let bestAlt = 0;
+
+            for (let i = 0; i < originalTrack.length - 1; i++) {
+                const a = originalTrack[i];
+                const b = originalTrack[i + 1];
+
+                const d = latlng.distanceTo(a);
+                if (d < bestDist) {
+                    bestDist = d;
+                    bestAlt = a.alt;
+                }
+            }
+
+            return bestAlt;
+        }
+
+        //--------------------------------------------------------------------------------------------------
+        // Compare flat-earth distance between two nearby geographic points to a maximal accepted threshold
+        //--------------------------------------------------------------------------------------------------
+        function compareFlatDistance(latlng1, latlng2, threshold) {
+            const R = 6378137;                     // Earth radius (meters)
+            const rad = 0.017453292519943295;      // PI/180
+
+            // Convert degrees → radians
+            const lat1 = latlng1.lat * rad;
+            const lat2 = latlng2.lat * rad;
+            const lng1 = latlng1.lng * rad;
+            const lng2 = latlng2.lng * rad;
+
+            // Differences in radians
+            const dLat = lat2 - lat1;
+            const dLng = lng2 - lng1;
+
+            // Tangent-plane projection (meters)
+            const dy = R * dLat;
+            const dx = R * Math.cos((lat1 + lat2) * 0.5) * dLng;
+
+            // Euclidean distance (meters)
+            const ed = Math.hypot(dx, dy);
+
+            if (ed <= threshold) 
+                return 0;
+            else
+                return Math.floor(ed / threshold);  // integer quotient
+        }
+    }
+
+    //------------------------------------------------------------------
+    // Convert latitude in decimal format to degrees, minutes & seconds 
+    //------------------------------------------------------------------
     function latToDMS(dec) {
         const latHem = dec < 0 ? "S" : "N";
         dec = Math.abs(dec);
@@ -8997,9 +11665,9 @@
         return deg + "°" + minStr + "'" + secStr + "\"" + latHem;
     }
 
-    //-------------------------------------------------------------------
+    //--------------------------------------------------------------------
     // Conrvert longitude in decimal format to degrees, minutes & seconds 
-    //-------------------------------------------------------------------
+    //--------------------------------------------------------------------
     function lngToDMS(dec) {
         const lngHem = `${context.language === 'EN'
             ? dec < 0 ? "W" : "E"
@@ -9020,16 +11688,6 @@
 
         return deg + "°" + minStr + "'" + secStr + "\"" + lngHem;
     }
-
-    //-------------------------------------------------------------------
-    // Close the mouse coordinates control when the mouse leaves the map
-    //-------------------------------------------------------------------
-    function map_mouseleave(e) {
-        if (context.mouseCoordControl) {
-            context.mouseCoordControl.remove();
-            context.mouseCoordControl = null;
-        }
-    };
 
     //------------------------------
     // Remove stage profile control 
@@ -9107,52 +11765,119 @@
         }
     }
 
-    //---------------------------------------------------------------------------------
-    // Simplify the geometry of a section returned by BRouter by decimating the points
-    //---------------------------------------------------------------------------------
-    function simplifyPolyGeom(latlngs) {
-        // Project the points on the map (to make the simplification independent of the map's zoom level)
-        const projected = latlngs.map(ll => {
-            const p = map.options.crs.project(ll);
-            p.alt = ll.alt;
-            return p;
-        });
+    //----------------------------------------------------
+    // Select the appropriate icon for an interest place
+    //----------------------------------------------------
+    function selectIntPlColoredIcon(color, edited) {
+        if (edited) {
+            if (color === 'green')
+                return lightGreenStarIcon;
+            else if (color === 'blue')
+                return lightBlueStarIcon;
+            else if (color === 'red')
+                return lightRedStarIcon;
+            else if (color === 'purple')
+                return lightPurpleStarIcon;
+            else
+                return lightGreenStarIcon;
+        } else {
+            if (color === 'green')
+                return GreenStarIcon;
+            else if (color === 'blue')
+                return BlueStarIcon;
+            else if (color === 'red')
+                return RedStarIcon;
+            else if (color === 'purple')
+                return PurpleStarIcon;
+            else
+                return GreenStarIcon;
+        }
+    }
 
-        const simplifiedPoints = L.LineUtil.simplify(projected, 5);     // Simplify the way with precision = 5 meters
+    //-----------------------------------------------------------------
+    // Focus the map on the geolocated position and create two circles
+    //-----------------------------------------------------------------
+    function setGeolocPositionOnMap(position) {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude
+        const zoom = context.zoomExtraParam;
+        const mode = context.modeExtraParam;
+        const cursor = context.cursorExtraParam;
 
-        // Unproject the points from the map to retrieve their coordinates
-        const simplifiedLatLngs = simplifiedPoints.map(p => {   
-            const ll = map.options.crs.unproject(p);
-            return L.latLng(ll.lat, ll.lng, p.alt);
-        });
-        
-        // Add altitudes
-        simplifiedLatLngs.forEach(ll => {
-            ll.alt = interpolateAltitude(ll, latlngs);
-        });
+        map.setView([lat, lng], zoom, { 'animate': true });  // Center map on geolocated position
 
-        return simplifiedLatLngs;
-
-        //------------------------------------------------------------
-        // Retrieve altitude of the points obtained by simplification
-        //------------------------------------------------------------
-        function interpolateAltitude(latlng, originalTrack) {
-            let bestDist = Infinity;
-            let bestAlt = 0;
-
-            for (let i = 0; i < originalTrack.length - 1; i++) {
-                const a = originalTrack[i];
-                const b = originalTrack[i + 1];
-
-                const d = latlng.distanceTo(a);
-                if (d < bestDist) {
-                    bestDist = d;
-                    bestAlt = a.alt;
-                }
+        if (mode == 'geoloc') {
+            // Remove previous layers if any
+            if (context.userLocationMarker) {    
+                map.removeLayer(context.userLocationMarker);
+            }
+            if (context.userAccuracyCircle) {
+                map.removeLayer(context.userAccuracyCircle);
             }
 
-            return bestAlt;
+            // Add small filled black circle to the map at user's position
+            context.userLocationMarker = L.circleMarker([lat, lng], {
+                radius: 5,
+                fillColor: 'red',
+                fillOpacity: 1,
+                color: 'red',
+                interactive: false
+            }).addTo(map);
+
+            // Add larger accuracy circle
+            context.userAccuracyCircle = L.circleMarker([lat, lng], {
+                radius: 12,
+                color: 'red',
+                fillOpacity: 0,
+                weight: 2,
+                interactive: false
+            }).addTo(map);
+        } else {
+            const message = document.querySelector(".msg-text");
+            message.style.display = "none";
         }
+
+        map.getContainer().style.cursor = cursor;
+        
+        context.operationInProcess = false;
+    }  
+
+    //---------------------------------------------------------
+    // Update information about interest place name as popup
+    //---------------------------------------------------------
+    function updateIntPlData(intPl, editMode) {
+        if (!context.stageNRouteDataDisplayed) 
+            return;
+        
+        // Update stage profile control
+        if (editMode) { 
+            if (!context.stageNRouteProfileDisplayed) {
+                removeStageMapNChartMarkers();
+
+                removeStageProfileControl();
+            }
+        }
+
+        // Update stage data popup
+        if (intPl.name === null || intPl.name.length === 0) {    // No stage information displayed if stage has no point
+            if (intPl.infoPop)
+                intPl.infoPop.remove();
+
+            return;
+        }
+
+        // Remove interest place information popup
+        if (intPl.infoPop)
+            intPl.infoPop.remove();
+
+        // Create popup with stage information content
+        intPl.infoPop = L.popup(
+            { closeOnClick: false, autoClose: false, autoPan: false, className: 'solid-popup' })
+            .setLatLng(intPl.marker.getLatLng())
+            .setContent(`<div style="text-align:left; font-size:12px; line-height:12px;"><b>${intPl.name}</b></div>`);
+
+        // Add popup to map
+        intPl.infoPop.addTo(map);
     }
 
     //-----------------------------------------------------------
@@ -9187,7 +11912,8 @@
             pos = findNearbyPosition(stage);
         else 
             pos = findMediumPosition(stage);
-        if (pos === null) return;
+        if (pos === null) 
+            return;
 
         // Find stage number
         let num = stages.indexOf(stage) + 1;  // Retrieve stage index
@@ -9307,19 +12033,21 @@
 <p>You can zoom in and out on the maps using the mouse wheel or the + and - controls (displayed at the top left).</p>
 <p>You can also move the map in any direction by dragging and dropping.</p>
 <h2>Working modes</h2>
-<p>The application offers two working modes:</p>
+<p>The application offers several working modes:</p>
 <ul>
 <li>The “create/edit stage” mode, which allows you to create a new stage or edit an existing stage of the route.</li>
-<li>The “supervision” mode: the stages of the route are displayed, but none are being edited. </li>
+<li>The “create/edit interest place” mode, which allows you to create a interest place or edit an existing interest place.</li>
+<li>The “supervision” mode: the stages and interest places of the route are displayed, but none are being edited. </li>
 </ul>
 <p>When you open the application, you are in stage create/edit mode, allowing you to create a first stage by adding points (and sections) to the map using the mouse.</p>
 <ul>
 <li>To switch to supervision mode, click the "Quit stage edition" button or press the Escape key.</li>
-<li>To switch back to create/edit mode, either click the "Start creating new stage" button or double-click on the map (to create a new stage) or double-click on an existing stage (to edit it).</li>
+<li>To switch to create/edit interest place mode, click the "Start creating new interest place" button.</li>
+<li>Once in supervision mode or create/edit interest place mode, to switch back to create/edit stage mode, either click the "Start creating new stage" button or double-click on the map (to create a new stage) or double-click on an existing stage (to edit it).</li>
 </ul>
-<h3>Stage create/edit mode</h3>
+<h3>Create/edit stage mode</h3>
 <p>This mode allows you to create a new stage or to edit an existing stage of the route. By clicking repeatedly on the map, points are added to the stage, with sections connecting them to the previous points. The other stages are displayed but cannot be modified. This is the default mode when the application is launched (you are supposed to start by creating a stage).</p>
-<p>The actions available when creating/editing the stage are:</p>
+<p>The edition actions available when creating/editing the stage are:</p>
 <ul>
 <li>Click on the map to add an additional point to the stage. If other points already exist, a section is also created to connect the previous point to this new point. The path used between these two points is determined by the chosen travel mode:
 <ul>
@@ -9354,29 +12082,64 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Press the “u” key to delete the last point on the stage.</li>
 <li>Press the “v” key to delete the first point on the stage.</li>
 <li>Click the "Delete stage" button or press the “d” key to delete all points (and all sections) from the stage. This action also switches to supervision mode.</li>
-<li>Click the "Quit stage edition" button or press the “Escape” key to finish creating/editing the stage and switch to supervision mode. </li>
-<li>Click the "Start creating a new stage" button or double-click on the map to finish creating/editing the current stage and switch to create/edit mode for a new stage. </li>
+<li>Click the "Quit stage edition" button or press the “Escape” key to finish creating/editing the stage and switch to supervision mode.</li>
+</ul>
+<p>And the global actions available are:</p>
+<ul>
+<li>Click the "Start creating a new stage" button or double-click on the map to finish creating/editing the current stage and switch to create/edit mode for a new stage.</li>
 <li>Double-click on a point or section of another stage to finish creating/editing the current stage and switch to create/edit mode for that stage. </li>
-<li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages from a GPX file (without deleting the stages already defined). </li>
+<li>Click the "Start creating a new interest place" button to finish creating/editing the current stage and switch to create/edit mode for a new interest place. </li>
+<li>Double-click on an interest place to finish creating/editing the current stage and switch to create/edit mode for that interest place. </li>
+<li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
 <li>Click the "Export route to GPX" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
 <li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
 <li>Click the "Undo last action" button or press the "Ctrl + z" key combination to undo the last action.</li>
 <li>Click the "Redo last action" button or press the "Ctrl + y" key combination to redo the last action undone.</li>
-<li>Click the "Reset route" button to reset the route (i.e., delete all the stages).</li>
+<li>Click the "Reset route" button to reset the route (i.e., delete all the stages and interest places).</li>
+<li>Click the "Help" button or press the "h" key to open the Help panel.</li>
+</ul>
+<h3>Create/edit interest place mode</h3>
+<p>This mode allows you to create a new interest or to edit an existing interest place. By clicking repeatedly on the map, interest places are added on the map.</p>
+<p>The edition actions available when creating/editing an interest place are:</p>
+<ul>
+<li>Click on the map to add an interest place. Only one interest place is edited at a time. If an interest place has already been created and is being edited, clicking on the map closes it, creates a new one and opens it in edition mode.</li>
+<li>Double-click on the edited interest place to delete it. On the other hand, double-clicking on a non edited interest place opens it in edition mode.</li>
+<li>Drag and drop an interest place on the map to move it.</li>
+<li>Click the "Set interest place name" button or press the "n" key to assign a name to the interest place.</li>
+<li>Click the "Change interest place color" button or press the "c" key to change the color of the interest place.</li>
+<li>Click the "Reverse stage direction" button or press the "r" key to reverse the stage's direction.</li>
+<li>Click the "Focus on interest place" button or press the "f" key to focus the map on the edited interest place.</li>
+<li>Click the "Delete interest place" button or press the “d” key to delete the edited interest place. This action also switches to supervision mode.</li>
+<li>Click the "Quit interest place edition" button or press the “Escape” key to finish creating/editing the interest place and switch to supervision mode. </li>
+</ul>
+<p>And the global actions available are:</p>
+<ul>
+<li>Click the "Start creating a new stage" button or double-click on the map to finish creating/editing the current interest place and switch to create/edit mode for a new stage. </li>
+<li>Double-click on a point or section of a stage to finish creating/editing the current stage and switch to create/edit mode for that stage. </li>
+<li>Click the "Start creating a new interest place" button to finish creating/editing the current interest place and switch to create/edit mode for a new interest place. </li>
+<li>Double-click on another interest place to finish creating/editing the current interest place and switch to create/edit mode for that interest place. </li>
+<li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
+<li>Click the "Export route to GPX" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
+<li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
+<li>Click the "Undo last action" button or press the "Ctrl + z" key combination to undo the last action.</li>
+<li>Click the "Redo last action" button or press the "Ctrl + y" key combination to redo the last action undone.</li>
+<li>Click the "Reset route" button to reset the route (i.e., delete all the stages and interest places).</li>
 <li>Click the "Help" button or press the "h" key to open the Help panel.</li>
 </ul>
 <h3>Supervision mode</h3>
-<p>This mode allows you to view the stages of the route without any being created/edited. The start and end points of each stage are shown, but not the waypoints. </p> 
+<p>This mode allows you to view the stages and interest places of the route without any being created/edited. The start and end points of each stage are shown, but not the waypoints.</p> 
 <p>The available actions are:</p>
 <ul>
 <li>Click the "Start creating a new stage" button or double-click on the map to switch to create/edit mode for a new stage. </li>
 <li>Double-click on a point or section of a stage to switch to create/edit mode for that stage. </li>
-<li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages from a GPX file (without deleting the stages already defined). </li>
+<li>Click the "Start creating a new interest place" button to switch to create/edit mode for a new interest place. </li>
+<li>Double-click on an interest place to switch to create/edit mode for that interest place. </li>
+<li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
 <li>Click the "Export route to GPX" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
 <li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
 <li>Click the "Undo last action" or press the "Ctrl + z" key combination to undo the last action.</li>
 <li>Click the "Redo last action" or press the "Ctrl + y" key combination to redo the last action undone.</li>
-<li>Click the "Reset route" to reset the route (i.e., delete all the stages).</li>
+<li>Click the "Reset route" to reset the route (i.e., delete all the stages and interest places).</li>
 <li>Click the "Help" button or press the "h" key to open the Help panel.</li>
 </ul>
 <h2>Miscellaneous</h2>
@@ -9391,7 +12154,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Main menu</li>
 <li>Geolocation tool</li>
 <li>Location finder tool</li>
-<li>Stage and route information: name (stages), length, starting and finishing altitudes, and positive and negative elevation gains.</li>
+<li>Stage, interest places, and route information: name (stages and interest places), length, starting and finishing altitudes, and positive and negative elevation gains.</li>
 <li>Stage or route profile, displayed as a graph.</li>
 </ul>
 </ul>
@@ -9432,19 +12195,22 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <p>On peut zoomer et dézoomer les cartes en utilisant la molette de la souris ou les contrôles + et - (affichés en haut à gauche de la carte).</p>
 <p>On peut aussi déplacer la carte dans toutes les directions par tirer-déposer.</p>
 <h2>Modes de travail</h2>
-<p>L'application offre deux modes de travail :</p>
+<p>L'application offre plusieurs modes de travail :</p>
 <ul>
 <li>Le mode "création/modification d'étape", permettant de créer une nouvelle étape ou de modifier une étape existante de l'itinéraire.</li>
-<li>Le mode "supervision" : les étapes de l'itinéraire sont affichées, mais aucune n'est en cours de modification.</li>
+<li>Le mode "création/modification de lieu d'intérêt", permettant de créer un nouveau lieu d'intérêt ou de modifier un lieu d'intérêt existant.</li>
+<li>Le mode "supervision" : les étapes et lieux d'intérêt de l'itinéraire sont affichés, mais aucun n'est en cours de modification.</li>
 </ul>
 <p>En ouvrant l'application, on est en mode création/modification d'étape, afin de créer une première étape en ajoutant des points (et des sections) sur la carte à l'aide de la souris.</p>
 <ul>
 <li>Pour passer en mode supervision, il faut cliquer le bouton "Quitter édition de l'étape" ou presser la touche Echappement</li>
-<li>Pour repasser en mode création/modification, il faut soit cliquer sur le bouton "Démarrer création nouvelle étape" ou double cliquer sur la carte (pour créer une nouvelle étape), soit double-cliquer sur une étape existante (afin de la modifier).</li>
+<li>Pour repasser en mode création/modification de lieu d'intérêt, il faut soit cliquer sur le bouton "Démarrer création nouveau lieu d'intérêt".</li>
+<li>Once in supervision mode or create/edit interest place mode, to switch back to create/edit stage mode, either click the "Start creating new stage" button or double-click on the map (to create a new stage) or double-click on an existing stage (to edit it)</li>
+<li>Une fois en mode supervision ou en mode création/modification de lieu d'intérêt, pour retourner en mode création/modification d'étape, il faut soit cliquer sur le bouton "Démarrer création nouvelle étape" ou double-cliquer sur la carte (pour créer une nouvelle étape) ou double-cliquer sur une étape existante (pour la modifier)</li>
 </ul>
 <h3>Mode création/modification d'étape</h3>
 <p>Ce mode permet de créer une nouvelle étape ou de modifier une étape existante de l'itinéraire. En cliquant de manière répétée sur la carte, on ajoute des points à l'étape, et des sections les reliant aux points précédents. Les autres étapes sont affichées, mais ne peuvent pas être modifiées. C'est le mode par défaut au lancement de l'application (on est censé commencer par créer une étape).</p>
-<p>Les actions disponibles en mode édition/modification d'étape sont :</p>
+<p>Les actions de modification disponibles en mode édition/modification d'étape sont :</p>
 <ul>
 <li>Cliquer sur la carte pour ajouter un point supplémentaire à l'étape en cours d'édition. Si d'autres points existent déjà, une section est aussi créée pour relier le point précédent à ce nouveau point. Le chemin utilisé entre ces deux points est déterminé par le mode de voyage choisi :
 <ul>
@@ -9480,28 +12246,62 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Presser la touche "v" pour supprimer le premier point de l'étape.</li>
 <li>Cliquer sur le bouton "Supprimer l'étape" ou presser la touche "d" pour supprimer tous les points (et toutes les sections) de l'étape. Cette action fait également passer en mode supervision.</li>
 <li>Cliquer sur le bouton "Quitter édition de l'étape" ou presser la touche "Echappement" pour terminer la création/modification de l'étape et passer en mode supervision.</li>
-<li>Cliquer sur le bouton "Démarrer création nouvelle étape" ou double-cliquer sur la carte pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'une nouvelle étape.</li>
-<li>Double-cliquer sur un point ou une section d'une autre étape pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour l'autre étape.</li>
-<li>Cliquer sur le boutton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
-<li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
-<li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
-<li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
-<li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
-<li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes).</li>
-<li>Cliquer sur le bouton "Help" ou presser la touche "h" pour ouvrir le panneau d'Aide.</li>
 </ul>
-<h3>Mode supervision</h3>
-<p>Ce mode permet de visualiser les étapes de l'itinéraire sans qu'aucune ne soit en cours de création/modification. Les points de départ et d'arrivée de chaque étape sont représentés, mais pas les points de passage.</p> 
-<p>Les actions disponibles sont :</p>
+<p>Et les actions générales disponibles sont:</p>
 <ul>
 <li>Cliquer sur le bouton "Démarrer création nouvelle étape" ou double-cliquer sur la carte pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'une nouvelle étape.</li>
 <li>Double-cliquer sur un point ou une section d'une autre étape pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour l'autre étape.</li>
-<li>Cliquer sur le boutton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes à partir d'un fichier GPX. Ces étapes s'ajoutent à celles qui figurent déjà dans l'application.</li>
+<li>Cliquer sur le bouton "Démarrer création nouveau lieu d'intérêt" pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
+<li>Double-cliquer sur un lieu d'intérêt pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour ce lieu d'intérêt.</li>
+<li>Cliquer sur le boutton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
 <li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
 <li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
 <li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
 <li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
-<li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes).</li>
+<li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes et lieux d'intérêt).</li>
+<li>Cliquer sur le bouton "Help" ou presser la touche "h" pour ouvrir le panneau d'Aide.</li>
+</ul>
+<h3>Mode création/modification de lieu d'intérêt</h3>
+<p>Ce mode permet de créer un nouveau lieu d'intérêt ou de modifier un lieu d'intérêt existant de l'itinéraire. En cliquant de manière répétée sur la carte, on ajoute des lieux d'intérêt sur la carte.</p>
+<p>Les actions de modification disponibles en mode édition/modification de lieu d'intérêt sont :</p>
+<ul>
+<li>Cliquer sur la carte pour ajouter un lieu d'intérêt. Un seul lieu d'intérêt est en mode création/modification à la fois. Si un lieu d'intérêt a été créé et est en mode création/modification, cliquer sur la carte ferme ce mode pour ce lieu, crée un nouveau lieu d'intérêt et passe en mode création/modification pour ce nouveau lieu.</li>
+<li>Double-cliquer sur le lieu d'intérêt en mode création/modification pour le supprimer.</li>
+<li>Tirer-déposer un lieu d'intérêt pour le déplacer.</li>
+<li>Cliquer sur le bouton "Attribuer nom au lieu d'intérêt" ou presser la touche "n" pour attribuer un nom au lieu d'intérêt.</li>
+<li>Cliquer sur le bouton "Modificer la couleur du lieu d'intérêt" ou presser la touche "c" pour modifier la couleur du lieu d'intérêt.</li>
+<li>Cliquer sur le bouton "Focaliser sur le lieu d'intérêt" ou presser la touche "f" pour focaliser la carte sur le lieu d'intérêt en mode créaation/modification.</li>
+<li>Cliquer sur le bouton "Supprimer le lieu d'intérêt" ou presser la touche "d" pour supprimer le lieu d'intérêt. Cette action fait également passer en mode supervision.</li>
+<li>Cliquer sur le bouton "Quitter l'édition du lieu d'intérêt" ou presser la touche "Echappement" pour terminer la création/modification du lieu d'intérêt et passer en mode supervision.</li>
+</ul>
+<p>Et les actions générales disponibles sont:</p>
+<ul>
+<li>Cliquer sur le bouton "Démarrer création nouvelle étape" ou double-cliquer sur la carte pour terminer la création/modification du lieu d'intérêt en cours de création/modification et passer en mode création/modification d'une nouvelle étape.</li>
+<li>Double-cliquer sur un point ou une section d'une étape pour terminer la création/modification du lieu d'intérêt en cours et passer en mode édition/modification pour cette étape.</li>
+<li>Cliquer sur le bouton "Démarrer création nouveu lieu d'intérêt" pour terminer la création/modification du lieu d'intérêt en cours et passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
+<li>Double-cliquer sur un lieu d'intérêt pour terminer la création/modification du lieu d'intérêt en cours et passer en mode édition/modification pour l'autre lieu d'intérêt.</li>
+<li>Cliquer sur le boutton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
+<li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
+<li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
+<li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
+<li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
+<li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes et lieux d'intérêt).</li>
+<li>Cliquer sur le bouton "Help" ou presser la touche "h" pour ouvrir le panneau d'Aide.</li>
+</ul>
+<h3>Mode supervision</h3>
+<p>Ce mode permet de visualiser les étapes et lieux d'intérêt de l'itinéraire sans qu'aucun ne soit en cours de création/modification. Les points de départ et d'arrivée de chaque étape sont représentés, mais pas les points de passage.</p> 
+<p>Les actions disponibles sont :</p>
+<ul>
+<li>Cliquer sur le bouton "Démarrer création nouvelle étape" ou double-cliquer sur la carte pour passer en mode création/modification d'une nouvelle étape.</li>
+<li>Double-cliquer sur un point ou une section d'une étape pour passer en mode édition/modification pour cette étape.</li>
+<li>Cliquer sur le bouton "Démarrer création nouveau lieu d'intérêt" pour passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
+<li>Double-cliquer sur un lieu d'intérêt pour passer en mode édition/modification pour ce lieu d'intérêt.</li>
+<li>Cliquer sur le bouton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
+<li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
+<li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
+<li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
+<li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
+<li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes et lieux d'intérêt).</li>
 <li>Cliquer sur le bouton "Help" ou presser la touche "h" pour ouvrir le panneau d'Aide.</li>
 </ul>
 <h2>Divers</h2>
@@ -9516,7 +12316,7 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Menu principal</li>
 <li>Outil de géolocalisation</li>
 <li>Outil de recherche de lieu</li>
-<li>Informations sur les étapes et l'ensemble de l'itinéraire: nom (étapes), distance, altitudes de départ et d'arrivée et dénivelés positif et negatif.</li>
+<li>Informations sur les étapes, les lieux d'intérêt et l'ensemble de l'itinéraire: nom (étapes et lieux d'intérêt), distance, altitudes de départ et d'arrivée et dénivelés positif et negatif.</li>
 <li>Profil de l'étape ou de l'ensemble de l'itinéraire affiché comme graphe.</li>
 </ul>
 </ul>

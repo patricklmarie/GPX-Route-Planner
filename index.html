@@ -16,6 +16,14 @@
     .header-table { border-collapse: collapse; border: none; width: auto; }
     .header-table td { border: none; padding: 4px 8px; }
     .header-table .title { text-align: left; font-size: 20px; font-weight: bold; white-space: nowrap; }
+    .header-table .message .msg-text {
+    display: inline-block;
+    color: white;
+    background-color: #000;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 500;
+    }
     .header-table .author { text-align: right; font-size: 12px; font-style: italic; }
 	.menu {background: white; padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         border-radius: 5px; line-height: 18px; color: #555; }
@@ -41,12 +49,15 @@
     <tr>
     <td style="width: 2%"><button id="settingsBtn" class="settingsBtn"><i class="fa fa-bars"></i></button></td>
     <td class="title" id="page_title">GPX Route Planner</td>
+    <td class="message">
+        <span class="msg-text"></span>
+    </td>
     <td class="author" id="author">Developed by Patrick Marie</td>
     </tr>
     </table>
 
     <div id="map"></div>
-    
+
     <div id="sidePanel" class="side-panel"></div>
 
     <script src=https://unpkg.com/leaflet@1.9.4/dist/leaflet.js 
@@ -78,8 +89,7 @@
     //*************
     try {
         // Create map
-        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 6);
-//        map = L.map('map', { doubleClickZoom: false }).setView([44.25, 5], 12);
+        map = L.map('map', { doubleClickZoom: false }).setView([44.242, 5.74], 6);
 
         // Create specific layers for the markers, so that are always on top of the polylines
         map.createPane('markerNEPane');
@@ -105,6 +115,24 @@
         activateSettingsBtn();
 
         setEnv4EdtStg(null);    // Start editing a new stage
+
+        const message = document.querySelector(".msg-text");
+        message.style.display = "none";
+
+        // Focus map on the user's location
+        if (navigator.geolocation) {
+            context.operationInProcess = true;
+            
+            map.getContainer().style.cursor = 'progress';
+            
+            message.style.display = "inline-block";
+            message.textContent = context.language === 'EN' ? 'Moving map to your area...' : 'Positionnement de la carte sur votre zone...';
+
+            context.zoomExtraParam = 12;
+            context.modeExtraParam = "init";
+            context.cursorExtraParam = "crosshair";
+            navigator.geolocation.getCurrentPosition(setGeolocPositionOnMap, handleGeolocationError);
+        }
     } catch(e) {   
         // Remove map 
         if (typeof map !== 'undefined' && map) { map.remove(); }
@@ -117,6 +145,10 @@
         const elemDiv = document.createElement('div');
         elemDiv.innerHTML = `<p>${e}</p>`;
         document.body.appendChild(elemDiv);
+
+        console.error("ERROR:", err.message);
+        console.error("STACK TRACE:");
+        console.error(err.stack);
     }
     </script>
 </body>

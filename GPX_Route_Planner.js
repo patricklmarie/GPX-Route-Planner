@@ -2880,8 +2880,6 @@
             return;
         }
 
-        map.getContainer().style.cursor = 'progress';
-
         const i = context.editedStage;  // Retrieve stage to be edited
         const stage = stages[i];
 
@@ -2894,8 +2892,6 @@
         const beforeState = { section: sectionPoints0, point: point0 };
         const afterState = null;
         execute(new DeleteFirstPoint(stage, i, beforeState, afterState));        
-
-        map.getContainer().style.cursor = 'crosshair';
 
         context.operationInProcess = false;
     }
@@ -2912,8 +2908,6 @@
             return;
         }
 
-        map.getContainer().style.cursor = 'progress';
-
         // Retrieve stage and point to be edited
         const i = context.editedStage;
         const stage = stages[i];
@@ -2927,8 +2921,6 @@
         const beforeState = { section: sectionPoints0, point: point0 };
         const afterState = null;
         execute(new DeleteLastPoint(stage, i, beforeState, afterState));        
-
-        map.getContainer().style.cursor = 'crosshair';
 
         context.operationInProcess = false;
     }
@@ -2945,16 +2937,12 @@
             return;
         }
 
-        map.getContainer().style.cursor = 'progress';
-
         const intPl = interestPlaces[i];
         const latlng = intPl.marker.getLatLng();
 
         const beforeState = { point: latlng };
         const afterState = { };
         execute(new DoubleClickIntPl2RemoveIt(intPl, i, beforeState, afterState));
-
-        map.getContainer().style.cursor = 'crosshair';
 
         context.operationInProcess = false;
     }
@@ -5385,7 +5373,6 @@
             
                 context.clickTimeout = setTimeout(async () => {     // Delay the action of 350 ms to see if a dblclick follows
                     context.operationInProcess = true;
-                    // map.getContainer().style.cursor = 'progress';
 
                     context.clickTimeout = null;
             
@@ -5977,8 +5964,13 @@
 
         // Auto fill handler
         async function autoFillHandler() {
-            if (intPl.marker !== null)
+            if (intPl.marker !== null) {
+                map.getContainer().style.cursor = 'progress';
+
                 input.value = await getLocationName(intPl.marker.getLatLng());    //Fill with start city and end city names
+
+                map.getContainer().style.cursor = 'crosshair';
+            }
         }
         autoFillButton.addEventListener('click', autoFillHandler);
 
@@ -6555,9 +6547,6 @@
                     // When a result (found location) is selected, register it and display its position on the map
                     function selectItem(index) {
                         context.operationInProcess = true;
-
-                        const oldCursor = map.getContainer().style.cursor;
-                        map.getContainer().style.cursor = 'progress';
                 
                         if (selectedIndex != -1)
                             items[selectedIndex].div.classList.remove('selected');
@@ -6575,8 +6564,6 @@
                             block: 'nearest',
                             behavior: 'smooth'
                         });
-
-                        map.getContainer().style.cursor = oldCursor;
 
                         context.operationInProcess = false;
                     }
@@ -7803,11 +7790,15 @@
 
         // Auto fill handler
         async function autoFillHandler() {
+            map.getContainer().style.cursor = 'progress';
+
             if (stage.points.length > 1)
                 input.value = await getLocationCityName(stage.points[0].marker.getLatLng()) + ' - ' + 
                     await getLocationCityName(stage.points[stage.points.length - 1].marker.getLatLng());    //Fill with start city and end city names
             else if (stage.points.length > 0) 
                 input.value = await getLocationCityName(stage.points[0].marker.getLatLng());    // Fill with city name
+
+            map.getContainer().style.cursor = 'crosshair';
         }
         autoFillButton.addEventListener('click', autoFillHandler);
 
@@ -8121,8 +8112,6 @@
             // Set event listener on section for click
             const section_click_for_split = (function(stageRef, sectionRef) {
                 return function(e) {
-                    map.getContainer().style.cursor = 'progress';
-
                     const iRef = stages.indexOf(stageRef);  // Retrieve stage index
                     if (iRef === -1) {
                         map.getContainer().style.cursor = 'crosshair';
@@ -8164,8 +8153,6 @@
                     const afterState = { point: latlng, section1: latlngs1, section2: latlngs2 };
                     execute(new ClickSection2Split(stageRef, iRef, jRef, beforeState, afterState));
 
-                    map.getContainer().style.cursor = 'crosshair';
-
                     context.operationInProcess = false;   // To prevent firing the single click handler
                 };
             })(stage, section);
@@ -8180,8 +8167,6 @@
             // Set event listener on point for click
             const point_click_for_split = (function(stageRef, pointRef) {
                 return function(e) {
-                    map.getContainer().style.cursor = 'progress';
-
                     const iRef = stages.indexOf(stageRef);  // Retrieve stage index
                     if (iRef === -1) {
                         map.getContainer().style.cursor = 'crosshair';
@@ -8215,8 +8200,6 @@
                     const beforeState = null;
                     const afterState = null;
                     execute(new ClickPoint2Split(stageRef, iRef, jRef, beforeState, afterState));
-
-                    map.getContainer().style.cursor = 'crosshair';
 
                     context.operationInProcess = false;   // To prevent firing the single click handler
                 };

@@ -7171,6 +7171,8 @@
                         return;
                     }
 
+                    pointRef.marker.dragging.disable();
+
                     document.removeEventListener('mousemove', moveHandler);     // Prevent further dragging of the marker
                     document.removeEventListener('mouseup', upHandler);         // Prevent triggering additional mouse ups
 
@@ -7203,6 +7205,8 @@
                                     .setStyle({ dashArray: null });
                                 cleanupDrag();
 
+                                pointRef.marker.dragging.enable();
+            
                                 map.getContainer().style.cursor = 'crosshair';
                                 
                                 context.operationInProcess = false;
@@ -7274,6 +7278,8 @@
                                     .setStyle({ dashArray: null });
                                 cleanupDrag();
 
+                                pointRef.marker.dragging.enable();
+            
                                 map.getContainer().style.cursor = 'crosshair';
                                 
                                 context.operationInProcess = false;
@@ -7321,6 +7327,8 @@
                                     .setStyle({ dashArray: null });
                                 cleanupDrag();
 
+                                pointRef.marker.dragging.enable();
+
                                 map.getContainer().style.cursor = 'crosshair';
                                 
                                 context.operationInProcess = false;
@@ -7362,6 +7370,8 @@
                                 pointRef.marker.setLatLng(initMarkerLatlng);
                                 cleanupDrag();
 
+                                pointRef.marker.dragging.enable();
+                        
                                 map.getContainer().style.cursor = 'crosshair';
                                 
                                 context.operationInProcess = false;
@@ -7379,6 +7389,8 @@
                     }
 
                     cleanupDrag();
+                    
+                    pointRef.marker.dragging.enable();
                     
                     map.getContainer().style.cursor = 'crosshair';
                     

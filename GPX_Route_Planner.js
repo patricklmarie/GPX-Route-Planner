@@ -3923,6 +3923,9 @@
         const oldCursor = map.getContainer().style.cursor;
         map.getContainer().style.cursor = 'progress';
 
+        if (context.editedStage !== null)
+            disableStagePointsDragging(stages[context.editedStage]);
+
         // Create a new file by downloading it
         const blob = new Blob([makeGPX("GPX Route Planner export")], { type: "application/octet-stream" });
         const a = document.createElement('a');
@@ -3933,6 +3936,9 @@
         console.log(context.language === 'EN' ? "Route exported as GPX file (in default download directory)" : 
             "Itinéraire exporté sous forme de fichier GPX (dans le répertoire de téléchargement par défaut)");
             
+        if (context.editedStage !== null)
+            enableStagePointsDragging(stages[context.editedStage]);
+
         map.getContainer().style.cursor = oldCursor;
             
         context.operationInProcess = false;
@@ -4097,7 +4103,10 @@
         const oldCursor = map.getContainer().style.cursor;
         map.getContainer().style.cursor = 'progress';
         
-            // Create wrapper division
+        if (context.editedStage !== null)
+            disableStagePointsDragging(stages[context.editedStage]);
+
+        // Create wrapper division
         const wrapper = document.createElement('div');
         wrapper.id = 'gpx-file-wrapper';
         wrapper.style.border = '1px solid #ccc';
@@ -4130,6 +4139,9 @@
                 input.removeEventListener('change', changeHandler);     // Remove event handler
                 cancelButton.removeEventListener('click', cancelHandler);                // Remove wrapper from DOM
                 wrapper.remove();
+
+                if (context.editedStage !== null)
+                    enableStagePointsDragging(stages[context.editedStage]);
 
                 map.getContainer().style.cursor = oldCursor;
 
@@ -4276,12 +4288,18 @@
 
                 focusOnRoute();
 
+                if (context.editedStage !== null)
+                    enableStagePointsDragging(stages[context.editedStage]);
+
                 map.getContainer().style.cursor = oldCursor;
 
                 context.operationInProcess = false;   // Stop blocking the other operations
             } catch (err) {     // Error handler
                 console.error(context.language === 'EN' ? 'Error reading file:' : 'Erreur de lecture du fichier : ', err);
                 status.textContent = context.language === 'EN' ? 'Error reading file' : 'Erreur de lecture du fichier';
+
+                if (context.editedStage !== null)
+                    enableStagePointsDragging(stages[context.editedStage]);
 
                 map.getContainer().style.cursor = oldCursor;
 
@@ -4304,6 +4322,9 @@
             document.removeEventListener('keydown', escKeyHandler);
             wrapper.remove();
             
+            if (context.editedStage !== null)
+                enableStagePointsDragging(stages[context.editedStage]);
+
             map.getContainer().style.cursor = oldCursor;
 
             context.operationInProcess = false;   // Stop blocking the other operations
@@ -4493,6 +4514,8 @@
                 // Remove handlers and wrapper
                 document.removeEventListener('keydown', escKeyHandler);
 
+                enableStagePointsDragging(context.stage);
+
                 map.getContainer().style.cursor = 'crosshair';
 
                 context.operationInProcess = false;   // Stop blocking the other operations
@@ -4510,8 +4533,12 @@
         async function clickForMergeBefore(stageRef, e) {
             map.getContainer().style.cursor = 'progress';
 
+            disableStagePointsDragging(stage);
+
             const iRef = stages.indexOf(stageRef);  // Retrieve stage index
             if (iRef === -1) {
+                enableStagePointsDragging(stage);
+
                 map.getContainer().style.cursor = 'crosshair';
             
                 context.operationInProcess = false;   // To prevent firing the single click handler
@@ -4531,10 +4558,6 @@
             
             document.removeEventListener('keydown', escKeyHandler); //Remove Esc event handler (that were added for merging);
 
-//            map.getContainer().style.cursor = 'crosshair';
-
-//            context.operationInProcess = false;   // To prevent firing the single click handler
-
             let lastPt = stageRef.points[stageRef.points.length - 1].marker.getLatLng();
             let firstPt = stage.points[0].marker.getLatLng();
             if (lastPt.lat != firstPt.lat || lastPt.lng != firstPt.lng) {
@@ -4544,6 +4567,8 @@
                     calculatedPoints = await fetchBRouterRoute(coordinates);    // Find route to new point with BRouter
                     if (!calculatedPoints) {      // When no route is found by BRouter
                         //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
+                        enableStagePointsDragging(stage);
+
                         map.getContainer().style.cursor = 'crosshair';
                         
                         context.operationInProcess = false;
@@ -4579,8 +4604,12 @@
         async function clickForMergeAfter(stageRef, e) {
             map.getContainer().style.cursor = 'progress';
 
+            disableStagePointsDragging(stage);
+
             const iRef = stages.indexOf(stageRef);  // Retrieve stage index
             if (iRef === -1) {
+                enableStagePointsDragging(stage);
+
                 map.getContainer().style.cursor = 'crosshair';
             
                 context.operationInProcess = false;
@@ -4600,10 +4629,6 @@
             
             document.removeEventListener('keydown', escKeyHandler); //Remove Esc event handler (that were added for merging);
 
-//            map.getContainer().style.cursor = 'crosshair';
-
-//            context.operationInProcess = false;   // To prevent firing the single click handler
-
             let lastPt = stage.points[stage.points.length - 1].marker.getLatLng();
             let firstPt = stageRef.points[0].marker.getLatLng();
             if (lastPt.lat != firstPt.lat || lastPt.lng != firstPt.lng) {
@@ -4612,6 +4637,8 @@
                         firstPt.lng + "," + firstPt.lat;      // Prepare coordinates to be submitted to BRouter
                     calculatedPoints = await fetchBRouterRoute(coordinates);    // Find route to new point with BRouter
                     if (!calculatedPoints) {      // When no route is found by BRouter
+                        enableStagePointsDragging(stage);
+            
                         map.getContainer().style.cursor = 'crosshair';
                         
                         context.operationInProcess = false;                        
@@ -4847,12 +4874,16 @@
         const stageBefore = copy(stage);
         const stageAfter = copy(stage);
 
+        disableStagePointsDragging(stage);
+
         // Collect stage points coordinates in reverse order
         const latlngs = [];
         stage.points.forEach(point => {
             latlngs.unshift(point.marker.getLatLng());
         });
         if (latlngs.length === 0) {
+            enableStagePointsDragging(stage);
+    
             map.getContainer().style.cursor = 'crosshair';
 
             context.operationInProcess = false;
@@ -4870,6 +4901,8 @@
             });
             let calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
             if (!calculatedPoints) {    // When no route is found by BRouter
+                enableStagePointsDragging(stage);
+        
                 map.getContainer().style.cursor = 'crosshair';
 
                 context.operationInProcess = false;
@@ -4903,6 +4936,8 @@
         const afterState = { stage: stageAfter };
         execute(new ReverseStage(stage, context.editedStage, beforeState, afterState));
 
+        enableStagePointsDragging(stage);
+        
         map.getContainer().style.cursor = 'crosshair';
         
         context.operationInProcess = false;
@@ -5370,6 +5405,8 @@
                 }
 
                 map.getContainer().style.cursor = 'progress';
+
+                disableStagePointsDragging(stageRef);
             
                 context.clickTimeout = setTimeout(async () => {     // Delay the action of 350 ms to see if a dblclick follows
                     context.operationInProcess = true;
@@ -5389,6 +5426,8 @@
                             calculatedPoints = await fetchBRouterRoute(coordinates);    // Find route to new point with BRouter
                             if (!calculatedPoints) {      // When no route is found by BRouter
                                 //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
+                                enableStagePointsDragging(stageRef);
+            
                                 map.getContainer().style.cursor = 'crosshair';
                                 
                                 context.operationInProcess = false;
@@ -5413,6 +5452,8 @@
                                 latlng.lng + "," + latlng.lat;
                             calculatedPoints = await fetchBRouterRoute(coordinates);
                             if (!calculatedPoints) {   // No route found
+                                enableStagePointsDragging(stageRef);
+            
                                 map.getContainer().style.cursor = 'crosshair';
                                 
                                 context.operationInProcess = false;
@@ -5439,6 +5480,8 @@
                     const afterState = { previousPoint: latlngPrev, nextPoint: latlng, newPoints: calculatedPoints };
                     execute(new ClickOnMap2AddPoint(stageRef, iRef, beforeState, afterState));
 
+                    enableStagePointsDragging(stageRef);
+            
                     map.getContainer().style.cursor = 'crosshair';
 
                     context.operationInProcess = false;
@@ -5808,6 +5851,9 @@
 
                     const oldCursor = map.getContainer().style.cursor;                
                     map.getContainer().style.cursor = 'progress';
+
+                    if (context.editedStage !== null)
+                        disableStagePointsDragging(stages[context.editedStage]);
 
                     context.zoomExtraParam = 15;
                     context.modeExtraParam = 'geoloc';
@@ -6410,6 +6456,9 @@
                 
                 const oldCursor = map.getContainer().style.cursor;
                 map.getContainer().style.cursor = 'progress';
+
+       			if (context.editedStage !== null)
+                    disableStagePointsDragging(stages[context.editedStage]);
                 
                 for (const { target, type, handler } of docLocFindEvtList)  // Remove events listeners associated with places found
                     target.removeEventListener(type, handler);
@@ -6511,6 +6560,9 @@
                             alert(msg);
                         }, 50);
                     }
+
+                    if (context.editedStage !== null)
+                        enableStagePointsDragging(stages[context.editedStage]);
 
                     map.getContainer().style.cursor = oldCursor;
                 
@@ -7018,6 +7070,8 @@
 
                 map.getContainer().style.cursor = 'progress';
 
+                disableStagePointsDragging(stageRef);
+
                 if (jRef > 0 && jRef < stageRef.points.length - 1) {     // Not the first nor le last point 
                     let latlngPrev0 = null;        // Initial position of previous point
                     let latlngPrev = null;         // New position of previous point
@@ -7034,6 +7088,8 @@
                             latlngNext0.lng + "," + latlngNext0.lat;
                         calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
                         if (!calculatedPoints) {   // When no route found
+                            enableStagePointsDragging(stageRef);
+
                             map.getContainer().style.cursor = 'crosshair';
                             
                             context.operationInProcess = false;
@@ -7080,6 +7136,8 @@
                     const afterState = { prevPoint: null, nextPoint: null, newSection: null };
                     execute(new DoubleClickPoint2RemoveIt(stageRef, iRef, jRef, beforeState, afterState));
                 }
+
+                enableStagePointsDragging(stageRef);
 
                 map.getContainer().style.cursor = 'crosshair';            
 
@@ -7171,12 +7229,12 @@
                         return;
                     }
 
-                    pointRef.marker.dragging.disable();
-
                     document.removeEventListener('mousemove', moveHandler);     // Prevent further dragging of the marker
                     document.removeEventListener('mouseup', upHandler);         // Prevent triggering additional mouse ups
 
                     map.getContainer().style.cursor = 'progress';
+
+                    disableStagePointsDragging(stageRef);
 
                     // Prevent event propagation to map
                     L.DomEvent.stopPropagation(ev);
@@ -7205,8 +7263,8 @@
                                     .setStyle({ dashArray: null });
                                 cleanupDrag();
 
-                                pointRef.marker.dragging.enable();
-            
+                                enableStagePointsDragging(stageRef);
+
                                 map.getContainer().style.cursor = 'crosshair';
                                 
                                 context.operationInProcess = false;
@@ -7278,7 +7336,7 @@
                                     .setStyle({ dashArray: null });
                                 cleanupDrag();
 
-                                pointRef.marker.dragging.enable();
+                                enableStagePointsDragging(stageRef);
             
                                 map.getContainer().style.cursor = 'crosshair';
                                 
@@ -7327,7 +7385,7 @@
                                     .setStyle({ dashArray: null });
                                 cleanupDrag();
 
-                                pointRef.marker.dragging.enable();
+                                enableStagePointsDragging(stageRef);
 
                                 map.getContainer().style.cursor = 'crosshair';
                                 
@@ -7370,7 +7428,7 @@
                                 pointRef.marker.setLatLng(initMarkerLatlng);
                                 cleanupDrag();
 
-                                pointRef.marker.dragging.enable();
+                                enableStagePointsDragging(stageRef);
                         
                                 map.getContainer().style.cursor = 'crosshair';
                                 
@@ -7390,7 +7448,7 @@
 
                     cleanupDrag();
                     
-                    pointRef.marker.dragging.enable();
+                    enableStagePointsDragging(stageRef);
                     
                     map.getContainer().style.cursor = 'crosshair';
                     
@@ -7606,6 +7664,8 @@
 
                     map.getContainer().style.cursor = 'progress';
 
+                    disableStagePointsDragging(stageRef);
+
                     // Prevent event propagation to map
                     L.DomEvent.stopPropagation(e);
                     L.DomEvent.preventDefault(e);
@@ -7631,6 +7691,8 @@
                             stageRef.sections[jRef + 1].polyline.remove();
                             stageRef.sections.splice(jRef + 1, 1);
                             cleanupDrag();
+
+                            enableStagePointsDragging(stageRef);
 
                             map.getContainer().style.cursor = 'crosshair';
 
@@ -7677,6 +7739,8 @@
 
                     cleanupDrag();
 
+                    enableStagePointsDragging(stageRef);
+                    
                     map.getContainer().style.cursor = 'crosshair';
 
                     context.operationInProcess = false;
@@ -7804,11 +7868,15 @@
         async function autoFillHandler() {
             map.getContainer().style.cursor = 'progress';
 
+            disableStagePointsDragging(stage);
+
             if (stage.points.length > 1)
                 input.value = await getLocationCityName(stage.points[0].marker.getLatLng()) + ' - ' + 
                     await getLocationCityName(stage.points[stage.points.length - 1].marker.getLatLng());    //Fill with start city and end city names
             else if (stage.points.length > 0) 
                 input.value = await getLocationCityName(stage.points[0].marker.getLatLng());    // Fill with city name
+
+            enableStagePointsDragging(stage);
 
             map.getContainer().style.cursor = 'crosshair';
         }
@@ -11070,6 +11138,24 @@
         return [ascent, descent];
     }
 
+    //-------------------------------------------------
+    // Disable dragging for all the markers of a stage
+    //-------------------------------------------------
+    function disableStagePointsDragging(stage) {
+        stage.points.forEach((point) => {
+            point.marker.dragging.disable();
+        });
+    }
+    
+    //------------------------------------------------
+    // Enable dragging for all the markers of a stage
+    //------------------------------------------------
+    function enableStagePointsDragging(stage) {
+        stage.points.forEach((point) => {
+            point.marker.dragging.enable();
+        });
+    }
+    
     //----------------------------------------------
     // Query BRouter to find a route between points
     //----------------------------------------------
@@ -11496,6 +11582,7 @@
     // Display an alert message when geolocation fails
     //-------------------------------------------------
     function handleGeolocationError(error) {
+        const mode = context.modeExtraParam;
         const cursor = context.cursorExtraParam;
 
         const message = document.querySelector(".msg-text");
@@ -11510,6 +11597,11 @@
         else    
             alert(context.language === 'EN' ? 'Unknown error' : 'Erreur inconnue')
     
+        if (mode === "geoloc") {
+            if (context.editedStage !== null)
+                enableStagePointsDragging(stages[context.editedStage]);
+        }
+
         map.getContainer().style.cursor = cursor;
         
         context.operationInProcess = false;    
@@ -11827,6 +11919,9 @@
                 weight: 2,
                 interactive: false
             }).addTo(map);
+
+            if (context.editedStage !== null)
+                enableStagePointsDragging(stages[context.editedStage]);
         } else {
             const message = document.querySelector(".msg-text");
             message.style.display = "none";

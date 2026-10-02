@@ -11,15 +11,27 @@
     const RP_NS = "https://patrickmarie.dev/ns/routeplanner/extensions";
 
     // Colors used to draw the route stages
-    let routeColors = { 
-        lightRed: '#ff6666',     // Arrival points in edition mode
-        lightGreen: '#00cc33',   // Departure points in edition mode
-        lightBlue: '#2791F5',       // Stage sections in edition mode
-        lightPurple: '#ff4dff',      // Departure/arrival points in edition mode
-        Red: '#cc0000',       // Arrival point in non edition mode
-        Green: '#008020',     // Departure point in non edition mode 
-        Blue: '#274BF5',         // Stage sections in non edition mode
-        Purple: '#cc00cc'         // Departure/arrival points in non edition mode
+    let colors = { 
+        blue: {
+            light: '#2791F5',       // Stage sections in edition mode
+            deep: '#274BF5'         // Stage sections in non edition mode
+        },
+        green: {
+            light: '#00cc33',   // Departure points in edition mode
+            deep: '#008020'     // Departure point in non edition mode
+        },
+        red: {
+            light: '#ff0000',
+            deep:  '#b30000'
+        },
+        purple: {
+            light: '#ff4dff',      // Departure/arrival points in edition mode
+            deep: '#cc00cc'  // Departure/arrival points in non edition mode
+        },
+        brown: {
+            light: '#b3774d',   // Light brown, warm and visible (edition mode)
+            deep:  '#804000'    // Deep brown, strong and dark (non‑edition mode)
+        }
     }
 
     // Weights used to draw the route stages
@@ -35,504 +47,6 @@
         medium: 7,      // Medium size point
         large: 9       // Large size point
     }
-
-    const lightPurpleDoubleSquareIcon = L.divIcon({
-        className: '',
-        html: `
-            <div style="
-                position: relative;
-                width: 14px;
-                height: 14px;
-            ">
-                <!-- Base square -->
-                <div style="
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 11px;
-                    height: 11px;
-                    background: transparent;
-                    border: 3px solid ${routeColors.lightPurple};
-                    transform: translate(-50%, -50%);
-                "></div>
-
-                <!-- Rotated square -->
-                <div style="
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 11px;
-                    height: 11px;
-                    background: transparent;
-                    border: 3px solid ${routeColors.lightPurple};
-                    transform: translate(-50%, -50%) rotate(45deg);
-                "></div>
-            </div>
-        `,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7]
-    });
-
-    const PurpleDoubleSquareIcon = L.divIcon({
-        className: '',
-        html: `
-            <div style="
-                position: relative;
-                width: 14px;
-                height: 14px;
-            ">
-                <!-- Base square -->
-                <div style="
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 11px;
-                    height: 11px;
-                    background: transparent;
-                    border: 3px solid ${routeColors.Purple};
-                    transform: translate(-50%, -50%);
-                "></div>
-
-                <!-- Rotated square -->
-                <div style="
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 11px;
-                    height: 11px;
-                    background: transparent;
-                    border: 3px solid ${routeColors.Purple};
-                    transform: translate(-50%, -50%) rotate(45deg);
-                "></div>
-            </div>
-        `,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7]
-    });
-
-    const lightGreenDiamondIcon = L.divIcon({
-        className: '',
-        html: `<div style="
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 11px;
-            height: 11px;
-            background: transparent;
-            border: 3px solid ${routeColors.lightGreen};
-            transform: translate(-50%, -50%) rotate(45deg);
-        "></div>`,
-        iconSize: [20, 20],
-        iconAnchor: [10, 10]
-    });
-
-    const GreenDiamondIcon = L.divIcon({
-        className: '',
-        html: `<div style="
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 11px;
-            height: 11px;
-            background: transparent;
-            border: 3px solid ${routeColors.Green};
-            transform: translate(-50%, -50%) rotate(45deg);
-        "></div>`,
-        iconSize: [20, 20],
-        iconAnchor: [10, 10]
-    });
-
-    const lightRedDiamondIcon = L.divIcon({
-        className: '',
-        html: `<div style="
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 11px;
-            height: 11px;
-            background: transparent;
-            border: 3px solid ${routeColors.lightRed};
-            transform: translate(-50%, -50%) rotate(45deg);
-        "></div>`,
-        iconSize: [20, 20],
-        iconAnchor: [10, 10]
-    });
-
-    const circleIconEdit = L.divIcon({
-        className: '',
-        html: `<div style="
-            width: 7px;
-            height: 7px;
-            background: transparent;
-            border: 3px solid ${routeColors.lightBlue};
-            border-radius: 50%;
-        "></div>`,
-        iconSize: [16, 16],
-        iconAnchor: [8, 8]
-    });
-
-    const transparentIcon = L.divIcon({
-        className: '',
-        html: `<div style="
-            width: 1px;
-            height: 1px;
-            background: transparent;²
-            border: 3px solid transparent;
-        "></div>`,
-        iconSize: [16, 16],
-        iconAnchor: [8, 8]
-    });
-
-    const lightGreenCircleIcon = L.divIcon({
-        className: '',
-        html: `<div style="
-            width: 6px;
-            height: 6px;
-            background: transparent;
-            border: 3px solid ${routeColors.lightGreen};
-            border-radius: 50%;
-        "></div>`,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7]
-    });
-
-    const lightRedCircleIcon = L.divIcon({
-        className: '',
-        html: `<div style="
-            width: 6px;
-            height: 6px;
-            background: transparent;
-            border: 3px solid ${routeColors.lightRed};
-            border-radius: 50%;
-        "></div>`,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7]
-    });
-
-    const lightPurpleCircleIcon = L.divIcon({
-        className: '',
-        html: `<div style="
-            width: 6px;
-            height: 6px;
-            background: transparent;
-            border: 3px solid ${routeColors.lightPurple};
-            border-radius: 50%;
-        "></div>`,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7]
-    });
-
-    const lightRedSquareIcon = L.divIcon({
-        className: '',
-        html: `<div style="
-            position: relative;
-            width: 14px;
-            height: 14px;
-        ">
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 11px;
-                height: 11px;
-                background: transparent;
-                border: 3px solid ${routeColors.lightRed};
-                transform: translate(-50%, -50%);
-            "></div>
-        </div>`,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7]
-    });
-
-    const RedSquareIcon = L.divIcon({
-        className: '',
-        html: `<div style="
-            position: relative;
-            width: 14px;
-            height: 14px;
-        ">
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 11px;
-                height: 11px;
-                background: transparent;
-                border: 3px solid ${routeColors.Red};
-                transform: translate(-50%, -50%);
-            "></div>
-        </div>`,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7]
-    });
-
-    const lightGreenSquareIcon = L.divIcon({
-        className: '',
-        html: `<div style="
-            position: relative;
-            width: 14px;
-            height: 14px;
-        ">
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 11px;
-                height: 11px;
-                background: transparent;
-                border: 3px solid ${routeColors.lightGreen};
-                transform: translate(-50%, -50%);
-            "></div>
-        </div>`,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7]
-    });
-
-    const GreenSquareIcon = L.divIcon({
-        className: '',
-        html: `<div style="
-            position: relative;
-            width: 11px;
-            height: 11px;
-        ">
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 11px;
-                height: 11px;
-                background: transparent;
-                border: 3px solid ${routeColors.Green};
-                transform: translate(-50%, -50%);
-            "></div>
-        </div>`,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7]
-    });
-
-    const lightGreenStarIcon = L.divIcon({
-        className: '',
-        html: `
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            ">
-                <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <polygon
-                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
-                        fill=transparent
-                        stroke="${routeColors.lightGreen}"
-                        stroke-width=3px
-                    />
-                </svg>
-            </div>
-        `,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-    });
-
-    const GreenStarIcon = L.divIcon({
-        className: '',
-        html: `
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            ">
-                <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <polygon
-                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
-                        fill=transparent
-                        stroke="${routeColors.Green}"
-                        stroke-width=3px
-                    />
-                </svg>
-            </div>
-        `,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-    });
-
-    const lightBlueStarIcon = L.divIcon({
-        className: '',
-        html: `
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            ">
-                <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <polygon
-                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
-                        fill=transparent
-                        stroke="${routeColors.lightBlue}"
-                        stroke-width=3px
-                    />
-                </svg>
-            </div>
-        `,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-    });
-
-    const BlueStarIcon = L.divIcon({
-        className: '',
-        html: `
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            ">
-                <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <polygon
-                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
-                        fill=transparent
-                        stroke="${routeColors.Blue}"
-                        stroke-width=3px
-                    />
-                </svg>
-            </div>
-        `,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-    });
-
-    const lightRedStarIcon = L.divIcon({
-        className: '',
-        html: `
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            ">
-                <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <polygon
-                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
-                        fill=transparent
-                        stroke="${routeColors.lightRed}"
-                        stroke-width=3px
-                    />
-                </svg>
-            </div>
-        `,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-    });
-
-    const RedStarIcon = L.divIcon({
-        className: '',
-        html: `
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            ">
-                <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <polygon
-                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
-                        fill=transparent
-                        stroke="${routeColors.Red}"
-                        stroke-width=3px
-                    />
-                </svg>
-            </div>
-        `,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-    });
-
-    const lightPurpleStarIcon = L.divIcon({
-        className: '',
-        html: `
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            ">
-                <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <polygon
-                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
-                        fill=transparent
-                        stroke="${routeColors.lightPurple}"
-                        stroke-width=3px
-                    />
-                </svg>
-            </div>
-        `,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-    });
-
-    const PurpleStarIcon = L.divIcon({
-        className: '',
-        html: `
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            ">
-                <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <polygon
-                        points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
-                        fill=transparent
-                        stroke="${routeColors.Purple}"
-                        stroke-width=3px
-                    />
-                </svg>
-            </div>
-        `,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-    });
 
     // Stages
     let stages = [];
@@ -555,6 +69,7 @@
         foundMarker: null,              // Used to mark nearest OSM known object after location search
         foundPolygon: null,             // Used to highlight area around nearest OSM known object after location search
         initializationInProcess: true,  // Initialization in process
+        intPlDefaultColor: null,        // Default color used to plot interest places
         geolocationDisplayed: true,     // 
         geolocControl: null,            // Control hosting the geolocation function
         globalInfoControl: null,        // Control hosting the global information about the route
@@ -575,6 +90,7 @@
         routerProfile: null,            // Router profile
         settingsBtnActivated: null,     // Settings button must be activated only once
         spannedCommand: false,          // Flag: commands spanned or not in the menu
+        stageDefaultColor: null,        // Default color used to plot stages
         stageNRouteDataDisplayed: true, // 
         stageNRouteProfileDisplayed: true, // 
         stageProfileChart: null,        // Stage profile diagram
@@ -780,137 +296,6 @@
         context.settingsBtnActivated = true; 
     }
 
-    //-------------------------------------------------------------------------------
-    // Display or hide geolocation control as requested from the settings side panel
-    //-------------------------------------------------------------------------------
-    function changeGeolocation(checked) {
-        if (checked) {
-            context.geolocationDisplayed = true;
-
-            setCookie("GeolocationDisplayed", '1', 60)
-
-            setGeolocationControl();
-        } else {
-            context.geolocationDisplayed = false;
-
-            setCookie("GeolocationDisplayed", '0', 60)
-
-            if (context.geolocControl) context.geolocControl.remove();  // Remove geolocalizer control
-        }
-    }
-
-    //-------------------------------------------------------------
-    // Change language when requested from the settings side panel
-    //-------------------------------------------------------------
-    function changeLanguage(lang) {
-        if (lang === 'EN') {
-            context.language = 'EN';
-
-            setCookie("Language", 'EN', 60);
-        
-            document.getElementById("page_title").innerHTML = 'GPX Route Planner';
-       
-            document.getElementById("author").innerHTML = 'Developed by Patrick Marie';
-        } else {
-            context.language = 'FR';
-
-            setCookie("Language", 'FR', 60);
-        
-            document.getElementById("page_title").innerHTML = 'Planificateur d\'itinéraires GPX';
-
-            document.getElementById("author").innerHTML = 'Développé par Patrick Marie';
-        }
-
-        if (context.menuDisplayed) {
-            if (context.editedStage !== null) 
-                setMenu4EdtStg();
-            else 
-                setMenu4NonEdt();
-        }
-
-        if (context.geolocationDisplayed)
-            setGeolocationControl();
-
-        if (context.locationFinderDisplayed)
-            setLocationFinderControl();
-
-        if (context.stageNRouteDataDisplayed) {
-            for (let i = 0; i < stages.length; i++) {
-                if (context.editedStage === i)
-                    updateStageDataNProfile(stages[i], true);
-                else
-                    updateStageDataNProfile(stages[i], false);
-            }
-
-            displayGlobalInfo();
-        }
-
-        if (context.stageNRouteProfileDisplayed) {
-            if (context.editedStage !== null) {
-                displayStageProfile();
-            } else {
-                displayRouteProfile();
-            }
-        }
-
-        generateSidePanelContents();
-    }
-
-    //-----------------------------------------------------------------------------------
-    // Display or hide location finder control as requested from the settings side panel
-    //-----------------------------------------------------------------------------------
-    function changeLocationFinder(checked) {
-        if (checked) {
-            context.locationFinderDisplayed = true;
-
-            setCookie("LocationFinderDisplayed", '1', 60);
-            
-            setLocationFinderControl();
-        } else {
-            context.locationFinderDisplayed = false;
-
-            setCookie("LocationFinderDisplayed", '0', 60);
-            
-            if (context.locFinderControl) context.locFinderControl.remove();  // Remove location finder control
-        }
-    }
-
-    //----------------------------------------------------------------------
-    // Change measurement units when requested from the settings side panel
-    //----------------------------------------------------------------------
-    function changeMeasurementUnits(measurementUnits) {
-        if (measurementUnits === 'ME') {
-            context.measurementUnits = 'ME';
-
-            setCookie("MeasurementUnits", 'ME', 60);
-        } else {
-            context.measurementUnits = 'IM';
-
-            setCookie("MeasurementUnits", 'IM', 60);
-        }
-
-        if (context.stageNRouteDataDisplayed) {
-            for (let i = 0; i < stages.length; i++) {
-                if (context.editedStage === i)
-                    updateStageDataNProfile(stages[i], true);
-                else
-                    updateStageDataNProfile(stages[i], false);
-            }
-
-            displayGlobalInfo();
-        }
-
-        if (context.stageNRouteProfileDisplayed) {
-            if (context.editedStage !== null) {
-                displayStageProfile();
-            } else {
-                displayRouteProfile();
-            }
-        }
-
-        generateSidePanelContents();
-    }
-
     //-------------------------------
     // Change interest place color
     //-------------------------------
@@ -926,11 +311,7 @@
         const intPl = interestPlaces[context.editedIntPl];
         const i = context.editedIntPl;
 
-        let prevColor = 'green';        // Default color is green
-        if (intPl.color)
-            prevColor = intPl.color;
-
-        const beforeState = { color: prevColor };
+        const beforeState = { color: intPl.color };
         const afterState = { color: color };
 
         execute(new ChangeIntPlColor(intPl, i, beforeState, afterState));
@@ -938,104 +319,27 @@
         context.operationInProcess = false;
     }
 
-    //------------------------------------------------------------------------
-    // Display or hide main control as requested from the settings side panel
-    //------------------------------------------------------------------------
-    function changeMenu(checked) {
-        if (checked) {
-            context.menuDisplayed = true;
+    //-------------------------------
+    // Change stage color
+    //-------------------------------
+    function changeStageColor(color) {
+        context.operationInProcess = true;
 
-            setCookie("MainMenuDisplayed", '1', 60);
+        if (context.editedStage === null || context.editedStage < 0 || context.editedStage >= stages.length) {
+            context.operationInProcess = false;
 
-            if (context.editedStage !== null) 
-                setMenu4EdtStg();
-            else if (context.editedIntPl !== null) 
-                setMenu4EdtIntPl();
-            else 
-                setMenu4NonEdt();
-        } else {
-            context.menuDisplayed = false;
-
-            setCookie("MainMenuDisplayed", '0', 60);
-
-            if (context.menuControl) 
-                context.menuControl.remove();      // Remove menu control
+            return;
         }
-    }
 
-    //--------------------------------------------------------------------------------
-    // Display or hide stage and route data as requested from the settings side panel
-    //--------------------------------------------------------------------------------
-    function changeStageNRouteData(checked) {
-        if (checked) {
-            context.stageNRouteDataDisplayed = true;
+        const stage = stages[context.editedStage];
+        const i = context.editedStage;
 
-            setCookie("StageAndRouteDataDisplayed", '1', 60);
+        const beforeState = { color: stage.color };
+        const afterState = { color: color };
 
-            for (let i = 0; i < stages.length; i++) {
-                if (context.editedStage === i)
-                    updateStageDataNProfile(stages[i], true);
-                else
-                    updateStageDataNProfile(stages[i], false);
-            }
+        execute(new ChangeStageColor(stage, i, beforeState, afterState));
 
-            for (let i = 0; i < interestPlaces.length; i++) {
-                if (context.editedIntPl === i)
-                    updateIntPlData(interestPlaces[i], true);
-                else
-                    updateIntPlData(interestPlaces[i], false);
-            }
-
-            displayGlobalInfo();
-        } else {
-            context.stageNRouteDataDisplayed = false;
-
-            setCookie("StageAndRouteDataDisplayed", '0', 60);
-
-            for (let i = 0; i < stages.length; i++) {
-                if (stages[i].infoPop)
-                    stages[i].infoPop.remove();
-            }
-
-            for (let i = 0; i < interestPlaces.length; i++) {
-                if (interestPlaces[i].infoPop)
-                    interestPlaces[i].infoPop.remove();
-            }
-
-            if (context.globalInfoControl)
-                context.globalInfoControl.remove();
-        }
-    }
-
-    //----------------------------------------------------------------------------------
-    // Display or hide stage or route profile as requested from the settings side panel
-    //----------------------------------------------------------------------------------
-    function changeStageNRouteProfile(checked) {
-        if (checked) {
-            context.stageNRouteProfileDisplayed = true;
-
-            setCookie("StageAndRouteProfileDisplayed", '1', 60);
-
-            if (context.editedStage != null) {
-                displayStageProfile(stages[context.editedStage]);
-            } else {
-                displayRouteProfile();
-            }
-        } else {
-            context.stageNRouteProfileDisplayed = false;
-            
-            setCookie("StageAndRouteProfileDisplayed", '0', 60);
-
-            if (context.editedStage != null) {
-                removeStageMapNChartMarkers();
-
-                removeStageProfileControl();
-            } else {
-                removeRouteMapNChartMarkers();
-
-                removeRouteProfileControl();
-            }
-        }
+        context.operationInProcess = false;
     }
 
     //-----------------------------------
@@ -1892,7 +1196,8 @@
                 { label: context.language === 'EN' ? "Green" : "Vert", action: () => changeIntPlColor('green') },
                 { label: context.language === 'EN' ? "Blue" : "Bleu", action: () => changeIntPlColor('blue') },
                 { label: context.language === 'EN' ? "Red" : "Rouge", action: () => changeIntPlColor('red') },
-                { label: context.language === 'EN' ? "Purple" : "Violet", action: () => changeIntPlColor('purple') }
+                { label: context.language === 'EN' ? "Purple" : "Violet", action: () => changeIntPlColor('purple') },
+                { label: context.language === 'EN' ? "Brown" : "Marron", action: () => changeIntPlColor('brown') }
             ];
 
             options.forEach(opt => {
@@ -2107,6 +1412,123 @@
         }
         setNameButton.addEventListener('click', setNameHandler);  // Associate submit handler with button
     
+        // Create set color icon
+        const scIcon = document.createElement('i');
+        scIcon.classList.add('fa-solid', 'fa-c');
+        scIcon.style.fontSize = '20px';
+        scIcon.style.lineHeight = '20px';
+        scIcon.style.width = '27px';
+        scIcon.style.height = '20px';
+        scIcon.style.display = 'inline-flex';
+        scIcon.style.alignItems = 'center';
+        scIcon.style.justifyContent = 'center';
+
+        // Create submit button for change stage order
+        const setColorButton = document.createElement('button');
+        setColorButton.appendChild(scIcon);
+        setColorButton.style.width = '32px';
+        setColorButton.style.height = '30px';
+        setColorButton.style.padding = '0';
+        setColorButton.style.display = 'flex';
+        setColorButton.style.alignItems = 'center';
+        setColorButton.style.justifyContent = 'center';
+        setColorButton.title = context.language === 'EN' ? 'Change stage color' : 'Modifier la couleur de l\'étape';
+        setColorButton.addEventListener('click', (e) => {
+            if (context.operationInProcess) 
+                return;   // Ignore if another operation is in process
+    
+            e.stopPropagation(); // Prevent click outside to close immediately
+
+            // If the menu already exists, delete it
+            let existingMenu = document.getElementById('set-color-menu');
+            if (existingMenu) {
+                existingMenu.remove();
+                return;
+            }
+
+            // Create menu
+            const menu = document.createElement('div');
+            menu.id = 'set-color-menu';
+            menu.style.position = 'absolute';
+            menu.style.background = '#fff';
+            menu.style.border = '1px solid #ccc';
+            menu.style.padding = '5px';
+            menu.style.zIndex = 1000;
+            menu.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
+            menu.style.borderRadius = '4px';
+            menu.style.fontSize = '12px';
+
+            // Position menu under button
+            const rect = setColorButton.getBoundingClientRect();
+            menu.style.left = rect.left + 'px';
+            menu.style.top = (rect.bottom + window.scrollY) + 'px';
+
+            // Add the options
+            const options = [
+                { label: context.language === 'EN' ? "Blue" : "Bleu", action: () => changeStageColor('blue') },
+                { label: context.language === 'EN' ? "Green" : "Vert", action: () => changeStageColor('green') },
+                { label: context.language === 'EN' ? "Red" : "Rouge", action: () => changeStageColor('red') },
+                { label: context.language === 'EN' ? "Purple" : "Violet", action: () => changeStageColor('purple') },
+                { label: context.language === 'EN' ? "Brown" : "Marron", action: () => changeStageColor('brown') }
+            ];
+
+            options.forEach(opt => {
+                const item = document.createElement('div');
+                item.textContent = opt.label;
+                item.style.padding = '4px 8px';
+                item.style.cursor = 'pointer';
+
+                item.addEventListener('click', (ev) => {
+                    ev.stopPropagation();
+                    opt.action();
+                    menu.remove();
+                });
+
+                item.addEventListener('mouseover', () => item.style.background = '#eee');
+                item.addEventListener('mouseout', () => item.style.background = '');
+
+                menu.appendChild(item);
+            });
+
+            document.body.appendChild(menu);
+
+            //------------------------
+            // Automatic menu closure
+            //------------------------
+
+            let inside = true;
+
+            const setInside = () => inside = true;
+            const setOutside = () => {
+                inside = false;
+                setTimeout(() => {
+                    if (!inside) menu.remove();
+                }, 150);
+            };
+
+            // Button hovering
+            setColorButton.addEventListener('pointerenter', setInside);
+            setColorButton.addEventListener('pointerleave', setOutside);
+
+            // Survol du menu
+            menu.addEventListener('pointerenter', setInside);
+            menu.addEventListener('pointerleave', setOutside);
+
+            // Close if the user clicks elsewhere
+            const closeOnClickOutside = (ev) => {
+                if (!menu.contains(ev.target) && ev.target !== setColorButton) {
+                    menu.remove();
+                    document.removeEventListener('click', closeOnClickOutside);
+                }
+            };
+
+            // Wait a tick to avoid immediate closure
+            setTimeout(() => {
+                document.addEventListener('click', closeOnClickOutside);
+            }, 0);
+        });
+        buttonsContainer.appendChild(setColorButton);
+
         // Create reverse stage direction icon
         const rsIcon = document.createElement('i');
         rsIcon.classList.add('fa-solid', 'fa-arrow-right-arrow-left');
@@ -2749,10 +2171,10 @@
     function createNewEmptyIntPl() {
         const intPl = {  // New empty interest place
             name: null,     // Remarkable place name
-            color: null,    // Lat and lng
+            color: context.intPlDefaultColor,    // Color
             marker: null,    // Marker
             infoPop: null,  // Information to be displayed when requested about the stage
-            evtList: null    // Event list
+            evtList: []    // Event list
         };
     
         return intPl;
@@ -2764,6 +2186,7 @@
     function createNewEmptyStage() {
         const stage = {     // New empty stage
             name: null,     // Stage name
+            color: context.stageDefaultColor,    // Stage color
             points: [],     // Points defined by the user (not calculated by the router). Represented by circle markers on the map
             sections: [],   // Sections between points (straight or calculated by router). Represented by polylines on the map
             distance: 0,    // Stage length
@@ -2938,9 +2361,8 @@
         }
 
         const intPl = interestPlaces[i];
-        const latlng = intPl.marker.getLatLng();
 
-        const beforeState = { point: latlng };
+        const beforeState = { point: intPl.marker.getLatLng(), color: intPl.color };
         const afterState = { };
         execute(new DoubleClickIntPl2RemoveIt(intPl, i, beforeState, afterState));
 
@@ -3321,7 +2743,7 @@
                             data: context.routeProfileChartPoints,
                             spanGaps: false,
                             backgroundColor:"rgba(0,0,255,1.0)",
-                            borderColor: routeColors.Blue,
+                            borderColor: colors.blue.deep,
                             borderWidth: 4,
                             fill: false,
                             tension: 0.4,
@@ -3680,7 +3102,7 @@
                             label: "Altitude",
                             data: context.stageProfileChartPoints,
                             backgroundColor:"rgba(0,0,255,1.0)",
-                            borderColor: routeColors.lightBlue,
+                            borderColor: colors.blue.light,
                             borderWidth: 4,
                             fill: false,
                             tension: 0.4,
@@ -3976,9 +3398,11 @@
                 body = body + `\n    <trk>`;    // Create new track
                 if (stage.name && stage.name.length > 0)
                     body = body + `\n        <name>${stage.name}</name>`;     // Add name
-                if (stage.distance != null && stage.ascent != null && stage.descent != null) {
+                if (stage.color != null || (stage.distance != null && stage.ascent != null && stage.descent != null)) {
                     // Add distance, ascent, descent as extensions
                     body = body + `\n        <extensions>`;
+                    if (stage.color != null)
+                        body = body + `\n            <rp:color>${stage.color}</rp:color>`;
                     if (stage.distance != null)
                         body = body + `\n            <rp:distance>${stage.distance.toFixed(3)}</rp:distance>`;
                     if (stage.ascent != null)
@@ -4061,6 +3485,29 @@
             <input type="checkbox" id="stageNRouteProfile" name="stageNRouteProfile" value="stageNRouteProfile" ${context.stageNRouteProfileDisplayed ? "checked" : "" } />
             <label for="stageNRouteProfile">${context.language === 'EN' ? "Stage and route profile" : "Profil d'étape et d'itinéraire" }</label>                  
             </div>
+            <h3>${context.language === 'EN' ? "Default colors to be used:" : "Couleurs à utiliser par défaut :" }</h3>
+            <div style="display: grid; grid-template-columns: auto auto; row-gap: 6px; column-gap: 12px; align-items: center; ">
+            <label for="stageColor">${context.language === 'EN' ? "Stage color:" : "Couleur des étapes :" }</label>
+            <select name="stageColor" id="stageColor">
+                <option value="blue" ${context.stageDefaultColor === 'blue' ? "selected" : "" }>${context.language === 'EN' ? "Blue" : "Bleu" }</option>
+                <option value="green" ${context.stageDefaultColor === 'green' ? "selected" : "" }>${context.language === 'EN' ? "Green" : "Vert" }</option>
+                <option value="red" ${context.stageDefaultColor === 'red' ? "selected" : "" }>${context.language === 'EN' ? "Red" : "Rouge" }</option>
+                <option value="purple" ${context.stageDefaultColor === 'purple' ? "selected" : "" }>${context.language === 'EN' ? "Purple" : "Violet" }</option>
+                <option value="brown" ${context.stageDefaultColor === 'brown' ? "selected" : "" }>${context.language === 'EN' ? "Brown" : "Marron" }</option>
+            </select>
+            <label for="intPtColor">${context.language === 'EN' ? "Interest place color:" : "Couleur des points d'intérêt :" }</label>
+            <select name="intPlColor" id="intPlColor">
+                <option value="green" ${context.intPlDefaultColor === 'green' ? "selected" : "" }>${context.language === 'EN' ? "Green" : "Vert" }</option>
+                <option value="blue" ${context.intPlDefaultColor === 'blue' ? "selected" : "" }>${context.language === 'EN' ? "Blue" : "Bleu" }</option>
+                <option value="red" ${context.intPlDefaultColor === 'red' ? "selected" : "" }>${context.language === 'EN' ? "Red" : "Rouge" }</option>
+                <option value="purple" ${context.intPlDefaultColor === 'purple' ? "selected" : "" }>${context.language === 'EN' ? "Purple" : "Violet" }</option>
+                <option value="brown" ${context.intPlDefaultColor === 'brown' ? "selected" : "" }>${context.language === 'EN' ? "Brown" : "Marron" }</option>
+            </select>
+            </div>
+            <div>                
+            <input type="checkbox" id="forceColorAtImport" name="forceColorAtImport" value="forceColorAtImport" ${context.forceColorAtImport ? "checked" : "" } />
+            <label for="forceColorAtImport">${context.language === 'EN' ? "Enforce default color at import" : "Imposer couleur par défaut à l'import." }</label>                  
+            </div>
         `;
 
         document.getElementById("english").addEventListener("click", () => changeLanguage('EN'));
@@ -4072,26 +3519,296 @@
         document.getElementById("locationFinder").addEventListener("click", (e) => changeLocationFinder(e.target.checked));
         document.getElementById("stageNRouteData").addEventListener("click", (e) => changeStageNRouteData(e.target.checked));
         document.getElementById("stageNRouteProfile").addEventListener("click", (e) => changeStageNRouteProfile(e.target.checked));
-    }
+        document.getElementById("stageColor").addEventListener("change", (e) => changeStageDefaultColor(e.target.value));
+        document.getElementById("intPlColor").addEventListener("change", (e) => changeIntPlDefaultColor(e.target.value));
+        document.getElementById("forceColorAtImport").addEventListener("click", (e) => changeForceColorAtImport(e.target.checked));
 
-    //------------
-    // Get cookie
-    //------------
-    function getCookie(cname) {
-        let name = cname + "=";
-        let ca = document.cookie.split(';');
+        //-------------------------------------------------------------
+        // Change language when requested from the settings side panel
+        //-------------------------------------------------------------
+        function changeLanguage(lang) {
+            if (lang === 'EN') {
+                context.language = 'EN';
 
-        for(let i = 0; i < ca.length; i++) {
-            let c = ca[i];
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
+                setCookie("Language", 'EN', 60);
+            
+                document.getElementById("page_title").innerHTML = 'GPX Route Planner';
+        
+                document.getElementById("author").innerHTML = 'Developed by Patrick Marie';
+            } else {
+                context.language = 'FR';
+
+                setCookie("Language", 'FR', 60);
+            
+                document.getElementById("page_title").innerHTML = 'Planificateur d\'itinéraires GPX';
+
+                document.getElementById("author").innerHTML = 'Développé par Patrick Marie';
             }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
+
+            if (context.menuDisplayed) {
+                if (context.editedStage !== null) 
+                    setMenu4EdtStg();
+                else 
+                    setMenu4NonEdt();
+            }
+
+            if (context.geolocationDisplayed)
+                setGeolocationControl();
+
+            if (context.locationFinderDisplayed)
+                setLocationFinderControl();
+
+            if (context.stageNRouteDataDisplayed) {
+                for (let i = 0; i < stages.length; i++) {
+                    if (context.editedStage === i)
+                        updateStageDataNProfile(stages[i], true);
+                    else
+                        updateStageDataNProfile(stages[i], false);
+                }
+
+                displayGlobalInfo();
+            }
+
+            if (context.stageNRouteProfileDisplayed) {
+                if (context.editedStage !== null) {
+                    displayStageProfile();
+                } else {
+                    displayRouteProfile();
+                }
+            }
+
+            generateSidePanelContents();
+        }
+
+        //----------------------------------------------------------------------
+        // Change measurement units when requested from the settings side panel
+        //----------------------------------------------------------------------
+        function changeMeasurementUnits(measurementUnits) {
+            if (measurementUnits === 'ME') {
+                context.measurementUnits = 'ME';
+
+                setCookie("MeasurementUnits", 'ME', 60);
+            } else {
+                context.measurementUnits = 'IM';
+
+                setCookie("MeasurementUnits", 'IM', 60);
+            }
+
+            if (context.stageNRouteDataDisplayed) {
+                for (let i = 0; i < stages.length; i++) {
+                    if (context.editedStage === i)
+                        updateStageDataNProfile(stages[i], true);
+                    else
+                        updateStageDataNProfile(stages[i], false);
+                }
+
+                displayGlobalInfo();
+            }
+
+            if (context.stageNRouteProfileDisplayed) {
+                if (context.editedStage !== null) {
+                    displayStageProfile();
+                } else {
+                    displayRouteProfile();
+                }
+            }
+
+            generateSidePanelContents();
+        }
+
+        //------------------------------------------------------------------------
+        // Display or hide main control as requested from the settings side panel
+        //------------------------------------------------------------------------
+        function changeMenu(checked) {
+            if (checked) {
+                context.menuDisplayed = true;
+
+                setCookie("MainMenuDisplayed", '1', 60);
+
+                if (context.editedStage !== null) 
+                    setMenu4EdtStg();
+                else if (context.editedIntPl !== null) 
+                    setMenu4EdtIntPl();
+                else 
+                    setMenu4NonEdt();
+            } else {
+                context.menuDisplayed = false;
+
+                setCookie("MainMenuDisplayed", '0', 60);
+
+                if (context.menuControl) 
+                    context.menuControl.remove();      // Remove menu control
             }
         }
 
-        return "";
+        //-------------------------------------------------------------------------------
+        // Display or hide geolocation control as requested from the settings side panel
+        //-------------------------------------------------------------------------------
+        function changeGeolocation(checked) {
+            if (checked) {
+                context.geolocationDisplayed = true;
+
+                setCookie("GeolocationDisplayed", '1', 60)
+
+                setGeolocationControl();
+            } else {
+                context.geolocationDisplayed = false;
+
+                setCookie("GeolocationDisplayed", '0', 60)
+
+                if (context.geolocControl) context.geolocControl.remove();  // Remove geolocalizer control
+            }
+        }
+
+        //-----------------------------------------------------------------------------------
+        // Display or hide location finder control as requested from the settings side panel
+        //-----------------------------------------------------------------------------------
+        function changeLocationFinder(checked) {
+            if (checked) {
+                context.locationFinderDisplayed = true;
+
+                setCookie("LocationFinderDisplayed", '1', 60);
+                
+                setLocationFinderControl();
+            } else {
+                context.locationFinderDisplayed = false;
+
+                setCookie("LocationFinderDisplayed", '0', 60);
+                
+                if (context.locFinderControl) context.locFinderControl.remove();  // Remove location finder control
+            }
+        }
+
+        //--------------------------------------------------------------------------------
+        // Display or hide stage and route data as requested from the settings side panel
+        //--------------------------------------------------------------------------------
+        function changeStageNRouteData(checked) {
+            if (checked) {
+                context.stageNRouteDataDisplayed = true;
+
+                setCookie("StageAndRouteDataDisplayed", '1', 60);
+
+                for (let i = 0; i < stages.length; i++) {
+                    if (context.editedStage === i)
+                        updateStageDataNProfile(stages[i], true);
+                    else
+                        updateStageDataNProfile(stages[i], false);
+                }
+
+                for (let i = 0; i < interestPlaces.length; i++) {
+                    if (context.editedIntPl === i)
+                        updateIntPlData(interestPlaces[i], true);
+                    else
+                        updateIntPlData(interestPlaces[i], false);
+                }
+
+                displayGlobalInfo();
+            } else {
+                context.stageNRouteDataDisplayed = false;
+
+                setCookie("StageAndRouteDataDisplayed", '0', 60);
+
+                for (let i = 0; i < stages.length; i++) {
+                    if (stages[i].infoPop)
+                        stages[i].infoPop.remove();
+                }
+
+                for (let i = 0; i < interestPlaces.length; i++) {
+                    if (interestPlaces[i].infoPop)
+                        interestPlaces[i].infoPop.remove();
+                }
+
+                if (context.globalInfoControl)
+                    context.globalInfoControl.remove();
+            }
+        }
+
+        //----------------------------------------------------------------------------------
+        // Display or hide stage or route profile as requested from the settings side panel
+        //----------------------------------------------------------------------------------
+        function changeStageNRouteProfile(checked) {
+            if (checked) {
+                context.stageNRouteProfileDisplayed = true;
+
+                setCookie("StageAndRouteProfileDisplayed", '1', 60);
+
+                if (context.editedStage != null) {
+                    displayStageProfile(stages[context.editedStage]);
+                } else {
+                    displayRouteProfile();
+                }
+            } else {
+                context.stageNRouteProfileDisplayed = false;
+                
+                setCookie("StageAndRouteProfileDisplayed", '0', 60);
+
+                if (context.editedStage != null) {
+                    removeStageMapNChartMarkers();
+
+                    removeStageProfileControl();
+                } else {
+                    removeRouteMapNChartMarkers();
+
+                    removeRouteProfileControl();
+                }
+            }
+        }
+
+        //-----------------------------
+        // Change stages default color
+        //-----------------------------
+        function changeStageDefaultColor(color) {
+            context.stageDefaultColor = color;
+
+            setCookie("StageDefaultColor", color, 60);
+
+            if (context.editedStage !== null) { // Change color of edited stage
+                const stage = stages[context.editedStage];
+
+                stage.color = color;
+
+                stage.sections.forEach(section => {
+                    section.polyline.setStyle({ color: colors[color].light })
+                });
+
+                stage.points.forEach((point, i) => {
+                    if (i > 0 && i < stage.points.length - 1) {
+                        point.marker.setIcon(getCircleIcon(color, 'light'));
+                    }
+                });
+            }
+        }
+
+        //--------------------------------------
+        // Change interest points default color
+        //--------------------------------------
+        function changeIntPlDefaultColor(color) {
+            context.intPlDefaultColor = color;
+
+            setCookie("InterestPlaceDefaultColor", color, 60);
+
+            if (context.editedIntPl !== null) { // Change color of icon of currently edited interest place
+                interestPlaces[context.editedIntPl].color = color;
+
+                if (interestPlaces[context.editedIntPl].marker)
+                    interestPlaces[context.editedIntPl].marker.setIcon(getStarIcon(color, "light"));
+            }
+        }
+
+        //---------------------------------------------------------
+        // Force default color for stages when importting GPX file
+        //---------------------------------------------------------
+        function changeForceColorAtImport(checked) {
+            if (checked) {
+                context.forceColorAtImport = true;
+
+                setCookie("ForceColorAtImport", '1', 60);
+            } else {
+                context.forceColorAtImport = false;
+
+                setCookie("ForceColorAtImport", '0', 60);
+            }
+        }
     }
 
     //--------------------------
@@ -4189,10 +3906,10 @@
                     const names = wpt.getElementsByTagName("name");
                     if (names.length > 0 && names[0].textContent.length > 0)
                         intPl2.name = names[0].textContent;
-                    // Retrieve waypoint name and set it as interest place name
-                    const colors = wpt.getElementsByTagNameNS(RP_NS, "color");
-                    if (colors.length > 0 && colors[0].textContent.length > 0)
-                        intPl2.color = colors[0].textContent;
+                    // Retrieve waypoint color and set it as interest place name
+                    const colors2 = wpt.getElementsByTagNameNS(RP_NS, "color");
+                    if (colors2.length > 0 && colors2[0].textContent.length > 0)
+                        intPl2.color = colors2[0].textContent;
                     // Retrieve latitude and longitude of wpt/interest place
                     intPl2.latlng = {
                         lat: parseFloat(wpt.getAttribute("lat")),
@@ -4220,6 +3937,12 @@
                     const names = trk.getElementsByTagName("name");
                     if (names.length > 0 && names[0].textContent.length > 0)
                         stage2.name = names[0].textContent;
+                    // Retrieve waypoint color and set it as interest place name
+                    const colors2 = trk.getElementsByTagNameNS(RP_NS, "color");
+                    if (colors2.length > 0 && colors2[0].textContent.length > 0 && !context.forceColorAtImport)
+                        stage2.color = colors2[0].textContent;
+                    else
+                        stage2.color = context.stageDefaultColor;
                     // Retrieve track distance and set it as stage distance
                     const distances = trk.getElementsByTagNameNS(RP_NS, "distance");
                     if (distances.length > 0)
@@ -4376,32 +4099,32 @@
                 if (beforeDistance < DIST_THRESHOLD && afterDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km before and after the edited stage
                     baCandidStgs.push(stages[j]);
                     stages[j].sections.forEach(section => 
-                        section.polyline.setStyle({ color: routeColors.lightPurple })
+                        section.polyline.setStyle({ color: colors.purple.deep })
                     );
                     stages[j].points.forEach((point, k) => {
-                        if (k === 0) point.marker.setIcon(lightGreenDiamondIcon);
-                        else if (k === stages[j].points.length - 1) point.marker.setIcon(lightRedSquareIcon);
-                        else point.marker.setIcon(lightPurpleCircleIcon);
+                        if (k === 0) point.marker.setIcon(getDiamondIcon('green', 'light'));
+                        else if (k === stages[j].points.length - 1) point.marker.setIcon(getSquareIcon('red', 'light'));
+                        else point.marker.setIcon(getCircleIcon('purple', 'light'));
                     });
                 } else if (beforeDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km before the edited stage
                     beforeCandidStgs.push(stages[j]);
                     stages[j].sections.forEach(section =>
-                        section.polyline.setStyle({ color: routeColors.lightGreen })
+                        section.polyline.setStyle({ color: colors.green.light }).setStyle({ dashArray: '9, 10' })
                     );
                     stages[j].points.forEach((point, k) => {
-                        if (k === 0) point.marker.setIcon(lightGreenDiamondIcon);
-                        else if (k === stages[j].points.length - 1) point.marker.setIcon(lightGreenSquareIcon);
-                        else point.marker.setIcon(lightGreenCircleIcon);
+                        if (k === 0) point.marker.setIcon(getDiamondIcon('green', 'light'));
+                        else if (k === stages[j].points.length - 1) point.marker.setIcon(getSquareIcon('green', 'light'));
+                        else point.marker.setIcon(getCircleIcon('green', 'light'));
                     });
                 } else if (afterDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km after the edited stage
                     afterCandidStgs.push(stages[j]);
                     stages[j].sections.forEach(section =>
-                        section.polyline.setStyle({ color: routeColors.lightRed })
+                        section.polyline.setStyle({ color: colors.red.light }).setStyle({ dashArray: '9, 10' })
                     );
                     stages[j].points.forEach((point, k) => {
-                        if (k === 0) point.marker.setIcon(lightRedDiamondIcon);
-                        else if (k === stages[j].points.length - 1) point.marker.setIcon(lightRedSquareIcon);
-                        else point.marker.setIcon(lightRedCircleIcon);
+                        if (k === 0) point.marker.setIcon(getDiamondIcon('red', 'light'));
+                        else if (k === stages[j].points.length - 1) point.marker.setIcon(getSquareIcon('red', 'light'));
+                        else point.marker.setIcon(getCircleIcon('red', 'light'));
                     });
                 }
             }
@@ -4498,7 +4221,7 @@
             }
         });
 
-        // Escape key handler just for split
+        // Escape key handler just for merge
         function escKeyHandler(e) {
             if ((e.key || '').toLowerCase() === 'escape') {
                 L.DomEvent.stopPropagation(e);  // Do not propagate event to map and document
@@ -4514,7 +4237,7 @@
                 // Remove handlers and wrapper
                 document.removeEventListener('keydown', escKeyHandler);
 
-                enableStagePointsDragging(context.stage);
+                enableStagePointsDragging(stage);
 
                 map.getContainer().style.cursor = 'crosshair';
 
@@ -4689,18 +4412,20 @@
 
         function setNonEdtColors(candidStages) {
             candidStages.forEach(stage => {
+                const shade = colors[stage.color].deep;
                 stage.sections.forEach(section => {
-                    section.polyline.setStyle({ color: routeColors.Blue, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 });   // Set layout
+                    section.polyline.setStyle({ color: shade, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 })
+                     .setStyle({ dashArray: null });   // Set layout
                 })
                 stage.points.forEach((point, j) => {
                     if (j === 0 && stage.points.length === 1)
-                        point.marker.setIcon(PurpleDoubleSquareIcon);
+                        point.marker.setIcon(getDoubleSquareIcon('purple', 'deep'));
                     else if (j === 0)
-                        point.marker.setIcon(GreenDiamondIcon);
+                        point.marker.setIcon(getDiamondIcon('green', 'deep'));
                     else if (j < stage.points.length - 1)
-                        point.marker.setIcon(transparentIcon);
+                        point.marker.setIcon(getTransparentIcon());
                     else
-                        point.marker.setIcon(RedSquareIcon);
+                        point.marker.setIcon(getSquareIcon('red', 'deep'));
                 });
             });
         }
@@ -4710,9 +4435,15 @@
     // Quit edit interest place
     //-----------------------------
     function quitEditIntPl() {
-        if (context.editedIntPl === -1)
-            context.editedIntPl = null;
+        if (context.editedIntPl !== null) {
+            const intPl = interestPlaces[context.editedIntPl];
 
+/*            if (intPl.marker === null)
+                interestPlaces.splice(context.editedIntPl, 1);  // Remove empty interest place
+    
+            context.editedIntPl = null;*/
+        }
+            
         setEnv4NonEdt();
     }
 
@@ -4729,10 +4460,10 @@
                 removeStageProfileControl();
             }
 
-            if (stage.points && stage.points.length === 0) {
+            /*if (stage.points && stage.points.length === 0)
                 stages.splice(context.editedStage, 1);  // Remove empty stage
-                context.editedStage = null;
-            }
+            
+            context.editedStage = null;*/
         }
 
         setEnv4NonEdt();
@@ -4817,6 +4548,24 @@
             context.stageNRouteProfileDisplayed = false;
         else
             context.stageNRouteProfileDisplayed = true;
+
+        const stageDefaultColor = getCookie("StageDefaultColor");
+        if (stageDefaultColor === 'green' || stageDefaultColor === 'red' ||stageDefaultColor === 'purple')
+            context.stageDefaultColor = stageDefaultColor;
+        else
+            context.stageDefaultColor = 'blue';
+
+        const intPlDefaultColor = getCookie("InterestPlaceDefaultColor");
+        if (intPlDefaultColor === 'blue' || intPlDefaultColor === 'red' || intPlDefaultColor === 'purple')
+            context.intPlDefaultColor = intPlDefaultColor;
+        else
+            context.intPlDefaultColor = 'green';
+
+        const forceColorAtImport = getCookie("ForceColorAtImport");
+        if (forceColorAtImport === '0')
+            context.forceColorAtImport = false;
+        else
+            context.forceColorAtImport = true;
 
         const baseMap = getCookie("BaseMap");
         let found = false;
@@ -5018,7 +4767,7 @@
             } else if (key === 'c') {     // When user presses 'c' (to set/change interest place color)
                 e.preventDefault();
 
-                changeIntPlColor();
+                changeIntPlColor(context.intPlDefaultColor);
             }
         }
         document.addEventListener('keydown', doc_keydown);      // Add event listener to document
@@ -5037,13 +4786,6 @@
                 if (context.operationInProcess) 
                     return;
             
-                let intPlRef = null;
-                let iRef = null;
-                if (context.editedIntPl != null) {
-                    intPlRef = interestPlaces[context.editedIntPl];
-                    iRef = context.editedIntPl;
-                }
- 
                 // If a double-click is coming, cancel this click
                 if (context.clickTimeout) {
                     clearTimeout(context.clickTimeout);
@@ -5063,11 +4805,8 @@
 
                     context.clickTimeout = null;
 
-                    if (context.editedIntPl !== null && context.editedIntPl >= 0) {
+                    if (context.editedIntPl !== null)
                         setIntPl4NonEdt(context.editedIntPl);    // Start editing a new stage
-
-                        context.editedIntPl = -1;
-                    }
             
                     const afterState = { point: e.latlng };
                     execute(new ClickOnMap2AddIntPl(null, null, {}, afterState));
@@ -5340,6 +5079,10 @@
                 e.preventDefault();
 
                 setStgName();
+            } else if (key === 'c') {     // When user presses 'c' (to set/change interest place color)
+                e.preventDefault();
+
+                changeStageColor(context.stageDefaultColor);
             } else if (key === 'b') {     // When user presses 'b' (to move the stage to the previous position in the list)
                 e.preventDefault();
 
@@ -5733,7 +5476,9 @@
             setIntPl4NonEdt(context.editedIntPl);     // Set layout and event listeners on currently edited stage
 
         if (i === null) {
-            i = -1;
+            //i = -1;
+            interestPlaces.push(createNewEmptyIntPl());
+            i = interestPlaces.length - 1;
             context.editedIntPl = i;
         }
 
@@ -6069,28 +5814,19 @@
     // Set interest place layout and event listeners for edit stage status
     //-----------------------------------------------------------------------
     function setIntPl4Edt(i) {
-        if (i < -1 || i > interestPlaces.length - 1)
-            return;
-
-        if (i != null && i >= 0) {
+        if (interestPlaces[i] && interestPlaces[i].marker) {
             const intPl = interestPlaces[i];
-
-            intPl.marker.remove();
-
-            let color = 'green';        // Default color is green
-            if (intPl.color)
-                color = intPl.color;
-            const icon = selectIntPlColoredIcon(color, true);
 
             // Change interest place layout
             const newMarker = L.marker(intPl.marker.getLatLng(), { 
-                icon: icon, 
+                icon: getStarIcon(intPl.color, 'light'), 
                 pane: 'markerEditPane', 
                 draggable: true, 
                 autoPan: false, 
                 bubblingMouseEvents: true 
             }).addTo(map);    // Create marker to represent the point on the map
 
+            intPl.marker.remove();
             intPl.marker = newMarker;
 
             // Delete event listeners on interest place
@@ -6269,64 +6005,28 @@
            
         const intPl = interestPlaces[i];
 
-        let color = 'green';        // Default color is green
-        if (intPl.color)
-            color = intPl.color;
-        const icon = selectIntPlColoredIcon(color, false);
+        if (intPl.marker) {
+            const newMarker = L.marker(intPl.marker.getLatLng(), { 
+                icon: getStarIcon(intPl.color, 'deep'), 
+                pane: 'markerEditPane', 
+                draggable: false, 
+                autoPan: false, 
+                bubblingMouseEvents: true 
+            }).addTo(map);    // Create marker to represent the point on the map
 
-        const newMarker = L.marker(intPl.marker.getLatLng(), { 
-            icon: icon, 
-            pane: 'markerEditPane', 
-            draggable: false, 
-            autoPan: false, 
-            bubblingMouseEvents: true 
-        }).addTo(map);    // Create marker to represent the point on the map
+            intPl.marker.remove();
 
-        intPl.marker.remove();
+            intPl.marker = newMarker;
 
-        intPl.marker = newMarker;
+            // Delete event listeners on interest places
+            for (const { target, type, handler } of intPl.evtList)
+                target.removeEventListener(type, handler);
+            intPl.evtList.splice(0);
 
-        context.editedIntPl = null;
-
-        // Delete event listeners on interest places
-        for (const { target, type, handler } of intPl.evtList)
-            target.removeEventListener(type, handler);
-        intPl.evtList.splice(0);
-
-        // Set event listener on interest places for click (does nothing, but needed to distinguish simple clicks from double-clicks)
-        function intPl_click(e) {
-            if (context.operationInProcess) 
-                return;   // Not executed if a load or rename operation is in process
-
-            // Stop a pending single-click
-            if (context.clickTimeout) {
-                clearTimeout(context.clickTimeout);
-                context.clickTimeout = null;
-            }
-
-            // Execute a timeout of 350 ms, to make sure it is a simple click and not a double click
-            context.clickTimeout = setTimeout(() => {
-                context.clickTimeout = null;
-            }, 350);
-        };
-        intPl.marker.addEventListener('click', intPl_click);  // Add event listener to the interest place
-        intPl.evtList.push({ target: intPl.marker, type: 'click', handler: intPl_click });      // Register event listener
-
-        // Set event listener on interest place for double-click
-        const intPl_dblclick = (function(intPlRef) {
-            return function(e) {
+            // Set event listener on interest place for click (does nothing, but needed to distinguish simple clicks from double-clicks)
+            function intPl_click(e) {
                 if (context.operationInProcess) 
                     return;   // Not executed if a load or rename operation is in process
-
-                context.operationInProcess = true;
-
-                // Retrieve stage number
-                let iRef = interestPlaces.indexOf(intPlRef);
-                if (iRef === -1) {
-                    context.operationInProcess = false;
-
-                    return;     // Interest place was removed; do nothing
-                }
 
                 // Stop a pending single-click
                 if (context.clickTimeout) {
@@ -6334,23 +6034,57 @@
                     context.clickTimeout = null;
                 }
 
-                L.DomEvent.stopPropagation(e);  // Do not propagate event to map and document
+                // Execute a timeout of 350 ms, to make sure it is a simple click and not a double click
+                context.clickTimeout = setTimeout(() => {
+                    context.clickTimeout = null;
+                }, 350);
+            };
+            intPl.marker.addEventListener('click', intPl_click);  // Add event listener to the interest place
+            intPl.evtList.push({ target: intPl.marker, type: 'click', handler: intPl_click });      // Register event listener
 
-                if (context.editedStage !== null) 
-                    quitEditStage();    // If a stage was being edited, set it to non edit status
-                else if (context.editedIntPl !== null) 
-                    quitEditIntPl();    // If another interest place was being edited, set it to non edit status
-                
-                iRef = interestPlaces.indexOf(intPlRef);    // An interest place may have been removed preceding the current interest place
+            // Set event listener on interest place for double-click
+            const intPl_dblclick = (function(intPlRef) {
+                return function(e) {
+                    if (context.operationInProcess) 
+                        return;   // Not executed if a load or rename operation is in process
 
-                setEnv4EdtIntPl(iRef);    // Set the double clicked stage to edit status
+                    context.operationInProcess = true;
 
-                context.operationInProcess = false;
-            };   
-        })(intPl);
-        intPl.marker.addEventListener('dblclick', intPl_dblclick);  // Add event listener to the interest place
-        intPl.evtList.push({ target: intPl.marker, type: 'dblclick', handler: intPl_dblclick });    // Register event listener
+                    // Retrieve stage number
+                    let iRef = interestPlaces.indexOf(intPlRef);
+                    if (iRef === -1) {
+                        context.operationInProcess = false;
 
+                        return;     // Interest place was removed; do nothing
+                    }
+
+                    // Stop a pending single-click
+                    if (context.clickTimeout) {
+                        clearTimeout(context.clickTimeout);
+                        context.clickTimeout = null;
+                    }
+
+                    L.DomEvent.stopPropagation(e);  // Do not propagate event to map and document
+
+                    if (context.editedStage !== null) 
+                        quitEditStage();    // If a stage was being edited, set it to non edit status
+                    else if (context.editedIntPl !== null) 
+                        quitEditIntPl();    // If another interest place was being edited, set it to non edit status
+                    
+                    iRef = interestPlaces.indexOf(intPlRef);    // An interest place may have been removed preceding the current interest place
+
+                    setEnv4EdtIntPl(iRef);    // Set the double clicked stage to edit status
+
+                    context.operationInProcess = false;
+                };   
+            })(intPl);
+            intPl.marker.addEventListener('dblclick', intPl_dblclick);  // Add event listener to the interest place
+            intPl.evtList.push({ target: intPl.marker, type: 'dblclick', handler: intPl_dblclick });    // Register event listener
+        } else {
+            interestPlaces.splice(context.editedIntPl, 1);  // Remove empty interest place
+        }
+
+        context.editedIntPl = null;
     }
 
     //--------------------------------
@@ -6968,9 +6702,9 @@
         const latlng = point.marker.getLatLng();
         let newMarker = null;
         if (stage.points.length === 1) {
-            if (point.marker.options.icon != lightPurpleDoubleSquareIcon) {
+            if (point.marker.options.icon != getDoubleSquareIcon('purple', 'light')) {
                 newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                    icon: lightPurpleDoubleSquareIcon,
+                    icon: getDoubleSquareIcon('purple', 'light'),
                     pane: 'markerEditPane',
                     draggable: true,
                     autoPan: false,
@@ -6978,9 +6712,9 @@
                 }).addTo(map);
             }
         } else if (j === 0) {
-            if (point.marker.options.icon != lightGreenDiamondIcon) {
+            if (point.marker.options.icon != getDiamondIcon('green', 'light')) {
                 newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                    icon: lightGreenDiamondIcon,
+                    icon: getDiamondIcon('green', 'light'),
                     pane: 'markerEditPane',
                     draggable: true,
                     autoPan: false,
@@ -6988,9 +6722,9 @@
                 }).addTo(map);
             }
         } else if (j < stage.points.length - 1) {
-            if (point.marker.options.icon != circleIconEdit) {
+            if (point.marker.options.icon != getCircleIcon(stage.color, 'light')) {
                 newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                    icon: circleIconEdit,
+                    icon: getCircleIcon(stage.color, 'light'),
                     pane: 'markerEditPane',
                     draggable: true,
                     autoPan: false,
@@ -6998,9 +6732,9 @@
                 }).addTo(map);
             }
         } else {
-            if (point.marker.options.icon != lightRedSquareIcon) {
+            if (point.marker.options.icon != getSquareIcon('red', 'light')) {
                 newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                    icon: lightRedSquareIcon,
+                    icon: getSquareIcon('red', 'light'),
                     pane: 'markerEditPane',
                     draggable: true,
                     autoPan: false,
@@ -7498,7 +7232,7 @@
         section.polyline.bringToFront();
 
         // Set section's layout
-        section.polyline.setStyle({ color: routeColors.lightBlue, weight: routeWeights.editRoute, opacity: 1, fillOpacity: 0 });
+        section.polyline.setStyle({ color: colors[stage.color].light, weight: routeWeights.editRoute, opacity: 1, fillOpacity: 0 });
 
         // Delete event listeners on section
         for (const { target, type, handler } of section.evtList)    // Remove event listeners
@@ -7567,7 +7301,7 @@
                 const afterState = { prevPointIdx: idx, newPoint: latlng };
                 execute(new DoubleClickSection2InsertPoint(stageRef, iRef, jRef, beforeState, afterState));
 
-                context.operationInProcess = true;
+                context.operationInProcess = false;
             };
         })(stage, section);
         section.polyline.addEventListener('dblclick', section_dblclick);    // Add event listner to section
@@ -7656,6 +7390,13 @@
                 const up = async ev => {    // Event: mouse button up
                     if (!isDragging) {  // Ignore if no dragging is in process
                         cleanupDrag();
+
+                        enableStagePointsDragging(stageRef);
+
+                        map.getContainer().style.cursor = 'crosshair';
+
+                        context.operationInProcess = false;
+
                         return;
                     }
 
@@ -7963,11 +7704,13 @@
         const stage = stages[i];
 
         if (stage.points.length > 0) {      // When the stage is not empty
+            const shade = colors[stage.color].deep;
+
             // Process the sections
             for (let j = 0; j < stage.sections.length; j++) {
                 const section = stage.sections[j];
                 
-                section.polyline.setStyle({ color: routeColors.Blue, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 });   // Set layout
+                section.polyline.setStyle({ color: shade, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 });   // Set layout
         
                 // Delete event listeners on section
                 for (const { target, type, handler } of section.evtList)
@@ -8046,9 +7789,9 @@
                 const latlng = point.marker.getLatLng();
                 let newMarker = null;
                 if (stage.points.length === 1) {
-                    if (point.marker.options.icon != PurpleDoubleSquareIcon) {
+                    if (point.marker.options.icon != getDoubleSquareIcon('purple', 'deep')) {
                         newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                            icon: PurpleDoubleSquareIcon,
+                            icon: getDoubleSquareIcon('purple', 'deep'),
                             pane: 'markerNEPane',
                             draggable: false,
                             autoPan: false,
@@ -8056,9 +7799,9 @@
                         }).addTo(map);
                     }
                 } else if (j === 0) { 
-                    if (point.marker.options.icon != GreenDiamondIcon) {
+                    if (point.marker.options.icon != getDiamondIcon('green', 'deep')) {
                         newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                            icon: GreenDiamondIcon,
+                            icon: getDiamondIcon('green', 'deep'),
                             pane: 'markerNEPane',
                             draggable: false,
                             autoPan: false,
@@ -8066,9 +7809,9 @@
                         }).addTo(map);
                     }
                 } else if (j < stage.points.length - 1) {
-                    if (point.marker.options.icon != transparentIcon) {
+                    if (point.marker.options.icon != getTransparentIcon()) {
                         newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                            icon: transparentIcon,
+                            icon: getTransparentIcon(),
                             pane: 'markerNEPane',
                             draggable: false,
                             autoPan: false,
@@ -8076,9 +7819,9 @@
                         }).addTo(map);
                     }
                 } else {
-                    if (point.marker.options.icon != RedSquareIcon) {
+                    if (point.marker.options.icon != getSquareIcon('red', 'deep')) {
                         newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                            icon: RedSquareIcon,
+                            icon: getSquareIcon('red', 'deep'),
                             pane: 'markerNEPane',
                             draggable: false,
                             autoPan: false,
@@ -8152,8 +7895,7 @@
             stages.splice(i, 1);   // If the stage is empty, delete it
         }
 
-        if (context.editedStage === i)
-            context.editedStage = null;
+        context.editedStage = null;
     }
 
     //--------------------------------------------------
@@ -8323,9 +8065,9 @@
     // CLASSES FOR REVERSIBLE ACTION MANAGEMENT *
     //*******************************************
 
-    //----------------------------------------------------------
-    // Reversible command to add point when clicking on the map
-    //----------------------------------------------------------
+    //------------------------------------------------------
+    // Reversible command to change color of interest place
+    //------------------------------------------------------
     class ChangeIntPlColor {
         constructor(intPl, intPlIdx, before, after) {
             this.intPl = intPl;
@@ -8346,9 +8088,7 @@
 
             intPl.color = this.before.color;
 
-            const icon = selectIntPlColoredIcon(this.before.color, true);
-
-            intPl.marker.setIcon(icon);
+            intPl.marker.setIcon(getStarIcon(this.before.color, "light"));
         }
 
         redo() {
@@ -8363,9 +8103,65 @@
 
             intPl.color = this.after.color;
 
-            const icon = selectIntPlColoredIcon(this.after.color, true);
+            intPl.marker.setIcon(getStarIcon(this.after.color, "light"));
+        }
+    }
 
-            intPl.marker.setIcon(icon);
+    //---------------------------------------------
+    // Reversible command to change color of stage
+    //---------------------------------------------
+    class ChangeStageColor {
+        constructor(stage, stageIdx, before, after) {
+            this.stage = stage;
+            this.stageIdx = stageIdx;
+            this.before = before;
+            this.after = after;
+        }
+
+        undo() {
+            const stage = this.stage;
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage();
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            stage.color = this.before.color;
+
+            stage.sections.forEach(section => {
+                section.polyline.setStyle({ color: colors[this.before.color].light })
+            });
+
+            stage.points.forEach((point, i) => {
+                if (i > 0 && i < stage.points.length - 1) {
+                    point.marker.setIcon(getCircleIcon(this.before.color, 'light'));
+                }
+            });
+        }
+
+        redo() {
+            const stage = this.stage;
+            const stageIdx = this.stageIdx;
+
+            if (stageIdx != context.editedStage) {
+                quitEditStage();
+
+                setEnv4EdtStg(stageIdx);
+            }
+
+            stage.color = this.after.color;
+
+            stage.sections.forEach(section => {
+                section.polyline.setStyle({ color: colors[this.after.color].light })
+            });
+
+            stage.points.forEach((point, i) => {
+                if (i > 0 && i < stage.points.length - 1) {
+                    point.marker.setIcon(getCircleIcon(this.after.color, 'light'));
+                }
+            });
         }
     }
 
@@ -8469,9 +8265,9 @@
 
             // Adjust layout of previous point 
             if (stage.points.length > 1) {
-                stage.points[stage.points.length - 1].marker.setIcon(lightRedSquareIcon);
+                stage.points[stage.points.length - 1].marker.setIcon(getSquareIcon('red', 'light'));
             } else if (stage.points.length > 0) {
-                stage.points[stage.points.length - 1].marker.setIcon(lightPurpleDoubleSquareIcon);
+                stage.points[stage.points.length - 1].marker.setIcon(getDoubleSquareIcon('purple', 'light'));
             }
                 
             // Remove section
@@ -8559,14 +8355,14 @@
 
             // Adjust layout of previous point 
             if (stage.points.length > 1) {
-                stage.points[stage.points.length - 1].marker.setIcon(circleIconEdit);
+                stage.points[stage.points.length - 1].marker.setIcon(getCircleIcon(stage.color, 'light'));
             } else if (stage.points.length > 0) {
-                stage.points[stage.points.length - 1].marker.setIcon(lightGreenDiamondIcon);
+                stage.points[stage.points.length - 1].marker.setIcon(getDiamondIcon('green', 'light'));
             }
                 
             // Create and record point
             const newMarker = L.marker(this.after.nextPoint, { 
-                icon: lightRedSquareIcon, 
+                icon: getSquareIcon('red', 'light'), 
                 pane: 'markerEditPane', 
                 draggable: true, 
                 autoPan: false, 
@@ -8616,7 +8412,7 @@
             const intPl = this.intPl;
             const intPlIdx = this.intPlIdx;
 
-            // Remove interest place
+            // Remove interest place events
             if (intPl.evList !== null)
                 for (const { target, type, handler } of intPl.evtList)    // Remove event listeners
                     target.removeEventListener(type, handler);
@@ -8640,25 +8436,27 @@
         }
 
         redo() {
+            const intPl = createNewEmptyIntPl();
+
             // Create and record point
             const newMarker = L.marker(this.after.point, { 
-                icon: lightGreenStarIcon, 
+                icon: getStarIcon(context.intPlDefaultColor, 'light'), 
                 pane: 'markerEditPane', 
                 draggable: true, 
                 autoPan: false, 
                 bubblingMouseEvents: true 
             }).addTo(map);    // Create marker to represent the point on the map
-            interestPlaces.push({ name: null, marker: newMarker, infoPop: null, evtList: [] });   // Add point to stage
+            intPl.marker = newMarker;   // Add marker to interest place
+
+            interestPlaces.push(intPl);
 
             this.intPlIdx = interestPlaces.length - 1;
-            this.intPl = interestPlaces[this.intPlIdx];
+            this.intPl = intPl;
 
             if (context.editedIntPl !== null)
                 setIntPl4NonEdt(context.editedIntPl);
 
             setIntPl4Edt(interestPlaces.length - 1);     // Set new point's layout and event listeners for edit mode
-
-//            updateIntPlData(this.intPl, true);  // Update information to be displayed about the interest place
         }
     }
 
@@ -8697,7 +8495,7 @@
                 stage.sections.splice(stage.sections.length - this.before.afterStageSectNb - 1, 1);
             } else {
                 const newMarker = L.marker(stage.points[stage.sections.length - this.before.afterStageSectNb].marker.getLatLng(), {
-                    icon: circleIconEdit,
+                    icon: getCircleIcon(stage.color, 'light'),
                     pane: 'markerEditPane',
                     draggable: true,
                     autoPan: false,
@@ -8896,7 +8694,7 @@
                 stage.sections.splice(this.before.beforeStageSectNb, 1);
             } else {
                 const newMarker = L.marker(stage.points[this.before.beforeStageSectNb].marker.getLatLng(), {
-                    icon: lightGreenDiamondIcon,
+                    icon: getDiamondIcon('green', 'light'),
                     pane: 'markerEditPane',
                     draggable: true,
                     autoPan: false,
@@ -9163,7 +8961,7 @@
             stage2.sections.push(...movedSections);
         
             const newMarker = L.marker(point.marker.getLatLng(), {
-                icon: circleIconEdit,
+                icon: getCircleIcon(stage.color, 'light'),
                 pane: 'markerEditPane',
                 draggable: true,
                 autoPan: false,
@@ -9311,6 +9109,7 @@
                 stage2 = stages[stageIdx + 1];
             } else {
                 stage2 = createNewEmptyStage();   // Create new stage
+                stage2.color = stage.color;
                 stages.splice(stageIdx + 1, 0, stage2);  // Insert new stage into array of stages
             }
 
@@ -9318,12 +9117,13 @@
             const movedPoints = stage.points.splice(this.sectionIdx + 1);
 
             const polyline2 = L.polyline(this.after.section2).addTo(map);
+            polyline2.setStyle({ color: stage.color });
             stage2.sections.push({polyline: polyline2, evtList: []});   // Add section to new stage
 
             stage2.sections.push(...movedSections);
             
             const newMarker2 = L.marker(this.after.point, {
-                icon: circleIconEdit,
+                icon: getCircleIcon(stage.color, 'light'),
                 pane: 'markerEditPane',
                 draggable: true,
                 autoPan: false,
@@ -9339,7 +9139,7 @@
             section.polyline.setLatLngs(this.after.section1);
             
             const newMarker1 = L.marker(this.after.point, {
-                icon: circleIconEdit,
+                icon: getCircleIcon(stage.color, 'light'),
                 pane: 'markerEditPane',
                 draggable: true,
                 autoPan: false,
@@ -9398,7 +9198,7 @@
 
             // Restore last section and last point
             const newMarker = L.marker(this.before.point, {
-                icon: circleIconEdit,
+                icon: getCircleIcon(stage.color, 'light'),
                 pane: 'markerEditPane',
                 draggable: true,
                 autoPan: false,
@@ -9415,14 +9215,14 @@
             
             if (this.before.section != null) {
                 // Update first point layout
-                stage.points[0].marker.setIcon(lightGreenDiamondIcon);
+                stage.points[0].marker.setIcon(getDiamondIcon('green', 'light'));
                 // Update next point layout
                 if (stage.points.length > 2)
-                    stage.points[1].marker.setIcon(circleIconEdit);
+                    stage.points[1].marker.setIcon(getCircleIcon(stage.color, 'light'));
                 else
-                    stage.points[1].marker.setIcon(lightRedSquareIcon);
+                    stage.points[1].marker.setIcon(getSquareIcon('red', 'light'));
             } else 
-                    stage.points[0].marker.setIcon(lightPurpleDoubleSquareIcon);
+                    stage.points[0].marker.setIcon(getDoubleSquareIcon('purple', 'light'));
 
             stage.distance = calculateStageDistance(stage);   // Update stage distance
 
@@ -9488,9 +9288,9 @@
             if (this.before.section != null) {
                 // Update following point layout
                 if (stage.points.length > 1)
-                    stage.points[0].marker.setIcon(lightRedSquareIcon);
+                    stage.points[0].marker.setIcon(getSquareIcon('red', 'light'));
                 else
-                    stage.points[0].marker.setIcon(lightPurpleDoubleSquareIcon);
+                    stage.points[0].marker.setIcon(getDoubleSquareIcon('purple', 'light'));
 
                 stage.distance = calculateStageDistance(stage);   // Update stage distance
 
@@ -9552,7 +9352,7 @@
 
             // Restore last section and last point
             const newMarker = L.marker(this.before.point, {
-                icon: circleIconEdit,
+                icon: getCircleIcon(stage.color, 'light'),
                 pane: 'markerEditPane',
                 draggable: true,
                 autoPan: false,
@@ -9569,14 +9369,14 @@
             
             if (this.before.section != null) {
                 // Update last point layout
-                stage.points[stage.points.length - 1].marker.setIcon(lightRedSquareIcon);
+                stage.points[stage.points.length - 1].marker.setIcon(getSquareIcon('red', 'light'));
                 // Update preceding point layout
                 if (stage.points.length > 2)
-                    stage.points[stage.points.length - 2].marker.setIcon(circleIconEdit);
+                    stage.points[stage.points.length - 2].marker.setIcon(getCircleIcon(stage.color, 'light'));
                 else
-                    stage.points[stage.points.length - 2].marker.setIcon(lightGreenDiamondIcon);
+                    stage.points[stage.points.length - 2].marker.setIcon(getDiamondIcon('green', 'light'));
             } else 
-                    stage.points[stage.points.length - 1].marker.setIcon(lightPurpleDoubleSquareIcon);
+                    stage.points[stage.points.length - 1].marker.setIcon(getDoubleSquareIcon('purple', 'light'));
 
             stage.distance = calculateStageDistance(stage);   // Update stage distance
 
@@ -9642,9 +9442,9 @@
             if (this.before.section != null) {
                 // Update preceding point layout
                 if (stage.points.length > 1)
-                    stage.points[stage.points.length - 1].marker.setIcon(lightRedSquareIcon);
+                    stage.points[stage.points.length - 1].marker.setIcon(getSquareIcon('red', 'light'));
                 else
-                    stage.points[stage.points.length - 1].marker.setIcon(lightPurpleDoubleSquareIcon);
+                    stage.points[stage.points.length - 1].marker.setIcon(getDoubleSquareIcon('purple', 'light'));
 
                 stage.distance = calculateStageDistance(stage);   // Update stage distance
 
@@ -9702,7 +9502,7 @@
             // Restore stage's points
             stage.points.forEach(point => {
                 const newMarker = L.marker(point.latlng, {
-                    icon: circleIconEdit,
+                    icon: getCircleIcon(stage.color, 'light'),
                     pane: 'markerEditPane',
                     draggable: true,
                     autoPan: false,
@@ -9830,7 +9630,7 @@
 
             // Restore point
             const newMarker = L.marker(this.before.curPoint, {          // Create marker to represent the point on the map
-                icon: circleIconEdit,
+                icon: getCircleIcon(stage.color, 'light'),
                 pane: 'markerEditPane',
                 draggable: true,
                 autoPan: false,
@@ -9843,15 +9643,15 @@
             // Adjust layout of previous and next points 
             if (this.pointIdx === 0) {
                 if (stage.points.length > 2) {
-                    stage.points[1].marker.setIcon(circleIconEdit);
+                    stage.points[1].marker.setIcon(getCircleIcon(stage.color, 'light'));
                 } else if (stage.points.length === 2) {
-                    stage.points[1].marker.setIcon(lightRedSquareIcon);
+                    stage.points[1].marker.setIcon(getSquareIcon('red', 'light'));
                 }
             } else if (this.pointIdx === stage.points.length - 1) {
                 if (stage.points.length > 2) {
-                    stage.points[stage.points.length - 2].marker.setIcon(circleIconEdit);
+                    stage.points[stage.points.length - 2].marker.setIcon(getCircleIcon(stage.color, 'light'));
                 } else if (stage.points.length === 2) {
-                    stage.points[stage.points.length - 2].marker.setIcon(lightGreenDiamondIcon);
+                    stage.points[stage.points.length - 2].marker.setIcon(getDiamondIcon('green', 'light'));
                 }
             }
                 
@@ -9968,11 +9768,11 @@
 
             // Adjust layout of previous and next points 
             if (this.before.prevSection === null && stage.points.length > 1) {
-                stage.points[0].marker.setIcon(lightGreenDiamondIcon);
+                stage.points[0].marker.setIcon(getDiamondIcon('green', 'light'));
             } else if (this.before.nextSection === null && stage.points.length > 1) {
-                stage.points[stage.points.length - 1].marker.setIcon(lightRedSquareIcon);
+                stage.points[stage.points.length - 1].marker.setIcon(getSquareIcon('red', 'light'));
             } else if (stage.points.length === 1) {
-                stage.points[stage.points.length - 1].marker.setIcon(lightPurpleDoubleSquareIcon);
+                stage.points[stage.points.length - 1].marker.setIcon(getDoubleSquareIcon('purple', 'light'));
             }
                 
             // Remove preceding and following sections and replace them with a single section
@@ -10044,7 +9844,7 @@
         undo() {
             // Create marker to represent the interest place on the map
             const newMarker = L.marker(this.before.point, { 
-                icon: lightGreenStarIcon, 
+                icon: getStarIcon(this.before.color, 'light'), 
                 pane: 'markerEditPane', 
                 draggable: true, 
                 autoPan: false, 
@@ -10161,7 +9961,7 @@
             setSection4Edit(stageIdx, this.sectionIdx + 1);    // Set new section's layout and event listeners for edit mode
                         
             const newMarker2 = L.marker(this.after.newPoint, {          // Create circle marker for the new point
-                icon: circleIconEdit,
+                icon: getCircleIcon(stage.color, 'light'),
                 pane: 'markerEditPane',
                 draggable: true,
                 autoPan: false,
@@ -10453,7 +10253,7 @@
             setSection4Edit(stageIdx, this.sectionIdx + 1);    // Set new section's layout and event listeners for edit mode
                         
             const newMarker = L.marker(this.after.point, {          // Create circle marker for the new point
-                icon: circleIconEdit,
+                icon: getCircleIcon(stage.color, 'light'),
                 pane: 'markerEditPane',
                 draggable: true,
                 autoPan: false,
@@ -10594,7 +10394,7 @@
                 // Restore stage's points
                 stage.points.forEach(point => {
                     const newMarker = L.marker(point.latlng, {
-                        icon: circleIconEdit,
+                        icon: getCircleIcon(stage.color, 'light'),
                         pane: 'markerEditPane',
                         draggable: true,
                         autoPan: false,
@@ -10608,6 +10408,7 @@
                 // Restore stage's sections
                 stage.sections.forEach(section => {
                     const newPolyline = L.polyline(section.latlngs).addTo(map);    // Create section
+                    newPolyline.setStyle({ color: colors[stage.color].deep });
                     section.polyline = newPolyline;
                     section.evtList = [];
                     delete section.latlngs;
@@ -10641,11 +10442,8 @@
             for (let i = initInterestPlacesNb; i < interestPlaces.length; i++) {
                 const intPl = interestPlaces[i];
 
-                // Restore interest places
-                const icon = selectIntPlColoredIcon(intPl.color, false);
-
                 const newMarker = L.marker(intPl.latlng, {
-                    icon: icon,
+                    icon: getStarIconicon(intPl.color, 'deep'),
                     pane: 'markerEditPane',
                     draggable: false,
                     autoPan: false,
@@ -10681,7 +10479,7 @@
                 // Restore stage's points
                 stage.points.forEach(point => {
                     const newMarker = L.marker(point.latlng, {
-                        icon: circleIconEdit,
+                        icon: getCircleIcon(stage.color, 'light'),
                         pane: 'markerEditPane',
                         draggable: true,
                         autoPan: false,
@@ -10710,14 +10508,9 @@
             this.before.interestPlaces.length = 0;
 
             interestPlaces.forEach((intPl, i) => {
-                let color = 'green';        // Default color is green
-                if (intPl.color)
-                    color = intPl.color;
-                const icon = selectIntPlColoredIcon(color, true);
-
                 // Restore marker
                 const newMarker = L.marker(intPl.latlng, {
-                    icon: icon,
+                    icon: getStarIcon(intPl.color, 'light'),
                     pane: 'markerEditPane',
                     draggable: true,
                     autoPan: false,
@@ -11578,6 +11371,181 @@
             map.fitBounds(bounds);  // Focus the map on the polylines
     }
 
+    //--------------------------------------
+    // Get circle icon of a specified color
+    //--------------------------------------
+    function getCircleIcon(color, shade) {
+        return L.divIcon({
+            className: '',
+            html: `<div style="
+                width: 7px;
+                height: 7px;
+                background: transparent;
+                border: 3px solid ${colors[color][shade]};
+                border-radius: 50%;
+            "></div>`,
+            iconSize: [16, 16],
+            iconAnchor: [8, 8]
+        });
+    }
+
+    //------------
+    // Get cookie
+    //------------
+    function getCookie(cname) {
+        let name = cname + "=";
+        let ca = document.cookie.split(';');
+
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+
+        return "";
+    }
+
+    //---------------------------------------
+    // Get diamond icon of a specified color
+    //---------------------------------------
+    function getDiamondIcon(color, shade) {
+        return L.divIcon({
+            className: '',
+            html: `<div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 11px;
+                height: 11px;
+                background: transparent;
+                border: 3px solid ${colors[color][shade]};
+                transform: translate(-50%, -50%) rotate(45deg);
+            "></div>`,
+            iconSize: [20, 20],
+            iconAnchor: [10, 10]
+        });
+    }
+    
+    //---------------------------------------------
+    // Get double square icon of a specified color
+    //---------------------------------------------
+    function getDoubleSquareIcon(color, shade) {
+        return L.divIcon({
+            className: '',
+            html: `
+                <div style="
+                    position: relative;
+                    width: 14px;
+                    height: 14px;
+                ">
+                    <!-- Base square -->
+                    <div style="
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 11px;
+                        height: 11px;
+                        background: transparent;
+                        border: 3px solid ${colors[color][shade]};
+                        transform: translate(-50%, -50%);
+                    "></div>
+
+                    <!-- Rotated square -->
+                    <div style="
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 11px;
+                        height: 11px;
+                        background: transparent;
+                        border: 3px solid ${colors[color][shade]};
+                        transform: translate(-50%, -50%) rotate(45deg);
+                    "></div>
+                </div>
+            `,
+            iconSize: [14, 14],
+            iconAnchor: [7, 7]
+        });
+    }
+    
+    //------------------------------------
+    // Get star icon of a specified color
+    //------------------------------------
+    function getStarIcon(color, shade) {
+        return L.divIcon({
+            className: '',
+            html: `
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                ">
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <polygon
+                            points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
+                            fill=transparent
+                            stroke="${colors[color][shade]}"
+                            stroke-width=3px
+                        />
+                    </svg>
+                </div>
+            `,
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+        });
+    }
+
+    //--------------------------------------
+    // Get square icon of a specified color
+    //--------------------------------------
+    function getSquareIcon(color, shade) {
+        return L.divIcon({
+            className: '',
+            html: `<div style="
+                position: relative;
+                width: 14px;
+                height: 14px;
+            ">
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 11px;
+                    height: 11px;
+                    background: transparent;
+                    border: 3px solid ${colors[color][shade]};
+                    transform: translate(-50%, -50%);
+                "></div>
+            </div>`,
+            iconSize: [14, 14],
+            iconAnchor: [7, 7]
+        });
+    }
+
+    function getTransparentIcon() {
+        return L.divIcon({
+            className: '',
+            html: `<div style="
+                width: 1px;
+                height: 1px;
+                background: transparent;²
+                border: 3px solid transparent;
+            "></div>`,
+            iconSize: [16, 16],
+            iconAnchor: [8, 8]
+        });
+    }
+
     //-------------------------------------------------
     // Display an alert message when geolocation fails
     //-------------------------------------------------
@@ -11849,35 +11817,6 @@
             context.stageProfileChart.setActiveElements([]);
             context.stageProfileChart.tooltip.setActiveElements([], { x: 0, y: 0 });
             context.stageProfileChart.update();
-        }
-    }
-
-    //----------------------------------------------------
-    // Select the appropriate icon for an interest place
-    //----------------------------------------------------
-    function selectIntPlColoredIcon(color, edited) {
-        if (edited) {
-            if (color === 'green')
-                return lightGreenStarIcon;
-            else if (color === 'blue')
-                return lightBlueStarIcon;
-            else if (color === 'red')
-                return lightRedStarIcon;
-            else if (color === 'purple')
-                return lightPurpleStarIcon;
-            else
-                return lightGreenStarIcon;
-        } else {
-            if (color === 'green')
-                return GreenStarIcon;
-            else if (color === 'blue')
-                return BlueStarIcon;
-            else if (color === 'red')
-                return RedStarIcon;
-            else if (color === 'purple')
-                return PurpleStarIcon;
-            else
-                return GreenStarIcon;
         }
     }
 

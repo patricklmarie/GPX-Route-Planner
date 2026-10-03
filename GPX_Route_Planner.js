@@ -686,6 +686,10 @@
                     <td>Set a name to the stage</td>
                 </tr>
                 <tr>
+                    <td><strong>c</strong></td>
+                    <td>Change the stage color</td>
+                </tr>
+                <tr>
                     <td><strong>r</strong></td>
                     <td>Reverse stage direction</td>
                 </tr>
@@ -787,6 +791,10 @@
                 <tr>
                     <td><strong>n</strong></td>
                     <td>Attribuer un nom à l'étape</td>
+                </tr>
+                <tr>
+                    <td><strong>c</strong></td>
+                    <td>Modifier la couleur de l'étape</td>
                 </tr>
                 <tr>
                 <tr>
@@ -11419,14 +11427,14 @@
                 position: absolute;
                 top: 50%;
                 left: 50%;
-                width: 11px;
-                height: 11px;
+                width: 10px;
+                height: 10px;
                 background: transparent;
                 border: 3px solid ${colors[color][shade]};
                 transform: translate(-50%, -50%) rotate(45deg);
             "></div>`,
-            iconSize: [20, 20],
-            iconAnchor: [10, 10]
+            iconSize: [18, 18],
+            iconAnchor: [9, 9]
         });
     }
     
@@ -11439,16 +11447,16 @@
             html: `
                 <div style="
                     position: relative;
-                    width: 14px;
-                    height: 14px;
+                    width: 13px;
+                    height: 13px;
                 ">
                     <!-- Base square -->
                     <div style="
                         position: absolute;
                         top: 50%;
                         left: 50%;
-                        width: 11px;
-                        height: 11px;
+                        width: 10px;
+                        height: 10px;
                         background: transparent;
                         border: 3px solid ${colors[color][shade]};
                         transform: translate(-50%, -50%);
@@ -11459,16 +11467,16 @@
                         position: absolute;
                         top: 50%;
                         left: 50%;
-                        width: 11px;
-                        height: 11px;
+                        width: 10px;
+                        height: 10px;
                         background: transparent;
                         border: 3px solid ${colors[color][shade]};
                         transform: translate(-50%, -50%) rotate(45deg);
                     "></div>
                 </div>
             `,
-            iconSize: [14, 14],
-            iconAnchor: [7, 7]
+            iconSize: [13, 13],
+            iconAnchor: [6, 6]
         });
     }
     
@@ -11486,22 +11494,22 @@
                     transform: translate(-50%, -50%);
                 ">
                     <svg
-                        width="24"
-                        height="24"
+                        width="22"
+                        height="22"
                         viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <polygon
                             points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
-                            fill=transparent
+                            fill="transparent"
                             stroke="${colors[color][shade]}"
-                            stroke-width=3px
+                            stroke-width="3"
                         />
                     </svg>
                 </div>
             `,
-            iconSize: [24, 24],
-            iconAnchor: [12, 12]
+            iconSize: [22, 22],
+            iconAnchor: [11, 11]
         });
     }
 
@@ -11513,22 +11521,22 @@
             className: '',
             html: `<div style="
                 position: relative;
-                width: 14px;
-                height: 14px;
+                width: 13px;
+                height: 13px;
             ">
                 <div style="
                     position: absolute;
                     top: 50%;
                     left: 50%;
-                    width: 11px;
-                    height: 11px;
+                    width: 10px;
+                    height: 10px;
                     background: transparent;
                     border: 3px solid ${colors[color][shade]};
                     transform: translate(-50%, -50%);
                 "></div>
             </div>`,
-            iconSize: [14, 14],
-            iconAnchor: [7, 7]
+            iconSize: [13, 13],
+            iconAnchor: [6, 6]
         });
     }
 
@@ -12097,6 +12105,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Drag and drop a point on the stage to move it.</li>
 <li>Drag and drop a section of the stage to insert a new point and move it.</li>
 <li>Click the "Set stage name" button or press the “n” key to assign a name to the stage.</li>
+<li>Click the "Change stage color" button or press the “c” key to modify the color of the stage.</li>
 <li>Click the "Reverse stage direction" button or press the "r" key to reverse the stage's direction.</li>
 <li>Click the "Split stage" button or press the "s" key to split the stage into two stages at a place pointed with the mouse.</li>
 <li>Click the "Merge stage with another one" button or press the "m" key to merge the stage with a nearby stage. To be eligible for merging, the other stages must:
@@ -12186,6 +12195,9 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Stage, interest places, and route information: name (stages and interest places), length, starting and finishing altitudes, and positive and negative elevation gains.</li>
 <li>Stage or route profile, displayed as a graph.</li>
 </ul>
+<li>You can choose the default color used to plot stages on the map.</li>
+<li>You can choose the default color used to display interest places on the map.</li>
+<li>When importing stages from GPX files, you can choose whether or not to apply the default stage color.</li>
 </ul>
 <p>A distance scale is included in the lower left corner.</p>
 <p>While the mouse pointer moves on the map, its geographic coordinates are displayed in the lower right corner.</p>
@@ -12260,6 +12272,7 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Tirer-déposer un point de l'étape pour le déplacer.</li>
 <li>Tirer-déposer une section de l'étape pour insérer un nouveau point et le déplacer.</li>
 <li>Cliquer sur le bouton "Attribuer nom à l'étape" ou presser la touche "n" pour attribuer un nom à l'étape.</li>
+<li>Cliquer sur le bouton "Modifier la couleur de l'étape" ou presser la touche "c" pour modifier la couleur de l'étape.</li>
 <li>Cliquer sur le bouton "Inverser direction de l'étape" ou presser la touche "r" pour inverser la direction de l'étape.</li>
 <li>Cliquer sur le bouton "Partager l'étape en deux" ou presser la touche "s" pour partager l'étape en deux à un point désigné avec la souris.</li>
 <li>Cliquer sur le bouton "Fusionner l'étape avec une autre" ou presser la touche "m" pour fusionner l'étape avec une autre étape voisine désignée avec la souris. Pour être éligibles à la fusion, les autres étapes doivent :
@@ -12348,6 +12361,9 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Informations sur les étapes, les lieux d'intérêt et l'ensemble de l'itinéraire: nom (étapes et lieux d'intérêt), distance, altitudes de départ et d'arrivée et dénivelés positif et negatif.</li>
 <li>Profil de l'étape ou de l'ensemble de l'itinéraire affiché comme graphe.</li>
 </ul>
+<li>La couleur par défaut utilisée pour représenter les étapes sur la carte peut être choisie.</li>
+<li>La couleur par défaut utilisée pour représenter les lieux d'intérêt sur la carte peut être choisie.</li>
+<li>Lors de l'importation d'étapes de fichiers GPX, on peut choisir ou non de leur imposer la couleur par défaut des étapes.</li>
 </ul>
 <p>Une échelle des distances est incluse dans le coin du bas gauche.</p>
 <p>Pendant que le pointeur de la souris est déplacé sur la carte, ses coordonnées géographiques sont affichées dans le coin du bas droit.</p>

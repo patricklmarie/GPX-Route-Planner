@@ -4625,13 +4625,13 @@
             context.intPlDefaultColor = 'green';
 
         const forceColorAtImport = getCookie("ForceColorAtImport");
-        if (forceColorAtImport === '0')
+        if (forceColorAtImport === '' || forceColorAtImport === '0')
             context.forceColorAtImport = false;
         else
             context.forceColorAtImport = true;
 
         const simplifiedIcons = getCookie("UseSimplifiedIcons");
-        if (simplifiedIcons === '0')
+        if (simplifiedIcons === '' || simplifiedIcons === '0')
             context.simplifiedIcons = false;
         else
             context.simplifiedIcons = true;
@@ -12296,6 +12296,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
 </ul>
 <li>You can choose the default color used to plot stages on the map.</li>
 <li>You can choose the default color used to display interest places on the map.</li>
+<li>You can choose to use simplified markers for the start and end points of the stages. This can be useful if you decide to print the map.</li>
 <li>When importing stages from GPX files, you can choose whether or not to apply the default stage color.</li>
 </ul>
 <p>A distance scale is included in the lower left corner.</p>
@@ -12462,6 +12463,7 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 </ul>
 <li>La couleur par défaut utilisée pour représenter les étapes sur la carte peut être choisie.</li>
 <li>La couleur par défaut utilisée pour représenter les lieux d'intérêt sur la carte peut être choisie.</li>
+<li>Vous pouvez choisir d'utiliser des marqueurs plus simples pour représenter les points de début et de fin des étapes, ce qui peut être utile si vous imprimez la carte.</li>
 <li>Lors de l'importation d'étapes de fichiers GPX, on peut choisir ou non de leur imposer la couleur par défaut des étapes.</li>
 </ul>
 <p>Une échelle des distances est incluse dans le coin du bas gauche.</p>

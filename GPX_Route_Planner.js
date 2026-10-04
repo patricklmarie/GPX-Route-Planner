@@ -1106,7 +1106,7 @@
 
         // Create global label
         const globalLabel = document.createElement('span');
-        globalLabel.textContent = context.language === 'EN' ? 'Edit interest places actions:' : 'Actions d\'édition de lieux d\'intérêt : ';
+        globalLabel.textContent = context.language === 'EN' ? 'Edit interest places actions' : 'Actions d\'édition de lieux d\'intérêt';
         globalLabel.style.fontSize = '14px';
         globalLabel.style.fontWeight = 'bold';
         titleContainer.appendChild(globalLabel);
@@ -1378,7 +1378,7 @@
 
         // Create global label
         const globalLabel = document.createElement('span');
-        globalLabel.textContent = context.language === 'EN' ? 'Edit stage actions:' : 'Actions d\'édition d\'étape : ';
+        globalLabel.textContent = context.language === 'EN' ? 'Edit stage actions' : 'Actions d\'édition d\'étape';
         globalLabel.style.fontSize = '14px';
         globalLabel.style.fontWeight = 'bold';
         titleContainer.appendChild(globalLabel);
@@ -1862,7 +1862,7 @@
 
         // Create global label
         const globalLabel = document.createElement('span');
-        globalLabel.textContent = context.language === 'EN' ? 'Global actions:' : 'Actions générales : ';
+        globalLabel.textContent = context.language === 'EN' ? 'Global actions' : 'Actions générales';
         globalLabel.style.fontSize = '14px';
         globalLabel.style.fontWeight = 'bold';
         globalLabel.style.whiteSpace = 'pre-line';
@@ -3458,7 +3458,7 @@
     function generateSidePanelContents() {
         sidePanel.innerHTML = `
             <h2>${context.language === 'EN' ? "Settings" : "Préférences" }</h2>
-            <h3>${context.language === 'EN' ? "Language:" : "Langue :" }</h3>
+            <h3>${context.language === 'EN' ? "Language" : "Langue" }</h3>
             <div>
             <input type="radio" id="english" name="language" value="EN" ${context.language === 'EN' ? "checked" : "" } />
             <label for="english">
@@ -3470,14 +3470,14 @@
                 <img src="https://flagcdn.com/fr.svg" width="24" height="18" />
             </label>
             </div>
-            <h3>${context.language === 'EN' ? "Measurement units:" : "Unités de mesure :" }</h3>
+            <h3>${context.language === 'EN' ? "Measurement units" : "Unités de mesure" }</h3>
             <div>
             <input type="radio" id="metric" name="units" value="EN" ${context.measurementUnits === 'ME' ? "checked" : "" } />
             <label for="metric">${context.language === 'EN' ? "Metric" : "Métriques" }</label>                  
             <input type="radio" id="imperial" name="units" value="FR" ${context.measurementUnits === 'IM' ? "checked" : "" }/>
             <label for="imperial">${context.language === 'EN' ? "Imperial" : "Impériales" }</label>
             </div>
-            <h3>${context.language === 'EN' ? "Information and tools displayed:" : "Informations et outils affichés :" }</h3>
+            <h3>${context.language === 'EN' ? "Information and tools displayed" : "Informations et outils affichés" }</h3>
             <div>
             <input type="checkbox" id="menu" name="menu" value="menu" ${context.menuDisplayed ? "checked" : "" } />
             <label for="menu">${context.language === 'EN' ? "Main menu" : "Menu principal" }</label>
@@ -3494,7 +3494,7 @@
             <input type="checkbox" id="stageNRouteProfile" name="stageNRouteProfile" value="stageNRouteProfile" ${context.stageNRouteProfileDisplayed ? "checked" : "" } />
             <label for="stageNRouteProfile">${context.language === 'EN' ? "Stage and route profile" : "Profil d'étape et d'itinéraire" }</label>                  
             </div>
-            <h3>${context.language === 'EN' ? "Default colors to be used:" : "Couleurs à utiliser par défaut :" }</h3>
+            <h3>${context.language === 'EN' ? "Default colors to be used" : "Couleurs à utiliser par défaut" }</h3>
             <div style="display: grid; grid-template-columns: auto auto; row-gap: 6px; column-gap: 12px; align-items: center; ">
             <label for="stageColor">${context.language === 'EN' ? "Stage color:" : "Couleur des étapes :" }</label>
             <select name="stageColor" id="stageColor">
@@ -3515,7 +3515,7 @@
             </div>
             <div>                
             <input type="checkbox" id="simplifiedIcons" name="simplifiedIcons" value="simplifiedIcons" ${context.simplifiedIcons ? "checked" : "" } />
-            <label for="simplifiedIcons">${context.language === 'EN' ? "Use simplified icons for stage start/end icons" : "Utiliser icones simplifiés pour début et fin d'étape" }</label>                  
+            <label for="simplifiedIcons">${context.language === 'EN' ? "Use simplified icons for stage start/end" : "Util. icones simplifiés pour début/fin étape" }</label>                  
             <br/>
             <input type="checkbox" id="forceColorAtImport" name="forceColorAtImport" value="forceColorAtImport" ${context.forceColorAtImport ? "checked" : "" } />
             <label for="forceColorAtImport">${context.language === 'EN' ? "Enforce default color at import" : "Imposer couleur par défaut à l'import" }</label>                  

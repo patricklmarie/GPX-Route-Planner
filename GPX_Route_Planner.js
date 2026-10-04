@@ -18,11 +18,11 @@
         },
         green: {
             light: '#00cc33',   // Departure points in edition mode
-            deep: '#008020'     // Departure point in non edition mode
+            deep: '#009933'     // Departure point in non edition mode
         },
         red: {
             light: '#ff0000',
-            deep:  '#b30000'
+            deep:  '#cc0000'
         },
         purple: {
             light: '#ff4dff',      // Departure/arrival points in edition mode
@@ -89,6 +89,7 @@
         routeProfileMapMarker: null,    // Marker added on map when hovering on a route profile curve
         routerProfile: null,            // Router profile
         settingsBtnActivated: null,     // Settings button must be activated only once
+        simplifiedIcons: false,         // Use simplified icons for stage start end end
         spannedCommand: false,          // Flag: commands spanned or not in the menu
         stageDefaultColor: null,        // Default color used to plot stages
         stageNRouteDataDisplayed: true, // 
@@ -3513,8 +3514,11 @@
             </select>
             </div>
             <div>                
+            <input type="checkbox" id="simplifiedIcons" name="simplifiedIcons" value="simplifiedIcons" ${context.simplifiedIcons ? "checked" : "" } />
+            <label for="simplifiedIcons">${context.language === 'EN' ? "Use simplified icons for stage start/end icons" : "Utiliser icones simplifiés pour début et fin d'étape" }</label>                  
+            <br/>
             <input type="checkbox" id="forceColorAtImport" name="forceColorAtImport" value="forceColorAtImport" ${context.forceColorAtImport ? "checked" : "" } />
-            <label for="forceColorAtImport">${context.language === 'EN' ? "Enforce default color at import" : "Imposer couleur par défaut à l'import." }</label>                  
+            <label for="forceColorAtImport">${context.language === 'EN' ? "Enforce default color at import" : "Imposer couleur par défaut à l'import" }</label>                  
             </div>
         `;
 
@@ -3530,6 +3534,7 @@
         document.getElementById("stageColor").addEventListener("change", (e) => changeStageDefaultColor(e.target.value));
         document.getElementById("intPlColor").addEventListener("change", (e) => changeIntPlDefaultColor(e.target.value));
         document.getElementById("forceColorAtImport").addEventListener("click", (e) => changeForceColorAtImport(e.target.checked));
+        document.getElementById("simplifiedIcons").addEventListener("click", (e) => changeUseSimplifiedIcons(e.target.checked));
 
         //-------------------------------------------------------------
         // Change language when requested from the settings side panel
@@ -3799,7 +3804,7 @@
                 interestPlaces[context.editedIntPl].color = color;
 
                 if (interestPlaces[context.editedIntPl].marker)
-                    interestPlaces[context.editedIntPl].marker.setIcon(getStarIcon(color, "light"));
+                    interestPlaces[context.editedIntPl].marker.setIcon(getInterestPlaceIcon(color, "light"));
             }
         }
 
@@ -3816,6 +3821,61 @@
 
                 setCookie("ForceColorAtImport", '0', 60);
             }
+        }
+
+        //----------------------------------------------
+        // Use simplified icons for stage start and end
+        //----------------------------------------------
+        function changeUseSimplifiedIcons(checked) {
+            if (checked) {
+                context.simplifiedIcons = true;
+
+                setCookie("UseSimplifiedIcons", '1', 60);
+            } else {
+                context.simplifiedIcons = false;
+
+                setCookie("UseSimplifiedIcons", '0', 60);
+            }
+
+            stages.forEach((stage, i) => {
+                let shade = 'deep';
+                if (i === context.editedStage)
+                    shade = 'light'; 
+
+                if (stage.points.length === 1) {
+                    const newMarker = L.marker(stage.points[0].marker.getLatLng(), {          // Create marker to represent the point on the map
+                        icon: getStageStartEndIcon('purple', stage.color, shade),
+                        pane: 'markerEditPane',
+                        draggable: true,
+                        autoPan: false,
+                        bubblingMouseEvents: true
+                    }).addTo(map);
+
+                    stage.points[0].marker.remove();
+                    stage.points[0].marker = newMarker;
+                } else if (stage.points.length > 1) {
+                    const newStartMarker = L.marker(stage.points[0].marker.getLatLng(), {          // Create marker to represent the point on the map
+                        icon: getStageStartIcon('green', stage.color, shade),
+                        pane: 'markerEditPane',
+                        draggable: true,
+                        autoPan: false,
+                        bubblingMouseEvents: true
+                    }).addTo(map);
+
+                    const newEndMarker = L.marker(stage.points[stage.points.length - 1].marker.getLatLng(), {          // Create marker to represent the point on the map
+                        icon: getStageEndIcon('red', stage.color, shade),
+                        pane: 'markerEditPane',
+                        draggable: true,
+                        autoPan: false,
+                        bubblingMouseEvents: true
+                    }).addTo(map);
+
+                    stage.points[0].marker.remove();
+                    stage.points[0].marker = newStartMarker;
+                    stage.points[stage.points.length - 1].marker.remove();
+                    stage.points[stage.points.length - 1].marker = newEndMarker;
+                }
+            });
         }
     }
 
@@ -4110,8 +4170,8 @@
                         section.polyline.setStyle({ color: colors.purple.deep })
                     );
                     stages[j].points.forEach((point, k) => {
-                        if (k === 0) point.marker.setIcon(getDiamondIcon('green', 'light'));
-                        else if (k === stages[j].points.length - 1) point.marker.setIcon(getSquareIcon('red', 'light'));
+                        if (k === 0) point.marker.setIcon(getStageStartIcon('green', stages[j].color, 'light'));
+                        else if (k === stages[j].points.length - 1) point.marker.setIcon(getStageEndIcon('red', stages[j].color, 'light'));
                         else point.marker.setIcon(getCircleIcon('purple', 'light'));
                     });
                 } else if (beforeDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km before the edited stage
@@ -4120,8 +4180,8 @@
                         section.polyline.setStyle({ color: colors.green.light }).setStyle({ dashArray: '9, 10' })
                     );
                     stages[j].points.forEach((point, k) => {
-                        if (k === 0) point.marker.setIcon(getDiamondIcon('green', 'light'));
-                        else if (k === stages[j].points.length - 1) point.marker.setIcon(getSquareIcon('green', 'light'));
+                        if (k === 0) point.marker.setIcon(getStageStartIcon('green', 'green', 'light'));
+                        else if (k === stages[j].points.length - 1) point.marker.setIcon(getStageEndIcon('green', 'green', 'light'));
                         else point.marker.setIcon(getCircleIcon('green', 'light'));
                     });
                 } else if (afterDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km after the edited stage
@@ -4130,8 +4190,8 @@
                         section.polyline.setStyle({ color: colors.red.light }).setStyle({ dashArray: '9, 10' })
                     );
                     stages[j].points.forEach((point, k) => {
-                        if (k === 0) point.marker.setIcon(getDiamondIcon('red', 'light'));
-                        else if (k === stages[j].points.length - 1) point.marker.setIcon(getSquareIcon('red', 'light'));
+                        if (k === 0) point.marker.setIcon(getStageStartIcon('red', 'red', 'light'));
+                        else if (k === stages[j].points.length - 1) point.marker.setIcon(getStageEndIcon('red', 'red', 'light'));
                         else point.marker.setIcon(getCircleIcon('red', 'light'));
                     });
                 }
@@ -4427,13 +4487,13 @@
                 })
                 stage.points.forEach((point, j) => {
                     if (j === 0 && stage.points.length === 1)
-                        point.marker.setIcon(getDoubleSquareIcon('purple', 'deep'));
+                        point.marker.setIcon(getStageStartEndIcon('purple', stage.color, 'deep'));
                     else if (j === 0)
-                        point.marker.setIcon(getDiamondIcon('green', 'deep'));
+                        point.marker.setIcon(getStageStartIcon('green', stage.color, 'deep'));
                     else if (j < stage.points.length - 1)
                         point.marker.setIcon(getTransparentIcon());
                     else
-                        point.marker.setIcon(getSquareIcon('red', 'deep'));
+                        point.marker.setIcon(getStageEndIcon('red', stage.color, 'deep'));
                 });
             });
         }
@@ -4445,11 +4505,6 @@
     function quitEditIntPl() {
         if (context.editedIntPl !== null) {
             const intPl = interestPlaces[context.editedIntPl];
-
-/*            if (intPl.marker === null)
-                interestPlaces.splice(context.editedIntPl, 1);  // Remove empty interest place
-    
-            context.editedIntPl = null;*/
         }
             
         setEnv4NonEdt();
@@ -4574,6 +4629,14 @@
             context.forceColorAtImport = false;
         else
             context.forceColorAtImport = true;
+
+        const simplifiedIcons = getCookie("UseSimplifiedIcons");
+        if (simplifiedIcons === '0')
+            context.simplifiedIcons = false;
+        else
+            context.simplifiedIcons = true;
+
+        simplifiedIcons
 
         const baseMap = getCookie("BaseMap");
         let found = false;
@@ -5827,7 +5890,7 @@
 
             // Change interest place layout
             const newMarker = L.marker(intPl.marker.getLatLng(), { 
-                icon: getStarIcon(intPl.color, 'light'), 
+                icon: getInterestPlaceIcon(intPl.color, 'light'), 
                 pane: 'markerEditPane', 
                 draggable: true, 
                 autoPan: false, 
@@ -6015,7 +6078,7 @@
 
         if (intPl.marker) {
             const newMarker = L.marker(intPl.marker.getLatLng(), { 
-                icon: getStarIcon(intPl.color, 'deep'), 
+                icon: getInterestPlaceIcon(intPl.color, 'deep'), 
                 pane: 'markerEditPane', 
                 draggable: false, 
                 autoPan: false, 
@@ -6710,9 +6773,9 @@
         const latlng = point.marker.getLatLng();
         let newMarker = null;
         if (stage.points.length === 1) {
-            if (point.marker.options.icon != getDoubleSquareIcon('purple', 'light')) {
+            if (point.marker.options.icon != getStageStartEndIcon('purple', stage.color, 'light')) {
                 newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                    icon: getDoubleSquareIcon('purple', 'light'),
+                    icon: getStageStartEndIcon('purple', stage.color, 'light'),
                     pane: 'markerEditPane',
                     draggable: true,
                     autoPan: false,
@@ -6720,9 +6783,9 @@
                 }).addTo(map);
             }
         } else if (j === 0) {
-            if (point.marker.options.icon != getDiamondIcon('green', 'light')) {
+            if (point.marker.options.icon != getStageStartIcon('green', stage.color, 'light')) {
                 newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                    icon: getDiamondIcon('green', 'light'),
+                    icon: getStageStartIcon('green', stage.color, 'light'),
                     pane: 'markerEditPane',
                     draggable: true,
                     autoPan: false,
@@ -6740,9 +6803,9 @@
                 }).addTo(map);
             }
         } else {
-            if (point.marker.options.icon != getSquareIcon('red', 'light')) {
+            if (point.marker.options.icon != getStageEndIcon('red', stage.color, 'light')) {
                 newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                    icon: getSquareIcon('red', 'light'),
+                    icon: getStageEndIcon('red', stage.color, 'light'),
                     pane: 'markerEditPane',
                     draggable: true,
                     autoPan: false,
@@ -7797,9 +7860,9 @@
                 const latlng = point.marker.getLatLng();
                 let newMarker = null;
                 if (stage.points.length === 1) {
-                    if (point.marker.options.icon != getDoubleSquareIcon('purple', 'deep')) {
+                    if (point.marker.options.icon != getStageStartEndIcon('purple', stage.color, 'deep')) {
                         newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                            icon: getDoubleSquareIcon('purple', 'deep'),
+                            icon: getStageStartEndIcon('purple', stage.color, 'deep'),
                             pane: 'markerNEPane',
                             draggable: false,
                             autoPan: false,
@@ -7807,9 +7870,9 @@
                         }).addTo(map);
                     }
                 } else if (j === 0) { 
-                    if (point.marker.options.icon != getDiamondIcon('green', 'deep')) {
+                    if (point.marker.options.icon != getStageStartIcon('green', stage.color, 'deep')) {
                         newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                            icon: getDiamondIcon('green', 'deep'),
+                            icon: getStageStartIcon('green', stage.color, 'deep'),
                             pane: 'markerNEPane',
                             draggable: false,
                             autoPan: false,
@@ -7827,9 +7890,9 @@
                         }).addTo(map);
                     }
                 } else {
-                    if (point.marker.options.icon != getSquareIcon('red', 'deep')) {
+                    if (point.marker.options.icon != getStageEndIcon('red', stage.color, 'deep')) {
                         newMarker = L.marker(point.marker.getLatLng(), {          // Create marker to represent the point on the map
-                            icon: getSquareIcon('red', 'deep'),
+                            icon: getStageEndIcon('red', stage.color, 'deep'),
                             pane: 'markerNEPane',
                             draggable: false,
                             autoPan: false,
@@ -8096,7 +8159,7 @@
 
             intPl.color = this.before.color;
 
-            intPl.marker.setIcon(getStarIcon(this.before.color, "light"));
+            intPl.marker.setIcon(getInterestPlaceIcon(this.before.color, "light"));
         }
 
         redo() {
@@ -8111,7 +8174,7 @@
 
             intPl.color = this.after.color;
 
-            intPl.marker.setIcon(getStarIcon(this.after.color, "light"));
+            intPl.marker.setIcon(getInterestPlaceIcon(this.after.color, "light"));
         }
     }
 
@@ -8273,9 +8336,9 @@
 
             // Adjust layout of previous point 
             if (stage.points.length > 1) {
-                stage.points[stage.points.length - 1].marker.setIcon(getSquareIcon('red', 'light'));
+                stage.points[stage.points.length - 1].marker.setIcon(getStageEndIcon('red', stage.color, 'light'));
             } else if (stage.points.length > 0) {
-                stage.points[stage.points.length - 1].marker.setIcon(getDoubleSquareIcon('purple', 'light'));
+                stage.points[stage.points.length - 1].marker.setIcon(getStageStartEndIcon('purple', stage.color, 'light'));
             }
                 
             // Remove section
@@ -8365,12 +8428,12 @@
             if (stage.points.length > 1) {
                 stage.points[stage.points.length - 1].marker.setIcon(getCircleIcon(stage.color, 'light'));
             } else if (stage.points.length > 0) {
-                stage.points[stage.points.length - 1].marker.setIcon(getDiamondIcon('green', 'light'));
+                stage.points[stage.points.length - 1].marker.setIcon(getStageStartIcon('green', stage.color, 'light'));
             }
                 
             // Create and record point
             const newMarker = L.marker(this.after.nextPoint, { 
-                icon: getSquareIcon('red', 'light'), 
+                icon: getStageEndIcon('red', stage.color, 'light'), 
                 pane: 'markerEditPane', 
                 draggable: true, 
                 autoPan: false, 
@@ -8448,7 +8511,7 @@
 
             // Create and record point
             const newMarker = L.marker(this.after.point, { 
-                icon: getStarIcon(context.intPlDefaultColor, 'light'), 
+                icon: getInterestPlaceIcon(context.intPlDefaultColor, 'light'), 
                 pane: 'markerEditPane', 
                 draggable: true, 
                 autoPan: false, 
@@ -8702,7 +8765,7 @@
                 stage.sections.splice(this.before.beforeStageSectNb, 1);
             } else {
                 const newMarker = L.marker(stage.points[this.before.beforeStageSectNb].marker.getLatLng(), {
-                    icon: getDiamondIcon('green', 'light'),
+                    icon: getStageStartIcon('green', stage.color, 'light'),
                     pane: 'markerEditPane',
                     draggable: true,
                     autoPan: false,
@@ -9223,14 +9286,14 @@
             
             if (this.before.section != null) {
                 // Update first point layout
-                stage.points[0].marker.setIcon(getDiamondIcon('green', 'light'));
+                stage.points[0].marker.setIcon(getStageStartIcon('green', stage.color, 'light'));
                 // Update next point layout
                 if (stage.points.length > 2)
                     stage.points[1].marker.setIcon(getCircleIcon(stage.color, 'light'));
                 else
-                    stage.points[1].marker.setIcon(getSquareIcon('red', 'light'));
+                    stage.points[1].marker.setIcon(getStageEndIcon('red', stage.color, 'light'));
             } else 
-                    stage.points[0].marker.setIcon(getDoubleSquareIcon('purple', 'light'));
+                    stage.points[0].marker.setIcon(getStageStartEndIcon('purple', stage.color, 'light'));
 
             stage.distance = calculateStageDistance(stage);   // Update stage distance
 
@@ -9296,9 +9359,9 @@
             if (this.before.section != null) {
                 // Update following point layout
                 if (stage.points.length > 1)
-                    stage.points[0].marker.setIcon(getSquareIcon('red', 'light'));
+                    stage.points[0].marker.setIcon(getStageEndIcon('red', stage.color, 'light'));
                 else
-                    stage.points[0].marker.setIcon(getDoubleSquareIcon('purple', 'light'));
+                    stage.points[0].marker.setIcon(getStageStartEndIcon('purple', stage.color, 'light'));
 
                 stage.distance = calculateStageDistance(stage);   // Update stage distance
 
@@ -9377,14 +9440,14 @@
             
             if (this.before.section != null) {
                 // Update last point layout
-                stage.points[stage.points.length - 1].marker.setIcon(getSquareIcon('red', 'light'));
+                stage.points[stage.points.length - 1].marker.setIcon(getStageEndIcon('red', stage.color, 'light'));
                 // Update preceding point layout
                 if (stage.points.length > 2)
                     stage.points[stage.points.length - 2].marker.setIcon(getCircleIcon(stage.color, 'light'));
                 else
-                    stage.points[stage.points.length - 2].marker.setIcon(getDiamondIcon('green', 'light'));
+                    stage.points[stage.points.length - 2].marker.setIcon(getStageStartIcon('green', stage.color, 'light'));
             } else 
-                    stage.points[stage.points.length - 1].marker.setIcon(getDoubleSquareIcon('purple', 'light'));
+                    stage.points[stage.points.length - 1].marker.setIcon(getStageStartEndIcon('purple', stage.color, 'light'));
 
             stage.distance = calculateStageDistance(stage);   // Update stage distance
 
@@ -9450,9 +9513,9 @@
             if (this.before.section != null) {
                 // Update preceding point layout
                 if (stage.points.length > 1)
-                    stage.points[stage.points.length - 1].marker.setIcon(getSquareIcon('red', 'light'));
+                    stage.points[stage.points.length - 1].marker.setIcon(getStageEndIcon('red', stage.color, 'light'));
                 else
-                    stage.points[stage.points.length - 1].marker.setIcon(getDoubleSquareIcon('purple', 'light'));
+                    stage.points[stage.points.length - 1].marker.setIcon(getStageStartEndIcon('purple', stage.color, 'light'));
 
                 stage.distance = calculateStageDistance(stage);   // Update stage distance
 
@@ -9653,13 +9716,13 @@
                 if (stage.points.length > 2) {
                     stage.points[1].marker.setIcon(getCircleIcon(stage.color, 'light'));
                 } else if (stage.points.length === 2) {
-                    stage.points[1].marker.setIcon(getSquareIcon('red', 'light'));
+                    stage.points[1].marker.setIcon(getStageEndIcon('red', stage.color, 'light'));
                 }
             } else if (this.pointIdx === stage.points.length - 1) {
                 if (stage.points.length > 2) {
                     stage.points[stage.points.length - 2].marker.setIcon(getCircleIcon(stage.color, 'light'));
                 } else if (stage.points.length === 2) {
-                    stage.points[stage.points.length - 2].marker.setIcon(getDiamondIcon('green', 'light'));
+                    stage.points[stage.points.length - 2].marker.setIcon(getStageStartIcon('green', stage.color, 'light'));
                 }
             }
                 
@@ -9776,11 +9839,11 @@
 
             // Adjust layout of previous and next points 
             if (this.before.prevSection === null && stage.points.length > 1) {
-                stage.points[0].marker.setIcon(getDiamondIcon('green', 'light'));
+                stage.points[0].marker.setIcon(getStageStartIcon('green', stage.color, 'light'));
             } else if (this.before.nextSection === null && stage.points.length > 1) {
-                stage.points[stage.points.length - 1].marker.setIcon(getSquareIcon('red', 'light'));
+                stage.points[stage.points.length - 1].marker.setIcon(getStageEndIcon('red', stage.color, 'light'));
             } else if (stage.points.length === 1) {
-                stage.points[stage.points.length - 1].marker.setIcon(getDoubleSquareIcon('purple', 'light'));
+                stage.points[stage.points.length - 1].marker.setIcon(getStageStartEndIcon('purple', stage.color, 'light'));
             }
                 
             // Remove preceding and following sections and replace them with a single section
@@ -9852,7 +9915,7 @@
         undo() {
             // Create marker to represent the interest place on the map
             const newMarker = L.marker(this.before.point, { 
-                icon: getStarIcon(this.before.color, 'light'), 
+                icon: getInterestPlaceIcon(this.before.color, 'light'), 
                 pane: 'markerEditPane', 
                 draggable: true, 
                 autoPan: false, 
@@ -10451,7 +10514,7 @@
                 const intPl = interestPlaces[i];
 
                 const newMarker = L.marker(intPl.latlng, {
-                    icon: getStarIconicon(intPl.color, 'deep'),
+                    icon: getInterestPlaceIconicon(intPl.color, 'deep'),
                     pane: 'markerEditPane',
                     draggable: false,
                     autoPan: false,
@@ -10518,7 +10581,7 @@
             interestPlaces.forEach((intPl, i) => {
                 // Restore marker
                 const newMarker = L.marker(intPl.latlng, {
-                    icon: getStarIcon(intPl.color, 'light'),
+                    icon: getInterestPlaceIcon(intPl.color, 'light'),
                     pane: 'markerEditPane',
                     draggable: true,
                     autoPan: false,
@@ -11420,70 +11483,103 @@
     //---------------------------------------
     // Get diamond icon of a specified color
     //---------------------------------------
-    function getDiamondIcon(color, shade) {
-        return L.divIcon({
-            className: '',
-            html: `<div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 10px;
-                height: 10px;
-                background: transparent;
-                border: 3px solid ${colors[color][shade]};
-                transform: translate(-50%, -50%) rotate(45deg);
-            "></div>`,
-            iconSize: [18, 18],
-            iconAnchor: [9, 9]
-        });
-    }
+    function getStageStartIcon(color, simplifiedIconsColor, shade) {
+        if (!context.simplifiedIcons)
+            return L.divIcon({
+                className: '',
+                html: `<div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 10px;
+                    height: 10px;
+                    background: transparent;
+                    border: 3px solid ${colors[color][shade]};
+                    transform: translate(-50%, -50%) rotate(45deg);
+                "></div>`,
+                iconSize: [18, 18],
+                iconAnchor: [9, 9]
+            });
+        else
+            return getSimplifiedIcon(simplifiedIconsColor, shade)
+}
     
     //---------------------------------------------
     // Get double square icon of a specified color
     //---------------------------------------------
-    function getDoubleSquareIcon(color, shade) {
-        return L.divIcon({
-            className: '',
-            html: `
-                <div style="
-                    position: relative;
-                    width: 13px;
-                    height: 13px;
-                ">
-                    <!-- Base square -->
+    function getStageStartEndIcon(color, simplifiedIconsColor, shade) {
+        if (!context.simplifiedIcons)
+            return L.divIcon({
+                className: '',
+                html: `
                     <div style="
-                        position: absolute;
-                        top: 50%;
-                        left: 50%;
-                        width: 10px;
-                        height: 10px;
-                        background: transparent;
-                        border: 3px solid ${colors[color][shade]};
-                        transform: translate(-50%, -50%);
-                    "></div>
+                        position: relative;
+                        width: 13px;
+                        height: 13px;
+                    ">
+                        <!-- Base square -->
+                        <div style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: 10px;
+                            height: 10px;
+                            background: transparent;
+                            border: 3px solid ${colors[color][shade]};
+                            transform: translate(-50%, -50%);
+                        "></div>
 
-                    <!-- Rotated square -->
-                    <div style="
-                        position: absolute;
-                        top: 50%;
-                        left: 50%;
-                        width: 10px;
-                        height: 10px;
-                        background: transparent;
-                        border: 3px solid ${colors[color][shade]};
-                        transform: translate(-50%, -50%) rotate(45deg);
-                    "></div>
-                </div>
-            `,
-            iconSize: [13, 13],
-            iconAnchor: [6, 6]
-        });
+                        <!-- Rotated square -->
+                        <div style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: 10px;
+                            height: 10px;
+                            background: transparent;
+                            border: 3px solid ${colors[color][shade]};
+                            transform: translate(-50%, -50%) rotate(45deg);
+                        "></div>
+                    </div>
+                `,
+                iconSize: [13, 13],
+                iconAnchor: [6, 6]
+            });
+        else
+            return getSimplifiedIcon(simplifiedIconsColor, shade)
     }
     
     //------------------------------------
     // Get star icon of a specified color
     //------------------------------------
-    function getStarIcon(color, shade) {
+    function getSimplifiedIcon(color, shade) {
+        return L.divIcon({
+            className: '',
+            html: `<div style="
+                position: relative;
+                width: 7px;
+                height: 7px;
+            ">
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 6px;
+                    height: 6px;
+                    background: ${colors[color][shade]};
+                    border: 3px solid ${colors[color][shade]};
+                    transform: translate(-50%, -50%);
+                "></div>
+            </div>`,
+            iconSize: [7, 7],
+            iconAnchor: [3, 3]
+        });
+    }
+
+    //------------------------------------
+    // Get star icon of a specified color
+    //------------------------------------
+    function getInterestPlaceIcon(color, shade) {
         return L.divIcon({
             className: '',
             html: `
@@ -11516,28 +11612,31 @@
     //--------------------------------------
     // Get square icon of a specified color
     //--------------------------------------
-    function getSquareIcon(color, shade) {
-        return L.divIcon({
-            className: '',
-            html: `<div style="
-                position: relative;
-                width: 13px;
-                height: 13px;
-            ">
-                <div style="
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 10px;
-                    height: 10px;
-                    background: transparent;
-                    border: 3px solid ${colors[color][shade]};
-                    transform: translate(-50%, -50%);
-                "></div>
-            </div>`,
-            iconSize: [13, 13],
-            iconAnchor: [6, 6]
-        });
+    function getStageEndIcon(color, simplifiedIconsColor, shade) {
+        if (!context.simplifiedIcons)
+            return L.divIcon({
+                className: '',
+                html: `<div style="
+                    position: relative;
+                    width: 13px;
+                    height: 13px;
+                ">
+                    <div style="
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 10px;
+                        height: 10px;
+                        background: transparent;
+                        border: 3px solid ${colors[color][shade]};
+                        transform: translate(-50%, -50%);
+                    "></div>
+                </div>`,
+                iconSize: [13, 13],
+                iconAnchor: [6, 6]
+            });
+        else
+            return getSimplifiedIcon(simplifiedIconsColor, shade)
     }
 
     function getTransparentIcon() {

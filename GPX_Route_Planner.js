@@ -29,8 +29,8 @@
             deep: '#cc00cc'  // Departure/arrival points in non edition mode
         },
         brown: {
-            light: '#b3774d',   // Light brown, warm and visible (edition mode)
-            deep:  '#804000'    // Deep brown, strong and dark (non‑edition mode)
+            light: '#c28557',   // Light brown, warmer and brighter
+            deep:  '#8c4a19'    // Deep brown, slightly lighter but still strong
         }
     }
 
@@ -11709,7 +11709,7 @@
     //---------------------------------------------------------------------------------
     // Improve the geometry of a section returned by BRouter by decimating the points
     //---------------------------------------------------------------------------------
-    function improvePolyGeom(latlngs) {
+    /*function improvePolyGeom(latlngs) {
         // Project the points on the map (to make the improvement independent of the map's zoom level)
         const projected = latlngs.map(ll => {
             const p = map.options.crs.project(ll);
@@ -11732,7 +11732,7 @@
 
         // Insert points by interpolation if some are too distant
         let improvedLatLngs2 = [];
-        for (let i = 0; i < improvedLatLngs.length - 2; i++) {
+        for (let i = 0; i < improvedLatLngs.length - 1; i++) {
             improvedLatLngs2.push(improvedLatLngs[i]);
             const nb = compareFlatDistance(improvedLatLngs[i], improvedLatLngs[i + 1], 500);
             if (nb > 0) {
@@ -11773,6 +11773,133 @@
             }
 
             return bestAlt;
+        }
+
+        //--------------------------------------------------------------------------------------------------
+        // Compare flat-earth distance between two nearby geographic points to a maximal accepted threshold
+        //--------------------------------------------------------------------------------------------------
+        function compareFlatDistance(latlng1, latlng2, threshold) {
+            const R = 6378137;                     // Earth radius (meters)
+            const rad = 0.017453292519943295;      // PI/180
+
+            // Convert degrees → radians
+            const lat1 = latlng1.lat * rad;
+            const lat2 = latlng2.lat * rad;
+            const lng1 = latlng1.lng * rad;
+            const lng2 = latlng2.lng * rad;
+
+            // Differences in radians
+            const dLat = lat2 - lat1;
+            const dLng = lng2 - lng1;
+
+            // Tangent-plane projection (meters)
+            const dy = R * dLat;
+            const dx = R * Math.cos((lat1 + lat2) * 0.5) * dLng;
+
+            // Euclidean distance (meters)
+            const ed = Math.hypot(dx, dy);
+
+            if (ed <= threshold) 
+                return 0;
+            else
+                return Math.floor(ed / threshold);  // integer quotient
+        }
+    }*/
+
+    function improvePolyGeom(latlngs) {
+        // Project points
+        const projected = latlngs.map(ll => {
+            const p = map.options.crs.project(ll);
+            p.alt = ll.alt;
+            return p;
+        });
+
+        // Simplify
+        const simplified = L.LineUtil.simplify(projected, 5);
+
+        // Unproject
+        const simplifiedLatLngs = simplified.map(p => {
+            const ll = map.options.crs.unproject(p);
+            return L.latLng(ll.lat, ll.lng, p.alt);
+        });
+
+        // Correct altitude interpolation
+        simplifiedLatLngs.forEach(ll => {
+            ll.alt = interpolateAltitude(ll, latlngs);
+        });
+
+        // Insert intermediate points
+        let result = [];
+        for (let i = 0; i < simplifiedLatLngs.length - 1; i++) {
+            const a = simplifiedLatLngs[i];
+            const b = simplifiedLatLngs[i + 1];
+
+            result.push(a);
+
+            const dist = compareFlatDistance(a, b, 500);
+            if (dist > 0) {
+                for (let j = 1; j <= dist; j++) {
+                    const t = j / (dist + 1);
+                    const lat = a.lat + t * (b.lat - a.lat);
+                    const lng = a.lng + t * (b.lng - a.lng);
+                    const alt = a.alt + t * (b.alt - a.alt);
+                    result.push(L.latLng(lat, lng, alt));
+                }
+            }
+        }
+
+        result.push(simplifiedLatLngs[simplifiedLatLngs.length - 1]);
+
+        return result;
+
+        // Proper altitude interpolation
+        function interpolateAltitude(latlng, original) {
+            let bestAlt = original[0].alt;
+            let bestDist = Infinity;
+
+            // Project the simplified point
+            const P = map.options.crs.project(latlng);
+
+            for (let i = 0; i < original.length - 1; i++) {
+                const A = map.options.crs.project(original[i]);
+                const B = map.options.crs.project(original[i + 1]);
+
+                // Compute projection factor t in projected space
+                const dx = B.x - A.x;
+                const dy = B.y - A.y;
+
+                const t = ((P.x - A.x) * dx + (P.y - A.y) * dy) / (dx * dx + dy * dy);
+                const tt = Math.max(0, Math.min(1, t));
+
+                // Compute projected point on segment
+                const projX = A.x + tt * dx;
+                const projY = A.y + tt * dy;
+
+                // Distance in meters
+                const d = Math.hypot(P.x - projX, P.y - projY);
+
+                if (d < bestDist) {
+                    bestDist = d;
+
+                    // Interpolate altitude
+                    bestAlt = original[i].alt + tt * (original[i + 1].alt - original[i].alt);
+                }
+            }
+
+            return bestAlt;
+        }
+
+        function projectPointOnSegment(p, a, b) {
+            const ax = a.lng, ay = a.lat;
+            const bx = b.lng, by = b.lat;
+            const px = p.lng, py = p.lat;
+
+            const dx = bx - ax;
+            const dy = by - ay;
+
+            const t = ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy);
+    
+            return Math.max(0, Math.min(1, t));
         }
 
         //--------------------------------------------------------------------------------------------------

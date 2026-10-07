@@ -6942,9 +6942,11 @@
                     execute(new DoubleClickPoint2RemoveIt(stageRef, iRef, jRef, beforeState, afterState));
                 }
 
-                enableStagePointsDragging(stageRef);
+                if (context.editedStage !== null) {
+                    enableStagePointsDragging(stageRef);
 
-                map.getContainer().style.cursor = 'crosshair';            
+                    map.getContainer().style.cursor = 'crosshair';
+                }
 
                 context.operationInProcess = false;
             };

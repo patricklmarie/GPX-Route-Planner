@@ -3840,40 +3840,14 @@
             stages.forEach((stage, i) => {
                 let shade = 'deep';
                 if (i === context.editedStage)
-                    shade = 'light'; 
+                    shade = 'light';
 
-                if (stage.points.length === 1) {
-                    const newMarker = L.marker(stage.points[0].marker.getLatLng(), {          // Create marker to represent the point on the map
-                        icon: getStageStartEndIcon('purple', stage.color, shade),
-                        pane: 'markerEditPane',
-                        draggable: true,
-                        autoPan: false,
-                        bubblingMouseEvents: true
-                    }).addTo(map);
+                if (stage.points.length === 1)
+                    stage.points[0].marker.setIcon(getStageStartEndIcon('purple', stage.color, shade));
+                else if (stage.points.length > 1) {
+                    stage.points[0].marker.setIcon(getStageStartIcon('green', stage.color, shade));
 
-                    stage.points[0].marker.remove();
-                    stage.points[0].marker = newMarker;
-                } else if (stage.points.length > 1) {
-                    const newStartMarker = L.marker(stage.points[0].marker.getLatLng(), {          // Create marker to represent the point on the map
-                        icon: getStageStartIcon('green', stage.color, shade),
-                        pane: 'markerEditPane',
-                        draggable: true,
-                        autoPan: false,
-                        bubblingMouseEvents: true
-                    }).addTo(map);
-
-                    const newEndMarker = L.marker(stage.points[stage.points.length - 1].marker.getLatLng(), {          // Create marker to represent the point on the map
-                        icon: getStageEndIcon('red', stage.color, shade),
-                        pane: 'markerEditPane',
-                        draggable: true,
-                        autoPan: false,
-                        bubblingMouseEvents: true
-                    }).addTo(map);
-
-                    stage.points[0].marker.remove();
-                    stage.points[0].marker = newStartMarker;
-                    stage.points[stage.points.length - 1].marker.remove();
-                    stage.points[stage.points.length - 1].marker = newEndMarker;
+                    stage.points[stage.points.length - 1].marker.setIcon(getStageEndIcon('red', stage.color, shade));
                 }
             });
         }

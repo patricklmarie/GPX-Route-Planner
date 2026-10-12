@@ -61,26 +61,29 @@
     
     // Context variables
     let context = {
+        altPop: null,                   // Altitude popup
         baseMap: null,                  // Base map style
         clickTimeout: null,             // Timeout used to distinguish simple clicks from double clicks
-        editedIntPl: null,                 // Currently edited interest place
+        cursorIsOutsideDocument: false,
+        editedIntPl: null,              // Currently edited interest place
         editedStage: null,              // Currently edited stage
         exactMarker: null,              // Used to mark exact coordinates entered after coordinates search
         foundMarker: null,              // Used to mark nearest OSM known object after location search
         foundPolygon: null,             // Used to highlight area around nearest OSM known object after location search
-        initializationInProcess: true,  // Initialization in process
-        intPlDefaultColor: null,        // Default color used to plot interest places
         geolocationDisplayed: true,     // 
         geolocControl: null,            // Control hosting the geolocation function
         globalInfoControl: null,        // Control hosting the global information about the route
+        initializationInProcess: true,  // Initialization in process
+        intPlDefaultColor: null,        // Default color used to plot interest places
         language: 'EN',                 // Language to be used for the UI (English or French)
         locationFinderDisplayed: true,  // 
         locFinderControl: null,         // Control hosting the location finder function
         measurementUnits: 'ME',         // Measurement units to work with (by default, metric units)
         menuControl: null,              // Control hosting the menu: option selectors and list of commands
         menuDisplayed: true,            // 
+        mouseCoordinates: null,         // Current mouse coordinates on the map
         mouseCoordControl: null,        // Control hosting latitude and longitude of the mouse cursor on the map
-        mouseOutTimeout: null,
+        mouseEvent: null,               // Last mouse event
         operationInProcess: false,      // Flag: operation such as save, load or set name in process
         routeProfileChart: null,        // Route profile diagram
         routeProfileChartPoints: null,
@@ -480,6 +483,10 @@
                     <td>Edit the interest place</td>
                 </tr>
                 <tr>
+                    <td><strong>h</strong></td>
+                    <td>Display the altitude of the point where the mouse cursor is located</td>
+                </tr>
+                <tr>
                     <td><strong>Ctrl + i</strong></td>
                     <td>Import a route from a GPX file</td>
                 </tr>
@@ -504,7 +511,7 @@
                     <td>Reset the route</td>
                 </tr>
                 <tr>
-                    <td><strong>Ctrl + h</strong> or <strong>h</strong></td>
+                    <td><strong>Ctrl + h</strong></td>
                     <td>Help</td>
                 </tr>
             </table>
@@ -563,6 +570,10 @@
                     <td>Modifier le lieu d'intérêt</td>
                 </tr>
                 <tr>
+                    <td><strong>h</strong></td>
+                    <td>Afficher l'altitude du point où se trouve le curseur de la souris</td>
+                </tr>
+                <tr>
                     <td><strong>Ctrl + i</strong></td>
                     <td>Importer un itinéraire d'un fichier GPX</td>
                 </tr>
@@ -587,7 +598,7 @@
                     <td>Réinitialiser l'itinéraire</td>
                 </tr>
                 <tr>
-                    <td><strong>h</strong></td>
+                    <td><strong>Ctrl + h</strong></td>
                     <td>Aide</td>
                 </tr>
             </table>
@@ -742,6 +753,10 @@
                     <td>Edit the interest place</td>
                 </tr>
                 <tr>
+                    <td><strong>h</strong></td>
+                    <td>Display the altitude of the point where the mouse cursor is located</td>
+                </tr>
+                <tr>
                     <td><strong>Ctrl + i</strong></td>
                     <td>Import a route from a GPX file</td>
                 </tr>
@@ -766,7 +781,7 @@
                     <td>Reset the route</td>
                 </tr>
                 <tr>
-                    <td><strong>Ctrl + h</strong> or <strong>h</strong></td>
+                    <td><strong>Ctrl + h</strong></td>
                     <td>Help</td>
                 </tr>
             </table>
@@ -850,6 +865,10 @@
                     <td>Modifier le lieu d'intérêt</td>
                 </tr>
                 <tr>
+                    <td><strong>h</strong></td>
+                    <td>Afficher l'altitude du point où se trouve le curseur de la souris</td>
+                </tr>
+                <tr>
                     <td><strong>Ctrl + i</strong></td>
                     <td>Importer un itinéraire d'un fichier GPX</td>
                 </tr>
@@ -874,7 +893,7 @@
                     <td>Réinitialiser l'itinéraire</td>
                 </tr>
                 <tr>
-                    <td><strong>h</strong></td>
+                    <td><strong>Ctrl + h</strong></td>
                     <td>Aide</td>
                 </tr>
             </table>
@@ -969,6 +988,10 @@
                     <td>Edit the interest place</td>
                 </tr>
                 <tr>
+                    <td><strong>h</strong></td>
+                    <td>Display the altitude of the point where the mouse cursor is located</td>
+                </tr>
+                <tr>
                     <td><strong>Ctrl + i</strong></td>
                     <td>Import a route from a GPX file</td>
                 </tr>
@@ -993,7 +1016,7 @@
                     <td>Reset the current route</td>
                 </tr>
                 <tr>
-                    <td><strong>Ctrl + h</strong> or <strong>h</strong></td>
+                    <td><strong>Ctrl + h</strong></td>
                     <td>Help</td>
                 </tr>
             </table>
@@ -1015,6 +1038,10 @@
                 <tr>
                     <td><strong>Double cliquer sur un<br>lieu d'intérêt</strong></td>
                     <td>Modifier le lieu d'intérêt</td>
+                </tr>
+                <tr>
+                    <td><strong>h</strong></td>
+                    <td>Afficher l'altitude du point où se trouve le curseur de la souris</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + i</strong></td>
@@ -1041,7 +1068,7 @@
                     <td>Réinitialiser l'itinéraire<br>en cours</td>
                 </tr>
                 <tr>
-                    <td><strong>h</strong></td>
+                    <td><strong>Ctrl + h</strong></td>
                     <td>Aide</td>
                 </tr>
             </table>
@@ -2618,6 +2645,9 @@
         if (!e.target || !e.target.closest)
             return;
 
+        context.mouseCoordinates = latlng;
+        context.mouseEvent = e;
+
         if (context.mouseCoordControl) {
             context.mouseCoordControl.remove();
             context.mouseCoordControl = null;
@@ -2636,12 +2666,12 @@
         // Do not display coordinates if mouse pointer is not on map, polyline or marker
         if (!overMap || overControl || overPopup || overSidePanel) {
             if (context.mouseCoordControl) {
+                context.mouseCoordinates = null;
                 context.mouseCoordControl.remove();
                 context.mouseCoordControl = null;
             }
             return;
         }
-
         const lat = latlng.lat;
         const lng = latlng.lng;
 
@@ -4342,6 +4372,14 @@
                     }
                     calculatedPoints = improvePolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
 
+                    // Check whether altitude was found for first point and find it if necessary
+                    if (!calculatedPoints[0].alt || calculatedPoints[0].alt == null)
+                        calculatedPoints[0] = await fetchOpenMeteoElevation(calculatedPoints[0]);
+
+                    // Check whether altitude was found for last point and find it if necessary
+                    if (!calculatedPoints[calculatedPoints.length -1].alt || calculatedPoints[calculatedPoints.length -1].alt == null)
+                        calculatedPoints[calculatedPoints.length -1] = await fetchOpenMeteoElevation(calculatedPoints[calculatedPoints.length -1]);
+
                     const beforeState = { beforeStage: stageRef, beforeStageIdx: iRef, beforeStageSectNb: stageRef.sections.length, beforePointLatlng: lastPt, 
                         afterPointLatlng: firstPt };
                     const afterState = { beforePointLatlng: calculatedPoints[0], afterPointLatlng: calculatedPoints[calculatedPoints.length - 1], 
@@ -4412,6 +4450,14 @@
                     }
                     calculatedPoints = improvePolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
 
+                    // Check whether altitude was found for first point and find it if necessary
+                    if (!calculatedPoints[0].alt || calculatedPoints[0].alt == null)
+                        calculatedPoints[0] = await fetchOpenMeteoElevation(calculatedPoints[0]);
+
+                    // Check whether altitude was found for last point and find it if necessary
+                    if (!calculatedPoints[calculatedPoints.length -1].alt || calculatedPoints[calculatedPoints.length -1].alt == null)
+                        calculatedPoints[calculatedPoints.length -1] = await fetchOpenMeteoElevation(calculatedPoints[calculatedPoints.length -1]);
+
                     const beforeState = { afterStage: stageRef, afterStageIdx: iRef, afterStageSectNb: stageRef.sections.length, beforePointLatlng: lastPt, 
                         afterPointLatlng: firstPt };
                     const afterState = { beforePointLatlng: calculatedPoints[0], afterPointLatlng: calculatedPoints[calculatedPoints.length - 1], 
@@ -4471,6 +4517,76 @@
                 });
             });
         }
+    }
+
+    //----------------------------------------------
+    // Query and display altitude at mouse position 
+    //----------------------------------------------
+    async function queryAltitude() {
+        if (context.operationInProcess) 
+            return;   // Ignore if another operation is in process
+
+        if (context.altPop && context.altPop !== null)
+            context.altPop.remove();
+
+        if (context.mouseCoordinates === null)
+            return;
+
+        if (context.cursorIsOutsideDocument)
+            return;
+
+        const overMap = map.getContainer().contains(context.mouseEvent.target);  // Pointer is on map OR on any map layer
+     
+        const overControl =                                     // Pointer is on control (zoom, geoloc, menu, etc.)
+            context.mouseEvent.target.closest('.leaflet-control') ||
+            context.mouseEvent.target.closest('.leaflet-control-row');
+
+        const overPopup = context.mouseEvent.target.closest('.leaflet-popup');   // Pointer is on popup
+
+        const overSidePanel = context.mouseEvent.target.closest('#sidePanel');
+
+        // Do not display coordinates if mouse pointer is not on map, polyline or marker
+        if (!overMap || overControl || overPopup || overSidePanel) {
+            if (context.mouseCoordControl) {
+                context.mouseCoordinates = null;
+                context.mouseCoordControl.remove();
+                context.mouseCoordControl = null;
+            }
+            return;
+        }
+
+        const oldCursor = map.getContainer().style.cursor;                
+        map.getContainer().style.cursor = 'progress';
+
+        const latlng = await fetchOpenMeteoElevation(context.mouseCoordinates);
+
+        // Create popup with stage information content
+        context.altPop = L.popup(
+            { closeOnClick: false, autoClose: false, autoPan: false, className: 'solid-popup' })
+            .setLatLng(latlng)
+            .setContent(`
+                <div style="text-align:left; font-size:12px; line-height:12px;">
+                    <b>Altitude${context.language === 'EN' ? ':' : ' :'} </b>
+                    ${
+                        latlng.alt !== null
+                            ? (
+                                context.measurementUnits === 'ME'
+                                    ? `${latlng.alt.toFixed(0)} m`
+                                    : `${(latlng.alt / 0.3048).toFixed(0)} ft`
+                            )
+                            : (
+                                context.language === 'EN'
+                                    ? "Unknown"
+                                    : "Inconnue"
+                            )
+                    }
+                </div>
+            `);
+
+        // Add popup to map
+        context.altPop.addTo(map);
+
+        map.getContainer().style.cursor = oldCursor;
     }
 
     //-----------------------------
@@ -4703,19 +4819,26 @@
 
                 return;
             }
-            latlngs.forEach((latlng, j) =>{
-                // Find the section's point closest to the dragged point
+            for (let j = 0; j < latlngs.length; j++) {
+                const latlng = latlngs[j];
+
                 const closestSegAndPt = findClosestSectionAndPoint(calculatedPoints, latlng);
                 const idx = closestSegAndPt.index;
-                const closestPt = closestSegAndPt.point;
-                // Update stage's points and sections
+                let closestPt = closestSegAndPt.point;
+
+                if (!closestPt.alt || closestPt.alt === null) {
+                    if (closestPt.lat.toFixed(4) === latlng.lat.toFixed(4) && closestPt.lng.toFixed(4) === latlng.lng.toFixed(4) &&  latlng.alt)
+                        closestPt.alt = latlng.alt;
+                    else
+                        closestPt = await fetchOpenMeteoElevation(closestPt);
+                }
+
                 if (j > 0) {
-                    const calculatedPoints1 = calculatedPoints.slice(0, idx + 1).concat(closestPt);
-                    stageAfter.sections[j - 1].latlngs = improvePolyGeom(calculatedPoints1);
+                    stageAfter.sections[j - 1].latlngs = improvePolyGeom(calculatedPoints.slice(0, idx - 1).concat(closestPt));
+                    calculatedPoints = [closestPt].concat(calculatedPoints.slice(idx + 1));
                 }
                 stageAfter.points[j].latlng = closestPt;
-                calculatedPoints = [closestPt].concat(calculatedPoints.slice(idx + 1));                
-            });
+            }
         } else {    // When BRouter is not used
             latlngs.forEach((latlng, j) =>{
                 // Update stage's points and sections
@@ -4941,6 +5064,9 @@
         // Set event listener on section for mousemove
         const map_mousemove = (function() {
             return function(e) {
+                if (context.altPop && context.altPop !== null)
+                    context.altPop.remove();
+
                 if (!context.stageNRouteProfileDisplayed || context.editedStage === null) 
                     return;
 
@@ -5008,6 +5134,32 @@
 
         // Set permanent event listeners (just the first time). They are not registered because they never need to be removed
         if (context.initializationInProcess) {
+            // When user presses "h", display the altitude at the cursor position
+            window.addEventListener("keydown", (e) => {
+                if (e.ctrlKey && e.key === 'h')
+                    return;
+                else if (e.key === 'h') {
+                    e.preventDefault();
+
+                    queryAltitude();    // Start editing a new interest place
+                }
+            });
+
+            window.addEventListener("mouseout", (e) => {
+                if (!e.relatedTarget) {
+                    context.cursorIsOutsideDocument = true;
+
+                    if (context.mouseCoordControl) {
+                        context.mouseCoordControl.remove();
+                        context.mouseCoordControl = null;
+                    }
+                }
+            });
+
+            window.addEventListener("mouseover", () => {
+                context.cursorIsOutsideDocument = false;
+            });
+
             // Set permanent event listeners on doc for key pressed (one time for all time)
             function doc_keydown_perm(e) {    
                 if (context.operationInProcess) 
@@ -5015,24 +5167,19 @@
     
                 const key = (e.key || '').toLowerCase();
 
-                if (e.ctrlKey && key === 'p') {   // When user presses Ctrl + 'e' (to export route to GPX file)
-                    e.preventDefault();
-
-                    if (context.editedStage !== null)
-                        quitEditStage();
-                    else if (context.editedIntPl !== null)
-                        quitEditIntPl();
-
-                    setEnv4EdtIntPl(null);    // Start editing a new interest place
-                } else if (e.ctrlKey && key === 'e') {   // When user presses Ctrl + 'e' (to export route to GPX file)
+                if (e.ctrlKey && key === 'e') {   // When user presses Ctrl + 'e' (to export route to GPX file)
                     e.preventDefault();
 
                     exportRouteToGPX();
+                } else if (e.ctrlKey && key === 'f') {   // When user presses Ctrl + 'f' (to focus the map on the route)
+                    e.preventDefault();
+
+                    focusOnRoute();
                 } else if (e.ctrlKey && key === 'i') {   // When user presses Ctrl + 'e' (to export route to GPX file)
                     e.preventDefault();
 
                     importRouteFromGPX();
-                } else if (key === 'h'|| (e.ctrlKey && key === 'h')) {   // When user presses 'h' (to request help)
+                } else if (e.ctrlKey && key === 'h') {   // When user presses 'h' (to request help)
                     e.preventDefault();
 
                     const w = window.open('', '_blank');
@@ -5045,14 +5192,20 @@
                         : getHelpContentFr();
 
                     w.document.close();
-                } else if (e.ctrlKey && key === 'z') {   // When user presses Ctrl + 'z' (to undo last action)
+                } else if (e.ctrlKey && key === 'p') {   // When user presses Ctrl + 'e' (to export route to GPX file)
                     e.preventDefault();
 
-                    const cmd = undoStack.pop();
-                    if (!cmd) 
-                        return;
-                    cmd.undo();
-                    redoStack.push(cmd);
+                    if (context.editedStage !== null)
+                        quitEditStage();
+                    else if (context.editedIntPl !== null)
+                        quitEditIntPl();
+
+                    setEnv4EdtIntPl(null);    // Start editing a new interest place
+                } else if (e.ctrlKey && key === 'r') {   // When user presses Ctrl + 'r' (to reset the route)
+                    e.preventDefault();
+
+                    if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
+                        resetRoute();
                 } else if (e.ctrlKey && key === 'y') {   // When user presses Ctrl + 'y' (to redo last action undone)
                     e.preventDefault();
 
@@ -5061,15 +5214,14 @@
                         return;
                     cmd.redo();
                     undoStack.push(cmd);
-                } else if (e.ctrlKey && key === 'f') {   // When user presses Ctrl + 'f' (to focus the map on the route)
+                } else if (e.ctrlKey && key === 'z') {   // When user presses Ctrl + 'z' (to undo last action)
                     e.preventDefault();
 
-                    focusOnRoute();
-                } else if (e.ctrlKey && key === 'r') {   // When user presses Ctrl + 'r' (to reset the route)
-                    e.preventDefault();
-
-                    if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
-                        resetRoute();
+                    const cmd = undoStack.pop();
+                    if (!cmd) 
+                        return;
+                    cmd.undo();
+                    redoStack.push(cmd);
                 }
             }
             document.addEventListener('keydown', doc_keydown_perm);  // Add event listener to document
@@ -5212,6 +5364,7 @@
                             const coordinates = lastPointLatlng.lng + "," + lastPointLatlng.lat + "|" +
                                 latlng.lng + "," + latlng.lat;      // Prepare coordinates to be submitted to BRouter
                             calculatedPoints = await fetchBRouterRoute(coordinates);    // Find route to new point with BRouter
+
                             if (!calculatedPoints) {      // When no route is found by BRouter
                                 //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
                                 enableStagePointsDragging(stageRef);
@@ -5223,14 +5376,17 @@
                                 return;
                             }
                             calculatedPoints = improvePolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
+
+                            // Check whether altitude was found for first point and find it if necessary
+                            if (!calculatedPoints[0].alt || calculatedPoints[0].alt == null)
+                                calculatedPoints[0] = await fetchOpenMeteoElevation(calculatedPoints[0]);
+
+                            // Check whether altitude was found for last point and find it if necessary
+                            if (!calculatedPoints[calculatedPoints.length -1].alt || calculatedPoints[calculatedPoints.length -1].alt == null)
+                                calculatedPoints[calculatedPoints.length -1] = await fetchOpenMeteoElevation(calculatedPoints[calculatedPoints.length -1]);
+                            
                             latlng = calculatedPoints[calculatedPoints.length - 1];     // Adjust new point's position using BRouter response
 
-                            // Check whether altitude was found for new point and find it if necessary
-                            if (!latlng.alt || latlng.alt == null) {
-                                latlng = await fetchOpenMeteoElevation(latlng);
-                                calculatedPoints[calculatedPoints.length - 1] = latlng;
-                            }
-                            
                             // Prepare to adjust previous point's and previous section's positions using BRouter response
                             latlngPrev0 = stageRef.points[stageRef.points.length - 1].marker.getLatLng();
                             latlngPrev = calculatedPoints[0];
@@ -5354,6 +5510,9 @@
         // Set event listener on map for mousemove
         const map_mousemove = (function() {
             return function(e) {
+                if (context.altPop && context.altPop !== null)
+                    context.altPop.remove();
+
                 if (context.operationInProcess) 
                     return;   // Ignore if another operation is in process
 
@@ -5450,6 +5609,9 @@
         // Set event listener on map when mouse cursor hovers a section of the route
         const map_mousemove = (function() {
             return function(e) {
+                if (context.altPop && context.altPop !== null)
+                    context.altPop.remove();
+
                 if (!context.stageNRouteProfileDisplayed || context.editedStage !== null) 
                     return;
 
@@ -6877,9 +7039,29 @@
                         }
                         calculatedPoints = improvePolyGeom(calculatedPoints);  // Simplify geometry of new section by removing part of the points
                                
-                        const latlngPrev = calculatedPoints[0];     // Prepare to adjust previous point's and previous section's positions
+                        // Check whether altitude was found for first point and find it if necessary
+                        if (!calculatedPoints[0].alt || calculatedPoints[0].alt == null)
+                            calculatedPoints[0] = await fetchOpenMeteoElevation(calculatedPoints[0]);
+
+                        // Check whether altitude was found for last point and find it if necessary
+                        if (!calculatedPoints[calculatedPoints.length -1].alt || calculatedPoints[calculatedPoints.length -1].alt == null)
+                            calculatedPoints[calculatedPoints.length -1] = await fetchOpenMeteoElevation(calculatedPoints[calculatedPoints.length -1]);
+
+                        let latlngPrev = calculatedPoints[0];     // Prepare to adjust previous point's and previous section's positions
+
+                        // Check whether altitude was found for previous point and find it if necessary
+                        if (!latlngPrev.alt || latlngPrev.alt == null) {
+                            latlngPrev = await fetchOpenMeteoElevation(latlngPrev);
+                            calculatedPoints[0] = latlngPrev;
+                        }
          
-                        const latlngNext = calculatedPoints[calculatedPoints.length - 1];   // Prepare to adjust next point's and next section's positions
+                        let latlngNext = calculatedPoints[calculatedPoints.length - 1];   // Prepare to adjust next point's and next section's positions
+
+                        // Check whether altitude was found for next point and find it if necessary
+                        if (!latlngNext.alt || latlngNext.alt == null) {
+                            latlngNext = await fetchOpenMeteoElevation(latlngNext);
+                            calculatedPoints[calculatedPoints.length - 1] = latlngNext;
+                        }
                     } else { 
                         calculatedPoints = [stageRef.points[jRef - 1].marker.getLatLng(), 
                             stageRef.points[jRef + 1].marker.getLatLng()];
@@ -7071,25 +7253,23 @@
                             latlng = closestPt;     // Replace the coordinates of the dragged point with those of the closest point
         
                             // Adjust previous point's and previous section's positions
-                            let latlng0 = calculatedPoints1[0];
-                            if (!latlng0.alt || latlng0.alt == null)    // Find alt if missing
-                                latlng0 = await fetchOpenMeteoElevation(latlng0);
-                            stageRef.points[jRef - 1].marker.setLatLng(latlng0);
+                            if (!calculatedPoints1[0].alt || calculatedPoints1[0].alt == null)    // Find alt if missing
+                                calculatedPoints1[0] = await fetchOpenMeteoElevation(calculatedPoints1[0]);
+                            stageRef.points[jRef - 1].marker.setLatLng(calculatedPoints1[0]);
                             if (stageRef.sections[jRef - 2]) {
                                 let latlngs = stageRef.sections[jRef - 2].polyline.getLatLngs()
                                 latlngs.pop();
-                                latlngs.push(latlng0);
+                                latlngs.push(calculatedPoints1[0]);
                                 stageRef.sections[jRef - 2].polyline.setLatLngs(latlngs);
                             }
                             // Adjust next point's and next section's positions
-                            let latlngx = calculatedPoints2[calculatedPoints2.length - 1];
-                            if (!latlngx.alt || latlngx.alt == null)    // Find alt if missing
-                                latlngx = await fetchOpenMeteoElevation(latlngx);
-                            stageRef.points[jRef + 1].marker.setLatLng(latlngx);
+                            if (!calculatedPoints2[calculatedPoints2.length - 1].alt || calculatedPoints2[calculatedPoints2.length - 1].alt == null)    // Find alt if missing
+                                calculatedPoints2[calculatedPoints2.length - 1] = await fetchOpenMeteoElevation(calculatedPoints2[calculatedPoints2.length - 1]);
+                            stageRef.points[jRef + 1].marker.setLatLng(calculatedPoints2[calculatedPoints2.length - 1]);
                             if (stageRef.sections[jRef + 1]) {
                                 let latlngs = stageRef.sections[jRef + 1].polyline.getLatLngs()
                                 latlngs.shift();
-                                latlngs = [latlngx].concat(latlngs);
+                                latlngs = [calculatedPoints2[calculatedPoints2.length - 1]].concat(latlngs);
                                 stageRef.sections[jRef + 1].polyline.setLatLngs(latlngs);
                             }
                         } else {    // When BRouter is not used
@@ -7176,8 +7356,10 @@
                             }
                             calculatedPoints = improvePolyGeom(calculatedPoints);   // Simplify the sections geometry by getting rid of part of the points
                             latlng = calculatedPoints[calculatedPoints.length - 1];
-                            if (!latlng.alt || latlng.alt == null)    // Find alt if missing
+                            if (!latlng.alt || latlng.alt == null) {    // Find alt if missing
                                 latlng = await fetchOpenMeteoElevation(latlng);
+                                calculatedPoints[calculatedPoints.length - 1] = latlng;
+                            }
 
                             // Adjust previous point's and previous section's positions
                             let latlng0 = calculatedPoints[0];
@@ -7219,6 +7401,10 @@
                             }
 
                             latlng = calculatedPoints[0];     // Update point's position
+
+                            // Check whether altitude was found for first point and find it if necessary
+                            if (!latlng.alt || latlng.alt == null)
+                                latlng = await fetchOpenMeteoElevation(latlng);
                         } else
                             latlng = await fetchOpenMeteoElevation(latlng);
 
@@ -7321,6 +7507,8 @@
                 }
                 const jRef = stageRef.sections.indexOf(sectionRef); // Retrieve section index
                 if (jRef === -1) {
+                    map.getContainer().style.cursor = 'crosshair';
+
                     context.operationInProcess = false;
 
                     return;
@@ -7339,6 +7527,8 @@
                 const {index: idx, point: latlng} = findClosestSectionAndPoint(latlngs, e.latlng);  // Find section point closest to the clicked point
 
                 if (idx < 0) {
+                    map.getContainer().style.cursor = 'crosshair';
+
                     context.operationInProcess = false;
 
                     return;     // When closest point was not found
@@ -7347,6 +7537,8 @@
                 const beforeState = { sectionPoints: latlngs };
                 const afterState = { prevPointIdx: idx, newPoint: latlng };
                 execute(new DoubleClickSection2InsertPoint(stageRef, iRef, jRef, beforeState, afterState));
+
+                map.getContainer().style.cursor = 'crosshair';
 
                 context.operationInProcess = false;
             };
@@ -10822,6 +11014,125 @@
     // ADDITIONAL FUNCTIONS *
     //***********************
 
+    //----------------------------------------------------------------------------------------
+    // Calculate stage's ascent and descent with smoothing the elevations returned by BRouter
+    //----------------------------------------------------------------------------------------
+    function calculateAscentAndDescent(stage) {
+        const SMOOTH_WINDOW = 0;    // A sample of n preceding and n following points surrounding the current point will be used to smooth the calculated ascent and descent
+                                    // SMOOTH_WINDOW = 0 -> No smoothing
+
+        let ascent = 0;     // Calculated ascent
+        let descent = 0;    // Calculated descent
+
+        let sample = [];    // Array of the altitudes of the points surrounding the current point
+        let sampTotal = 0;   // Total of the altitudes of the points in "sample" array
+        let sampNotNullNb = 0;      // Nb of not null altitudes in "sample" array
+        let prevSmoothAlt = null;
+        
+        if (!stage.sections[0] || !stage.sections[0].polyline)
+            return [null, null];
+
+        for (let k = 0; k < SMOOTH_WINDOW + 1; k++)     // Add ghost points at the left of the sample
+            sample.push(null);
+
+        let i = 0;      // Section index
+        let j = -1;     // Index of point in section
+        while(true) {
+            // Remove first point of sample
+            if (sample[0] != null) {
+                sampTotal = sampTotal - sample[0];  // Update sum of altitudes for sample
+                sampNotNullNb--;    // Update number of not null altitudes for the sample
+            }
+            sample.shift();
+
+            // If sample is not complete, add another point if available
+            while (sample.length < (2 * SMOOTH_WINDOW) + 1) {
+                j++;
+                //console.log("Section " + i + " of " + stage.sections.length + ", point " + j + " of " + stage.sections[i].polyline.getLatLngs().length);
+                const latlngs = stage.sections[i].polyline.getLatLngs();
+                if (j < latlngs.length || (j === latlngs.length && i < stage.sections.length - 1)) {    // End of stage points not reached
+                    if (j === latlngs.length && i < stage.sections.length - 1) {     // End of section reached, go to next one
+                        i++;
+                        j = 0;
+                        continue;     // Skip first point of section ignored because the same as last point of previous section
+                    }
+
+                    // Add point to sample if its altitude is known
+                    if (latlngs[j].alt) {
+                        sample.push(latlngs[j].alt);
+                        sampTotal = sampTotal + sample[sample.length - 1];
+                        sampNotNullNb++;
+                        //console.log("Current alt: " + latlngs[j].alt);
+                    } else {
+                        sample.push(null);
+                        //console.log("Current alt is unknown");
+                    }
+
+                    // Add ghost points (if needed) when last point of last stage reached
+                    if (j === latlngs.length - 1 && i === stage.sections.length - 1) {
+                        for (let k = 0; k < SMOOTH_WINDOW; k++)
+                            sample.push(null);
+                        while (sample.length < (2 * SMOOTH_WINDOW) + 1)
+                            sample.push(null);
+                        //console.log("End of stage reached");
+                        //for (let l = 0; l < sample.length; l++) {
+                        //    console.log("sample[" + l + "] = " + sample[l]);
+                        //}
+                        //console.log("------------------------------------------------------------------------------------------------------------------------------------------------");
+                    }  else {
+                        //console.log("End of stage not reached");
+                        //for (let l = 0; l < sample.length; l++) {
+                        //    console.log("sample[" + l + "] = " + sample[l]);
+                        //}
+                        //console.log("------------------------------------------------------------------------------------------------------------------------------------------------");
+                    }
+                } else {
+                    //console.log("End of stage exceeded");
+                    //for (let l = 0; l < sample.length; l++) {
+                    //    console.log("sample[" + l + "] = " + sample[l]);
+                    //}
+                    //console.log("------------------------------------------------------------------------------------------------------------------------------------------------");
+                    break;
+                }
+            }
+
+            if (sample.length < (2 * SMOOTH_WINDOW) + 1) {    // End of ascent/descent calculation reached
+                //for (let l = 0; l < sample.length; l++) {
+                //    console.log("sample[" + l + "] = " + sample[l]);
+                //}
+                //console.log("Calculation completed");
+                break;
+            }
+            
+            //for (let l = 0; l < sample.length; l++) {
+            //    console.log("sample[" + l + "] = " + sample[l]);
+            //}
+            //console.log("sampTotal = " + sampTotal);
+            //console.log("sampNotNullNb = " + sampNotNullNb);
+            let smoothAlt = null;
+            if (sampNotNullNb > 0 )
+                smoothAlt = sampTotal / sampNotNullNb;      // Calculate smoothed altitude for the point as the average altitude of the sample
+            //console.log("prevSmoothAlt: " + prevSmoothAlt);
+            //console.log("smoothAlt: " + smoothAlt);
+            if (smoothAlt != null && prevSmoothAlt != null) {
+                let diff = smoothAlt - prevSmoothAlt;     // Calculate smoothed altitude difference with the previous point
+                //console.log("diff: " + diff);
+                // Update ascent and descent
+                if (diff > 0)
+                    ascent = ascent + diff;
+                else if (diff < 0)
+                    descent = descent + diff;
+            }
+            if (smoothAlt != null)    // Save point smoothed altitude for future use with next point
+                prevSmoothAlt = smoothAlt;
+
+            //console.log("ascent: " + ascent);
+            //console.log("descent: " + descent);
+            //console.log("____________________________________________________________________________________________________________________________________________________");       
+        }
+        return [ascent, descent];
+    }
+
     //----------------------------
     // Calculate stage's distance
     //----------------------------
@@ -10849,136 +11160,7 @@
         }
     }
 
-    //----------------------------------------------------------------------------------------
-    // Calculate stage's ascent and descent with smoothing the elevations returned by BRouter
-    //----------------------------------------------------------------------------------------
-    function calculateAscentAndDescent(stage) {
-        const SMOOTH_WINDOW = 2;    // A sample of n preceding and n following points surrounding the current point will be used to smooth the calculated ascent and descent
-
-        let ascent = null;     // Calculated ascent
-        let descent = null;    // Calculated descent
-
-        let sample = [];    // Array of the altitudes of the points surrounding the current point
-        let sampTotal = 0;   // Total of the altitudes of the points in "sample" array
-        let sampNotNullNb = 0;      // Nb of not null altitudes in "sample" array
-        let prevSmoothAlt = null;
-        if (stage.sections[0] && stage.sections[0].polyline) {
-            if (stage.sections[0].polyline.getLatLngs()[0].alt)
-                prevSmoothAlt = stage.sections[0].polyline.getLatLngs()[0].alt;     // Smoothed altitude of the preceding point, initialized to the alt of the first point
-        } else
-            return [null, null];
-
-        for (let k = 0; k < SMOOTH_WINDOW + 1; k++)     // Add ghost points at the left of the sample
-            sample.push(null);
-
-        let i = 0;
-        let j = -1;
-        while(true) {
-            // Remove first point of sample
-            if (sample[0] != null) {
-                sampTotal = sampTotal - sample[0];  // Update sum of altitudes for sample
-                sampNotNullNb--;    // Update number of not null altitudes for the sample
-            }
-            sample.shift();
-
-            // If sample is not complete, add another point if available
-            while (sample.length < (2 * SMOOTH_WINDOW) + 1) {
-                j++;
-                const latlngs = stage.sections[i].polyline.getLatLngs();
-                if (j < latlngs.length || (j === latlngs.length && i < stage.sections.length - 1)) { // End of stage points not reached
-                    if (j === latlngs.length && i < stage.sections.length - 1) {     // End of section reached, go to next one
-                        i++;
-                        j = 0;
-                        continue;     // Skip first point of section ignored because the same as last point of previous section
-                    }
-
-                    // Add point to sample if its altitude is known
-                    if (latlngs[j].alt) {
-                        sample.push(latlngs[j].alt);
-                        sampTotal = sampTotal + sample[sample.length - 1];
-                        sampNotNullNb++;
-                    }
-
-                    // Add ghost points when section has 2 points only of when last stage point reached
-                    if ((j === 0 && latlngs.length === 2) || (j === latlngs.length - 1 && i < stage.sections.length - 1 && stage.sections[i + 1].polyline.getLatLngs().length === 2)) {
-                        for (let k = 0; k < 2 * SMOOTH_WINDOW; k++)      // Add ghost points at the right of the current point
-                            sample.push(null); 
-                    } else if (j === latlngs.length - 1 && i === stage.sections.length - 1) {
-                        for (let k = 0; k < SMOOTH_WINDOW; k++)     // Add ghost points at the right of the sample
-                            sample.push(null);
-                    } 
-                } else    // End of stage points reached, no point added to sample
-                    break;
-            }
-
-            if (sample.length < (2 * SMOOTH_WINDOW) + 1)    // End of ascent/descent calculation reached
-                break;
-            
-            let smoothAlt = null;
-            let diff = null;
-            if (sampNotNullNb > 0 )
-                smoothAlt = sampTotal / sampNotNullNb;      // Calculate smoothed altitude for the point as the average altitude of the sample
-            if (smoothAlt != null && prevSmoothAlt != null) {
-                diff = smoothAlt - prevSmoothAlt;     // Calculate smoothed altitude difference with the previous point
-                // Initialize ascent and descent if needed
-                if (ascent === null)
-                    ascent = 0;
-                if (descent === null)
-                    descent = 0;
-                // Update ascent and descent
-                if (diff > 0)
-                    ascent = ascent + diff;
-                else
-                    descent = descent + diff;
-            }
-            if (smoothAlt != null)    // Save point smoothed altitude for future use with next point
-                prevSmoothAlt = smoothAlt;
-/*
-            console.log("i , j = " + i + ", " + j);
-            console.log("section nb: " + stage.sections.length);
-            console.log("point nb: " + stage.sections[i].polyline.getLatLngs().length);
-            for (let l = 0; l < sample.length; l++) {
-                console.log("sample[" + l + "] = " + sample[l]);
-            }
-            console.log("sampTotal = " + sampTotal);
-            console.log("sampNotNullNb = " + sampNotNullNb);
-            console.log("smoothAlt: " + smoothAlt);
-            console.log("diff: " + diff);
-            console.log("ascent: " + ascent);
-            console.log("descent: " + descent);
-            console.log("____________________________________________________________________________________________________________________________________________________");
-*/       
-        }
-
-        let diff = null;
-        let stageSectionsLength = stage.sections.length;
-        let polylineLength = stage.sections[stageSectionsLength - 1].polyline.getLatLngs().length;
-        let smoothAlt = stage.sections[stageSectionsLength - 1].polyline.getLatLngs()[polylineLength - 1].alt;
-        if (smoothAlt == null)
-            smoothAlt = prevSmoothAlt;
-        if (smoothAlt != null && prevSmoothAlt != null) {
-            diff = smoothAlt - prevSmoothAlt;     // Calculate smoothed altitude difference with the previous point
-            // Initialize ascent and descent if needed
-            if (ascent === null)
-                ascent = 0;
-            if (descent === null)
-                descent = 0;
-            // Update ascent and descent
-            if (diff > 0)
-                ascent = ascent + diff;
-            else
-                descent = descent + diff;
-         }
-/*        console.log("smoothAlt: " + smoothAlt);
-        console.log("diff: " + diff);
-        console.log("ascent: " + ascent);
-        console.log("descent: " + descent);
-        console.log("*****************************************************************************************************************************************************");
-*/
-        return [ascent, descent];
-    }
-
-    //-------------------------------------------------
+   //-------------------------------------------------
     // Disable dragging for all the markers of a stage
     //-------------------------------------------------
     function disableStagePointsDragging(stage) {
@@ -11047,7 +11229,7 @@
 
             // Check response
             if (!response.ok)
-                throw new Error(context.language === 'EN' ? "HTTP error: ${response.status}" : "Erreur HTTP : ${response.status}");
+                throw new Error(context.language === 'EN' ? `HTTP error: ${response.status}` : `Erreur HTTP : ${response.status}`);
 
             // Parse JSON
             const data = await response.json();
@@ -11058,9 +11240,9 @@
                 alt: data.elevation[0]
             };
         } catch (err) {
-            console.error(context.language === 'EN' ? "Open Elevation error: " : "Erreur Open Elevation : ", err.message);
+            console.error(context.language === 'EN' ? "Open-Meteo Elevation error: " : "Erreur Open-Meteo Elevation : ", err.message);
             
-            return latlng;
+            return { lat: latlng.lat, lng: latlng.lng, alt: null };
         }
     }
 
@@ -12330,13 +12512,14 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Double-click on a point or section of another stage to finish creating/editing the current stage and switch to create/edit mode for that stage. </li>
 <li>Click the "Start creating a new interest place" button to finish creating/editing the current stage and switch to create/edit mode for a new interest place. </li>
 <li>Double-click on an interest place to finish creating/editing the current stage and switch to create/edit mode for that interest place. </li>
+<li>Press the "h" key to display the altitude of the point on the map where the mouse cursor is located. </li>
 <li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
 <li>Click the "Export route to GPX" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
 <li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
 <li>Click the "Undo last action" button or press the "Ctrl + z" key combination to undo the last action.</li>
 <li>Click the "Redo last action" button or press the "Ctrl + y" key combination to redo the last action undone.</li>
 <li>Click the "Reset route" button to reset the route (i.e., delete all the stages and interest places).</li>
-<li>Click the "Help" button or press the "h" key to open the Help panel.</li>
+<li>Click the "Help" button or press the "Ctrl + h" key combination to open the Help panel.</li>
 </ul>
 <h3>Create/edit interest place mode</h3>
 <p>This mode allows you to create a new interest or to edit an existing interest place. By clicking repeatedly on the map, interest places are added on the map.</p>
@@ -12358,13 +12541,14 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Double-click on a point or section of a stage to finish creating/editing the current stage and switch to create/edit mode for that stage. </li>
 <li>Click the "Start creating a new interest place" button to finish creating/editing the current interest place and switch to create/edit mode for a new interest place. </li>
 <li>Double-click on another interest place to finish creating/editing the current interest place and switch to create/edit mode for that interest place. </li>
+<li>Press the "h" key to display the altitude of the point on the map where the mouse cursor is located. </li>
 <li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
 <li>Click the "Export route to GPX" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
 <li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
 <li>Click the "Undo last action" button or press the "Ctrl + z" key combination to undo the last action.</li>
 <li>Click the "Redo last action" button or press the "Ctrl + y" key combination to redo the last action undone.</li>
 <li>Click the "Reset route" button to reset the route (i.e., delete all the stages and interest places).</li>
-<li>Click the "Help" button or press the "h" key to open the Help panel.</li>
+<li>Click the "Help" button or press the "Ctrl + h" key combination to open the Help panel.</li>
 </ul>
 <h3>Supervision mode</h3>
 <p>This mode allows you to view the stages and interest places of the route without any being created/edited. The start and end points of each stage are shown, but not the waypoints.</p> 
@@ -12374,13 +12558,14 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Double-click on a point or section of a stage to switch to create/edit mode for that stage. </li>
 <li>Click the "Start creating a new interest place" button to switch to create/edit mode for a new interest place. </li>
 <li>Double-click on an interest place to switch to create/edit mode for that interest place. </li>
+<li>Press the "h" key to display the altitude of the point on the map where the mouse cursor is located. </li>
 <li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
 <li>Click the "Export route to GPX" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
 <li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
 <li>Click the "Undo last action" or press the "Ctrl + z" key combination to undo the last action.</li>
 <li>Click the "Redo last action" or press the "Ctrl + y" key combination to redo the last action undone.</li>
 <li>Click the "Reset route" to reset the route (i.e., delete all the stages and interest places).</li>
-<li>Click the "Help" button or press the "h" key to open the Help panel.</li>
+<li>Click the "Help" button or press the "Ctrl + h" key combination to open the Help panel.</li>
 </ul>
 <h2>Miscellaneous</h2>
 <p>A geolocation function is provided (top left). It allows you to determine the user's position and center the map on it. The browser's Geolocation API is used for that purpose. </p>
@@ -12403,7 +12588,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>When importing stages from GPX files, you can choose whether or not to apply the default stage color.</li>
 </ul>
 <p>A distance scale is included in the lower left corner.</p>
-<p>While the mouse pointer moves on the map, its geographic coordinates are displayed in the lower right corner.</p>
+<p>While the mouse pointer moves on the map, its geographic coordinates are displayed in the lower right corner. The altitude is not displayed, but can be obtained by pressing the "h" key. </p>
         `);
     }
 
@@ -12498,13 +12683,14 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Double-cliquer sur un point ou une section d'une autre étape pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour l'autre étape.</li>
 <li>Cliquer sur le bouton "Démarrer création nouveau lieu d'intérêt" pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
 <li>Double-cliquer sur un lieu d'intérêt pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour ce lieu d'intérêt.</li>
+<li>Presser la touche "h" pour afficher l'altitude du point de la carte où se trouve le curseur de la souris. </li>
 <li>Cliquer sur le boutton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
 <li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
 <li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
 <li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
 <li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
 <li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes et lieux d'intérêt).</li>
-<li>Cliquer sur le bouton "Help" ou presser la touche "h" pour ouvrir le panneau d'Aide.</li>
+<li>Cliquer sur le bouton "Help" ou presser la combinaison de touches "Ctrl + h" pour ouvrir le panneau d'Aide.</li>
 </ul>
 <h3>Mode création/modification de lieu d'intérêt</h3>
 <p>Ce mode permet de créer un nouveau lieu d'intérêt ou de modifier un lieu d'intérêt existant de l'itinéraire. En cliquant de manière répétée sur la carte, on ajoute des lieux d'intérêt sur la carte.</p>
@@ -12525,13 +12711,14 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Double-cliquer sur un point ou une section d'une étape pour terminer la création/modification du lieu d'intérêt en cours et passer en mode édition/modification pour cette étape.</li>
 <li>Cliquer sur le bouton "Démarrer création nouveu lieu d'intérêt" pour terminer la création/modification du lieu d'intérêt en cours et passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
 <li>Double-cliquer sur un lieu d'intérêt pour terminer la création/modification du lieu d'intérêt en cours et passer en mode édition/modification pour l'autre lieu d'intérêt.</li>
+<li>Presser la touche "h" pour afficher l'altitude du point de la carte où se trouve le curseur de la souris. </li>
 <li>Cliquer sur le boutton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
 <li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
 <li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
 <li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
 <li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
 <li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes et lieux d'intérêt).</li>
-<li>Cliquer sur le bouton "Help" ou presser la touche "h" pour ouvrir le panneau d'Aide.</li>
+<li>Cliquer sur le bouton "Help" ou presser la combinaison de touches "Ctrl + h" pour ouvrir le panneau d'Aide.</li>
 </ul>
 <h3>Mode supervision</h3>
 <p>Ce mode permet de visualiser les étapes et lieux d'intérêt de l'itinéraire sans qu'aucun ne soit en cours de création/modification. Les points de départ et d'arrivée de chaque étape sont représentés, mais pas les points de passage.</p> 
@@ -12541,6 +12728,7 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Double-cliquer sur un point ou une section d'une étape pour passer en mode édition/modification pour cette étape.</li>
 <li>Cliquer sur le bouton "Démarrer création nouveau lieu d'intérêt" pour passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
 <li>Double-cliquer sur un lieu d'intérêt pour passer en mode édition/modification pour ce lieu d'intérêt.</li>
+<li>Presser la touche "h" pour afficher l'altitude du point de la carte où se trouve le curseur de la souris. </li>
 <li>Cliquer sur le bouton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
 <li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
 <li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
@@ -12570,6 +12758,6 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Lors de l'importation d'étapes de fichiers GPX, on peut choisir ou non de leur imposer la couleur par défaut des étapes.</li>
 </ul>
 <p>Une échelle des distances est incluse dans le coin du bas gauche.</p>
-<p>Pendant que le pointeur de la souris est déplacé sur la carte, ses coordonnées géographiques sont affichées dans le coin du bas droit.</p>
+<p>Pendant que le pointeur de la souris est déplacé sur la carte, ses coordonnées géographiques sont affichées dans le coin du bas droit. L'altitude n'est pas affichée, mais elle peut être obtenue en pressant la touche "h". </p>
         `);
     }

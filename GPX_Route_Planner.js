@@ -4535,6 +4535,9 @@
         if (context.cursorIsOutsideDocument)
             return;
 
+        if (!context.mouseEvent)
+            return;
+
         const overMap = map.getContainer().contains(context.mouseEvent.target);  // Pointer is on map OR on any map layer
      
         const overControl =                                     // Pointer is on control (zoom, geoloc, menu, etc.)

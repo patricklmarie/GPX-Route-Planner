@@ -3577,7 +3577,7 @@
             
                 document.getElementById("page_title").innerHTML = 'GPX Route Planner';
         
-                document.getElementById("author").innerHTML = 'Developed by Patrick Marie';
+                document.getElementById("author").innerHTML = 'Developed by Patrick Marie<br>(patricklmarie@gmail.com)';
             } else {
                 context.language = 'FR';
 
@@ -3585,7 +3585,7 @@
             
                 document.getElementById("page_title").innerHTML = 'Planificateur d\'itinéraires GPX';
 
-                document.getElementById("author").innerHTML = 'Développé par Patrick Marie';
+                document.getElementById("author").innerHTML = 'Développé par Patrick Marie<br>(patricklmarie@gmail.com)';
             }
 
             if (context.menuDisplayed) {

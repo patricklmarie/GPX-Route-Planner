@@ -92,7 +92,7 @@
         routeProfileMapMarker: null,    // Marker added on map when hovering on a route profile curve
         routerProfile: null,            // Router profile
         settingsBtnActivated: null,     // Settings button must be activated only once
-        simplifiedIcons: false,         // Use simplified icons for stage start end end
+        smallerIcons: false,            // Use smaller icons for stage start end end
         spannedCommand: false,          // Flag: commands spanned or not in the menu
         stageDefaultColor: null,        // Default color used to plot stages
         stageNRouteDataDisplayed: true, // 
@@ -3544,8 +3544,8 @@
             </select>
             </div>
             <div>                
-            <input type="checkbox" id="simplifiedIcons" name="simplifiedIcons" value="simplifiedIcons" ${context.simplifiedIcons ? "checked" : "" } />
-            <label for="simplifiedIcons">${context.language === 'EN' ? "Use simplified icons for stage start/end" : "Util. icones simplifiés pour début/fin étape" }</label>                  
+            <input type="checkbox" id="smallerIcons" name="smallerIcons" value="smallerIcons" ${context.smallerIcons ? "checked" : "" } />
+            <label for="smallerIcons">${context.language === 'EN' ? "Use smaller icons" : "Utiliser des icones de taille réduite" }</label>                  
             <br/>
             <input type="checkbox" id="forceColorAtImport" name="forceColorAtImport" value="forceColorAtImport" ${context.forceColorAtImport ? "checked" : "" } />
             <label for="forceColorAtImport">${context.language === 'EN' ? "Enforce default color at import" : "Imposer couleur par défaut à l'import" }</label>                  
@@ -3564,7 +3564,7 @@
         document.getElementById("stageColor").addEventListener("change", (e) => changeStageDefaultColor(e.target.value));
         document.getElementById("intPlColor").addEventListener("change", (e) => changeIntPlDefaultColor(e.target.value));
         document.getElementById("forceColorAtImport").addEventListener("click", (e) => changeForceColorAtImport(e.target.checked));
-        document.getElementById("simplifiedIcons").addEventListener("click", (e) => changeUseSimplifiedIcons(e.target.checked));
+        document.getElementById("smallerIcons").addEventListener("click", (e) => changeUseSmallerIcons(e.target.checked));
 
         //-------------------------------------------------------------
         // Change language when requested from the settings side panel
@@ -3853,18 +3853,18 @@
             }
         }
 
-        //----------------------------------------------
-        // Use simplified icons for stage start and end
-        //----------------------------------------------
-        function changeUseSimplifiedIcons(checked) {
+        //-------------------
+        // Use smaller icons
+        //-------------------
+        function changeUseSmallerIcons(checked) {
             if (checked) {
-                context.simplifiedIcons = true;
+                context.smallerIcons = true;
 
-                setCookie("UseSimplifiedIcons", '1', 60);
+                setCookie("UseSmallerIcons", '1', 60);
             } else {
-                context.simplifiedIcons = false;
+                context.smallerIcons = false;
 
-                setCookie("UseSimplifiedIcons", '0', 60);
+                setCookie("UseSmallerIcons", '0', 60);
             }
 
             stages.forEach((stage, i) => {
@@ -3879,6 +3879,15 @@
 
                     stage.points[stage.points.length - 1].marker.setIcon(getStageEndIcon('red', stage.color, shade));
                 }
+            });
+
+            interestPlaces.forEach((intPl, i) => {
+                let shade = 'deep';
+                if (i === context.editedIntPl)
+                    shade = 'light';
+
+                if (intPl.marker !== null)
+                    intPl.marker.setIcon(getInterestPlaceIcon(intPl.color, shade));
             });
         }
     }
@@ -4723,13 +4732,13 @@
         else
             context.forceColorAtImport = true;
 
-        const simplifiedIcons = getCookie("UseSimplifiedIcons");
-        if (simplifiedIcons === '' || simplifiedIcons === '0')
-            context.simplifiedIcons = false;
+        const smallerIcons = getCookie("UseSmallerIcons");
+        if (smallerIcons === '' || smallerIcons === '0')
+            context.smallerIcons = false;
         else
-            context.simplifiedIcons = true;
+            context.smallerIcons = true;
 
-        simplifiedIcons
+        smallerIcons
 
         const baseMap = getCookie("BaseMap");
         let found = false;
@@ -8377,6 +8386,8 @@
             });
 
             stage.points.forEach((point, i) => {
+                if ((i === 0 || i === stage.points.length - 1) && context.smallerIcons)
+                    point.marker.setIcon(getSmallerIcon(this.before.color, 'light'));
                 if (i > 0 && i < stage.points.length - 1) {
                     point.marker.setIcon(getCircleIcon(this.before.color, 'light'));
                 }
@@ -8400,6 +8411,8 @@
             });
 
             stage.points.forEach((point, i) => {
+                if ((i === 0 || i === stage.points.length - 1) && context.smallerIcons)
+                    point.marker.setIcon(getSmallerIcon(this.after.color, 'light'));
                 if (i > 0 && i < stage.points.length - 1) {
                     point.marker.setIcon(getCircleIcon(this.after.color, 'light'));
                 }
@@ -11644,8 +11657,8 @@
     //---------------------------------------
     // Get diamond icon of a specified color
     //---------------------------------------
-    function getStageStartIcon(color, simplifiedIconsColor, shade) {
-        if (!context.simplifiedIcons)
+    function getStageStartIcon(color, smallerIconsColor, shade) {
+        if (!context.smallerIcons)
             return L.divIcon({
                 className: '',
                 html: `<div style="
@@ -11662,14 +11675,14 @@
                 iconAnchor: [9, 9]
             });
         else
-            return getSimplifiedIcon(simplifiedIconsColor, shade)
+            return getSmallerIcon(smallerIconsColor, shade)
 }
     
     //---------------------------------------------
     // Get double square icon of a specified color
     //---------------------------------------------
-    function getStageStartEndIcon(color, simplifiedIconsColor, shade) {
-        if (!context.simplifiedIcons)
+    function getStageStartEndIcon(color, smallerIconsColor, shade) {
+        if (!context.smallerIcons)
             return L.divIcon({
                 className: '',
                 html: `
@@ -11707,13 +11720,13 @@
                 iconAnchor: [6, 6]
             });
         else
-            return getSimplifiedIcon(simplifiedIconsColor, shade)
+            return getSmallerIcon(smallerIconsColor, shade)
     }
     
     //------------------------------------
     // Get star icon of a specified color
     //------------------------------------
-    function getSimplifiedIcon(color, shade) {
+    function getSmallerIcon(color, shade) {
         return L.divIcon({
             className: '',
             html: `<div style="
@@ -11741,40 +11754,69 @@
     // Get star icon of a specified color
     //------------------------------------
     function getInterestPlaceIcon(color, shade) {
-        return L.divIcon({
-            className: '',
-            html: `
-                <div style="
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                ">
-                    <svg
-                        width="22"
-                        height="22"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <polygon
-                            points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
-                            fill="transparent"
-                            stroke="${colors[color][shade]}"
-                            stroke-width="3"
-                        />
-                    </svg>
-                </div>
-            `,
-            iconSize: [22, 22],
-            iconAnchor: [11, 11]
-        });
+        if (!context.smallerIcons)
+            return L.divIcon({
+                className: '',
+                html: `
+                    <div style="
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                    ">
+                        <svg
+                            width="22"
+                            height="22"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <polygon
+                                points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
+                                fill="transparent"
+                                stroke="${colors[color][shade]}"
+                                stroke-width="3"
+                            />
+                        </svg>
+                    </div>
+                `,
+                iconSize: [22, 22],
+                iconAnchor: [11, 11]
+            });
+        else
+            return L.divIcon({
+                className: '',
+                html: `
+                    <div style="
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                    ">
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <polygon
+                                points="12,2 15,9 22,9 16.5,13.5 18.5,21 12,17 5.5,21 7.5,13.5 2,9 9,9"
+                                fill="${colors[color][shade]}"
+                                stroke="${colors[color][shade]}"
+                                stroke-width="3"
+                            />
+                        </svg>
+                    </div>
+                `,
+                iconSize: [18, 18],
+                iconAnchor: [9, 9]
+            });
     }
 
     //--------------------------------------
     // Get square icon of a specified color
     //--------------------------------------
-    function getStageEndIcon(color, simplifiedIconsColor, shade) {
-        if (!context.simplifiedIcons)
+    function getStageEndIcon(color, smallerIconsColor, shade) {
+        if (!context.smallerIcons)
             return L.divIcon({
                 className: '',
                 html: `<div style="
@@ -11797,7 +11839,7 @@
                 iconAnchor: [6, 6]
             });
         else
-            return getSimplifiedIcon(simplifiedIconsColor, shade)
+            return getSmallerIcon(smallerIconsColor, shade)
     }
 
     function getTransparentIcon() {
@@ -11976,24 +12018,24 @@
         });
 
         // Simplify
-        const simplified = L.LineUtil.simplify(projected, 5);
+        const smaller = L.LineUtil.simplify(projected, 5);
 
         // Unproject
-        const simplifiedLatLngs = simplified.map(p => {
+        const smallerLatLngs = smaller.map(p => {
             const ll = map.options.crs.unproject(p);
             return L.latLng(ll.lat, ll.lng, p.alt);
         });
 
         // Correct altitude interpolation
-        simplifiedLatLngs.forEach(ll => {
+        smallerLatLngs.forEach(ll => {
             ll.alt = interpolateAltitude(ll, latlngs);
         });
 
         // Insert intermediate points
         let result = [];
-        for (let i = 0; i < simplifiedLatLngs.length - 1; i++) {
-            const a = simplifiedLatLngs[i];
-            const b = simplifiedLatLngs[i + 1];
+        for (let i = 0; i < smallerLatLngs.length - 1; i++) {
+            const a = smallerLatLngs[i];
+            const b = smallerLatLngs[i + 1];
 
             result.push(a);
 
@@ -12009,7 +12051,7 @@
             }
         }
 
-        result.push(simplifiedLatLngs[simplifiedLatLngs.length - 1]);
+        result.push(smallerLatLngs[smallerLatLngs.length - 1]);
 
         return result;
 
@@ -12018,7 +12060,7 @@
             let bestAlt = original[0].alt;
             let bestDist = Infinity;
 
-            // Project the simplified point
+            // Project the smaller point
             const P = map.options.crs.project(latlng);
 
             for (let i = 0; i < original.length - 1; i++) {
@@ -12587,7 +12629,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
 </ul>
 <li>You can choose the default color used to plot stages on the map.</li>
 <li>You can choose the default color used to display interest places on the map.</li>
-<li>You can choose to use simplified markers for the start and end points of the stages. This can be useful if you decide to print the map.</li>
+<li>You can choose to use smaller markers for the start and end points of the stages. This can be useful if you decide to print the map.</li>
 <li>When importing stages from GPX files, you can choose whether or not to apply the default stage color.</li>
 </ul>
 <p>A distance scale is included in the lower left corner.</p>

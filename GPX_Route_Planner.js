@@ -31,6 +31,14 @@
         brown: {
             light: '#c28557',   // Light brown, warmer and brighter
             deep:  '#8c4a19'    // Deep brown, slightly lighter but still strong
+        },
+        pink: {
+            light: '#e88aa9',   // Light pink: warm, visible, not too pale
+            deep:  '#c04a6b'    // Deep pink: strong, saturated, readable
+        },
+        grey: {
+            light: '#a8a8a8',   // Light grey: soft, neutral, readable on any background
+            deep:  '#7a7a7a'    // Deep grey: strong, clean, high contrast
         }
     }
 
@@ -61,6 +69,7 @@
     
     // Context variables
     let context = {
+        addrPop: null,                  // Address popup
         altPop: null,                   // Altitude popup
         baseMap: null,                  // Base map style
         clickTimeout: null,             // Timeout used to distinguish simple clicks from double clicks
@@ -1233,7 +1242,9 @@
                 { label: context.language === 'EN' ? "Blue" : "Bleu", action: () => changeIntPlColor('blue') },
                 { label: context.language === 'EN' ? "Red" : "Rouge", action: () => changeIntPlColor('red') },
                 { label: context.language === 'EN' ? "Purple" : "Violet", action: () => changeIntPlColor('purple') },
-                { label: context.language === 'EN' ? "Brown" : "Marron", action: () => changeIntPlColor('brown') }
+                { label: context.language === 'EN' ? "Brown" : "Marron", action: () => changeIntPlColor('brown') },
+                { label: context.language === 'EN' ? "Pink" : "Rose", action: () => changeIntPlColor('pink') },
+                { label: context.language === 'EN' ? "Grey" : "Gris", action: () => changeIntPlColor('grey') }
             ];
 
             options.forEach(opt => {
@@ -1505,7 +1516,9 @@
                 { label: context.language === 'EN' ? "Green" : "Vert", action: () => changeStageColor('green') },
                 { label: context.language === 'EN' ? "Red" : "Rouge", action: () => changeStageColor('red') },
                 { label: context.language === 'EN' ? "Purple" : "Violet", action: () => changeStageColor('purple') },
-                { label: context.language === 'EN' ? "Brown" : "Marron", action: () => changeStageColor('brown') }
+                { label: context.language === 'EN' ? "Brown" : "Marron", action: () => changeStageColor('brown') },
+                { label: context.language === 'EN' ? "Pink" : "Rose", action: () => changeStageColor('pink') },
+                { label: context.language === 'EN' ? "Grey" : "Gris", action: () => changeStageColor('grey') }
             ];
 
             options.forEach(opt => {
@@ -3122,6 +3135,16 @@
                 let yMax = null;
                 [yMin, yMax] = calculateStageProfile(stage);
 
+                let yBottom = Math.round((yMin - (yMax - yMin) * 0.08)/5)*5;
+                if (yBottom >= yMin)
+                    yBottom = yMin - 5;
+                if (yBottom < 0 && yMin >= 0)
+                    yBottom = 0;
+
+                let yTop = Math.round((yMax + (yMax - yMin) * 0.08)/5)*5;
+                if (yTop <= yMax)
+                    yTop = yMax + 5;
+
                 const canvas = L.DomUtil.create('canvas', '', wrapper);
                 canvas.id = "stageProfile";
                 canvas.width = 500;
@@ -3167,14 +3190,15 @@
                                 title: {
                                     display: false
                                 },
-                                min: Math.max(Math.round((yMin - (yMax - yMin) * 0.08)/5)*5, 0),
-                                max: Math.round((yMax + (yMax - yMin) * 0.08)/5)*5,
+                                min: yBottom,
+                                max: yTop,
                                 afterFit: function(scale) {
                                     scale.width = 60;
                                 },
                                 ticks: {
                                     precision: 0,   // Prevent unneeded roundings
-                                    stepSize: (yMax - yMin) < 5 ? 1 : undefined
+                                    stepSize: 0.5
+                                    //stepSize: (yMax - yMin) < 5 ? 1 : undefined
                                 }
                             }
                         },
@@ -3303,9 +3327,19 @@
             let yMax = null;
             [yMin, yMax] = calculateStageProfile(stage);
 
+            let yBottom = Math.round((yMin - (yMax - yMin) * 0.08)/5)*5;
+            if (yBottom >= yMin)
+                yBottom = yMin - 5;
+            if (yBottom < 0 && yMin >= 0)
+                    yBottom = 0;
+
+            let yTop = Math.round((yMax + (yMax - yMin) * 0.08)/5)*5;
+            if (yTop <= yMax)
+                yTop = yMax + 5;
+
             context.stageProfileChart.data.datasets[0].data = context.stageProfileChartPoints;
-            context.stageProfileChart.options.scales.y.min = Math.max(Math.round((yMin - (yMax - yMin) * 0.08)/10)*10, 0);
-            context.stageProfileChart.options.scales.y.max = Math.round((yMax + (yMax - yMin) * 0.08)/10)*10;
+            context.stageProfileChart.options.scales.y.min = yBottom;
+            context.stageProfileChart.options.scales.y.max = yTop;
             context.stageProfileChart.options.scales.x.title.text = context.measurementUnits === 'ME' ? "km" : "mi";
             context.stageProfileChart.update();
         }
@@ -3533,6 +3567,8 @@
                 <option value="red" ${context.stageDefaultColor === 'red' ? "selected" : "" }>${context.language === 'EN' ? "Red" : "Rouge" }</option>
                 <option value="purple" ${context.stageDefaultColor === 'purple' ? "selected" : "" }>${context.language === 'EN' ? "Purple" : "Violet" }</option>
                 <option value="brown" ${context.stageDefaultColor === 'brown' ? "selected" : "" }>${context.language === 'EN' ? "Brown" : "Marron" }</option>
+                <option value="pink" ${context.stageDefaultColor === 'pink' ? "selected" : "" }>${context.language === 'EN' ? "Pink" : "Rose" }</option>
+                <option value="grey" ${context.stageDefaultColor === 'grey' ? "selected" : "" }>${context.language === 'EN' ? "Grey" : "Gris" }</option>
             </select>
             <label for="intPtColor">${context.language === 'EN' ? "Interest place color:" : "Couleur des points d'intérêt :" }</label>
             <select name="intPlColor" id="intPlColor">
@@ -3541,6 +3577,8 @@
                 <option value="red" ${context.intPlDefaultColor === 'red' ? "selected" : "" }>${context.language === 'EN' ? "Red" : "Rouge" }</option>
                 <option value="purple" ${context.intPlDefaultColor === 'purple' ? "selected" : "" }>${context.language === 'EN' ? "Purple" : "Violet" }</option>
                 <option value="brown" ${context.intPlDefaultColor === 'brown' ? "selected" : "" }>${context.language === 'EN' ? "Brown" : "Marron" }</option>
+                <option value="pink" ${context.intPlDefaultColor === 'pink' ? "selected" : "" }>${context.language === 'EN' ? "Pink" : "Rose" }</option>
+                <option value="grey" ${context.intPlDefaultColor === 'grey' ? "selected" : "" }>${context.language === 'EN' ? "Grey" : "Gris" }</option>
             </select>
             </div>
             <div>                
@@ -4528,12 +4566,76 @@
         }
     }
 
+    //---------------------------------------------
+    // Query and display address at mouse position 
+    //---------------------------------------------
+    async function queryAddress() {
+        if (context.operationInProcess) 
+            return;   // Ignore if another operation is in process
+
+        if (context.addrPop && context.addrPop !== null)
+            context.addrPop.remove();
+
+        if (context.altPop && context.altPop !== null)
+            context.altPop.remove();
+
+        if (context.mouseCoordinates === null)
+            return;
+
+        if (context.cursorIsOutsideDocument)
+            return;
+
+        if (!context.mouseEvent)
+            return;
+
+        const overMap = map.getContainer().contains(context.mouseEvent.target);  // Pointer is on map OR on any map layer
+     
+        const overControl =                                     // Pointer is on control (zoom, geoloc, menu, etc.)
+            context.mouseEvent.target.closest('.leaflet-control') ||
+            context.mouseEvent.target.closest('.leaflet-control-row');
+
+        const overPopup = context.mouseEvent.target.closest('.leaflet-popup');   // Pointer is on popup
+
+        const overSidePanel = context.mouseEvent.target.closest('#sidePanel');
+
+        // Do not display coordinates if mouse pointer is not on map, polyline or marker
+        if (!overMap || overControl || overPopup || overSidePanel) {
+            if (context.mouseCoordControl) {
+                context.mouseCoordinates = null;
+                context.mouseCoordControl.remove();
+                context.mouseCoordControl = null;
+            }
+            return;
+        }
+
+        const oldCursor = map.getContainer().style.cursor;                
+        map.getContainer().style.cursor = 'progress';
+
+        const address = await fetchAddressWithNominatim(context.mouseCoordinates);
+
+        // Create popup with stage information content
+        context.addrPop = L.popup(
+            { closeOnClick: false, autoClose: false, autoPan: false, className: 'solid-popup' })
+            .setLatLng(context.mouseCoordinates)
+            .setContent(`
+                <div style="text-align:left; font-size:12px; line-height:12px;">${address}</div>
+            `);
+
+        // Add popup to map
+        context.addrPop.addTo(map);
+
+        map.getContainer().style.cursor = oldCursor;
+    }
+
     //----------------------------------------------
     // Query and display altitude at mouse position 
     //----------------------------------------------
     async function queryAltitude() {
         if (context.operationInProcess) 
             return;   // Ignore if another operation is in process
+
+        if (context.addrPop && context.addrPop !== null)
+            context.addrPop.remove();
 
         if (context.altPop && context.altPop !== null)
             context.altPop.remove();
@@ -5076,6 +5178,9 @@
         // Set event listener on section for mousemove
         const map_mousemove = (function() {
             return function(e) {
+                if (context.addrPop && context.addrPop !== null)
+                    context.addrPop.remove();
+
                 if (context.altPop && context.altPop !== null)
                     context.altPop.remove();
 
@@ -5154,6 +5259,10 @@
                     e.preventDefault();
 
                     queryAltitude();    // Start editing a new interest place
+                } else if (e.key === '?') {
+                    e.preventDefault();
+
+                    queryAddress();    // Start editing a new interest place
                 }
             });
 
@@ -5522,6 +5631,9 @@
         // Set event listener on map for mousemove
         const map_mousemove = (function() {
             return function(e) {
+                if (context.addrPop && context.addrPop !== null)
+                    context.addrPop.remove();
+
                 if (context.altPop && context.altPop !== null)
                     context.altPop.remove();
 
@@ -5621,6 +5733,9 @@
         // Set event listener on map when mouse cursor hovers a section of the route
         const map_mousemove = (function() {
             return function(e) {
+                if (context.addrPop && context.addrPop !== null)
+                    context.addrPop.remove();
+
                 if (context.altPop && context.altPop !== null)
                     context.altPop.remove();
 
@@ -11259,6 +11374,38 @@
             console.error(context.language === 'EN' ? "Open-Meteo Elevation error: " : "Erreur Open-Meteo Elevation : ", err.message);
             
             return { lat: latlng.lat, lng: latlng.lng, alt: null };
+        }
+    }
+
+    //-------------------------------------------------------------
+    // Query Open-Meteo Elevation to find the elevation of a point
+    //-------------------------------------------------------------
+    async function fetchAddressWithNominatim(latlng) {
+        // Prepare request to Nominatim
+        const url = "https://nominatim.openstreetmap.org/reverse?lat=" + latlng.lat + "&lon=" + latlng.lng + "&zoom=18&addressdetails=0&format=json";
+
+        try {
+            // Fetch Nominatim
+            const response = await fetch(url);
+
+            // When Nominatim query failed
+            if (!response.ok) {
+                throw new Error(context.language === 'EN' ? `HTTP error! Status: ${response.status}` : `Erreur HTTP! Etat : ${response.status}`);
+            }
+
+            // Parse JSON
+            const respJSON = await response.json();
+
+            // Extract and return location name
+            if (respJSON.display_name) 
+                return respJSON.display_name;
+            else 
+                return `${context.language === 'EN' ? "Address not found" : "Adresse non trouvée"}`;
+        } catch (err) {
+            alert(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
+            console.error(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " : "Erreur lors de l'interrogation de Monimatim : ", err.message);
+
+            return `${context.language === 'EN' ? "Address not found" : "Adresse non trouvée"}`;
         }
     }
 

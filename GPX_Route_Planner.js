@@ -492,6 +492,10 @@
                     <td>Edit the interest place</td>
                 </tr>
                 <tr>
+                    <td><strong>?</strong></td>
+                    <td>Display the address of the point where the mouse cursor is located</td>
+                </tr>
+                <tr>
                     <td><strong>h</strong></td>
                     <td>Display the altitude of the point where the mouse cursor is located</td>
                 </tr>
@@ -577,6 +581,10 @@
                 <tr>
                     <td><strong>Double cliquer sur un<br>lieu d'intérêt</strong></td>
                     <td>Modifier le lieu d'intérêt</td>
+                </tr>
+                <tr>
+                    <td><strong>?</strong></td>
+                    <td>Afficher l'adresse du point où se trouve le curseur de la souris</td>
                 </tr>
                 <tr>
                     <td><strong>h</strong></td>
@@ -762,6 +770,10 @@
                     <td>Edit the interest place</td>
                 </tr>
                 <tr>
+                    <td><strong>?</strong></td>
+                    <td>Display the address of the point where the mouse cursor is located</td>
+                </tr>
+                <tr>
                     <td><strong>h</strong></td>
                     <td>Display the altitude of the point where the mouse cursor is located</td>
                 </tr>
@@ -872,6 +884,10 @@
                 <tr>
                     <td><strong>Double cliquer sur un<br>lieu d'intérêt</strong></td>
                     <td>Modifier le lieu d'intérêt</td>
+                </tr>
+                <tr>
+                    <td><strong>?</strong></td>
+                    <td>Afficher l'adresse du point où se trouve le curseur de la souris</td>
                 </tr>
                 <tr>
                     <td><strong>h</strong></td>
@@ -997,6 +1013,10 @@
                     <td>Edit the interest place</td>
                 </tr>
                 <tr>
+                    <td><strong>?</strong></td>
+                    <td>Display the address of the point where the mouse cursor is located</td>
+                </tr>
+                <tr>
                     <td><strong>h</strong></td>
                     <td>Display the altitude of the point where the mouse cursor is located</td>
                 </tr>
@@ -1047,6 +1067,10 @@
                 <tr>
                     <td><strong>Double cliquer sur un<br>lieu d'intérêt</strong></td>
                     <td>Modifier le lieu d'intérêt</td>
+                </tr>
+                <tr>
+                    <td><strong>?</strong></td>
+                    <td>Afficher l'aadresse du point où se trouve le curseur de la souris</td>
                 </tr>
                 <tr>
                     <td><strong>h</strong></td>
@@ -2775,6 +2799,16 @@
                 let yMax = null;
                 [yMin, yMax] = calculateRouteProfile();
 
+                let yBottom = Math.round((yMin - (yMax - yMin) * 0.08)/5)*5;
+                if (yBottom >= yMin)
+                    yBottom = yMin - 5;
+                if (yBottom < 0 && yMin >= 0)
+                    yBottom = 0;
+
+                let yTop = Math.round((yMax + (yMax - yMin) * 0.08)/5)*5;
+                if (yTop <= yMax)
+                    yTop = yMax + 5;
+
                 const canvas = L.DomUtil.create('canvas', '', wrapper);
                 canvas.id = "routeProfile";
                 canvas.width = 700;
@@ -2821,14 +2855,14 @@
                                 title: {
                                     display: false
                                 },
-                                min: Math.max(Math.round((yMin - (yMax - yMin) * 0.08)/5)*5, 0),
-                                max: Math.round((yMax + (yMax - yMin) * 0.08)/5)*5,
+                                min: yBottom,
+                                max: yTop,
                                 afterFit: function(scale) {
                                     scale.width = 60;
                                 },
                                 ticks: {
                                     precision: 0,   // Prevent unneeded roundings
-                                    stepSize: (yMax - yMin) < 5 ? 1 : undefined
+                                    stepSize: 0.5
                                 }
                             }
                         },
@@ -2998,9 +3032,19 @@
             let yMax = null;
             [yMin, yMax] = calculateRouteProfile();
 
+            let yBottom = Math.round((yMin - (yMax - yMin) * 0.08)/5)*5;
+            if (yBottom >= yMin)
+                yBottom = yMin - 5;
+            if (yBottom < 0 && yMin >= 0)
+                yBottom = 0;
+
+            let yTop = Math.round((yMax + (yMax - yMin) * 0.08)/5)*5;
+            if (yTop <= yMax)
+                yTop = yMax + 5;
+
             context.routeProfileChart.data.datasets[0].data = context.routeProfileChartPoints;
-            context.routeProfileChart.options.scales.y.min = Math.max(Math.round((yMin - (yMax - yMin) * 0.08)/10)*10, 0);
-            context.routeProfileChart.options.scales.y.max = Math.round((yMax + (yMax - yMin) * 0.08)/10)*10;
+            context.routeProfileChart.options.scales.y.min = yBottom;
+            context.routeProfileChart.options.scales.y.max = yTop;
             context.routeProfileChart.options.scales.x.title.text = context.measurementUnits === 'ME' ? "km" : "mi";
             context.routeProfileChart.update();
         }
@@ -3178,7 +3222,7 @@
                                 type: "linear",
                                 position: "bottom",
                                 ticks: {
-                                    stepSize: 1
+                                    stepSize: 0.5
                                 },
                                 title: {
                                     display: true,
@@ -3197,7 +3241,7 @@
                                 },
                                 ticks: {
                                     precision: 0,   // Prevent unneeded roundings
-                                    stepSize: 0.5
+                                    stepSize: 1
                                     //stepSize: (yMax - yMin) < 5 ? 1 : undefined
                                 }
                             }
@@ -12704,6 +12748,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Double-click on a point or section of another stage to finish creating/editing the current stage and switch to create/edit mode for that stage. </li>
 <li>Click the "Start creating a new interest place" button to finish creating/editing the current stage and switch to create/edit mode for a new interest place. </li>
 <li>Double-click on an interest place to finish creating/editing the current stage and switch to create/edit mode for that interest place. </li>
+<li>Press the "?" key to display the address of the point on the map where the mouse cursor is located. </li>
 <li>Press the "h" key to display the altitude of the point on the map where the mouse cursor is located. </li>
 <li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
 <li>Click the "Export route to GPX" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
@@ -12733,6 +12778,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Double-click on a point or section of a stage to finish creating/editing the current stage and switch to create/edit mode for that stage. </li>
 <li>Click the "Start creating a new interest place" button to finish creating/editing the current interest place and switch to create/edit mode for a new interest place. </li>
 <li>Double-click on another interest place to finish creating/editing the current interest place and switch to create/edit mode for that interest place. </li>
+<li>Press the "?" key to display the address of the point on the map where the mouse cursor is located. </li>
 <li>Press the "h" key to display the altitude of the point on the map where the mouse cursor is located. </li>
 <li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
 <li>Click the "Export route to GPX" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
@@ -12750,6 +12796,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Double-click on a point or section of a stage to switch to create/edit mode for that stage. </li>
 <li>Click the "Start creating a new interest place" button to switch to create/edit mode for a new interest place. </li>
 <li>Double-click on an interest place to switch to create/edit mode for that interest place. </li>
+<li>Press the "?" key to display the address of the point on the map where the mouse cursor is located. </li>
 <li>Press the "h" key to display the altitude of the point on the map where the mouse cursor is located. </li>
 <li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
 <li>Click the "Export route to GPX" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
@@ -12875,6 +12922,7 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Double-cliquer sur un point ou une section d'une autre étape pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour l'autre étape.</li>
 <li>Cliquer sur le bouton "Démarrer création nouveau lieu d'intérêt" pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
 <li>Double-cliquer sur un lieu d'intérêt pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour ce lieu d'intérêt.</li>
+<li>Presser la touche "?" pour afficher l'adresse du point de la carte où se trouve le curseur de la souris. </li>
 <li>Presser la touche "h" pour afficher l'altitude du point de la carte où se trouve le curseur de la souris. </li>
 <li>Cliquer sur le boutton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
 <li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
@@ -12903,6 +12951,7 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Double-cliquer sur un point ou une section d'une étape pour terminer la création/modification du lieu d'intérêt en cours et passer en mode édition/modification pour cette étape.</li>
 <li>Cliquer sur le bouton "Démarrer création nouveu lieu d'intérêt" pour terminer la création/modification du lieu d'intérêt en cours et passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
 <li>Double-cliquer sur un lieu d'intérêt pour terminer la création/modification du lieu d'intérêt en cours et passer en mode édition/modification pour l'autre lieu d'intérêt.</li>
+<li>Presser la touche "?" pour afficher l'adresse du point de la carte où se trouve le curseur de la souris. </li>
 <li>Presser la touche "h" pour afficher l'altitude du point de la carte où se trouve le curseur de la souris. </li>
 <li>Cliquer sur le boutton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
 <li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
@@ -12920,6 +12969,7 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Double-cliquer sur un point ou une section d'une étape pour passer en mode édition/modification pour cette étape.</li>
 <li>Cliquer sur le bouton "Démarrer création nouveau lieu d'intérêt" pour passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
 <li>Double-cliquer sur un lieu d'intérêt pour passer en mode édition/modification pour ce lieu d'intérêt.</li>
+<li>Presser la touche "?" pour afficher l'adresse du point de la carte où se trouve le curseur de la souris. </li>
 <li>Presser la touche "h" pour afficher l'altitude du point de la carte où se trouve le curseur de la souris. </li>
 <li>Cliquer sur le bouton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
 <li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>

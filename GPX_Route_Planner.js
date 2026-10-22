@@ -6815,7 +6815,7 @@
                     return;     // do NOT stop propagation
 
                 if (e.key.length === 1 ||      // 'a', 'h', '5', '.', etc.
-                 e.key === 'Backspace' || e.key === 'Delete' || e.key === 'Tab') {
+                 e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Backspace' || e.key === 'Delete' || e.key === 'Tab') {
                     e.stopPropagation();
                     return;
                 }

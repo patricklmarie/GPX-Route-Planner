@@ -5297,13 +5297,18 @@
         if (context.initializationInProcess) {
             // When user presses "h", display the altitude at the cursor position
             window.addEventListener("keydown", (e) => {
-                if (e.ctrlKey && e.key === 'h')
+                if (context.operationInProcess) 
+                    return;   // Ignore if another operation is in process
+    
+                const key = (e.key || '').toLowerCase();
+
+                if (e.ctrlKey && key === 'h')
                     return;
-                else if (e.key === 'h') {
+                else if (key === 'h') {
                     e.preventDefault();
 
                     queryAltitude();    // Start editing a new interest place
-                } else if (e.key === '?') {
+                } else if (key === '?') {
                     e.preventDefault();
 
                     queryAddress();    // Start editing a new interest place

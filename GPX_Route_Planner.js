@@ -4620,9 +4620,6 @@
         if (context.addrPop && context.addrPop !== null)
             context.addrPop.remove();
 
-        if (context.altPop && context.altPop !== null)
-            context.altPop.remove();
-
         if (context.mouseCoordinates === null)
             return;
 
@@ -4658,15 +4655,13 @@
         const address = await fetchAddressWithNominatim(context.mouseCoordinates);
 
         // Create popup with stage information content
-        context.addrPop = L.popup(
-            { closeOnClick: false, autoClose: false, autoPan: false, className: 'solid-popup' })
+        context.addrPop = L.tooltip(
+            { permanent: false, direction: 'top', opacity: 1 })
             .setLatLng(context.mouseCoordinates)
             .setContent(`
-                <div style="text-align:left; font-size:12px; line-height:12px;">${address}</div>
-            `);
-
-        // Add popup to map
-        context.addrPop.addTo(map);
+                <div style="text-align:left; font-size:12px; line-height:12px; max-width: none; width: 200px; white-space:normal; overflow-wrap:break-word; ">${address}</div>
+            `)
+            .addTo(map);
 
         map.getContainer().style.cursor = oldCursor;
     }
@@ -4677,9 +4672,6 @@
     async function queryAltitude() {
         if (context.operationInProcess) 
             return;   // Ignore if another operation is in process
-
-        if (context.addrPop && context.addrPop !== null)
-            context.addrPop.remove();
 
         if (context.altPop && context.altPop !== null)
             context.altPop.remove();
@@ -4719,8 +4711,8 @@
         const latlng = await fetchOpenMeteoElevation(context.mouseCoordinates);
 
         // Create popup with stage information content
-        context.altPop = L.popup(
-            { closeOnClick: false, autoClose: false, autoPan: false, className: 'solid-popup' })
+        context.altPop = L.tooltip(
+            { permanent: false, direction: 'bottom', opacity: 1 })
             .setLatLng(latlng)
             .setContent(`
                 <div style="text-align:left; font-size:12px; line-height:12px;">
@@ -4739,10 +4731,8 @@
                             )
                     }
                 </div>
-            `);
-
-        // Add popup to map
-        context.altPop.addTo(map);
+            `)
+            .addTo(map);
 
         map.getContainer().style.cursor = oldCursor;
     }
@@ -11198,7 +11188,7 @@
     // Calculate stage's ascent and descent with smoothing the elevations returned by BRouter
     //----------------------------------------------------------------------------------------
     function calculateAscentAndDescent(stage) {
-        const SMOOTH_WINDOW = 0;    // A sample of n preceding and n following points surrounding the current point will be used to smooth the calculated ascent and descent
+        const SMOOTH_WINDOW = 1;    // A sample of n preceding and n following points surrounding the current point will be used to smooth the calculated ascent and descent
                                     // SMOOTH_WINDOW = 0 -> No smoothing
 
         let ascent = 0;     // Calculated ascent
@@ -11255,9 +11245,9 @@
                         while (sample.length < (2 * SMOOTH_WINDOW) + 1)
                             sample.push(null);
                         //console.log("End of stage reached");
-                        //for (let l = 0; l < sample.length; l++) {
-                        //    console.log("sample[" + l + "] = " + sample[l]);
-                        //}
+                        for (let l = 0; l < sample.length; l++) {
+                            //console.log("sample[" + l + "] = " + sample[l]);
+                        }
                         //console.log("------------------------------------------------------------------------------------------------------------------------------------------------");
                     }  else {
                         //console.log("End of stage not reached");
@@ -11296,18 +11286,16 @@
             //console.log("smoothAlt: " + smoothAlt);
             if (smoothAlt != null && prevSmoothAlt != null) {
                 let diff = smoothAlt - prevSmoothAlt;     // Calculate smoothed altitude difference with the previous point
-                //console.log("diff: " + diff);
                 // Update ascent and descent
                 if (diff > 0)
                     ascent = ascent + diff;
                 else if (diff < 0)
                     descent = descent + diff;
+                //console.log("diff: " + diff + ", ascent: " + ascent + ", descent: " + descent);
             }
             if (smoothAlt != null)    // Save point smoothed altitude for future use with next point
                 prevSmoothAlt = smoothAlt;
 
-            //console.log("ascent: " + ascent);
-            //console.log("descent: " + descent);
             //console.log("____________________________________________________________________________________________________________________________________________________");       
         }
         return [ascent, descent];

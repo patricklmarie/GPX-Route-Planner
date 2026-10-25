@@ -13,32 +13,32 @@
     // Colors used to draw the route stages
     let colors = { 
         blue: {
-            light: '#2791F5',       // Stage sections in edition mode
-            deep: '#274BF5'         // Stage sections in non edition mode
+            light: '#2791F5',
+            deep: '#274BF5'
         },
         green: {
-            light: '#00cc33',   // Departure points in edition mode
-            deep: '#009933'     // Departure point in non edition mode
+            light: '#00cc33',
+            deep: '#009933'
         },
         red: {
-            light: '#ff0000',
-            deep:  '#cc0000'
+            light: '#ff6666',
+            deep:  '#e53935'
         },
         purple: {
-            light: '#ff4dff',      // Departure/arrival points in edition mode
-            deep: '#cc00cc'  // Departure/arrival points in non edition mode
+            light: '#d070ff',
+            deep: '#b030ff'
         },
         brown: {
-            light: '#c28557',   // Light brown, warmer and brighter
-            deep:  '#8c4a19'    // Deep brown, slightly lighter but still strong
+            light: '#c28557',
+            deep:  '#8c4a19'
         },
         pink: {
-            light: '#e88aa9',   // Light pink: warm, visible, not too pale
-            deep:  '#c04a6b'    // Deep pink: strong, saturated, readable
+            light: '#e88aa9',
+            deep:  '#cc5c7b'
         },
         grey: {
-            light: '#a8a8a8',   // Light grey: soft, neutral, readable on any background
-            deep:  '#7a7a7a'    // Deep grey: strong, clean, high contrast
+            light: '#a8a8a8',
+            deep:  '#7a7a7a'
         }
     }
 
@@ -442,23 +442,23 @@
             <table class="command-table">
                 <tr>
                     <td><strong>Click on the map</strong></td>
-                    <td>Create a new interest<br>place</td>
+                    <td>Create a new interest place</td>
                 </tr>
                 <tr>
-                    <td><strong>Double click on an<br>interest place</strong></td>
+                    <td><strong>Double click on the<br>interest place</strong></td>
                     <td>Delete the interest place</td>
                 </tr>
                 <tr>
-                    <td><strong>Drag & drop an interest<br>place</strong></td>
+                    <td><strong>Drag & drop the interest<br>place</strong></td>
                     <td>Move the interest place</td>
                 </tr>
                 <tr>
                     <td><strong>n</strong></td>
-                    <td>Set a name to the interest<br>place</td>
+                    <td>Set a name to the interest place</td>
                 </tr>
                 <tr>
                     <td><strong>c</strong></td>
-                    <td>Change the color of the<br>interest place</td>
+                    <td>Set the interest place to the default color</td>
                 </tr>
                 <tr>
                     <td><strong>f</strong></td>
@@ -476,19 +476,19 @@
             <br><strong>Global:</strong><br>
             <table class="command-table">
                 <tr>
-                    <td><strong>Double click on<br>the map</strong></td>
+                    <td><strong>Double click on the map</strong></td>
                     <td>Start creating a new stage</td>
                 </tr>
                 <tr>
                     <td><strong>Ctrl + p</strong></td>
-                    <td>Start creating a new<br>interest place</td>
+                    <td>Start creating a new interest place</td>
                 </tr>
                 <tr>
-                    <td><strong>Double click on<br>a stage</strong></td>
+                    <td><strong>Double click on a stage</strong></td>
                     <td>Edit the stage</td>
                 </tr>
                 <tr>
-                    <td><strong>Double click on<br>an interest place</strong></td>
+                    <td><strong>Double click on an<br>interest place</strong></td>
                     <td>Edit the interest place</td>
                 </tr>
                 <tr>
@@ -536,20 +536,20 @@
                     <td>Créer un nouveau lieu d'intérêt</td>
                 </tr>
                 <tr>
-                    <td><strong>Double cliquer sur un<br>lieu d'intérêt</strong></td>
+                    <td><strong>Double cliquer sur le<br>lieu d'intérêt</strong></td>
                     <td>Supprimer le lieu d'intérêt</td>
                 </tr>
                 <tr>
-                    <td><strong>Tirer-déposer un lieu<br>d'intérêt</strong></td>
+                    <td><strong>Tirer-déposer le lieu<br>d'intérêt</strong></td>
                     <td>Déplacer le lieu d'intérêt</td>
                 </tr>
                 <tr>
                     <td><strong>n</strong></td>
-                    <td>Attribuer un nom au lieu<br>d'intérêt</td>
+                    <td>Attribuer un nom au lieu d'intérêt</td>
                 </tr>
                 <tr>
                     <td><strong>c</strong></td>
-                    <td>Modifier la couleur du<br>lieu d'intérêt</td>
+                    <td>Mettre le lieu d'intérêt à la couleur par défaut</td>
                 </tr>
                 <tr>
                     <td><strong>f</strong></td>
@@ -561,7 +561,7 @@
                 </tr>
                 <tr>
                     <td><strong>Echappement</strong></td>
-                    <td>Terminer la création<br>modification de lieu d'intérêt</td>
+                    <td>Terminer la création modification de lieu d'intérêt</td>
                 </tr>
             </table>
             <br><strong>Générales :</strong><br>
@@ -699,15 +699,15 @@
                     <td>Add a new point to the<br>stage</td>
                 </tr>
                 <tr>
-                    <td><strong>Double click on a<br>section of the stage</strong></td>
+                    <td><strong>Double click on a section<br>of the stage</strong></td>
                     <td>Insert a point in the stage</td>
                 </tr>
                 <tr>
-                    <td><strong>Double click on a<br>point of the stage</strong></td>
+                    <td><strong>Double click on a point<br>of the stage</strong></td>
                     <td>Remove the point</td>
                 </tr>
                 <tr>
-                    <td><strong>Drag & drop a point<br>or a section</strong></td>
+                    <td><strong>Drag & drop a point or a<br>section of the stage</strong></td>
                     <td>Modify the stage path</td>
                 </tr>
                 <tr>
@@ -716,7 +716,7 @@
                 </tr>
                 <tr>
                     <td><strong>c</strong></td>
-                    <td>Change the stage color</td>
+                    <td>Set the stage to the default color</td>
                 </tr>
                 <tr>
                     <td><strong>r</strong></td>
@@ -754,7 +754,7 @@
             <br><strong>Global:</strong><br>
             <table class="command-table">
                 <tr>
-                    <td><strong>Double click on<br>the map</strong></td>
+                    <td><strong>Double click on the map</strong></td>
                     <td>Start creating a new stage</td>
                 </tr>
                 <tr>
@@ -762,11 +762,11 @@
                     <td>Start creating a new<br>interest place</td>
                 </tr>
                 <tr>
-                    <td><strong>Double click on<br>a stage</strong></td>
+                    <td><strong>Double click on a stage</strong></td>
                     <td>Edit the stage</td>
                 </tr>
                 <tr>
-                    <td><strong>Double click on<br>an interest place</strong></td>
+                    <td><strong>Double click on an<br>interest place</strong></td>
                     <td>Edit the interest place</td>
                 </tr>
                 <tr>
@@ -822,7 +822,7 @@
                     <td>Supprimer le point</td>
                 </tr>
                 <tr>
-                    <td><strong>Tirer-déposer un point<br>ou une section</strong></td>
+                    <td><strong>Tirer-déposer un point<br>ou une section de l'étape</strong></td>
                     <td>Modifier le tracé de l'étape</td>
                 </tr>
                 <tr>
@@ -831,7 +831,7 @@
                 </tr>
                 <tr>
                     <td><strong>c</strong></td>
-                    <td>Modifier la couleur de l'étape</td>
+                    <td>Mettre l'étape à la couleur par défaut</td>
                 </tr>
                 <tr>
                 <tr>
@@ -997,7 +997,7 @@
             <br><strong>Global:</strong><br>
             <table class="command-table">
                 <tr>
-                    <td><strong>Double click on<br>the map</strong></td>
+                    <td><strong>Double click on the map</strong></td>
                     <td>Start creating a new stage</td>
                 </tr>
                 <tr>
@@ -1005,11 +1005,11 @@
                     <td>Start creating a new<br>interest place</td>
                 </tr>
                 <tr>
-                    <td><strong>Double click on<br>a stage</strong></td>
+                    <td><strong>Double click on a stage</strong></td>
                     <td>Edit the stage</td>
                 </tr>
                 <tr>
-                    <td><strong>Double click on<br>an interest place</strong></td>
+                    <td><strong>Double click on an<br>interest place</strong></td>
                     <td>Edit the interest place</td>
                 </tr>
                 <tr>
@@ -1070,7 +1070,7 @@
                 </tr>
                 <tr>
                     <td><strong>?</strong></td>
-                    <td>Afficher l'aadresse du point où se trouve le curseur de la souris</td>
+                    <td>Afficher l'adresse du point où se trouve le curseur de la souris</td>
                 </tr>
                 <tr>
                     <td><strong>h</strong></td>
@@ -2435,7 +2435,7 @@
 
         const intPl = interestPlaces[i];
 
-        const beforeState = { point: intPl.marker.getLatLng(), color: intPl.color };
+        const beforeState = { point: intPl.marker.getLatLng(), name: intPl.name, color: intPl.color };
         const afterState = { };
         execute(new DoubleClickIntPl2RemoveIt(intPl, i, beforeState, afterState));
 
@@ -3602,9 +3602,14 @@
             <input type="checkbox" id="stageNRouteProfile" name="stageNRouteProfile" value="stageNRouteProfile" ${context.stageNRouteProfileDisplayed ? "checked" : "" } />
             <label for="stageNRouteProfile">${context.language === 'EN' ? "Stage and route profile" : "Profil d'étape et d'itinéraire" }</label>                  
             </div>
-            <h3>${context.language === 'EN' ? "Default colors to be used" : "Couleurs à utiliser par défaut" }</h3>
+            <h3>${context.language === 'EN' ? "Icons and default colors to be used" : "Icones et couleurs par défaut à utiliser" }</h3>
+            <div>                
+            <input type="checkbox" id="smallerIcons" name="smallerIcons" value="smallerIcons" ${context.smallerIcons ? "checked" : "" } />
+            <label for="smallerIcons">${context.language === 'EN' ? "Use smaller icons" : "Utiliser des icones de taille réduite" }</label>
+            </div>
+            <br/>
             <div style="display: grid; grid-template-columns: auto auto; row-gap: 6px; column-gap: 12px; align-items: center; ">
-            <label for="stageColor">${context.language === 'EN' ? "Stage color:" : "Couleur des étapes :" }</label>
+            <label for="stageColor">${context.language === 'EN' ? "Stage default color:" : "Couleur par déf. des étapes :" }</label>
             <select name="stageColor" id="stageColor">
                 <option value="blue" ${context.stageDefaultColor === 'blue' ? "selected" : "" }>${context.language === 'EN' ? "Blue" : "Bleu" }</option>
                 <option value="green" ${context.stageDefaultColor === 'green' ? "selected" : "" }>${context.language === 'EN' ? "Green" : "Vert" }</option>
@@ -3614,7 +3619,14 @@
                 <option value="pink" ${context.stageDefaultColor === 'pink' ? "selected" : "" }>${context.language === 'EN' ? "Pink" : "Rose" }</option>
                 <option value="grey" ${context.stageDefaultColor === 'grey' ? "selected" : "" }>${context.language === 'EN' ? "Grey" : "Gris" }</option>
             </select>
-            <label for="intPtColor">${context.language === 'EN' ? "Interest place color:" : "Couleur des points d'intérêt :" }</label>
+            </div>
+            <div>                
+            <input type="checkbox" id="forceColorAtImport" name="forceColorAtImport" value="forceColorAtImport" ${context.forceColorAtImport ? "checked" : "" } />
+            <label for="forceColorAtImport">${context.language === 'EN' ? "Enforce the default color at import" : "Imposer la couleur par défaut à l'import" }</label>                  
+            </div>
+            <br/>
+            <div style="display: grid; grid-template-columns: auto auto; row-gap: 6px; column-gap: 12px; align-items: center; ">
+            <label for="intPtColor">${context.language === 'EN' ? "Interest place default color:" : "Couleur par déf. des points d'intérêt :" }</label>
             <select name="intPlColor" id="intPlColor">
                 <option value="green" ${context.intPlDefaultColor === 'green' ? "selected" : "" }>${context.language === 'EN' ? "Green" : "Vert" }</option>
                 <option value="blue" ${context.intPlDefaultColor === 'blue' ? "selected" : "" }>${context.language === 'EN' ? "Blue" : "Bleu" }</option>
@@ -3624,13 +3636,6 @@
                 <option value="pink" ${context.intPlDefaultColor === 'pink' ? "selected" : "" }>${context.language === 'EN' ? "Pink" : "Rose" }</option>
                 <option value="grey" ${context.intPlDefaultColor === 'grey' ? "selected" : "" }>${context.language === 'EN' ? "Grey" : "Gris" }</option>
             </select>
-            </div>
-            <div>                
-            <input type="checkbox" id="smallerIcons" name="smallerIcons" value="smallerIcons" ${context.smallerIcons ? "checked" : "" } />
-            <label for="smallerIcons">${context.language === 'EN' ? "Use smaller icons" : "Utiliser des icones de taille réduite" }</label>                  
-            <br/>
-            <input type="checkbox" id="forceColorAtImport" name="forceColorAtImport" value="forceColorAtImport" ${context.forceColorAtImport ? "checked" : "" } />
-            <label for="forceColorAtImport">${context.language === 'EN' ? "Enforce default color at import" : "Imposer couleur par défaut à l'import" }</label>                  
             </div>
         `;
 
@@ -3673,6 +3678,8 @@
             if (context.menuDisplayed) {
                 if (context.editedStage !== null) 
                     setMenu4EdtStg();
+                else if (context.editedIntPl !== null) 
+                    setMenu4EdtIntPl();
                 else 
                     setMenu4NonEdt();
             }
@@ -3695,11 +3702,10 @@
             }
 
             if (context.stageNRouteProfileDisplayed) {
-                if (context.editedStage !== null) {
+                if (context.editedStage !== null)
                     displayStageProfile();
-                } else {
+                else if (context.editedIntPl == null)
                     displayRouteProfile();
-                }
             }
 
             generateSidePanelContents();
@@ -3899,6 +3905,13 @@
                 stage.points.forEach((point, i) => {
                     if (i > 0 && i < stage.points.length - 1) {
                         point.marker.setIcon(getCircleIcon(color, 'light'));
+                    } else if (context.smallerIcons) {
+                        if (stage.points.length === 1)
+                            point.marker.setIcon(getStageStartEndIcon(null, color, 'light'));
+                        else if (i === 0)
+                            point.marker.setIcon(getStageStartIcon(null, color, 'light'));
+                        else if (i === stage.points.length - 1)
+                            point.marker.setIcon(getStageEndIcon(null, color, 'light'));
                     }
                 });
             }
@@ -4194,7 +4207,7 @@
         }
         input.addEventListener('change', changeHandler);       // Add event handler to file input
 
-        // Create submit button
+        // Create cancel button
         const cancelButton = document.createElement('button');
         cancelButton.textContent = context.language === 'EN' ? 'Cancel' : 'Annuler';
         cancelButton.style.marginLeft = '8px';
@@ -6262,7 +6275,7 @@
 
                     const latlng = intPlRef.marker.getLatLng();
 
-                    const beforeState = { point: latlng };
+                    const beforeState = { point: latlng, name: intPlRef.name, color: intPlRef.color };
                     const afterState = { };
                     execute(new DoubleClickIntPl2RemoveIt(intPlRef, iRef, beforeState, afterState));
 
@@ -6457,7 +6470,8 @@
             interestPlaces.splice(context.editedIntPl, 1);  // Remove empty interest place
         }
 
-        context.editedIntPl = null;
+        if (context.editedIntPl === i)
+            context.editedIntPl = null;
     }
 
     //--------------------------------
@@ -7673,8 +7687,6 @@
                 }
                 const jRef = stageRef.sections.indexOf(sectionRef); // Retrieve section index
                 if (jRef === -1) {
-                    map.getContainer().style.cursor = 'crosshair';
-
                     context.operationInProcess = false;
 
                     return;
@@ -7693,8 +7705,6 @@
                 const {index: idx, point: latlng} = findClosestSectionAndPoint(latlngs, e.latlng);  // Find section point closest to the clicked point
 
                 if (idx < 0) {
-                    map.getContainer().style.cursor = 'crosshair';
-
                     context.operationInProcess = false;
 
                     return;     // When closest point was not found
@@ -7703,8 +7713,6 @@
                 const beforeState = { sectionPoints: latlngs };
                 const afterState = { prevPointIdx: idx, newPoint: latlng };
                 execute(new DoubleClickSection2InsertPoint(stageRef, iRef, jRef, beforeState, afterState));
-
-                map.getContainer().style.cursor = 'crosshair';
 
                 context.operationInProcess = false;
             };
@@ -7797,8 +7805,6 @@
                         cleanupDrag();
 
                         enableStagePointsDragging(stageRef);
-
-                        map.getContainer().style.cursor = 'crosshair';
 
                         context.operationInProcess = false;
 
@@ -8300,7 +8306,8 @@
             stages.splice(i, 1);   // If the stage is empty, delete it
         }
 
-        context.editedStage = null;
+        if (context.editedStage === i)
+            context.editedStage = null;
     }
 
     //--------------------------------------------------
@@ -8540,10 +8547,15 @@
             });
 
             stage.points.forEach((point, i) => {
-                if ((i === 0 || i === stage.points.length - 1) && context.smallerIcons)
-                    point.marker.setIcon(getSmallerIcon(this.before.color, 'light'));
                 if (i > 0 && i < stage.points.length - 1) {
                     point.marker.setIcon(getCircleIcon(this.before.color, 'light'));
+                } else if (context.smallerIcons) {
+                    if (stage.points.length === 1)
+                        point.marker.setIcon(getStageStartEndIcon(null, this.before.color, 'light'));
+                    else if (i === 0)
+                        point.marker.setIcon(getStageStartIcon(null, this.before.color, 'light'));
+                    else if (i === stage.points.length - 1)
+                        point.marker.setIcon(getStageEndIcon(null, this.before.color, 'light'));
                 }
             });
         }
@@ -8565,10 +8577,15 @@
             });
 
             stage.points.forEach((point, i) => {
-                if ((i === 0 || i === stage.points.length - 1) && context.smallerIcons)
-                    point.marker.setIcon(getSmallerIcon(this.after.color, 'light'));
                 if (i > 0 && i < stage.points.length - 1) {
                     point.marker.setIcon(getCircleIcon(this.after.color, 'light'));
+                } else if (context.smallerIcons) {
+                    if (stage.points.length === 1)
+                        point.marker.setIcon(getStageStartEndIcon(null, this.after.color, 'light'));
+                    else if (i === 0)
+                        point.marker.setIcon(getStageStartIcon(null, this.after.color, 'light'));
+                    else if (i === stage.points.length - 1)
+                        point.marker.setIcon(getStageEndIcon(null, this.after.color, 'light'));
                 }
             });
         }
@@ -10259,9 +10276,11 @@
                 autoPan: false, 
                 bubblingMouseEvents: true 
             }).addTo(map);
-            interestPlaces.push({ name: null, marker: newMarker, infoPop: null, evtList: [] });   // Add interest place to list
+            interestPlaces.push({ name: this.before.name, color: this.before.color, marker: newMarker, infoPop: this.before.infoPop, evtList: [] });   // Add interest place to list
 
-            setIntPl4Edt(interestPlaces.length - 1);     // Set interest place's layout and event listeners for edit mode
+            setEnv4EdtIntPl(interestPlaces.length - 1);     // Set interest place's layout and event listeners for edit mode
+
+            updateIntPlData(interestPlaces[interestPlaces.length - 1], true);
 
             this.intPl = interestPlaces[interestPlaces.length - 1];
             this.intPlIdx = interestPlaces.length - 1;
@@ -10756,7 +10775,7 @@
                         
             displayGlobalInfo();
 
-            if (context.stageNRouteProfileDisplayed && context.editedStage === null) {
+            if (context.stageNRouteProfileDisplayed && context.editedStage === null && context.editedIntPl === null) {
                 if (stages.length > 0)
                     displayRouteProfile();
                 else {
@@ -10788,9 +10807,6 @@
         }
 
         redo() {
-            if (context.editedStage != null && stages[context.editedStage].points.length === 0)
-                quitEditStage();
-
             // Process stages
             this.importedStagesNb = this.after.importedStages.length;
             const initStagesNb = stages.length;
@@ -10838,8 +10854,15 @@
             
             displayGlobalInfo();
 
-            if (context.editedStage === null && context.stageNRouteProfileDisplayed)
-                displayRouteProfile();
+            if (context.editedStage === null && context.editedIntPl === null && context.stageNRouteProfileDisplayed) {
+                if (stages.length > 0)
+                    displayRouteProfile();
+                else {
+                    removeRouteMapNChartMarkers();
+
+                    removeRouteProfileControl();
+                }
+            }
 
             // Process interest places
             this.importedInterestPlacesNb = this.after.importedInterestPlaces.length;
@@ -10865,7 +10888,7 @@
 
                 setIntPl4NonEdt(i);   // Set interest place to non edit mode
 
-                updateIntPlData(intPl, false);     // Update stage's information popup                
+                updateIntPlData(intPl, false);     // Update interest places information popup                
             };
         }
     }
@@ -11859,7 +11882,21 @@
                 iconAnchor: [9, 9]
             });
         else
-            return getSmallerIcon(smallerIconsColor, shade)
+            return L.divIcon({
+                className: '',
+                html: `<div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 5px;
+                    height: 5px;
+                    background: ${colors[smallerIconsColor][shade]};
+                    border: 3px solid ${colors[smallerIconsColor][shade]};
+                    transform: translate(-50%, -50%) rotate(45deg);
+                "></div>`,
+                iconSize: [9, 9],
+                iconAnchor: [4, 4]
+            });
 }
     
     //---------------------------------------------
@@ -11904,36 +11941,44 @@
                 iconAnchor: [6, 6]
             });
         else
-            return getSmallerIcon(smallerIconsColor, shade)
+            return L.divIcon({
+                className: '',
+                html: `
+                    <div style="
+                        position: relative;
+                        width: 7px;
+                        height: 7px;
+                    ">
+                        <!-- Base square -->
+                        <div style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: 5px;
+                            height: 5px;
+                            background: ${colors[smallerIconsColor][shade]};
+                            border: 3px solid ${colors[smallerIconsColor][shade]};
+                            transform: translate(-50%, -50%);
+                        "></div>
+
+                        <!-- Rotated square -->
+                        <div style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: 5px;
+                            height: 5px;
+                            background: ${colors[smallerIconsColor][shade]};
+                            border: 3px solid ${colors[smallerIconsColor][shade]};
+                            transform: translate(-50%, -50%) rotate(45deg);
+                        "></div>
+                    </div>
+                `,
+                iconSize: [7, 7],
+                iconAnchor: [3, 3]
+            });
     }
     
-    //------------------------------------
-    // Get star icon of a specified color
-    //------------------------------------
-    function getSmallerIcon(color, shade) {
-        return L.divIcon({
-            className: '',
-            html: `<div style="
-                position: relative;
-                width: 7px;
-                height: 7px;
-            ">
-                <div style="
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 6px;
-                    height: 6px;
-                    background: ${colors[color][shade]};
-                    border: 3px solid ${colors[color][shade]};
-                    transform: translate(-50%, -50%);
-                "></div>
-            </div>`,
-            iconSize: [7, 7],
-            iconAnchor: [3, 3]
-        });
-    }
-
     //------------------------------------
     // Get star icon of a specified color
     //------------------------------------
@@ -12023,7 +12068,27 @@
                 iconAnchor: [6, 6]
             });
         else
-            return getSmallerIcon(smallerIconsColor, shade)
+            return L.divIcon({
+                className: '',
+                html: `<div style="
+                    position: relative;
+                    width: 7px;
+                    height: 7px;
+                ">
+                    <div style="
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 6px;
+                        height: 6px;
+                        background: ${colors[smallerIconsColor][shade]};
+                        border: 3px solid ${colors[smallerIconsColor][shade]};
+                        transform: translate(-50%, -50%);
+                    "></div>
+                </div>`,
+                iconSize: [7, 7],
+                iconAnchor: [3, 3]
+            });
     }
 
     function getTransparentIcon() {

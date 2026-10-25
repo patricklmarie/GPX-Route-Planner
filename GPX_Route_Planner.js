@@ -13,7 +13,7 @@
     // Colors used to draw the route stages
     let colors = { 
         blue: {
-            light: '#2791F5',
+            light: '#4BA4F7',
             deep: '#274BF5'
         },
         green: {

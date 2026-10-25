@@ -1166,7 +1166,7 @@
 
         // Create global label
         const globalLabel = document.createElement('span');
-        globalLabel.textContent = context.language === 'EN' ? 'Edit interest places actions' : 'Actions d\'édition de lieux d\'intérêt';
+        globalLabel.textContent = context.language === 'EN' ? 'Edit interest place actions' : 'Actions d\'édition de lieu d\'intérêt';
         globalLabel.style.fontSize = '14px';
         globalLabel.style.fontWeight = 'bold';
         titleContainer.appendChild(globalLabel);
@@ -6914,15 +6914,15 @@
             // Create router profile control
             wrapper.appendChild(createRouterProfileControl());
 
-            // Create general buttons control
-            const genButtonsContainers = createGenButtonsControl();
-            wrapper.appendChild(genButtonsContainers[0]);
-            wrapper.appendChild(genButtonsContainers[1]);
-
             // Create edit interest places buttons control
             const edtIntPlButtonsContainers = createEdtIntPlButtonsControl();
             wrapper.appendChild(edtIntPlButtonsContainers[0]);
             wrapper.appendChild(edtIntPlButtonsContainers[1]);
+
+            // Create general buttons control
+            const genButtonsContainers = createGenButtonsControl();
+            wrapper.appendChild(genButtonsContainers[0]);
+            wrapper.appendChild(genButtonsContainers[1]);
 
             // Create command list for edit stage control
             wrapper.appendChild(createCmdListEdtIntPlControl());
@@ -6980,15 +6980,15 @@
             // Create router profile control
             wrapper.appendChild(createRouterProfileControl());
 
-            // Create general buttons control
-            const genButtonsContainers = createGenButtonsControl();
-            wrapper.appendChild(genButtonsContainers[0]);
-            wrapper.appendChild(genButtonsContainers[1]);
-
             // Create edit stage buttons control
             const edtStgButtonsContainers = createEdtStgButtonsControl();
             wrapper.appendChild(edtStgButtonsContainers[0]);
             wrapper.appendChild(edtStgButtonsContainers[1]);
+
+            // Create general buttons control
+            const genButtonsContainers = createGenButtonsControl();
+            wrapper.appendChild(genButtonsContainers[0]);
+            wrapper.appendChild(genButtonsContainers[1]);
 
             // Create command list for edit stage control
             wrapper.appendChild(createCmdListEdtStgControl());

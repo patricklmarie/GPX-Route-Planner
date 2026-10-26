@@ -117,18 +117,24 @@
         userAccuracyCircle: null        // Also used to display the user's position after geolocalization
     };
 
-    // OpenStreetMap tile layer
-    const osmTL = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors'
-    });
-
     // OpenTopoMap tile layer
     const otmTL = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
         maxZoom: 15,
         attribution:
             'Map data: &copy; OpenStreetMap contributors, SRTM | ' +
             'Map style: &copy; OpenTopoMap (CC-BY-SA)'
+    });
+
+    // OpenStreetMap tile layer
+    const osmTL = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+    });
+
+    // OpenStreetMap tile layer
+    const osmfrTL = L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+	    maxZoom: 20,
+	    attribution: '&copy; OpenStreetMap France | &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     });
 
     // Waymarked trails - Hiking
@@ -168,6 +174,7 @@
     const baseMaps = {
         otm: otmTL,
         osm: osmTL,
+        osmfr: osmfrTL,
         hiking: wmt_hiking,
         hiking2: thunder_out,
         cycling: wmt_cycling,
@@ -179,6 +186,7 @@
         EN: {
             otm: "Topographic (OpenTopoMap)",
             osm: "General Map (OSM Mapnik)",
+            osmfr: "General Map (OSM French)",
             hiking: "Hiking Trails (WMT Hiking)",
             hiking2: "Hiking Trails (TF Outdoors)",
             cycling: "Cycling Routes (WMT Cycling)",
@@ -188,6 +196,7 @@
         FR: {
             otm: "Topographique (OpenTopoMap)",
             osm: "Généraliste (OSM Mapnik)",
+            osmfr: "Généraliste (OSM français)",
             hiking: "Sentiers de randonnée (WMT Hiking)",
             hiking2: "Sentiers de randonnée (TF Outdoors)",
             cycling: "Itinéraires cyclo (WMT Cycling)",
@@ -4313,6 +4322,8 @@
             return;
         }
 
+        disableStagePointsDragging(stages[context.editedStage]);
+        
         // Define cursor with shakehands
         const svgHandshake = `
             <svg xmlns="http://www.w3.org/2000/svg" 
@@ -4432,8 +4443,6 @@
         async function clickForMergeBefore(stageRef, e) {
             map.getContainer().style.cursor = 'progress';
 
-            disableStagePointsDragging(stage);
-
             const iRef = stages.indexOf(stageRef);  // Retrieve stage index
             if (iRef === -1) {
                 enableStagePointsDragging(stage);
@@ -4504,14 +4513,14 @@
 
             map.getContainer().style.cursor = 'crosshair';
                 
+            enableStagePointsDragging(stages[context.editedStage]);
+        
             context.operationInProcess = false;
         }
 
         // Function to process clicks on polylines and markers
         async function clickForMergeAfter(stageRef, e) {
             map.getContainer().style.cursor = 'progress';
-
-            disableStagePointsDragging(stage);
 
             const iRef = stages.indexOf(stageRef);  // Retrieve stage index
             if (iRef === -1) {
@@ -4580,6 +4589,8 @@
                 execute(new Click2MergeAfter(stage, stageIdx, beforeState, afterState));
             }
 
+            enableStagePointsDragging(stages[context.editedStage]);
+        
             map.getContainer().style.cursor = 'crosshair';
                 
             context.operationInProcess = false;
@@ -6051,6 +6062,8 @@
     function setIntPlName() {
         context.operationInProcess = true;
 
+        disableIntPlDragging(interestPlaces[context.editedIntPl]);        
+
         // Create wrapper div
         const wrapper = document.createElement('div');
         wrapper.id = 'gpx-file-wrapper';
@@ -6102,6 +6115,8 @@
             document.removeEventListener('keydown', escKeyHandler);
             wrapper.remove();
             
+            enableIntPlDragging(interestPlaces[context.editedIntPl]);        
+
             context.operationInProcess = false;   // Stop blocking the other operations
         }
 
@@ -6166,6 +6181,8 @@
             document.removeEventListener('keydown', escKeyHandler);
             wrapper.remove();
             
+            enableIntPlDragging(interestPlaces[context.editedIntPl]);        
+
             context.operationInProcess = false;   // Stop blocking the other operations
         }
         cancelButton.addEventListener('click', cancelHandler);
@@ -6181,6 +6198,8 @@
                 input.removeEventListener('keydown', keydownHandler);
                 document.removeEventListener('keydown', escKeyHandler);
                 wrapper.remove();
+
+                enableIntPlDragging(interestPlaces[context.editedIntPl]);        
 
                 context.operationInProcess = false;   // Stop blocking the other operations
             }
@@ -7927,6 +7946,8 @@
     function setStgName() {
         context.operationInProcess = true;
 
+        disableStagePointsDragging(stages[context.editedStage]);
+
         // Create wrapper div
         const wrapper = document.createElement('div');
         wrapper.id = 'gpx-file-wrapper';
@@ -7978,6 +7999,8 @@
             document.removeEventListener('keydown', escKeyHandler);
             wrapper.remove();
             
+            enableStagePointsDragging(stages[context.editedStage]);
+
             context.operationInProcess = false;   // Stop blocking the other operations
         }
 
@@ -8049,6 +8072,8 @@
             document.removeEventListener('keydown', escKeyHandler);
             wrapper.remove();
             
+            enableStagePointsDragging(stages[context.editedStage]);
+
             context.operationInProcess = false;   // Stop blocking the other operations
         }
         cancelButton.addEventListener('click', cancelHandler);
@@ -8065,6 +8090,8 @@
                 document.removeEventListener('keydown', escKeyHandler);
                 wrapper.remove();
 
+                enableStagePointsDragging(stages[context.editedStage]);
+                
                 context.operationInProcess = false;   // Stop blocking the other operations
             }
         }
@@ -8328,6 +8355,9 @@
             return;
         }
 
+        disableStagePointsDragging(stages[context.editedStage]);
+
+
         // Define cursor with scissors
         const svgScissors = `
             <svg xmlns="http://www.w3.org/2000/svg"
@@ -8350,6 +8380,8 @@
                     if (iRef === -1) {
                         map.getContainer().style.cursor = 'crosshair';
 
+                        enableStagePointsDragging(stages[context.editedStage]);
+                        
                         context.operationInProcess = false;   // To prevent firing the single click handler
 
                         return;
@@ -8358,6 +8390,8 @@
                     if (jRef === -1) {
                         map.getContainer().style.cursor = 'crosshair';
 
+                        enableStagePointsDragging(stages[context.editedStage]);
+                        
                         context.operationInProcess = false;   // To prevent firing the single click handler
 
                         return;
@@ -8375,6 +8409,8 @@
                     if (idx < 0) {
                         map.getContainer().style.cursor = 'crosshair';
 
+                        enableStagePointsDragging(stages[context.editedStage]);
+                        
                         context.operationInProcess = false;   // To prevent firing the single click handler
 
                         return;     // When closest point was not found
@@ -8387,6 +8423,10 @@
                     const afterState = { point: latlng, section1: latlngs1, section2: latlngs2 };
                     execute(new ClickSection2Split(stageRef, iRef, jRef, beforeState, afterState));
 
+                    map.getContainer().style.cursor = 'crosshair';
+
+                    enableStagePointsDragging(stages[context.editedStage]);
+        
                     context.operationInProcess = false;   // To prevent firing the single click handler
                 };
             })(stage, section);
@@ -8405,6 +8445,8 @@
                     if (iRef === -1) {
                         map.getContainer().style.cursor = 'crosshair';
 
+                        enableStagePointsDragging(stages[context.editedStage]);
+        
                         context.operationInProcess = false;   // To prevent firing the single click handler
 
                         return;
@@ -8413,6 +8455,8 @@
                     if (jRef === -1) {
                         map.getContainer().style.cursor = 'crosshair';
 
+                        enableStagePointsDragging(stages[context.editedStage]);
+        
                         context.operationInProcess = false;   // To prevent firing the single click handler
 
                         return;
@@ -8420,6 +8464,8 @@
                     if (jRef === 0 || jRef === stageRef.points.length - 1) { 
                         map.getContainer().style.cursor = 'crosshair';
 
+                        enableStagePointsDragging(stages[context.editedStage]);
+        
                         context.operationInProcess = false;   // To prevent firing the single click handler
 
                         return;  // Stage cannot be split at first and last points
@@ -8435,6 +8481,10 @@
                     const afterState = null;
                     execute(new ClickPoint2Split(stageRef, iRef, jRef, beforeState, afterState));
 
+                    map.getContainer().style.cursor = 'crosshair';
+
+                    enableStagePointsDragging(stages[context.editedStage]);
+        
                     context.operationInProcess = false;   // To prevent firing the single click handler
                 };
             })(stage, point);
@@ -8452,6 +8502,8 @@
 
                 map.getContainer().style.cursor = 'crosshair';
 
+                enableStagePointsDragging(stages[context.editedStage]);
+        
                 context.operationInProcess = false;   // Stop blocking the other operations
             }
         }
@@ -11351,6 +11403,13 @@
         }
     }
 
+    //----------------------------------------
+    // Disable dragging for an interest place
+    //----------------------------------------
+    function disableIntPlDragging(intPl) {
+        intPl.marker.dragging.disable();
+    }
+    
    //-------------------------------------------------
     // Disable dragging for all the markers of a stage
     //-------------------------------------------------
@@ -11358,6 +11417,13 @@
         stage.points.forEach((point) => {
             point.marker.dragging.disable();
         });
+    }
+    
+    //---------------------------------------
+    // Enable dragging for an interest place
+    //---------------------------------------
+    function enableIntPlDragging(intPl) {
+        intPl.marker.dragging.enable();
     }
     
     //------------------------------------------------

@@ -3540,12 +3540,14 @@
 
                 body = body + `\n        <trkseg>`;     // Create new track section          
                 for (let i = 0; i < stage.points.length; i++) {
-                    const point = stage.points[i];
-                    body = body + `\n            <trkpt lat="${point.marker.getLatLng().lat}" lon="${point.marker.getLatLng().lng}">`;  // Add track point with coordinates
-                    if (point.marker.getLatLng().alt)
-                        body = body + `\n                <ele>${point.marker.getLatLng().alt}</ele>`;   // Add track point altitude
-                    body = body + `\n            </trkpt>`;
-                    if (stage.sections[i] && stage.sections[i].polyline.getLatLngs().length > 2) {  // If next section was calculated using BRouter
+                    if (stage.points[i] && stage.points[i].marker) {
+                        const point = stage.points[i];
+                        body = body + `\n            <trkpt lat="${point.marker.getLatLng().lat}" lon="${point.marker.getLatLng().lng}">`;  // Add track point with coordinates
+                        if (point.marker.getLatLng().alt)
+                            body = body + `\n                <ele>${point.marker.getLatLng().alt}</ele>`;   // Add track point altitude
+                        body = body + `\n            </trkpt>`;
+                    }
+                    if (stage.sections[i] && stage.sections[i].polyline && stage.sections[i].polyline.getLatLngs().length > 2) {  // If next section was calculated using BRouter
                         const latlngs = stage.sections[i].polyline.getLatLngs();
                         for (let j = 1; j < latlngs.length - 1; j++) {  // First point is skipped because already added
                             body = body + `\n            <trkpt lat="${latlngs[j].lat}" lon="${latlngs[j].lng}">`;  // Add track point with coordinates
@@ -4002,9 +4004,6 @@
     function importRouteFromGPX() {
         context.operationInProcess = true;
 
-        const oldCursor = map.getContainer().style.cursor;
-        map.getContainer().style.cursor = 'progress';
-        
         if (context.editedStage !== null)
             disableStagePointsDragging(stages[context.editedStage]);
 
@@ -4045,8 +4044,6 @@
                 if (context.editedStage !== null)
                     enableStagePointsDragging(stages[context.editedStage]);
 
-                map.getContainer().style.cursor = oldCursor;
-
                 context.operationInProcess = false;
             }
         }
@@ -4058,7 +4055,11 @@
             if (!file) 
                 return;
 
+            const oldCursor = map.getContainer().style.cursor;
+
             try {
+                map.getContainer().style.cursor = 'progress';
+        
                 status.textContent = context.language === 'EN' ? 'Reading...' : 'Lecture en cours...';
                 const text = await file.text();  // Read file content
 
@@ -4070,6 +4071,9 @@
                 if (parserError) {
                     console.error(context.language === 'EN' ? "Error parsing GPX:" : "Erreur de parsing du fichier GPX : ", parserError.textContent);
                     status.textContent = context.language === 'EN' ? 'Error parsing GPX' : 'Erreur de parsing GPX';
+    
+                    map.getContainer().style.cursor = oldCursor;
+
                     return;
                 }
 
@@ -4232,8 +4236,6 @@
             
             if (context.editedStage !== null)
                 enableStagePointsDragging(stages[context.editedStage]);
-
-            map.getContainer().style.cursor = oldCursor;
 
             context.operationInProcess = false;   // Stop blocking the other operations
         }
@@ -5406,6 +5408,10 @@
                         return;
                     cmd.undo();
                     redoStack.push(cmd);
+                } else if (e.ctrlKey && key === '$') {   // When user presses 'h' (to request help)
+                    e.preventDefault();
+
+                    dumpAll ();
                 }
             }
             document.addEventListener('keydown', doc_keydown_perm);  // Add event listener to document
@@ -10785,36 +10791,50 @@
             this.before = before;
             this.after = after;
             this.importedStagesNb = 0;
+            this.importedStagesFirstPos = null;
             this.importedInterestPlacesNb = 0;
+            this.importedInterestPlacesFirstPos = null;
         }
 
         undo() {
             // Process stages
-            for (let i = stages.length - this.importedStagesNb; i < stages.length; i++) {        // Iterate over the imported stages
+            if (this.importedStagesFirstPos + this.importedStagesNb > stages.length)
+                this.importedStagesFirstPos--;      // In the case that an empty stage has been removed before the imported stage
+
+            const importedStagesLastPos = this.importedStagesFirstPos + this.importedStagesNb - 1;
+            for (let i = this.importedStagesFirstPos; i <= importedStagesLastPos; i++) {        // Iterate over the imported stages
                 const stage = stages[i];
                 // Remove event listeners on all sections and all points
                 for (const point of stage.points)
-                    for (const { target, type, handler } of point.evtList)
-                        target.removeEventListener(type, handler);
+                    if (point.evlist)
+                        for (const { target, type, handler } of point.evtList)
+                            target.removeEventListener(type, handler);
                 if (stage.sections) {
                     for (const section of stage.sections)
-                        for (const { target, type, handler } of section.evtList)
-                            target.removeEventListener(type, handler);
+                        if (section.evlist)
+                            for (const { target, type, handler } of section.evtList)
+                                target.removeEventListener(type, handler);
                 }
                 
                 //Delete all sections and all points
                 for (const point of stage.points) {
-                    point.latlng = point.marker.getLatLng();
-                    point.marker.remove();
-                    delete point.marker;
-                    delete point.evtList;
+                    if (point.marker) {
+                        point.latlng = point.marker.getLatLng();
+                        point.marker.remove();
+                        delete point.marker;
+                    }
+                    if (point.evList)
+                        delete point.evtList;
                 }
                 if (stage.sections) {
                     for (const section of stage.sections) {
-                        section.latlngs = section.polyline.getLatLngs();
-                        section.polyline.remove();
-                        delete section.polyline;
-                        delete section.evtList;
+                        if (section.polyline) {
+                            section.latlngs = section.polyline.getLatLngs();
+                            section.polyline.remove();
+                            delete section.polyline;
+                        }
+                        if (section.evList)
+                            delete section.evtList;
                     }
                 }
 
@@ -10822,7 +10842,7 @@
                     stage.infoPop.remove();
             };
 
-            const movedStages = stages.splice(stages.length - this.importedStagesNb);    // Remove imported stages from "stages"
+            const movedStages = stages.splice(this.importedStagesFirstPos, this.importedStagesNb);    // Remove imported stages from "stages"
             this.after.importedStages.push(...movedStages);     // Add them to backup
                         
             displayGlobalInfo();
@@ -10838,7 +10858,11 @@
             }
 
             // Process interest places
-            for (let i = interestPlaces.length - this.importedInterestPlacesNb; i < interestPlaces.length; i++) {        // Iterate over the imported stages
+            if (this.importedInterestPlacesFirstPos + this.importedInterestPlacesNb > interestPlaces.length)
+                this.importedInterestPlacesFirstPos--;      // In the case that an empty stage has been removed before the imported stage
+
+            const importedInterestPlacesLastPos = this.importedInterestPlacesFirstPos + this.importedInterestPlacesNb - 1;
+            for (let i = this.importedInterestPlacesFirstPos; i <= importedInterestPlacesLastPos; i++) {        // Iterate over the imported stages
                 const intPl = interestPlaces[i];
                 // Remove event listeners
                 for (const { target, type, handler } of intPl.evtList)
@@ -10854,19 +10878,18 @@
                     intPl.infoPop.remove();
             };
 
-            const movedInterestPlaces = interestPlaces.splice(interestPlaces.length - this.importedInterestPlacesNb);    // Remove imported stages from "stages"
+            const movedInterestPlaces = interestPlaces.splice(this.importedInterestPlacesFirstPos, this.importedInterestPlacesNb);    // Remove imported stages from "stages"
             this.after.importedInterestPlaces.push(...movedInterestPlaces);     // Add them to backup
         }
 
         redo() {
             // Process stages
-            this.importedStagesNb = this.after.importedStages.length;
-            const initStagesNb = stages.length;
+            this.importedStagesFirstPos = stages.length;
             stages.push(...this.after.importedStages);  // Restore stages from backup
             this.after.importedStages.length = 0;   // Clear backup
 
             // Add imported stages to "stages" and to map
-            for (let i = initStagesNb; i < stages.length; i++) {
+            for (let i = this.importedStagesFirstPos; i < stages.length; i++) {
                 const stage = stages[i];
                 // Restore stage's points
                 stage.points.forEach(point => {
@@ -10915,15 +10938,16 @@
                     removeRouteProfileControl();
                 }
             }
+            
+            this.importedStagesNb = stages.length - this.importedStagesFirstPos;
 
             // Process interest places
-            this.importedInterestPlacesNb = this.after.importedInterestPlaces.length;
-            const initInterestPlacesNb = interestPlaces.length;
+            this.importedInterestPlacesFirstPos = interestPlaces.length;
             interestPlaces.push(...this.after.importedInterestPlaces);  // Restore interest places from backup
             this.after.importedInterestPlaces.length = 0;   // Clear backup
 
-            // Add imported stages to "stages" and to map
-            for (let i = initInterestPlacesNb; i < interestPlaces.length; i++) {
+            // Add imported interest places to "interestPlaces" and to map
+            for (let i = this.importedInterestPlacesFirstPos; i < interestPlaces.length; i++) {
                 const intPl = interestPlaces[i];
 
                 const newMarker = L.marker(intPl.latlng, {
@@ -10942,6 +10966,7 @@
 
                 updateIntPlData(intPl, false);     // Update interest places information popup                
             };
+            this.importedInterestPlacesNb = interestPlaces.length - this.importedInterestPlacesFirstPos;
         }
     }
 
@@ -11018,27 +11043,35 @@
             stages.forEach(stage => {
                 // Remove event listeners on all sections and all points
                 for (const point of stage.points)
-                    for (const { target, type, handler } of point.evtList)
-                        target.removeEventListener(type, handler);
+                    if (point.evList)
+                        for (const { target, type, handler } of point.evtList)
+                            target.removeEventListener(type, handler);
                 if (stage.sections) {
                     for (const section of stage.sections)
-                        for (const { target, type, handler } of section.evtList)
-                            target.removeEventListener(type, handler);
+                        if (section.evList)
+                            for (const { target, type, handler } of section.evtList)
+                                target.removeEventListener(type, handler);
                 }
                 
                 //Delete all sections and all points
                 for (const point of stage.points) {
-                    point.latlng = point.marker.getLatLng();
-                    point.marker.remove();
-                    delete point.marker;
-                    delete point.evtList;
+                    if (point.marker) {
+                        point.latlng = point.marker.getLatLng();
+                        point.marker.remove();
+                        delete point.marker;
+                    }
+                    if (point.evList)
+                        delete point.evtList;
                 }
                 if (stage.sections) {
                     for (const section of stage.sections) {
-                        section.latlngs = section.polyline.getLatLngs();
-                        section.polyline.remove();
-                        delete section.polyline;
-                        delete section.evtList;
+                        if (section.polyline) {
+                            section.latlngs = section.polyline.getLatLngs();
+                            section.polyline.remove();
+                            delete section.polyline;
+                        }
+                        if (section.evList)
+                            delete section.evtList;
                     }
                 }
 
@@ -11416,6 +11449,76 @@
     function disableStagePointsDragging(stage) {
         stage.points.forEach((point) => {
             point.marker.dragging.disable();
+        });
+    }
+    
+    //-------------------------------------
+    // Dump all stages and interest points
+    //-------------------------------------
+    function dumpAll() {
+        console.log("STAGES (" + stages.length + ")");
+        stages.forEach((stage, i) => {
+            let name = "<undefined>";
+            if (typeof stage.name !== "undefined")
+                name = stage.name;
+            console.log("- Stage " + i + ": " + name);
+
+            let pointNb = "<no point defined>";
+            if (typeof stage.points !== "undefined") {
+                console.log("  " + stage.points.length + " points :");
+                stage.points.forEach((point, j) => {
+                    let markerNb = "<no marker defined>";
+                    if (typeof point.marker !== "undefined") {
+                        if (point.marker != null)
+                            markerNb = 1;
+                        else 
+                            markerNb = 0;
+                    }
+                    let eventNb = "<undefined>";
+                    if (typeof point.evtList !== "undefined")
+                        eventNb = point.evtList.length;
+                    console.log("  - Point " + j + ": " + markerNb + " marker, " + eventNb + " events");
+                });
+            }
+
+            let sectionNb = "<no section defined>";
+            if (typeof stage.sections !== "undefined") {
+                console.log("  " + stage.sections.length + " sections :");
+                stage.sections.forEach((section, j) => {
+                    let polylineNb = "<no polyline defined>";
+                    let ptsNb = "<N/A>";
+                    if (typeof section.polyline !== "undefined") {
+                        if (section.polyline != null) {
+                            polylineNb = 1;
+                            ptsNb = section.polyline.getLatLngs().length;
+                        } else 
+                            polylineNb = 0;
+                    }
+                    let eventNb = "<undefined>";
+                    if (typeof section.evtList !== "undefined")
+                        eventNb = section.evtList.length;
+                    console.log("  - Section " + j + ": " + polylineNb + " polyline with " + ptsNb + " points, " + eventNb + " events");
+                });
+            }
+        });
+
+        console.log("INTEREST PLACES (" + interestPlaces.length + ")");
+        interestPlaces.forEach((intPl, i) => {
+            let name = "<undefined>";
+            if (typeof intPl.name !== "undefined")
+                name = intPl.name;
+
+            let intPlNb = "<no marker defined>";
+            if (typeof intPl.marker !== "undefined") {
+                if (intPl.marker != null)
+                    intPlNb = 1;
+                else 
+                    intPlNb = 0;
+            }
+            let eventNb = "<undefined>";
+            if (typeof intPl.evtList !== "undefined")
+                eventNb = intPl.evtList.length;
+            console.log("  - Interest place " + i + ": " + markerNb + " marker, " + eventNb + " events");
         });
     }
     
@@ -11846,7 +11949,8 @@
 
         stages.forEach(stage => {   // Store the bounds of all polylines of all stages
             stage.sections.forEach(section => {
-                bounds.extend(section.polyline.getBounds());
+                if (section.polyline)
+                    bounds.extend(section.polyline.getBounds());
             });
         });
 

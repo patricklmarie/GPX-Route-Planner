@@ -282,8 +282,11 @@
         });
 
         settingsBtn.addEventListener("click", () => {
-            if (context.operationInProcess)
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
                 return;
+            }
 
             sidePanel.classList.toggle("open");
 
@@ -1211,8 +1214,11 @@
 
         // Define submit handler (for setting the stage's name)
         async function setNameHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             setIntPlName();
         }
@@ -1240,8 +1246,11 @@
         setColorButton.style.justifyContent = 'center';
         setColorButton.title = context.language === 'EN' ? 'Change interest place color' : 'Modifier la couleur du lieu d\'intérêt';
         setColorButton.addEventListener('click', (e) => {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             e.stopPropagation(); // Prevent click outside to close immediately
 
@@ -1362,8 +1371,11 @@
 
         // Define submit handler (for focusing to a GPX file)
         async function focusHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             focusOnIntPl();
         }
@@ -1394,8 +1406,11 @@
 
         // Define submit handler (for deleting the interest place)
         async function delIntPlHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             if (confirm(context.language === 'EN' ? "Are you sure you want to delete the edited interest place?" : "Etes-vous sûr de vouloir supprimer le lieu d\'intérêt en cours d'édition ?")) 
                 deleteIntPl(context.editedIntPl);
@@ -1427,8 +1442,11 @@
 
         // Define submit handler (for quitting edit mode)
         async function quitEdtHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             quitEditIntPl();
         }
@@ -1485,8 +1503,11 @@
 
         // Define submit handler (for setting the stage's name)
         async function setNameHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    
+                return;
+            }
     
             setStgName();
         }
@@ -1514,8 +1535,11 @@
         setColorButton.style.justifyContent = 'center';
         setColorButton.title = context.language === 'EN' ? 'Change stage color' : 'Modifier la couleur de l\'étape';
         setColorButton.addEventListener('click', (e) => {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             e.stopPropagation(); // Prevent click outside to close immediately
 
@@ -1636,8 +1660,11 @@
 
         // Define submit handler (for reverse stage direction)
         async function revStgHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             reverseStg();
         }
@@ -1668,8 +1695,11 @@
 
         // Define submit handler (for split stage)
         async function splitStgHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
 
             splitStage();
         }
@@ -1700,8 +1730,11 @@
 
         // Define submit handler (for merge before)
         async function mergeStgHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
 
             mergeStage();
         }
@@ -1732,8 +1765,11 @@
 
         // Define submit handler (for focusing to a GPX file)
         async function focusHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             focusOnStage();
         }
@@ -1761,8 +1797,11 @@
         changeStgPosButton.style.justifyContent = 'center';
         changeStgPosButton.title = context.language === 'EN' ? 'Change stage position (in the list of stages)' : 'Modifier la position de l\'étape (dans la liste des étapes)';
         changeStgPosButton.addEventListener('click', (e) => {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             e.stopPropagation(); // Prevent click outside to close immediately
 
@@ -1880,8 +1919,11 @@
 
         // Define submit handler (for deleting the stage)
         async function delStgHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             if (confirm(context.language === 'EN' ? "Are you sure you want to delete the edited stage?" : "Etes-vous sûr de vouloir supprimer l'étape en cours d'édition ?")) 
                 deleteStg(context.editedStage);
@@ -1913,8 +1955,11 @@
 
         // Define submit handler (for quitting edit mode)
         async function quitEdtHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             quitEditStage();
         }
@@ -1972,8 +2017,11 @@
 
         // Define submit handler (for creating a new stage)
         async function newStgHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
 
             if (context.editedStage !== null)
                 quitEditStage();
@@ -2009,8 +2057,11 @@
 
         // Define submit handler (for creating a new interest place)
         async function newIntPlHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             if (context.editedStage !== null)
                 quitEditStage();
@@ -2046,8 +2097,11 @@
 
         // Define submit handler (for exporting to a GPX file)
         async function importGPXHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             importRouteFromGPX();
         }
@@ -2078,8 +2132,11 @@
 
         // Define submit handler (for exporting to a GPX file)
         async function exportGPXHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             exportRouteToGPX();
         }
@@ -2110,8 +2167,11 @@
 
         // Define submit handler (for focusing to a GPX file)
         async function focusHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             focusOnRoute();
         }
@@ -2142,8 +2202,11 @@
 
         // Define submit handler (for exporting to a GPX file)
         async function undoHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             const cmd = undoStack.pop();
             if (!cmd) 
@@ -2178,8 +2241,11 @@
 
         // Define submit handler (for exporting to a GPX file)
         async function redoHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             const cmd = redoStack.pop();
             if (!cmd) 
@@ -2214,8 +2280,11 @@
 
         // Define submit handler (for resetting the route)
         async function resetRteHandler() {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             if (confirm(context.language === 'EN' ? "Are you sure you want to reset the route?" : "Etes-vous sûr de vouloir réinitialiser l'itinéraire ?")) 
                 resetRoute();
@@ -4099,6 +4168,8 @@
                     const colors2 = wpt.getElementsByTagNameNS(RP_NS, "color");
                     if (colors2.length > 0 && colors2[0].textContent.length > 0)
                         intPl2.color = colors2[0].textContent;
+                    else
+                        intPl2.color = context.intPlDefaultColor;
                     // Retrieve latitude and longitude of wpt/interest place
                     intPl2.latlng = {
                         lat: parseFloat(wpt.getAttribute("lat")),
@@ -4113,6 +4184,7 @@
                     // Register track as stage
                     const stage2 = {
                         name: null,
+                        color: null,
                         sections: [],
                         distance: null,
                         points: [],
@@ -4120,7 +4192,6 @@
                         descent: null,
                         infoPop: null
                     };
-                    stages2.push(stage2);
                 
                     // Retrieve track name and set it as stage name
                     const names = trk.getElementsByTagName("name");
@@ -4184,6 +4255,9 @@
                         
                         stage2.sections.push({ latlngs: polypoints });
                     }
+
+                    if (stage2.points.length > 0)
+                        stages2.push(stage2);
                 });
 
                 const beforeState = null;
@@ -4640,8 +4714,11 @@
     // Query and display address at mouse position 
     //---------------------------------------------
     async function queryAddress() {
-        if (context.operationInProcess) 
-            return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
 
         if (context.addrPop && context.addrPop !== null)
             context.addrPop.remove();
@@ -4696,8 +4773,11 @@
     // Query and display altitude at mouse position 
     //----------------------------------------------
     async function queryAltitude() {
-        if (context.operationInProcess) 
-            return;   // Ignore if another operation is in process
+        if (context.operationInProcess) {
+            alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+            
+            return;
+        }
 
         if (context.altPop && context.altPop !== null)
             context.altPop.remove();
@@ -5078,8 +5158,9 @@
 
         // Set non permanent event listeners for key down on doc (for stage edition)
         function doc_keydown(e) {
-            if (context.operationInProcess) 
-                return;   // Do not execute if save of rename operation in process
+            if (context.operationInProcess) {
+                return;
+            }
 
             const key = (e.key || '').toLowerCase();
 
@@ -5125,8 +5206,11 @@
         // Set event listener on map for simple click
         const map_click = (function() {
             return function(e) {
-                if (context.operationInProcess) 
+                if (context.operationInProcess) {
+                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    
                     return;
+                }
             
                 // If a double-click is coming, cancel this click
                 if (context.clickTimeout) {
@@ -5164,8 +5248,11 @@
 
         // Set event listener on map for double-click
         function map_dblclick(e) {
-            if (context.operationInProcess) 
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
                 return;
+            }
             
             context.operationInProcess = true;
 
@@ -5190,8 +5277,11 @@
 
         // On real pan start
         function map_dragstart(e) {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             map.getContainer().style.cursor = 'grabbing';
             //context.suppressNextClick = true;
@@ -5201,8 +5291,11 @@
 
         // On pan end
         function map_dragend(e) {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             map.getContainer().style.cursor = 'crosshair';
             context.suppressNextClick = false;
@@ -5211,8 +5304,11 @@
         mapEvtList.push({ target: map, type: 'dragend', handler: map_dragend });    //Register listener
 
         function map_mousedown(e) {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             longPressTriggered = false;
 
@@ -5226,8 +5322,11 @@
         mapEvtList.push({ target: map, type: 'mousedown', handler: map_mousedown });    //Register listener
 
         function map_mouseup(e) {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             clearTimeout(holdTimer);
             map.getContainer().style.cursor = 'crosshair';
@@ -5313,8 +5412,9 @@
         if (context.initializationInProcess) {
             // When user presses "h", display the altitude at the cursor position
             window.addEventListener("keydown", (e) => {
-                if (context.operationInProcess) 
-                    return;   // Ignore if another operation is in process
+                if (context.operationInProcess) {
+                    return;
+                }
     
                 const key = (e.key || '').toLowerCase();
 
@@ -5348,8 +5448,9 @@
 
             // Set permanent event listeners on doc for key pressed (one time for all time)
             function doc_keydown_perm(e) {    
-                if (context.operationInProcess) 
-                    return;   // Ignore if another operation is in process
+                if (context.operationInProcess) {
+                    return;
+                }
     
                 const key = (e.key || '').toLowerCase();
 
@@ -5439,8 +5540,9 @@
 
         // Set non permanent event listeners for key down on doc (for stage edition)
         function doc_keydown(e) {
-            if (context.operationInProcess) 
-                return;   // Do not execute if save of rename operation in process
+            if (context.operationInProcess) {
+                return;
+            }
 
             const key = (e.key || '').toLowerCase();
 
@@ -5513,8 +5615,9 @@
         // Set event listener on map for simple click
         const map_click = (function() {
             return function(e) {
-                if (context.operationInProcess) 
+                if (context.operationInProcess) {
                     return;
+                }
 
                 if (context.editedStage === null) 
                     return;
@@ -5556,7 +5659,6 @@
                             calculatedPoints = await fetchBRouterRoute(coordinates);    // Find route to new point with BRouter
 
                             if (!calculatedPoints) {      // When no route is found by BRouter
-                                //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
                                 enableStagePointsDragging(stageRef);
             
                                 map.getContainer().style.cursor = 'crosshair';
@@ -5627,8 +5729,11 @@
 
         // Set event listener on map for double-click
         function map_dblclick(e) {
-            if (context.operationInProcess) 
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
                 return;
+            }
 
             context.operationInProcess = true;
             
@@ -5653,8 +5758,9 @@
 
         // On real pan start
         function map_dragstart(e) {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                return;
+            }
     
             map.getContainer().style.cursor = 'grabbing';
         }
@@ -5663,8 +5769,11 @@
 
         // On pan end
         function map_dragend(e) {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             map.getContainer().style.cursor = 'crosshair';
             context.suppressNextClick = false;
@@ -5673,8 +5782,9 @@
         mapEvtList.push({ target: map, type: 'dragend', handler: map_dragend });    //Register listener
 
         function map_mousedown(e) {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                return;
+            }
     
             longPressTriggered = false;
 
@@ -5688,8 +5798,9 @@
         mapEvtList.push({ target: map, type: 'mousedown', handler: map_mousedown });    //Register listener
 
         function map_mouseup(e) {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                return;
+            }
     
             clearTimeout(holdTimer);
             map.getContainer().style.cursor = 'crosshair';
@@ -5706,8 +5817,9 @@
                 if (context.altPop && context.altPop !== null)
                     context.altPop.remove();
 
-                if (context.operationInProcess) 
-                    return;   // Ignore if another operation is in process
+                if (context.operationInProcess) {
+                    return;
+                }
 
                 if (!context.stageNRouteProfileDisplayed || context.editedStage === null) 
                     return;
@@ -5783,8 +5895,11 @@
 
         // Set event listener on map for double-click
         function map_dblclick(e) {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                
+                return;
+            }
     
             context.operationInProcess = true;
 
@@ -5991,8 +6106,11 @@
 
             // Define submit handler (button)
             async function submitHandler() {
-                if (context.operationInProcess) 
+                if (context.operationInProcess) {
+                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    
                     return;
+                }
 
                 if (navigator.geolocation) {
                     context.operationInProcess = true;
@@ -6024,8 +6142,11 @@
 
             // Define reset handler (button or Escape)
             function resetHandler() {
-                if (context.operationInProcess) 
+                if (context.operationInProcess) {
+                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    
                     return;
+                }
 
                 // Remove geolocation markers if any
                 if (context.userLocationMarker) {    
@@ -6251,8 +6372,11 @@
 
             // Set event listener on interest place for click
             function intPl_click(e) {
-                if (context.operationInProcess) 
-                    return;   // Ignore if load or rename operation in process
+                if (context.operationInProcess) {
+                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    
+                    return;
+                }
 
                 if (context.suppressNextClick) {
                     context.suppressNextClick = false;
@@ -6277,8 +6401,11 @@
             // Set event listener on interest place for double-click
             const intPl_dblclick = (function(intPlRef) {
                 return async function(e) {
-                    if (context.operationInProcess) 
-                        return;   // Ignore if load or rename operation in process
+                    if (context.operationInProcess) {
+                        alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                        
+                        return;
+                    }
 
                     context.operationInProcess = true;
 
@@ -6313,8 +6440,11 @@
             // Set event listener on point for drag and drop
             const intPl_mousedown = (function(intPlRef) {
                 return function(e) {
-                    if (context.operationInProcess) 
-                        return;   // Ignore if load or rename operation in process
+                    if (context.operationInProcess) {
+                        alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                        
+                        return;
+                    }
 
                     context.operationInProcess = true;
 
@@ -6436,8 +6566,11 @@
 
             // Set event listener on interest place for click (does nothing, but needed to distinguish simple clicks from double-clicks)
             function intPl_click(e) {
-                if (context.operationInProcess) 
-                    return;   // Not executed if a load or rename operation is in process
+                if (context.operationInProcess) {
+                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    
+                    return;
+                }
 
                 // Stop a pending single-click
                 if (context.clickTimeout) {
@@ -6456,8 +6589,11 @@
             // Set event listener on interest place for double-click
             const intPl_dblclick = (function(intPlRef) {
                 return function(e) {
-                    if (context.operationInProcess) 
-                        return;   // Not executed if a load or rename operation is in process
+                    if (context.operationInProcess) {
+                        alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                        
+                        return;
+                    }
 
                     context.operationInProcess = true;
 
@@ -6574,8 +6710,11 @@
 
             // Define reset handler (button or Escape)
             function resetHandler() {
-                if (context.operationInProcess) 
+                if (context.operationInProcess) {
+                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    
                     return;
+                }
                 
                 let container = wrapper.querySelector('#search-results');   // Search for the places found container (if any)
                 if (container) 
@@ -6595,8 +6734,11 @@
                     
             // Submit handler (button or Enter)
             async function submitHandler() {
-                if (context.operationInProcess) 
+                if (context.operationInProcess) {
+                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    
                     return;
+                }
 
                 context.operationInProcess = true;
                 
@@ -6667,8 +6809,11 @@
                             }
 
                             L.DomEvent.on(div, 'click', (e) => {    // Define click event handler
-                                if (context.operationInProcess) 
+                                if (context.operationInProcess) {
+                                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                                    
                                     return;
+                                }
                 
                                 L.DomEvent.stop(e);     // Stop map interaction
 
@@ -6716,8 +6861,11 @@
                 
                     // Escape, arrow down and arrow up keys handler just for this wrapper
                     function keydownDocHandler(e) {
-                        if (context.operationInProcess) 
+                        if (context.operationInProcess) {
+                            alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                            
                             return;
+                        }
                 
                         if ((e.key || '').toLowerCase() === 'escape') {
                             L.DomEvent.stop(e);     // Stop map interaction
@@ -6850,8 +6998,11 @@
                 }
 
                 if (e.key === 'Enter') {
-                    if (context.operationInProcess) 
+                    if (context.operationInProcess) {
+                        alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                        
                         return;
+                    }
                 
                     L.DomEvent.stop(e);
                     submitHandler();
@@ -7161,8 +7312,9 @@
 
         // Set event listener on point for click
         function point_click(e) {
-            if (context.operationInProcess) 
-                return;   // Ignore if load or rename operation in process
+            if (context.operationInProcess) {
+                return;
+            }
 
             if (context.suppressNextClick) {
                 context.suppressNextClick = false;
@@ -7187,8 +7339,11 @@
         // Set event listener on point for double-click
         const point_dblclick = (function(stageRef, pointRef) {
             return async function(e) {
-                if (context.operationInProcess) 
-                    return;   // Ignore if load or rename operation in process
+                if (context.operationInProcess) {
+                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    
+                    return;
+                }
 
                 context.operationInProcess = true;
 
@@ -7318,8 +7473,9 @@
         // Set event listener on point for drag and drop
         const point_mousedown = (function(stageRef, pointRef) {
             return function(e) {
-                if (context.operationInProcess) 
-                    return;     // Ignore if load or rename operation in process
+                if (context.operationInProcess) {
+                    return;
+                }
 
                 context.operationInProcess = true;
 
@@ -7679,8 +7835,9 @@
 
         // Set event listener on section for click
         function section_click(e) {
-            if (context.operationInProcess) 
-                return;   // Ignore if another operation is in process
+            if (context.operationInProcess) {
+                return;
+            }
 
             // If a double-click is coming, cancel this click
             if (context.clickTimeout) {
@@ -7699,8 +7856,11 @@
         // Set event listener on section for double-click
         const section_dblclick = (function(stageRef, sectionRef) {
             return function(e) {
-                if (context.operationInProcess) 
-                    return;   // Ignore if another operation is in process
+                if (context.operationInProcess) {
+                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    
+                    return;
+                }
 
                 context.operationInProcess = true;
                 
@@ -7748,8 +7908,9 @@
         // Set event listener on section for drag and drop
         const section_mousedown = (function(stageRef, sectionRef) {
             return function(e) {
-                if (context.operationInProcess) 
-                    return;   // Ignore if another operation is in process
+                if (context.operationInProcess) {
+                    return;
+                }
 
                 context.operationInProcess = true;
 
@@ -7807,8 +7968,9 @@
                         sectionRef.polyline.setLatLngs([latlngs[0], ev.latlng])
                             .setStyle({ dashArray: '5, 10' });
                         // Insert a new section with a straight dashed polyline from the mouse cursor's position to the section's end
-                        const newPolyline = L.polyline([ev.latlng, latlngs[latlngs.length - 1]]).addTo(map);
-                        newPolyline.setStyle({ dashArray: '5, 10' });
+                        const newPolyline = L.polyline([ev.latlng, latlngs[latlngs.length - 1]])
+                            .setStyle({ color: colors[stage.color].light, dashArray: '5, 10' })
+                            .addTo(map);
                         stageRef.sections.splice(jRef + 1, 0, {polyline: newPolyline, evtList: []});
                         
                         firstDrag = false;
@@ -8163,8 +8325,9 @@
 
                 // Set event listener on section for click (does nothing, but needed to distinguish simple clicks from double-clicks)
                 function section_click(e) {
-                    if (context.operationInProcess) 
-                        return;   // Not executed if a load or rename operation is in process
+                    if (context.operationInProcess) {
+                        return;
+                    }
 
                     // Stop a pending single-click
                     if (context.clickTimeout) {
@@ -8183,8 +8346,11 @@
                 // Set event listener on section for double-click
                 const section_dblclick = (function(stageRef) {
                     return function(e) {
-                        if (context.operationInProcess) 
-                            return;   // Not executed if a load or rename operation is in process
+                        if (context.operationInProcess) {
+                            alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                            
+                            return;
+                        }
 
                         context.operationInProcess = true;
 
@@ -8280,8 +8446,11 @@
 
                 // Set event listener on point for click
                 function point_click(e) {
-                    if (context.operationInProcess) 
-                        return;   // Not executed if a load or rename operation is in process
+                    if (context.operationInProcess) {
+                        alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                        
+                        return;
+                    }
 
                     // Stop a pending single-click
                     if (context.clickTimeout) {
@@ -8300,8 +8469,11 @@
                 // Set event listener on point for double-click
                 const point_dblclick = (function(stageRef) {
                     return function (e) {
-                        if (context.operationInProcess) 
+                        if (context.operationInProcess) {
+                            alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                            
                             return;
+                        }
                         
                         context.operationInProcess = true;
 
@@ -10951,7 +11123,7 @@
                 const intPl = interestPlaces[i];
 
                 const newMarker = L.marker(intPl.latlng, {
-                    icon: getInterestPlaceIconicon(intPl.color, 'deep'),
+                    icon: getInterestPlaceIcon(intPl.color, 'deep'),
                     pane: 'markerEditPane',
                     draggable: false,
                     autoPan: false,
@@ -11459,8 +11631,12 @@
         console.log("STAGES (" + stages.length + ")");
         stages.forEach((stage, i) => {
             let name = "<undefined>";
-            if (typeof stage.name !== "undefined")
-                name = stage.name;
+            if (typeof stage.name !== "undefined") {
+                if (stage.name !== null)
+                    name = stage.name;
+                else
+                    name = "<null>";
+            }
             console.log("- Stage " + i + ": " + name);
 
             let pointNb = "<no point defined>";
@@ -11471,8 +11647,9 @@
                     if (typeof point.marker !== "undefined") {
                         if (point.marker != null)
                             markerNb = 1;
-                        else 
+                        else {
                             markerNb = 0;
+                        }
                     }
                     let eventNb = "<undefined>";
                     if (typeof point.evtList !== "undefined")
@@ -11506,7 +11683,10 @@
         interestPlaces.forEach((intPl, i) => {
             let name = "<undefined>";
             if (typeof intPl.name !== "undefined")
-                name = intPl.name;
+                if (intPl.name !== null)
+                    name = intPl.name;
+                else
+                    name = "<null>";
 
             let intPlNb = "<no marker defined>";
             if (typeof intPl.marker !== "undefined") {

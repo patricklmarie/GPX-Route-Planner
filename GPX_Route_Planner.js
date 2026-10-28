@@ -4148,6 +4148,7 @@
 
                 const interestPlaces2 = [];
 
+                // Import waypoints
                 const wpts = Array.from(xmlDoc.querySelectorAll("wpt"));    // Retrieve waypoints
                 wpts.forEach(wpt => {
                     // Register waypoint as interest place
@@ -4179,6 +4180,86 @@
 
                 const stages2 = [];
 
+                // Import routes
+                const rtes = Array.from(xmlDoc.querySelectorAll("rte"));    // Retrieve tracks
+                rtes.forEach(rte => {
+                    // Register track as stage
+                    const stage2 = {
+                        name: null,
+                        color: null,
+                        sections: [],
+                        distance: null,
+                        points: [],
+                        ascent: null,
+                        descent: null,
+                        infoPop: null
+                    };
+                
+                    // Retrieve track name and set it as stage name
+                    const names = rte.getElementsByTagName("name");
+                    if (names.length > 0 && names[0].textContent.length > 0)
+                        stage2.name = names[0].textContent;
+                    // Retrieve waypoint color and set it as interest place name
+                    const colors2 = rte.getElementsByTagNameNS(RP_NS, "color");
+                    if (colors2.length > 0 && colors2[0].textContent.length > 0 && !context.forceColorAtImport)
+                        stage2.color = colors2[0].textContent;
+                    else
+                        stage2.color = context.stageDefaultColor;
+                    // Retrieve track distance and set it as stage distance
+                    const distances = rte.getElementsByTagNameNS(RP_NS, "distance");
+                    if (distances.length > 0)
+                        stage2.distance = parseFloat(distances[0].textContent);
+                    // Retrieve track ascent and set it as stage ascent
+                    const ascents = rte.getElementsByTagNameNS(RP_NS, "ascent");
+                    if (ascents.length > 0)
+                        stage2.ascent = parseFloat(ascents[0].textContent);
+                    // Retrieve track descent and set it as stage descent
+                    const descents = rte.getElementsByTagNameNS(RP_NS, "descent");
+                    if (descents.length > 0)
+                        stage2.descent = parseFloat(descents[0].textContent);
+                
+                    let polypoints = [];
+                    const rtepts =  Array.from(rte.querySelectorAll("rtept"));
+                    rtepts.forEach((rtept, k) => {
+                        let latlng = null;
+                        const eles = Array.from(rtept.getElementsByTagName("ele"));
+                        if (eles.length > 0)
+                            latlng = {
+                                lat: parseFloat(rtept.getAttribute("lat")),
+                                lng: parseFloat(rtept.getAttribute("lon")),
+                                alt: parseFloat(eles[0].textContent)
+                            }
+                        else
+                            latlng = {
+                                lat: parseFloat(rtept.getAttribute("lat")),
+                                lng: parseFloat(rtept.getAttribute("lon"))
+                            }
+                        if (stage2.points.length === 0) {
+                            // Register first point of the section and create marker on the map
+                            stage2.points.push({ latlng: latlng });
+                            polypoints.push(latlng);
+                        } else if (isBRouterPoint(rtept)) { // Register intermediate point calculated by BRouter
+                            polypoints.push(latlng);
+                        } else {
+                            // Register end of section point and create marker and polyline on the map
+                            stage2.points.push({ latlng: latlng })
+                            polypoints.push(latlng);
+                            stage2.sections.push({ latlngs: polypoints })
+                            polypoints = [latlng];
+                        }
+                    });
+                    // If the last point of the last track was a point calculated by BRouter, the last section has not been imported. Import it properly now.
+                    if (polypoints.length > 1) {
+                        stage2.points.push({ latlng: polypoints[polypoints.length - 1] });
+                        
+                        stage2.sections.push({ latlngs: polypoints });
+                    }
+
+                    if (stage2.points.length > 0)
+                        stages2.push(stage2);
+                });
+                
+                // Import tracks
                 const trks = Array.from(xmlDoc.querySelectorAll("trk"));    // Retrieve tracks
                 trks.forEach(trk => {
                     // Register track as stage

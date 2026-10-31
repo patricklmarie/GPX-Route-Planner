@@ -82,6 +82,7 @@
         geolocationDisplayed: true,     // 
         geolocControl: null,            // Control hosting the geolocation function
         globalInfoControl: null,        // Control hosting the global information about the route
+        hideNonEdited: false,           // When set and when a stage is edited, the other stages are hidden
         initializationInProcess: true,  // Initialization in process
         intPlDefaultColor: null,        // Default color used to plot interest places
         language: 'EN',                 // Language to be used for the UI (English or French)
@@ -3559,6 +3560,14 @@
         map.getContainer().style.cursor = oldCursor;
             
         context.operationInProcess = false;
+
+        const message = document.querySelector(".msg-text");
+        message.style.display = "inline-block";
+        message.textContent = context.language === 'EN' ? 'Exported to GPX file' : 'Exporté dans un fichier GPX';
+
+        setTimeout(() => {
+            message.style.display = "none";
+        }, 4000);
         
         //----------------------
         // Generate GPX content
@@ -3682,10 +3691,14 @@
             <input type="checkbox" id="stageNRouteProfile" name="stageNRouteProfile" value="stageNRouteProfile" ${context.stageNRouteProfileDisplayed ? "checked" : "" } />
             <label for="stageNRouteProfile">${context.language === 'EN' ? "Stage and route profile" : "Profil d'étape et d'itinéraire" }</label>                  
             </div>
-            <h3>${context.language === 'EN' ? "Icons and default colors to be used" : "Icones et couleurs par défaut à utiliser" }</h3>
+            <h3>${context.language === 'EN' ? "Miscellaneous" : "Divers" }</h3>
             <div>                
             <input type="checkbox" id="smallerIcons" name="smallerIcons" value="smallerIcons" ${context.smallerIcons ? "checked" : "" } />
             <label for="smallerIcons">${context.language === 'EN' ? "Use smaller icons" : "Utiliser des icones de taille réduite" }</label>
+            </div>
+            <div>                
+            <input type="checkbox" id="hideNonEdited" name="hideNonEdited" value="hideNonEdited" ${context.hideNonEdited ? "checked" : "" } />
+            <label for="hideNonEdited">${context.language === 'EN' ? "While a stage is being edited, hide the others" : "Quand une étape est en cours d'édition, masker les autres" }</label>
             </div>
             <br/>
             <div style="display: grid; grid-template-columns: auto auto; row-gap: 6px; column-gap: 12px; align-items: center; ">
@@ -3732,6 +3745,7 @@
         document.getElementById("intPlColor").addEventListener("change", (e) => changeIntPlDefaultColor(e.target.value));
         document.getElementById("forceColorAtImport").addEventListener("click", (e) => changeForceColorAtImport(e.target.checked));
         document.getElementById("smallerIcons").addEventListener("click", (e) => changeUseSmallerIcons(e.target.checked));
+        document.getElementById("hideNonEdited").addEventListener("click", (e) => changeHideNonEditedStages(e.target.checked));
 
         //-------------------------------------------------------------
         // Change language when requested from the settings side panel
@@ -4065,6 +4079,51 @@
                     intPl.marker.setIcon(getInterestPlaceIcon(intPl.color, shade));
             });
         }
+
+        //-------------------------------
+        // Change hide non edited stages
+        //-------------------------------
+        function changeHideNonEditedStages(checked) {
+            if (checked) {
+                context.hideNonEdited = true;
+
+                setCookie("HideNonEditedStages", '1', 60);
+
+                if (context.editedStage != null) {
+                    stages.forEach((stage, i) => {
+                        if (i !== context.editedStage) {
+                            stage.sections.forEach((section) => {
+                                section.polyline.remove();
+                            });
+                            stage.points.forEach((point) => {
+                                point.marker.remove();
+                            });
+                            if (context.stageNRouteDataDisplayed && stage.infoPop)
+                                stage.infoPop.remove();
+                        }
+                    });
+                }
+            } else {
+                context.hideNonEdited = false;
+
+                setCookie("HideNonEditedStages", '0', 60);
+
+                if (context.editedStage != null) {
+                    stages.forEach((stage, i) => {
+                        if (i !== context.editedStage) {
+                            stage.sections.forEach((section) => {
+                                section.polyline.addTo(map);
+                            });
+                            stage.points.forEach((point) => {
+                                point.marker.addTo(map);
+                            });
+                            if (context.stageNRouteDataDisplayed && stage.infoPop)
+                                stage.infoPop.addTo(map);
+                        }
+                    });
+                }
+            }
+        }
     }
 
     //--------------------------
@@ -4353,7 +4412,8 @@
                 document.removeEventListener('keydown', escKeyHandler);
                 wrapper.remove();
 
-                focusOnRoute();
+                if (!context.hideNonEdited)
+                    focusOnRoute();
 
                 if (context.editedStage !== null)
                     enableStagePointsDragging(stages[context.editedStage]);
@@ -4361,6 +4421,14 @@
                 map.getContainer().style.cursor = oldCursor;
 
                 context.operationInProcess = false;   // Stop blocking the other operations
+                
+                const message = document.querySelector(".msg-text");
+                message.style.display = "inline-block";
+                message.textContent = context.language === 'EN' ? 'GPX file imported' : 'Fichier GPX importé';
+
+                setTimeout(() => {
+                    message.style.display = "none";
+                }, 4000);
             } catch (err) {     // Error handler
                 console.error(context.language === 'EN' ? 'Error reading file:' : 'Erreur de lecture du fichier : ', err);
                 status.textContent = context.language === 'EN' ? 'Error reading file' : 'Erreur de lecture du fichier';
@@ -4440,33 +4508,45 @@
 
                 if (beforeDistance < DIST_THRESHOLD && afterDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km before and after the edited stage
                     baCandidStgs.push(stages[j]);
-                    stages[j].sections.forEach(section => 
-                        section.polyline.setStyle({ color: colors.purple.deep })
-                    );
+                    stages[j].sections.forEach(section => {
+                        section.polyline.setStyle({ color: colors.purple.deep });
+                        if (context.hideNonEdited)
+                            section.polyline.addTo(map);
+                    });
                     stages[j].points.forEach((point, k) => {
                         if (k === 0) point.marker.setIcon(getStageStartIcon('green', stages[j].color, 'light'));
                         else if (k === stages[j].points.length - 1) point.marker.setIcon(getStageEndIcon('red', stages[j].color, 'light'));
                         else point.marker.setIcon(getCircleIcon('purple', 'light'));
+                        if (context.hideNonEdited)
+                            point.marker.addTo(map);
                     });
                 } else if (beforeDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km before the edited stage
                     beforeCandidStgs.push(stages[j]);
-                    stages[j].sections.forEach(section =>
-                        section.polyline.setStyle({ color: colors.green.light }).setStyle({ dashArray: '9, 10' })
-                    );
+                    stages[j].sections.forEach(section => {
+                        section.polyline.setStyle({ color: colors.green.light }).setStyle({ dashArray: '9, 10' });
+                        if (context.hideNonEdited)
+                            section.polyline.addTo(map);
+                    });
                     stages[j].points.forEach((point, k) => {
                         if (k === 0) point.marker.setIcon(getStageStartIcon('green', 'green', 'light'));
                         else if (k === stages[j].points.length - 1) point.marker.setIcon(getStageEndIcon('green', 'green', 'light'));
                         else point.marker.setIcon(getCircleIcon('green', 'light'));
+                        if (context.hideNonEdited)
+                            point.marker.addTo(map);
                     });
                 } else if (afterDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km after the edited stage
                     afterCandidStgs.push(stages[j]);
-                    stages[j].sections.forEach(section =>
-                        section.polyline.setStyle({ color: colors.red.light }).setStyle({ dashArray: '9, 10' })
-                    );
+                    stages[j].sections.forEach(section => {
+                        section.polyline.setStyle({ color: colors.red.light }).setStyle({ dashArray: '9, 10' });
+                        if (context.hideNonEdited)
+                            section.polyline.addTo(map);
+                    });
                     stages[j].points.forEach((point, k) => {
                         if (k === 0) point.marker.setIcon(getStageStartIcon('red', 'red', 'light'));
                         else if (k === stages[j].points.length - 1) point.marker.setIcon(getStageEndIcon('red', 'red', 'light'));
                         else point.marker.setIcon(getCircleIcon('red', 'light'));
+                        if (context.hideNonEdited)
+                            point.marker.addTo(map);
                     });
                 }
             }
@@ -4540,7 +4620,7 @@
                 const point = stageBefore.points[j];
 
                 const boundHandler = clickForMergeBefore.bind(null, stageBefore);
-                point.marker.addEventListener('click', boundHandler);    // Add event listener to section
+                point.marker.addEventListener('click', boundHandler);    // Add event listener to point
                 point.evtList.push({ target: point.marker, type: 'click', handler: boundHandler, role: 'merge' });   // Register event listener 
             }
         });
@@ -4631,9 +4711,10 @@
                         firstPt.lng + "," + firstPt.lat;      // Prepare coordinates to be submitted to BRouter
                     calculatedPoints = await fetchBRouterRoute(coordinates);    // Find route to new point with BRouter
                     if (!calculatedPoints) {      // When no route is found by BRouter
-                        //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
                         enableStagePointsDragging(stage);
 
+                        setEnv4EdtStg(context.editedStage);    // To reset stages selected for merge to normal layout
+                        
                         map.getContainer().style.cursor = 'crosshair';
                         
                         context.operationInProcess = false;
@@ -4712,6 +4793,8 @@
                     if (!calculatedPoints) {      // When no route is found by BRouter
                         enableStagePointsDragging(stage);
             
+                        setEnv4EdtStg(context.editedStage);    // To reset stages selected for merge to normal layout
+                        
                         map.getContainer().style.cursor = 'crosshair';
                         
                         context.operationInProcess = false;                        
@@ -4776,6 +4859,8 @@
                 stage.sections.forEach(section => {
                     section.polyline.setStyle({ color: shade, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 })
                      .setStyle({ dashArray: null });   // Set layout
+                    if (context.hideNonEdited)
+                            section.polyline.remove();
                 })
                 stage.points.forEach((point, j) => {
                     if (j === 0 && stage.points.length === 1)
@@ -4786,6 +4871,8 @@
                         point.marker.setIcon(getTransparentIcon());
                     else
                         point.marker.setIcon(getStageEndIcon('red', stage.color, 'deep'));
+                    if (context.hideNonEdited)
+                        point.marker.remove();
                 });
             });
         }
@@ -5061,7 +5148,11 @@
         else
             context.smallerIcons = true;
 
-        smallerIcons
+        const hideNonEdited = getCookie("HideNonEditedStages");
+        if (hideNonEdited === '' || hideNonEdited === '0')
+            context.hideNonEdited = false;
+        else
+            context.hideNonEdited = true;
 
         const baseMap = getCookie("BaseMap");
         let found = false;
@@ -6120,14 +6211,43 @@
         setDocMap4EdtStg(i);    // Set document and map for edit stage status
 
         setStg4Edt(i);   // Set stage to be edited for edit status
+
+        if (context.hideNonEdited) {
+            stages.forEach((stage, j) => {
+                if (j !== i) {
+                    stage.sections.forEach((section) => {
+                        section.polyline.remove();
+                    });
+                    stage.points.forEach((point) => {
+                        point.marker.remove();
+                    });
+                    if (context.stageNRouteDataDisplayed && stage.infoPop)
+                        stage.infoPop.remove();
+                }
+            });
+        }
     }
 
     //-------------------------------------
     // Set environment for non edit status
     //-------------------------------------
     function setEnv4NonEdt() {
-        if (context.editedStage !== null)
+        if (context.editedStage !== null) {
             setStg4NonEdt(context.editedStage);     // Set layout and event listeners on currently edited stage
+        }
+
+        if (context.hideNonEdited) {
+            stages.forEach((stage, i) => {
+                stage.sections.forEach((section) => {
+                    section.polyline.addTo(map);
+                });
+                stage.points.forEach((point) => {
+                    point.marker.addTo(map);
+                });
+                if (context.stageNRouteDataDisplayed && stage.infoPop)
+                    stage.infoPop.addTo(map);
+            });
+        }
 
         if (context.editedIntPl !== null)
             setIntPl4NonEdt(context.editedIntPl);     // Set layout and event listeners on currently edited stage
@@ -7390,6 +7510,8 @@
             point.marker.remove();
             point.marker = newMarker;
         }
+        if (context.hideNonEdited)
+            point.marker.addTo(map);
 
         // Set event listener on point for click
         function point_click(e) {
@@ -7658,7 +7780,6 @@
                                 pointAfterLatlng.lng + "," + pointAfterLatlng.lat;
 
                             let calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
-
                             if (!calculatedPoints) {    // When no route is found by BRouter
                                 // Restore initial point and sections
                                 pointRef.marker.setLatLng(initMarkerLatlng);
@@ -7908,6 +8029,8 @@
 
         // Set section's layout
         section.polyline.setStyle({ color: colors[stage.color].light, weight: routeWeights.editRoute, opacity: 1, fillOpacity: 0 });
+        if (context.hideNonEdited)
+            section.polyline.addTo(map);
 
         // Delete event listeners on section
         for (const { target, type, handler } of section.evtList)    // Remove event listeners
@@ -8398,6 +8521,8 @@
                 const section = stage.sections[j];
                 
                 section.polyline.setStyle({ color: shade, weight: routeWeights.neRoute, opacity: 1, fillOpacity: 0 });   // Set layout
+                if (context.hideNonEdited && context.editedStage !== null)
+                    section.polyline.remove();
         
                 // Delete event listeners on section
                 for (const { target, type, handler } of section.evtList)
@@ -8524,12 +8649,12 @@
                     point.marker.remove();
                     point.marker = newMarker;
                 }
+                if (context.hideNonEdited && context.editedStage !== null)
+                    point.marker.remove();
 
                 // Set event listener on point for click
                 function point_click(e) {
                     if (context.operationInProcess) {
-                        alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
-                        
                         return;
                     }
 
@@ -9577,7 +9702,7 @@
                 }
             } else {
                 for (let i = stageIdx2; i < stages.length; i++) {
-                    if (i != stageIdx - 1) 
+                    if (i != stageIdx) 
                         updateStageDataNProfile(stages[i], false);
                 }
             }
@@ -11154,6 +11279,9 @@
                         bubblingMouseEvents: true
                     }).addTo(map);
                     point.marker = newMarker;
+                    if (context.hideNonEdited && context.editedStage !== null)
+                        point.marker.remove();
+
                     point.evtList = [];
                     delete point.latlng;
                 });
@@ -11163,6 +11291,8 @@
                     const newPolyline = L.polyline(section.latlngs).addTo(map);    // Create section
                     newPolyline.setStyle({ color: colors[stage.color].deep });
                     section.polyline = newPolyline;
+                    if (context.hideNonEdited && context.editedStage !== null)
+                        section.polyline.remove();
                     section.evtList = [];
                     delete section.latlngs;
                 });
@@ -13140,7 +13270,8 @@
             </div>`);
 
         // Add popup to map
-        stage.infoPop.addTo(map);
+        if (!context.hideNonEdited || editMode)
+            stage.infoPop.addTo(map);
     }
 
     //**************
@@ -13310,10 +13441,11 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Stage, interest places, and route information: name (stages and interest places), length, starting and finishing altitudes, and positive and negative elevation gains.</li>
 <li>Stage or route profile, displayed as a graph.</li>
 </ul>
-<li>You can choose the default color used to plot stages on the map.</li>
-<li>You can choose the default color used to display interest places on the map.</li>
 <li>You can choose to use smaller markers for the start and end points of the stages. This can be useful if you decide to print the map.</li>
+<li>You can choose to hide all other stages while editing a stage. This can be useful when many stages overlap.</li>
+<li>You can choose the default color used to plot stages on the map.</li>
 <li>When importing stages from GPX files, you can choose whether or not to apply the default stage color.</li>
+<li>You can choose the default color used to display interest places on the map.</li>
 </ul>
 <p>A distance scale is included in the lower left corner.</p>
 <p>While the mouse pointer moves on the map, its geographic coordinates are displayed in the lower right corner. The altitude is not displayed, but can be obtained by pressing the "h" key. </p>
@@ -13483,10 +13615,11 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Informations sur les étapes, les lieux d'intérêt et l'ensemble de l'itinéraire: nom (étapes et lieux d'intérêt), distance, altitudes de départ et d'arrivée et dénivelés positif et negatif.</li>
 <li>Profil de l'étape ou de l'ensemble de l'itinéraire affiché comme graphe.</li>
 </ul>
+<li>Vous pouvez choisir d'utiliser des marqueurs plus petits pour représenter les points de début et de fin des étapes, ce qui peut être utile pour imprimer la carte.</li>
+<li>Vous pouvez choisir de masquer toutes les autres étapes quand une étape est en cours d'édition, ce qui peut être utile si plusieurs étapes sont entrelacées.</li>
 <li>La couleur par défaut utilisée pour représenter les étapes sur la carte peut être choisie.</li>
-<li>La couleur par défaut utilisée pour représenter les lieux d'intérêt sur la carte peut être choisie.</li>
-<li>Vous pouvez choisir d'utiliser des marqueurs plus simples pour représenter les points de début et de fin des étapes, ce qui peut être utile si vous imprimez la carte.</li>
 <li>Lors de l'importation d'étapes de fichiers GPX, on peut choisir ou non de leur imposer la couleur par défaut des étapes.</li>
+<li>La couleur par défaut utilisée pour représenter les lieux d'intérêt sur la carte peut être choisie.</li>
 </ul>
 <p>Une échelle des distances est incluse dans le coin du bas gauche.</p>
 <p>Pendant que le pointeur de la souris est déplacé sur la carte, ses coordonnées géographiques sont affichées dans le coin du bas droit. L'altitude n'est pas affichée, mais elle peut être obtenue en pressant la touche "h". </p>

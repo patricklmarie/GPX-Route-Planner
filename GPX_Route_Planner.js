@@ -4192,7 +4192,8 @@
                 const parserError = xmlDoc.querySelector("parsererror");
                 if (parserError) {
                     console.error(context.language === 'EN' ? "Error parsing GPX:" : "Erreur de parsing du fichier GPX : ", parserError.textContent);
-                    status.textContent = context.language === 'EN' ? 'Error parsing GPX' : 'Erreur de parsing GPX';
+                    status.textContent = context.language === 'EN' ? 'Error parsing GPX file' : 'Erreur de parsing du fichier GPX';
+                    displayError(context.language === 'EN' ? 'Failed to extract data from GPX file' : 'Echec de l\'extraction de données du fichier GPX');
     
                     map.getContainer().style.cursor = oldCursor;
 
@@ -4416,16 +4417,11 @@
 
                 context.operationInProcess = false;   // Stop blocking the other operations
                 
-                const message = document.querySelector(".msg-text");
-                message.style.display = "inline-block";
-                message.textContent = context.language === 'EN' ? 'GPX file imported' : 'Fichier GPX importé';
-
-                setTimeout(() => {
-                    message.style.display = "none";
-                }, 4000);
+                displayMessage('EN' ? 'GPX file imported' : 'Fichier GPX importé');
             } catch (err) {     // Error handler
                 console.error(context.language === 'EN' ? 'Error reading file:' : 'Erreur de lecture du fichier : ', err);
                 status.textContent = context.language === 'EN' ? 'Error reading file' : 'Erreur de lecture du fichier';
+                displayError('EN' ? 'Failed to import GPX file' : 'Echec de l\'importation du fichier GPX');
 
                 if (context.editedStage !== null)
                     enableStagePointsDragging(stages[context.editedStage]);
@@ -11834,29 +11830,39 @@
     //------------------------------------------------
     // Disable an error at the top center of the page
     //------------------------------------------------
-    function displayError(text) {
+    function displayError(text, duration) {
         const message = document.querySelector(".msg-text");
         message.style.display = "inline-block";
         message.style.backgroundColor = "red";
         message.textContent = text;
 
-        setTimeout(() => {
-            message.style.display = "none";
-        }, 4000);
+        if (typeof duration === 'undefined')
+            duration = 4000;
+
+        if (duration >= 0) {
+            setTimeout(() => {
+                message.style.display = "none";
+            }, duration);
+        }
     }
     
     //-------------------------------------------------
     // Disable a message at the top center of the page
     //-------------------------------------------------
-    function displayMessage(text) {
+    function displayMessage(text, duration) {
         const message = document.querySelector(".msg-text");
         message.style.display = "inline-block";
         message.style.backgroundColor = "black";
         message.textContent = text;
 
-        setTimeout(() => {
-            message.style.display = "none";
-        }, 4000);
+        if (typeof duration === 'undefined')
+            duration = 4000;
+
+        if (duration >= 0) {
+            setTimeout(() => {
+                message.style.display = "none";
+            }, duration);
+        }
     }
     
     //-------------------------------------
@@ -12696,9 +12702,6 @@
     function handleGeolocationError(error) {
         const mode = context.modeExtraParam;
         const cursor = context.cursorExtraParam;
-
-        const message = document.querySelector(".msg-text");
-        message.style.display = "none";
 
         if (error.code === 1)
             displayError(context.language === 'EN' ? 'Permission denied by user' : 'Permission refusée par l\'utilisateur');

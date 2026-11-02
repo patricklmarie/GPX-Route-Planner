@@ -284,7 +284,7 @@
 
         settingsBtn.addEventListener("click", () => {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -1216,7 +1216,7 @@
         // Define submit handler (for setting the stage's name)
         async function setNameHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -1248,7 +1248,7 @@
         setColorButton.title = context.language === 'EN' ? 'Change interest place color' : 'Modifier la couleur du lieu d\'intérêt';
         setColorButton.addEventListener('click', (e) => {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -1373,7 +1373,7 @@
         // Define submit handler (for focusing to a GPX file)
         async function focusHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -1408,7 +1408,7 @@
         // Define submit handler (for deleting the interest place)
         async function delIntPlHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -1444,7 +1444,7 @@
         // Define submit handler (for quitting edit mode)
         async function quitEdtHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -1505,7 +1505,7 @@
         // Define submit handler (for setting the stage's name)
         async function setNameHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                     
                 return;
             }
@@ -1537,7 +1537,7 @@
         setColorButton.title = context.language === 'EN' ? 'Change stage color' : 'Modifier la couleur de l\'étape';
         setColorButton.addEventListener('click', (e) => {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -1662,7 +1662,7 @@
         // Define submit handler (for reverse stage direction)
         async function revStgHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -1697,7 +1697,7 @@
         // Define submit handler (for split stage)
         async function splitStgHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -1732,7 +1732,7 @@
         // Define submit handler (for merge before)
         async function mergeStgHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -1767,7 +1767,7 @@
         // Define submit handler (for focusing to a GPX file)
         async function focusHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -1799,7 +1799,7 @@
         changeStgPosButton.title = context.language === 'EN' ? 'Change stage position (in the list of stages)' : 'Modifier la position de l\'étape (dans la liste des étapes)';
         changeStgPosButton.addEventListener('click', (e) => {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -1921,7 +1921,7 @@
         // Define submit handler (for deleting the stage)
         async function delStgHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -1957,7 +1957,7 @@
         // Define submit handler (for quitting edit mode)
         async function quitEdtHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -2019,7 +2019,7 @@
         // Define submit handler (for creating a new stage)
         async function newStgHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -2059,7 +2059,7 @@
         // Define submit handler (for creating a new interest place)
         async function newIntPlHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -2099,7 +2099,7 @@
         // Define submit handler (for exporting to a GPX file)
         async function importGPXHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -2134,7 +2134,7 @@
         // Define submit handler (for exporting to a GPX file)
         async function exportGPXHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -2169,7 +2169,7 @@
         // Define submit handler (for focusing to a GPX file)
         async function focusHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -2204,7 +2204,7 @@
         // Define submit handler (for exporting to a GPX file)
         async function undoHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -2243,7 +2243,7 @@
         // Define submit handler (for exporting to a GPX file)
         async function redoHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -2282,7 +2282,7 @@
         // Define submit handler (for resetting the route)
         async function resetRteHandler() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -3561,13 +3561,7 @@
             
         context.operationInProcess = false;
 
-        const message = document.querySelector(".msg-text");
-        message.style.display = "inline-block";
-        message.textContent = context.language === 'EN' ? 'Exported to GPX file' : 'Exporté dans un fichier GPX';
-
-        setTimeout(() => {
-            message.style.display = "none";
-        }, 4000);
+        displayMessage('EN' ? 'Exported to GPX file' : 'Exporté dans un fichier GPX');
         
         //----------------------
         // Generate GPX content
@@ -4489,7 +4483,7 @@
 
         // Check that stage has at least one point
         if (!stage.points || stage.points.length < 1) {
-            alert(context.language === 'EN' ? 'Stage with no point cannot be merged' : 'Etape sans point ne pouvant pas être fusionnée');
+            displayError(context.language === 'EN' ? 'Stage with no point cannot be merged' : 'Etape sans point ne pouvant pas être fusionnée');
 
             context.operationInProcess = false;
 
@@ -4552,7 +4546,7 @@
             }
         }
         if (baCandidStgs.length === 0 && beforeCandidStgs.length === 0 && afterCandidStgs.length === 0) {
-            alert(context.language === 'EN' ? "No other stage near enough to be merged" : "Pas d\'autre étape assez proche pour être fusionnée");
+            displayError(context.language === 'EN' ? "No other stage near enough to be merged" : "Pas d\'autre étape assez proche pour être fusionnée");
 
             context.operationInProcess = false;
 
@@ -4672,7 +4666,7 @@
 
         // Function to process clicks on polylines and markers
         async function clickForMergeBAInfo(stageRef, e) {
-            alert(context.language === 'EN' ? 'This stage can be merged on both sides of the edited stage.\nClick its first point to merge it before.\nOr click its last point to merge it after.' : 
+            displayError(context.language === 'EN' ? 'This stage can be merged on both sides of the edited stage.\nClick its first point to merge it before.\nOr click its last point to merge it after.' : 
                 'Cette étape peut être fusionnée de chaque côté de l\'étape en cours d\'édition\nCliquer sur son premier point pour la fusionner avant.\nOu cliquer sur son dernier point pour la fusionner après.')
         }
 
@@ -4883,7 +4877,7 @@
     //---------------------------------------------
     async function queryAddress() {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -4942,7 +4936,7 @@
     //----------------------------------------------
     async function queryAltitude() {
         if (context.operationInProcess) {
-            alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+            displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
             
             return;
         }
@@ -5379,7 +5373,7 @@
         const map_click = (function() {
             return function(e) {
                 if (context.operationInProcess) {
-                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                     
                     return;
                 }
@@ -5421,7 +5415,7 @@
         // Set event listener on map for double-click
         function map_dblclick(e) {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -5450,7 +5444,7 @@
         // On real pan start
         function map_dragstart(e) {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -5464,7 +5458,7 @@
         // On pan end
         function map_dragend(e) {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -5477,7 +5471,7 @@
 
         function map_mousedown(e) {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -5495,7 +5489,7 @@
 
         function map_mouseup(e) {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -5585,6 +5579,7 @@
             // When user presses "h", display the altitude at the cursor position
             window.addEventListener("keydown", (e) => {
                 if (context.operationInProcess) {
+                    displayError("Another operation in process");
                     return;
                 }
     
@@ -5621,6 +5616,8 @@
             // Set permanent event listeners on doc for key pressed (one time for all time)
             function doc_keydown_perm(e) {    
                 if (context.operationInProcess) {
+                    if (e.key !== 'Escape')
+                        displayError("Another operation in process");
                     return;
                 }
     
@@ -5902,7 +5899,7 @@
         // Set event listener on map for double-click
         function map_dblclick(e) {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -5942,7 +5939,7 @@
         // On pan end
         function map_dragend(e) {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -6068,7 +6065,7 @@
         // Set event listener on map for double-click
         function map_dblclick(e) {
             if (context.operationInProcess) {
-                alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                 
                 return;
             }
@@ -6308,7 +6305,7 @@
             // Define submit handler (button)
             async function submitHandler() {
                 if (context.operationInProcess) {
-                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                     
                     return;
                 }
@@ -6327,7 +6324,7 @@
                     context.cursorExtraParam = oldCursor;
                     navigator.geolocation.getCurrentPosition(setGeolocPositionOnMap, handleGeolocationError);
                 } else {
-                    alert(context.language === 'EN' ? "Geolocation is not supported by this browser." : "La géolocalisation n'est pas supportée par ce navigateur.");
+                    displayError(context.language === 'EN' ? "Geolocation is not supported by this browser." : "La géolocalisation n'est pas supportée par ce navigateur.");
                     return;
                 }
             }
@@ -6344,7 +6341,7 @@
             // Define reset handler (button or Escape)
             function resetHandler() {
                 if (context.operationInProcess) {
-                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                     
                     return;
                 }
@@ -6574,7 +6571,7 @@
             // Set event listener on interest place for click
             function intPl_click(e) {
                 if (context.operationInProcess) {
-                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                     
                     return;
                 }
@@ -6603,7 +6600,7 @@
             const intPl_dblclick = (function(intPlRef) {
                 return async function(e) {
                     if (context.operationInProcess) {
-                        alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                        displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                         
                         return;
                     }
@@ -6642,7 +6639,7 @@
             const intPl_mousedown = (function(intPlRef) {
                 return function(e) {
                     if (context.operationInProcess) {
-                        alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                        displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                         
                         return;
                     }
@@ -6768,7 +6765,7 @@
             // Set event listener on interest place for click (does nothing, but needed to distinguish simple clicks from double-clicks)
             function intPl_click(e) {
                 if (context.operationInProcess) {
-                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                     
                     return;
                 }
@@ -6791,7 +6788,7 @@
             const intPl_dblclick = (function(intPlRef) {
                 return function(e) {
                     if (context.operationInProcess) {
-                        alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                        displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                         
                         return;
                     }
@@ -6912,7 +6909,7 @@
             // Define reset handler (button or Escape)
             function resetHandler() {
                 if (context.operationInProcess) {
-                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                     
                     return;
                 }
@@ -6936,7 +6933,7 @@
             // Submit handler (button or Enter)
             async function submitHandler() {
                 if (context.operationInProcess) {
-                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                     
                     return;
                 }
@@ -7011,7 +7008,7 @@
 
                             L.DomEvent.on(div, 'click', (e) => {    // Define click event handler
                                 if (context.operationInProcess) {
-                                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                                    displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                                     
                                     return;
                                 }
@@ -7049,7 +7046,7 @@
                         }
 
                         setTimeout(() => {
-                            alert(msg);
+                            displayError(msg);
                         }, 50);
                     }
 
@@ -7063,7 +7060,7 @@
                     // Escape, arrow down and arrow up keys handler just for this wrapper
                     function keydownDocHandler(e) {
                         if (context.operationInProcess) {
-                            alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                            displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                             
                             return;
                         }
@@ -7200,7 +7197,7 @@
 
                 if (e.key === 'Enter') {
                     if (context.operationInProcess) {
-                        alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                        displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                         
                         return;
                     }
@@ -7543,7 +7540,7 @@
         const point_dblclick = (function(stageRef, pointRef) {
             return async function(e) {
                 if (context.operationInProcess) {
-                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                     
                     return;
                 }
@@ -8061,7 +8058,7 @@
         const section_dblclick = (function(stageRef, sectionRef) {
             return function(e) {
                 if (context.operationInProcess) {
-                    alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                    displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                     
                     return;
                 }
@@ -8228,7 +8225,7 @@
                             pointAfterLatlng.lng + "," + pointAfterLatlng.lat;
                         let calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
                         if (!calculatedPoints) {    // When no route found by BRouter, restore initial section
-                            //alert(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
+                            //displayError(context.language === 'EN' ? "Failed to find a path to this location" : "Aucun chemin trouvé pour ce lieu");
                             sectionRef.polyline.setLatLngs(calculatedPoints0)
                                 .setStyle({ dashArray: null });
                             stageRef.sections[jRef + 1].polyline.remove();
@@ -8553,7 +8550,7 @@
                 const section_dblclick = (function(stageRef) {
                     return function(e) {
                         if (context.operationInProcess) {
-                            alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                            displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                             
                             return;
                         }
@@ -8676,7 +8673,7 @@
                 const point_dblclick = (function(stageRef) {
                     return function (e) {
                         if (context.operationInProcess) {
-                            alert(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
+                            displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                             
                             return;
                         }
@@ -8732,7 +8729,7 @@
 
         // Check that stage has at least two points
         if (!stage.points || stage.points.length < 2) {
-            alert(context.language === 'EN' ? 'Stage has less than two points and cannot be split' : 'Etape de moins de deux points ne pouvant être partagée');
+            displayError(context.language === 'EN' ? 'Stage has less than two points and cannot be split' : 'Etape de moins de deux points ne pouvant être partagée');
             
             context.operationInProcess = false;
             
@@ -8740,7 +8737,6 @@
         }
 
         disableStagePointsDragging(stages[context.editedStage]);
-
 
         // Define cursor with scissors
         const svgScissors = `
@@ -11834,6 +11830,34 @@
             point.marker.dragging.disable();
         });
     }
+
+    //------------------------------------------------
+    // Disable an error at the top center of the page
+    //------------------------------------------------
+    function displayError(text) {
+        const message = document.querySelector(".msg-text");
+        message.style.display = "inline-block";
+        message.style.backgroundColor = "red";
+        message.textContent = text;
+
+        setTimeout(() => {
+            message.style.display = "none";
+        }, 4000);
+    }
+    
+    //-------------------------------------------------
+    // Disable a message at the top center of the page
+    //-------------------------------------------------
+    function displayMessage(text) {
+        const message = document.querySelector(".msg-text");
+        message.style.display = "inline-block";
+        message.style.backgroundColor = "black";
+        message.textContent = text;
+
+        setTimeout(() => {
+            message.style.display = "none";
+        }, 4000);
+    }
     
     //-------------------------------------
     // Dump all stages and interest points
@@ -11962,7 +11986,7 @@
             }));
         } catch (err) {
             console.error(context.language === 'EN' ? "Error fetching BRouter route: " : "Erreur lors de l'interrogation de BRouter : ", err.message);
-            alert(context.language === 'EN' ? "Error fetching BRouter route: " + err.message : "Erreur lors de l\'interrogation de BRouter : " + err.message);
+            displayError(context.language === 'EN' ? "Error fetching BRouter route: " + err.message : "Erreur lors de l\'interrogation de BRouter : " + err.message);
             return null;
         }
     }
@@ -12022,7 +12046,7 @@
             else 
                 return `${context.language === 'EN' ? "Address not found" : "Adresse non trouvée"}`;
         } catch (err) {
-            alert(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
+            displayError(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
             console.error(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " : "Erreur lors de l'interrogation de Monimatim : ", err.message);
 
             return `${context.language === 'EN' ? "Address not found" : "Adresse non trouvée"}`;
@@ -12100,7 +12124,7 @@
             else 
                 return null;
         } catch (err) {
-            alert(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
+            displayError(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
             console.error(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " : "Erreur lors de l'interrogation de Monimatim : ", err.message);
             return null;
         }
@@ -12146,7 +12170,7 @@
 
             return displayName;
         } catch (err) {
-            alert(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
+            displayError(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
             console.error(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " : "Erreur lors de l'interrogation de Monimatim : ", err.message);
             return null;
         }
@@ -12667,7 +12691,7 @@
     }
 
     //-------------------------------------------------
-    // Display an alert message when geolocation fails
+    // Display an displayError message when geolocation fails
     //-------------------------------------------------
     function handleGeolocationError(error) {
         const mode = context.modeExtraParam;
@@ -12677,13 +12701,13 @@
         message.style.display = "none";
 
         if (error.code === 1)
-            alert(context.language === 'EN' ? 'Permission denied by user' : 'Permission refusée par l\'utilisateur');
+            displayError(context.language === 'EN' ? 'Permission denied by user' : 'Permission refusée par l\'utilisateur');
         else if (error.code === 2)
-            alert(context.language === 'EN' ? 'Position not available' : 'Position non disponible');
+            displayError(context.language === 'EN' ? 'Position not available' : 'Position non disponible');
         else if (error.code === 3)
-            alert(context.language === 'EN' ? 'Timeout exceeded' : 'Délai dépassé');
+            displayError(context.language === 'EN' ? 'Timeout exceeded' : 'Délai dépassé');
         else    
-            alert(context.language === 'EN' ? 'Unknown error' : 'Erreur inconnue')
+            displayError(context.language === 'EN' ? 'Unknown error' : 'Erreur inconnue')
     
         if (mode === "geoloc") {
             if (context.editedStage !== null)

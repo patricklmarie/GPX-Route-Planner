@@ -4479,7 +4479,7 @@
 
         // Check that stage has at least one point
         if (!stage.points || stage.points.length < 1) {
-            displayError(context.language === 'EN' ? 'Stage with no point cannot be merged' : 'Etape sans point ne pouvant pas être fusionnée');
+            displayError(context.language === 'EN' ? 'Stage with no point cannot be merged' : 'Une étape sans point ne peut pas être fusionnée');
 
             context.operationInProcess = false;
 
@@ -4499,7 +4499,7 @@
                 if (beforeDistance < DIST_THRESHOLD && afterDistance < DIST_THRESHOLD) {  // Points distant of less than 2 km before and after the edited stage
                     baCandidStgs.push(stages[j]);
                     stages[j].sections.forEach(section => {
-                        section.polyline.setStyle({ color: colors.purple.deep });
+                        section.polyline.setStyle({ color: colors.purple.deep }).setStyle({ dashArray: '9, 10' });
                         if (context.hideNonEdited)
                             section.polyline.addTo(map);
                     });
@@ -4662,8 +4662,8 @@
 
         // Function to process clicks on polylines and markers
         async function clickForMergeBAInfo(stageRef, e) {
-            displayError(context.language === 'EN' ? 'This stage can be merged on both sides of the edited stage.\nClick its first point to merge it before.\nOr click its last point to merge it after.' : 
-                'Cette étape peut être fusionnée de chaque côté de l\'étape en cours d\'édition\nCliquer sur son premier point pour la fusionner avant.\nOu cliquer sur son dernier point pour la fusionner après.')
+            displayError(context.language === 'EN' ? 'This stage can be merged on both sides of the edited stage. Click its first point to merge it before or its last point to merge it after.' : 
+                'Cette étape peut être fusionnée de chaque côté de l\'étape en édition. Cliquer sur son premier point pour la fusionner avant ou sur son dernier point pour la fusionner après.')
         }
 
         // Function to process clicks on polylines and markers
@@ -4915,12 +4915,18 @@
 
         const address = await fetchAddressWithNominatim(context.mouseCoordinates);
 
+        let width = null;
+        if (address.length <= 20)
+            width = '120px';
+        else
+            width = '200px';
+
         // Create popup with stage information content
         context.addrPop = L.tooltip(
             { permanent: false, direction: 'top', opacity: 1 })
             .setLatLng(context.mouseCoordinates)
             .setContent(`
-                <div style="text-align:left; font-size:12px; line-height:12px; max-width: none; width: 200px; white-space:normal; overflow-wrap:break-word; ">${address}</div>
+                <div style="text-align:left; font-size:12px; line-height:12px; max-width: none; width: ${width}; white-space:normal; overflow-wrap:break-word; ">${address}</div>
             `)
             .addTo(map);
 
@@ -5575,7 +5581,7 @@
             // When user presses "h", display the altitude at the cursor position
             window.addEventListener("keydown", (e) => {
                 if (context.operationInProcess) {
-                    displayError("Another operation in process");
+                    displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                     return;
                 }
     
@@ -5613,7 +5619,7 @@
             function doc_keydown_perm(e) {    
                 if (context.operationInProcess) {
                     if (e.key !== 'Escape')
-                        displayError("Another operation in process");
+                        displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
                     return;
                 }
     
@@ -7042,7 +7048,7 @@
                         }
 
                         setTimeout(() => {
-                            displayError(msg);
+                            displayError(context.language === 'EN' ? 'Place not found: ' + msg : 'Lieu non trouvé : ' + msg);
                         }, 50);
                     }
 
@@ -8725,7 +8731,7 @@
 
         // Check that stage has at least two points
         if (!stage.points || stage.points.length < 2) {
-            displayError(context.language === 'EN' ? 'Stage has less than two points and cannot be split' : 'Etape de moins de deux points ne pouvant être partagée');
+            displayError(context.language === 'EN' ? 'Stage has less than two points and cannot be split' : 'Etape de moins de deux points ne pouvant pas être partagée');
             
             context.operationInProcess = false;
             
@@ -11991,8 +11997,8 @@
                 alt: alt
             }));
         } catch (err) {
-            console.error(context.language === 'EN' ? "Error fetching BRouter route: " : "Erreur lors de l'interrogation de BRouter : ", err.message);
-            displayError(context.language === 'EN' ? "Error fetching BRouter route: " + err.message : "Erreur lors de l\'interrogation de BRouter : " + err.message);
+            console.error(context.language === 'EN' ? "Error fetching route with BRouter: " : "Erreur lors de la recherche d'un itinéraire avec BRouter : ", err.message);
+            displayError(context.language === 'EN' ? "Error fetching route (BRouter: " + err.message + ')' : "Erreur lors de la recherche d'un itinéraire (BRouter : " + err.message + ')');
             return null;
         }
     }
@@ -12052,8 +12058,8 @@
             else 
                 return `${context.language === 'EN' ? "Address not found" : "Adresse non trouvée"}`;
         } catch (err) {
-            displayError(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
-            console.error(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " : "Erreur lors de l'interrogation de Monimatim : ", err.message);
+            displayError(context.language === 'EN' ? "Error fetching address: " + err.message : "Erreur lors de la recherche de l'adresse : " + err.message);
+            console.error(context.language === 'EN' ? "Error fetching address with Nominatim: " : "Erreur lors de la recherche de l'adresse avec Nominatim : ", err.message);
 
             return `${context.language === 'EN' ? "Address not found" : "Adresse non trouvée"}`;
         }
@@ -12081,7 +12087,7 @@
 
             if (respJSON.length === 0) {
                 if (!coordinates)
-                    throw new Error(context.language === 'EN' ? "No location found tor this address: " + address : "Pas de lieu trouvé pour cette adresse : " + address);
+                    throw new Error(context.language === 'EN' ? "No known location found for this address: " + address : "Pas de lieu connu trouvé pour cette adresse : " + address);
                 else
                     throw new Error(context.language === 'EN' ? "No known location found tor these coordinates: " + address : "Pas de lieu connu trouvé pour ces coordonnées : " + address);
             }
@@ -12101,7 +12107,7 @@
         } catch (err) {
             console.error(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " : "Erreur lors de l'interrogation de Monimatim : ", err.message);
 
-            return [null, context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message];
+            return [null, context.language === 'EN' ? "Error fetching coordinates with Nominatim (" + err.message + ")" : "Erreur lors de l'interrogation de Nominatim ( " + err.message + ")"];
         }
     }
 
@@ -12130,15 +12136,15 @@
             else 
                 return null;
         } catch (err) {
-            displayError(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
-            console.error(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " : "Erreur lors de l'interrogation de Monimatim : ", err.message);
+            displayError(context.language === 'EN' ? "Error fetching city name: " + err.message : "Erreur lors de la recherche du nom de la ville :" + err.message);
+            console.error(context.language === 'EN' ? "Error fetching city name with Nominatim: " : "Erreur lors de la recherche du nom de la ville avec Monimatim : ", err.message);
             return null;
         }
     }
 
-    //--------------------------------------------------
-    // Fetch city name from coordinates using Nominatim
-    //--------------------------------------------------
+    //------------------------------------------------------
+    // Fetch place address from coordinates using Nominatim
+    //------------------------------------------------------
     async function fetchPlaceWithNominatim(latlng) {
         // Nominatim's reverse geocoding URL
         const url = "https://nominatim.openstreetmap.org/reverse?lat=" + latlng.lat + "&lon=" + latlng.lng + "&zoom=18&addressdetails=1&format=json";
@@ -12176,8 +12182,8 @@
 
             return displayName;
         } catch (err) {
-            displayError(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " + err.message : "Erreur lors de l'interrogation de Nominatim : " + err.message);
-            console.error(context.language === 'EN' ? "Error fetching coordinates with Nominatim: " : "Erreur lors de l'interrogation de Monimatim : ", err.message);
+            displayError(context.language === 'EN' ? "Error fetching place address: " + err.message : "Erreur lors de la recherche de l'adresse du lieu : " + err.message);
+            console.error(context.language === 'EN' ? "Error fetching place address with Nominatim: " : "Erreur lors de la recherche de l'adresse du lieu avec Monimatim : ", err.message);
             return null;
         }
     }

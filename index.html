@@ -118,8 +118,7 @@
             
             map.getContainer().style.cursor = 'progress';
             
-            message.style.display = "inline-block";
-            message.textContent = context.language === 'EN' ? 'Moving map to your area...' : 'Positionnement de la carte sur votre zone...';
+            displayMessage(context.language === 'EN' ? 'Moving map to your area...' : 'Positionnement de la carte sur votre zone...', -1);
 
             context.zoomExtraParam = 12;
             context.modeExtraParam = "init";

@@ -2922,7 +2922,7 @@
                                 type: "linear",
                                 position: "bottom",
                                 ticks: {
-                                    stepSize: 1
+                                    //stepSize: 1
                                 },
                                 title: {
                                     display: true,
@@ -2940,8 +2940,8 @@
                                     scale.width = 60;
                                 },
                                 ticks: {
-                                    precision: 0,   // Prevent unneeded roundings
-                                    stepSize: 0.5
+                                    //precision: 0,   // Prevent unneeded roundings
+                                    //stepSize: 0.5
                                 }
                             }
                         },
@@ -3226,7 +3226,7 @@
 
             context.stageProfileControl = L.control({ position: 'bottomcenter' });  // Create new menu control
 
-            context.stageProfileControl.onAdd = function (map) {      // Set content into menu control            
+            context.stageProfileControl.onAdd = function(map) {      // Set content into menu control            
                 // Create white box hosting the menu
                 const wrapper = L.DomUtil.create('div', 'leaflet-bar unified-control');
                 wrapper.style.background = 'white';
@@ -3301,7 +3301,7 @@
                                 type: "linear",
                                 position: "bottom",
                                 ticks: {
-                                    stepSize: 0.5
+                                    //stepSize: 0.5
                                 },
                                 title: {
                                     display: true,
@@ -3319,9 +3319,8 @@
                                     scale.width = 60;
                                 },
                                 ticks: {
-                                    precision: 0,   // Prevent unneeded roundings
-                                    stepSize: 1
-                                    //stepSize: (yMax - yMin) < 5 ? 1 : undefined
+                                    //precision: 0,   // Prevent unneeded roundings
+                                    //stepSize: 1
                                 }
                             }
                         },
@@ -3355,7 +3354,7 @@
                             }
 
                             const idx = elements[0].index;
-                            updateStageProfileMapMarker(stage, context.stageProfileIndexes[idx].sectNum, context.stageProfileIndexes[idx].ptNum);       // Create/move marker on Leaflet map
+                            updateStageProfileMapMarker(stages[context.editedStage], context.stageProfileIndexes[idx].sectNum, context.stageProfileIndexes[idx].ptNum);       // Create/move marker on Leaflet map
                         },
                         interaction: {
                             mode: 'nearest',
@@ -5808,14 +5807,14 @@
                     return;
                 }
 
-                map.getContainer().style.cursor = 'progress';
-
-                disableStagePointsDragging(stageRef);
-            
                 context.clickTimeout = setTimeout(async () => {     // Delay the action of 350 ms to see if a dblclick follows
                     context.operationInProcess = true;
 
                     context.clickTimeout = null;
+            
+                    map.getContainer().style.cursor = 'progress';
+
+                    disableStagePointsDragging(stageRef);
             
                     let latlng = e.latlng;      // Extract click coordinates
                     let latlngPrev0 = null;        // Initial position of previous point
@@ -5987,10 +5986,6 @@
 
                 if (context.altPop && context.altPop !== null)
                     context.altPop.remove();
-
-                if (context.operationInProcess) {
-                    return;
-                }
 
                 if (!context.stageNRouteProfileDisplayed || context.editedStage === null) 
                     return;
@@ -6300,7 +6295,7 @@
 
             // Create submit button
             const submitButton = document.createElement('button');
-            submitButton.textContent = context.language === 'EN' ? 'Geolocalize me!' : 'Localise-moi !';
+            submitButton.textContent = context.language === 'EN' ? 'Localize me!' : 'Localise-moi !';
             submitButton.style.width = '100px';
             row.appendChild(submitButton);
 
@@ -11821,16 +11816,19 @@
     // Disable dragging for an interest place
     //----------------------------------------
     function disableIntPlDragging(intPl) {
-        intPl.marker.dragging.disable();
+        if (intPl)
+            intPl.marker.dragging.disable();
     }
     
    //-------------------------------------------------
     // Disable dragging for all the markers of a stage
     //-------------------------------------------------
     function disableStagePointsDragging(stage) {
-        stage.points.forEach((point) => {
-            point.marker.dragging.disable();
-        });
+        if (stage) {
+            stage.points.forEach((point) => {
+                point.marker.dragging.disable();
+            });
+        }
     }
 
     //------------------------------------------------
@@ -11953,16 +11951,19 @@
     // Enable dragging for an interest place
     //---------------------------------------
     function enableIntPlDragging(intPl) {
-        intPl.marker.dragging.enable();
+        if (intPl)
+            intPl.marker.dragging.enable();
     }
     
     //------------------------------------------------
     // Enable dragging for all the markers of a stage
     //------------------------------------------------
     function enableStagePointsDragging(stage) {
-        stage.points.forEach((point) => {
-            point.marker.dragging.enable();
-        });
+        if (stage) {
+            stage.points.forEach((point) => {
+                point.marker.dragging.enable();
+            });
+        }
     }
     
     //----------------------------------------------
@@ -12316,56 +12317,6 @@
         }
 
         return { sectionIdx: closestSectIdx, pointIdx: closestPtIdx, distance: minDistance };      // Index of the closest registered point
-    }
-
-    //-----------------------------------------------------------------
-    // Find medium position on a stage to display information about it
-    //-----------------------------------------------------------------
-    function findMediumPosition(stage) {
-        if (stage.points && stage.points.length > 1) {
-            if (stage.points.length % 2 != 0) { // Odd number of points
-                const midPtIdx = ~~(stage.points.length / 2);
-                return point = stage.points[midPtIdx].marker.getLatLng() ;  // Return point in middle position
-            } else {    // Even number of points
-                const midSegIdx = ~~(stage.sections.length / 2);
-                const pts = stage.sections[midSegIdx].polyline.getLatLngs();
-                if (pts.length % 2 === 0) {
-                    const midPtIdx = ~~(pts.length / 2) - 1;
-                    return {    // Return point in the middle of the section in the middle position
-                        lat: (pts[midPtIdx].lat + pts[midPtIdx + 1].lat) / 2, 
-                        lng:  (pts[midPtIdx].lng + pts[midPtIdx + 1].lng) / 2
-                    }
-                } else {
-                    const midPtIdx = ~~(pts.length / 2);
-                    return pts[midPtIdx];
-                }
-            }
-        } else if (stage.points && stage.points.length === 1)
-            return stage.points[0].marker.getLatLng();
-        else
-            return null;
-    }
-
-    //------------------------------------------------------------------------------------------------------
-    // Find position in the middle of the last but one section of the stage to display information about it
-    //------------------------------------------------------------------------------------------------------
-    function findNearbyPosition(stage) {
-        if (stage.points && stage.points.length > 2) {
-            const pts = stage.sections[stage.sections.length - 2].polyline.getLatLngs();
-            if (pts.length % 2 === 0) {
-                const midPtIdx = ~~(pts.length / 2) - 1;
-                return {    // Return point in the middle of the section in the middle position
-                    lat: (pts[midPtIdx].lat + pts[midPtIdx + 1].lat) / 2, 
-                    lng:  (pts[midPtIdx].lng + pts[midPtIdx + 1].lng) / 2
-                }
-            } else {
-                const midPtIdx = ~~(pts.length / 2);
-                return pts[midPtIdx];
-            }
-        } else if (stage.points && (stage.points.length === 1 || stage.points.length === 2))
-            return stage.points[0].marker.getLatLng();
-        else 
-            return null;
     }
 
     //----------------------------
@@ -13305,6 +13256,60 @@
         // Add popup to map
         if (!context.hideNonEdited || editMode)
             stage.infoPop.addTo(map);
+        
+        //-----------------------------------------------------------------
+        // Find medium position on a stage to display information about it
+        //-----------------------------------------------------------------
+        function findMediumPosition(stage) {
+            if (stage.points && stage.points.length > 1) {
+                if (stage.points.length % 2 != 0) { // Odd number of points
+                    const midPtIdx = ~~(stage.points.length / 2);
+                    return point = stage.points[midPtIdx].marker.getLatLng() ;  // Return point in middle position
+                } else {    // Even number of points
+                    const midSegIdx = ~~(stage.sections.length / 2);
+                    const pts = stage.sections[midSegIdx].polyline.getLatLngs();
+                    if (pts.length % 2 === 0) {
+                        const midPtIdx = ~~(pts.length / 2) - 1;
+                        return {    // Return point in the middle of the section in the middle position
+                            lat: (pts[midPtIdx].lat + pts[midPtIdx + 1].lat) / 2, 
+                            lng:  (pts[midPtIdx].lng + pts[midPtIdx + 1].lng) / 2
+                        }
+                    } else {
+                        const midPtIdx = ~~(pts.length / 2);
+                        return pts[midPtIdx];
+                    }
+                }
+            } else if (stage.points && stage.points.length === 1)
+                return stage.points[0].marker.getLatLng();
+            else
+                return null;
+        }
+
+        //------------------------------------------------------------------------------------------------------
+        // Find position in the middle of the last but one section of the stage to display information about it
+        //------------------------------------------------------------------------------------------------------
+        function findNearbyPosition(stage) {
+            if (stage.points && stage.points.length > 2) {
+                const pts = stage.sections[stage.sections.length - 2].polyline.getLatLngs();
+                if (pts.length % 2 === 0) {
+                    const midPtIdx = ~~(pts.length / 2) - 1;
+                    return {    // Return point in the middle of the section in the middle position
+                        lat: (pts[midPtIdx].lat + pts[midPtIdx + 1].lat) / 2, 
+                        lng:  (pts[midPtIdx].lng + pts[midPtIdx + 1].lng) / 2
+                    }
+                } else {
+                    const midPtIdx = ~~(pts.length / 2);
+                    return pts[midPtIdx];
+                }
+            } else if (stage.points && stage.points.length === 2) {
+                const pts = stage.sections[0].polyline.getLatLngs();
+                const quarterPtIdx = ~~(pts.length / 4);
+                return pts[quarterPtIdx];
+            } else if (stage.points && stage.points.length === 1)
+                return stage.points[0].marker.getLatLng();
+            else 
+                return null;
+        }
     }
 
     //**************

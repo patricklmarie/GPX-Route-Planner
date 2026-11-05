@@ -3573,9 +3573,9 @@
                 `\n    xmlns:rp="${RP_NS}">` +
                 `\n    <metadata>` +
                 `\n        <name>${name}</name>` +
-                `\n        <extensions>`;
-                `\n            <rp:source>routeplanner</rp:source>`;
-                `\n        </extensions>`;
+                `\n        <extensions>` +
+                `\n            <rp:source>routeplanner</rp:source>` +
+                `\n        </extensions>` +
                 `\n    </metadata>`;
                     
             // Create body

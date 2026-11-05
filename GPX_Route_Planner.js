@@ -3573,6 +3573,9 @@
                 `\n    xmlns:rp="${RP_NS}">` +
                 `\n    <metadata>` +
                 `\n        <name>${name}</name>` +
+                `\n        <extensions>`;
+                `\n            <rp:source>routeplanner</rp:source>`;
+                `\n        </extensions>`;
                 `\n    </metadata>`;
                     
             // Create body
@@ -3626,7 +3629,7 @@
                                 body = body + `\n                <ele>${latlngs[j].alt}</ele>`;     // Add track point altitude
                             // Add source as extension
                             body = body + `\n                <extensions>`;
-                            body = body + `\n                    <rp:source>brouter</rp:source>`;
+                            body = body + `\n                    <rp:source>router</rp:source>`;
                             body = body + `\n                </extensions>`;
                             body = body + `\n            </trkpt>`;
                         }
@@ -4199,9 +4202,17 @@
                     return;
                 }
 
-                const interestPlaces2 = [];
+                // Get file source
+                const rpMade = false;
+                const metadata = Array.from(xmlDoc.querySelectorAll("metadata"));
+                if (metadata.length > 0) {
+                    const source = metadata[0].getElementsByTagNameNS(RP_NS, "source");
+                    if (source === 'routeplanner')
+                        rpMade = true;
+                }
 
                 // Import waypoints
+                const interestPlaces2 = [];
                 const wpts = Array.from(xmlDoc.querySelectorAll("wpt"));    // Retrieve waypoints
                 wpts.forEach(wpt => {
                     // Register waypoint as interest place
@@ -4231,9 +4242,8 @@
                     }                
                 });
 
-                const stages2 = [];
-
                 // Import routes
+                const stages2 = [];
                 const rtes = Array.from(xmlDoc.querySelectorAll("rte"));    // Retrieve tracks
                 rtes.forEach(rte => {
                     // Register track as stage
@@ -4291,7 +4301,7 @@
                             // Register first point of the section and create marker on the map
                             stage2.points.push({ latlng: latlng });
                             polypoints.push(latlng);
-                        } else if (isBRouterPoint(rtept)) { // Register intermediate point calculated by BRouter
+                        } else if (isRouterPoint(rtept) || (!rpMade && k % 100 !== 0)) { // Register intermediate point calculated by BRouter
                             polypoints.push(latlng);
                         } else {
                             // Register end of section point and create marker and polyline on the map
@@ -4372,7 +4382,7 @@
                                 // Register first point of the section and create marker on the map
                                 stage2.points.push({ latlng: latlng });
                                 polypoints.push(latlng);
-                            } else if (isBRouterPoint(trkpt)) { // Register intermediate point calculated by BRouter
+                            } else if (isRouterPoint(trkpt) || (!rpMade && k % 100 !== 0)) { // Register intermediate point calculated by BRouter
                                 polypoints.push(latlng);
                             } else {
                                 // Register end of section point and create marker and polyline on the map
@@ -4459,10 +4469,10 @@
         //--------------------------------------------------------------------------
         // Check whether the point was created by the user or calculated by BRouter
         //--------------------------------------------------------------------------
-        function isBRouterPoint(pt) {
+        function isRouterPoint(pt) {
 
             const sourceEls = pt.getElementsByTagNameNS(RP_NS, "source");
-            return sourceEls.length > 0 && sourceEls[0].textContent === "brouter";
+            return sourceEls.length > 0 && sourceEls[0].textContent.endsWith("router");
         }
     }
 
@@ -5682,7 +5692,7 @@
                 } else if (e.ctrlKey && key === '$') {   // When user presses 'h' (to request help)
                     e.preventDefault();
 
-                    dumpAll ();
+                    dumpRoute ();
                 }
             }
             document.addEventListener('keydown', doc_keydown_perm);  // Add event listener to document
@@ -11872,79 +11882,94 @@
     //-------------------------------------
     // Dump all stages and interest points
     //-------------------------------------
-    function dumpAll() {
-        console.log("STAGES (" + stages.length + ")");
-        stages.forEach((stage, i) => {
-            let name = "<undefined>";
-            if (typeof stage.name !== "undefined") {
-                if (stage.name !== null)
-                    name = stage.name;
-                else
-                    name = "<null>";
-            }
-            console.log("- Stage " + i + ": " + name);
+    function dumpRoute() {
+        let stageNb = 0;
+        if (typeof stages !== "undefined")
+            stageNb = stages.length;
 
-            let pointNb = "<no point defined>";
-            if (typeof stage.points !== "undefined") {
-                console.log("  " + stage.points.length + " points :");
-                stage.points.forEach((point, j) => {
-                    let markerNb = "<no marker defined>";
-                    if (typeof point.marker !== "undefined") {
-                        if (point.marker != null)
-                            markerNb = 1;
-                        else {
-                            markerNb = 0;
+        let intPlNb = 0;
+        if (typeof interestPlaces !== "undefined")
+            intPlNb = interestPlaces.length;
+
+        console.log("ROUTE (" + stageNb + " stages, " + intPlNb + " interest places):");
+
+        if (stageNb > 0 ) {
+            console.log("  STAGES (" + stageNb + "):");
+            stages.forEach((stage, i) => {
+                let name = "<undefined>";
+                if (typeof stage.name !== "undefined") {
+                    if (stage.name !== null)
+                        name = stage.name;
+                    else
+                        name = "<null>";
+                }
+
+                let pointNb = 0;
+                if (typeof stage.points !== "undefined")
+                    pointNb = stage.points.length;
+
+                let sectionNb = 0;
+                if (typeof stage.sections !== "undefined")
+                    sectionNb = stage.sections.length;
+
+                console.log("  - Stage " + i + ": " + name + " (" + pointNb + " points, " + sectionNb + " sections)");
+
+                if (pointNb > 0) {
+                    console.log("    POINTS (" + pointNb + "):");
+                    stage.points.forEach((point, j) => {
+                        let markerNb = 0;
+                        if (typeof point.marker !== "undefined") {
+                            if (point.marker != null)
+                                markerNb = 1;
                         }
-                    }
-                    let eventNb = "<undefined>";
-                    if (typeof point.evtList !== "undefined")
-                        eventNb = point.evtList.length;
-                    console.log("  - Point " + j + ": " + markerNb + " marker, " + eventNb + " events");
-                });
-            }
+                        let eventNb = 0;
+                        if (typeof point.evtList !== "undefined")
+                            eventNb = point.evtList.length;
+                        console.log("    - Point " + j + ": " + markerNb + " marker, " + eventNb + " events");
+                    });
+                }
 
-            let sectionNb = "<no section defined>";
-            if (typeof stage.sections !== "undefined") {
-                console.log("  " + stage.sections.length + " sections :");
-                stage.sections.forEach((section, j) => {
-                    let polylineNb = "<no polyline defined>";
-                    let ptsNb = "<N/A>";
-                    if (typeof section.polyline !== "undefined") {
-                        if (section.polyline != null) {
-                            polylineNb = 1;
-                            ptsNb = section.polyline.getLatLngs().length;
-                        } else 
-                            polylineNb = 0;
-                    }
-                    let eventNb = "<undefined>";
-                    if (typeof section.evtList !== "undefined")
-                        eventNb = section.evtList.length;
-                    console.log("  - Section " + j + ": " + polylineNb + " polyline with " + ptsNb + " points, " + eventNb + " events");
-                });
-            }
-        });
+                if (sectionNb > 0) {
+                    console.log("    SECTIONS (" + sectionNb + "):");
+                    stage.sections.forEach((section, j) => {
+                        let polylineNb = 0;
+                        let ptsNb = 0;
+                        if (typeof section.polyline !== "undefined") {
+                            if (section.polyline != null) {
+                                polylineNb = 1;
+                                ptsNb = section.polyline.getLatLngs().length;
+                            }
+                        }
+                        let eventNb = 0;
+                        if (typeof section.evtList !== "undefined")
+                            eventNb = section.evtList.length;
+                        console.log("    - Section " + j + ": " + polylineNb + " polyline with " + ptsNb + " points, " + eventNb + " events");
+                    });
+                }
+            });
+        }
 
-        console.log("INTEREST PLACES (" + interestPlaces.length + ")");
-        interestPlaces.forEach((intPl, i) => {
-            let name = "<undefined>";
-            if (typeof intPl.name !== "undefined")
-                if (intPl.name !== null)
-                    name = intPl.name;
-                else
-                    name = "<null>";
+        if (intPlNb > 0 ) {
+            console.log("  INTEREST PLACES (" + intPlNb + ")");
+            interestPlaces.forEach((intPl, i) => {
+                let name = "<undefined>";
+                if (typeof intPl.name !== "undefined")
+                    if (intPl.name !== null)
+                        name = intPl.name;
+                    else
+                        name = "<null>";
 
-            let intPlNb = "<no marker defined>";
-            if (typeof intPl.marker !== "undefined") {
-                if (intPl.marker != null)
-                    intPlNb = 1;
-                else 
-                    intPlNb = 0;
-            }
-            let eventNb = "<undefined>";
-            if (typeof intPl.evtList !== "undefined")
-                eventNb = intPl.evtList.length;
-            console.log("  - Interest place " + i + ": " + markerNb + " marker, " + eventNb + " events");
-        });
+                let markerNb = 0;
+                if (typeof intPl.marker !== "undefined") {
+                    if (intPl.marker != null)
+                        markerNb = 1;
+                }
+                let eventNb = 0;
+                if (typeof intPl.evtList !== "undefined")
+                    eventNb = intPl.evtList.length;
+                console.log("  - Interest place " + i + ": " + markerNb + " marker, " + eventNb + " events");
+            });
+        }
     }
     
     //---------------------------------------

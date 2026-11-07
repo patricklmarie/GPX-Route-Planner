@@ -2575,7 +2575,6 @@
             
             // Prevent map interaction
             L.DomEvent.disableClickPropagation(wrapper);
-            L.DomEvent.disableScrollPropagation(wrapper);
 
             // Create title
             const title = L.DomUtil.create('div', 'menu-title', wrapper);
@@ -2805,7 +2804,6 @@
             
             // Prevent map interaction
             L.DomEvent.disableClickPropagation(wrapper);
-            L.DomEvent.disableScrollPropagation(wrapper);
 
             // Add number of coordinates
             const container = document.createElement('div');
@@ -2871,7 +2869,6 @@
                 
                 // Prevent map interaction
                 L.DomEvent.disableClickPropagation(wrapper);
-                L.DomEvent.disableScrollPropagation(wrapper);
 
                 // Create title
                 const title = L.DomUtil.create('div', 'menu-title', wrapper);
@@ -3244,7 +3241,6 @@
                 
                 // Prevent map interaction
                 L.DomEvent.disableClickPropagation(wrapper);
-                L.DomEvent.disableScrollPropagation(wrapper);
 
                 // Find stage number
                 let num = stages.indexOf(stage) + 1;  // Retrieve stage index
@@ -6880,7 +6876,6 @@
 
             // Prevent map interaction
             L.DomEvent.disableClickPropagation(wrapper);
-            L.DomEvent.disableScrollPropagation(wrapper);
 
             // Create title
             const title = L.DomUtil.create('div', 'menu-title', wrapper);
@@ -7003,7 +6998,6 @@
 
                         // Disable event propagation
                         L.DomEvent.disableClickPropagation(container);
-                        L.DomEvent.disableScrollPropagation(container);
                         L.DomEvent.on(container, 'mousedown', L.DomEvent.stop);
                     } else {
                         // Clear results container it it exists
@@ -7284,7 +7278,6 @@
 
             // Prevent map interaction
             L.DomEvent.disableClickPropagation(wrapper);
-            L.DomEvent.disableScrollPropagation(wrapper);
 
             // Create header row
             const headerRow = L.DomUtil.create('div', 'menu-header', wrapper);
@@ -7350,7 +7343,6 @@
 
             // Prevent map interaction
             L.DomEvent.disableClickPropagation(wrapper);
-            L.DomEvent.disableScrollPropagation(wrapper);
 
             // Create header row
             const headerRow = L.DomUtil.create('div', 'menu-header', wrapper);
@@ -7416,7 +7408,6 @@
             
             // Prevent map interaction
             L.DomEvent.disableClickPropagation(wrapper);
-            L.DomEvent.disableScrollPropagation(wrapper);
 
             // Create header row
             const headerRow = L.DomUtil.create('div', 'menu-header', wrapper);

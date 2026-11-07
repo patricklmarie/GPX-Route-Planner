@@ -2698,54 +2698,54 @@
                     }
                 });
 
-                if (ascent != null && descent != null) {
-                    label = document.createElement('strong');
-                    label.textContent = context.language === 'EN' ? 'Elevation: ' : 'Dénivelé : ';
-                    container.appendChild(label);
+                label = document.createElement('strong');
+                label.textContent = context.language === 'EN' ? 'Elevation: ' : 'Dénivelé : ';
+                container.appendChild(label);
 
-                    if (ascent != null) {
-                        const uparrow = document.createElement("span");
-                        uparrow.textContent = "\u2191";
-                        uparrow.style.display = "inline-block";
-                        uparrow.style.transform = "scale(1.4)";   // visually bigger
-                        uparrow.style.transformOrigin = "bottom";
-                        uparrow.style.lineHeight = "1";           // prevents line stretching
+                const uparrow = document.createElement("span");
+                uparrow.textContent = "\u2191";
+                uparrow.style.display = "inline-block";
+                uparrow.style.transform = "scale(1.4)";   // visually bigger
+                uparrow.style.transformOrigin = "bottom";
+                uparrow.style.lineHeight = "1";           // prevents line stretching
 
-                        container.append(
-                            uparrow,
-                            document.createTextNode(" "),   // ← space AFTER arrow
-                            document.createTextNode(
-                                `${context.measurementUnits === 'ME'
-                                        ? `${Math.round(ascent)} m`
-                                        : `${Math.round(ascent/0.3048)} ft`
-                                }`
-                            )
-                        );
-                    }
+                container.append(
+                    uparrow,
+                    document.createTextNode(" "),   // ← space AFTER arrow
+                    document.createTextNode(
+                        `${ascent !== null
+                            ? `${context.measurementUnits === 'ME'
+                                ? `${Math.round(ascent)} m`
+                                : `${Math.round(ascent/0.3048)} ft`
+                            }`
+                            : `?`
+                        }`
+                    )
+                );
 
-                    if (descent != null) {
-                        const dnarrow = document.createElement("span");
-                        dnarrow.textContent = "\u2193";
-                        dnarrow.style.display = "inline-block";
-                        dnarrow.style.transform = "scale(1.4)";   // visually bigger
-                        dnarrow.style.transformOrigin = "bottom";
-                        dnarrow.style.lineHeight = "1";           // prevents line stretching
+                const dnarrow = document.createElement("span");
+                dnarrow.textContent = "\u2193";
+                dnarrow.style.display = "inline-block";
+                dnarrow.style.transform = "scale(1.4)";   // visually bigger
+                dnarrow.style.transformOrigin = "bottom";
+                dnarrow.style.lineHeight = "1";           // prevents line stretching
 
-                        container.append(
-                            document.createTextNode(" "),   // ← space BEFORE arrow
-                            dnarrow,
-                            document.createTextNode(" "),   // ← space AFTER arrow
-                            document.createTextNode(
-                                `${context.measurementUnits === 'ME'
-                                        ? `${Math.round(-descent)} m`
-                                        : `${Math.round(-descent/0.3048)} ft`
-                                }`
-                            )
-                        );
-                    }
+                container.append(
+                    document.createTextNode(" "),   // ← space BEFORE arrow
+                    dnarrow,
+                    document.createTextNode(" "),   // ← space AFTER arrow
+                    document.createTextNode(
+                        `${descent !== null
+                            ? `${context.measurementUnits === 'ME'
+                                ? `${Math.round(-descent)} m`
+                                : `${Math.round(-descent/0.3048)} ft`
+                            }`
+                            : `?`
+                        }`
+                    )
+                );
 
-                    wrapper.appendChild(container);
-                }
+                wrapper.appendChild(container);
             }
 
             return wrapper;
@@ -2843,6 +2843,12 @@
         if (pointsNb < 2)
             return;
 
+        let yMin = null;
+        let yMax = null;
+        [yMin, yMax] = calculateRouteProfile();
+        if (typeof yMin === 'undefined' || typeof yMax === 'undefined')
+            return;
+
         if (!context.routeProfileControl) {
             const corners = map._controlCorners;
             const container = map._controlContainer;
@@ -2873,10 +2879,6 @@
                 title.style.fontSize = '18px';
                 title.style.fontWeight = 'bold';
                 title.style.marginBottom = '4px';
-
-                let yMin = null;
-                let yMax = null;
-                [yMin, yMax] = calculateRouteProfile();
 
                 let yBottom = Math.round((yMin - (yMax - yMin) * 0.08)/5)*5;
                 if (yBottom >= yMin)
@@ -3107,10 +3109,6 @@
             const title = context.routeProfileControl._container.getElementsByClassName('menu-title')[0];
             title.textContent = context.language === 'EN' ? 'Route profile' : 'Profil de l\'itinéraire';
             
-            let yMin = null;
-            let yMax = null;
-            [yMin, yMax] = calculateRouteProfile();
-
             let yBottom = Math.round((yMin - (yMax - yMin) * 0.08)/5)*5;
             if (yBottom >= yMin)
                 yBottom = yMin - 5;
@@ -3218,6 +3216,12 @@
         if (stage === undefined || stage === null || stage.points.length < 2 || !stage.points[0].marker.getLatLng().alt)
             return;
 
+        let yMin = null;
+        let yMax = null;
+        [yMin, yMax] = calculateStageProfile(stage);
+        if (typeof yMin === 'undefined' || typeof yMax === 'undefined')
+            return;
+
         if (!context.stageProfileControl) {
             const corners = map._controlCorners;
             const container = map._controlContainer;
@@ -3253,10 +3257,6 @@
                 title.style.fontSize = '18px';
                 title.style.fontWeight = 'bold';
                 title.style.marginBottom = '4px';
-
-                let yMin = null;
-                let yMax = null;
-                [yMin, yMax] = calculateStageProfile(stage);
 
                 let yBottom = Math.round((yMin - (yMax - yMin) * 0.08)/5)*5;
                 if (yBottom >= yMin)
@@ -3445,10 +3445,6 @@
             const title = context.stageProfileControl._container.getElementsByClassName('menu-title')[0];
             title.textContent = (context.language === 'EN' ? 'Stage profile: ' : 'Profil de l\'étape : ') + String(num) + '. ' + (stage.name ?? '');
             
-            let yMin = null;
-            let yMax = null;
-            [yMin, yMax] = calculateStageProfile(stage);
-
             let yBottom = Math.round((yMin - (yMax - yMin) * 0.08)/5)*5;
             if (yBottom >= yMin)
                 yBottom = yMin - 5;
@@ -5222,7 +5218,8 @@
         stage.points.forEach(point => {
             latlngs.unshift(point.marker.getLatLng());
         });
-        if (latlngs.length === 0) {
+
+        if (latlngs.length < 2) {
             enableStagePointsDragging(stage);
     
             map.getContainer().style.cursor = 'crosshair';
@@ -5240,6 +5237,7 @@
                 else
                     coordinates = coordinates.concat('|' + latlng.lng + ',' + latlng.lat);
             });
+
             let calculatedPoints = await fetchBRouterRoute(coordinates);    // Query BRouter for a route
             if (!calculatedPoints) {    // When no route is found by BRouter
                 enableStagePointsDragging(stage);
@@ -5250,25 +5248,34 @@
 
                 return;
             }
-            for (let j = 0; j < latlngs.length; j++) {
-                const latlng = latlngs[j];
 
-                const closestSegAndPt = findClosestSectionAndPoint(calculatedPoints, latlng);
-                const idx = closestSegAndPt.index;
-                let closestPt = closestSegAndPt.point;
+            calculatedPoints = improvePolyGeom(calculatedPoints);
 
-                if (!closestPt.alt || closestPt.alt === null) {
-                    if (closestPt.lat.toFixed(4) === latlng.lat.toFixed(4) && closestPt.lng.toFixed(4) === latlng.lng.toFixed(4) &&  latlng.alt)
-                        closestPt.alt = latlng.alt;
-                    else
-                        closestPt = await fetchOpenMeteoElevation(closestPt);
+            stageAfter.points.length = 0;
+            stageAfter.sections.length = 0;
+
+            while (calculatedPoints.length > 0) {
+                const calculatedPoints2 = calculatedPoints.slice(0, 50);
+
+                if (!calculatedPoints2[0].alt)
+                    calculatedPoints2[0].alt = await fetchOpenMeteoElevation(calculatedPoints2[0]);
+                if (stageAfter.points.length === 0)
+                    stageAfter.points.push({ 'latlng': calculatedPoints2[0] })
+
+                if (calculatedPoints2.length > 2) {
+                    calculatedPoints = calculatedPoints.slice(50);
+    
+                    if (!calculatedPoints2[calculatedPoints2.length - 1].alt) {
+                        calculatedPoints2[calculatedPoints2.length - 1].alt = await fetchOpenMeteoElevation(calculatedPoints2[calculatedPoints2.length - 1]);
+                        calculatedPoints[0].alt = calculatedPoints2[calculatedPoints2.length - 1].alt;
+                    }
+
+                    stageAfter.sections.push({ 'latlngs': calculatedPoints2 });
+                } else {
+                    calculatedPoints.length = 0;
                 }
 
-                if (j > 0) {
-                    stageAfter.sections[j - 1].latlngs = improvePolyGeom(calculatedPoints.slice(0, idx - 1).concat(closestPt));
-                    calculatedPoints = [closestPt].concat(calculatedPoints.slice(idx + 1));
-                }
-                stageAfter.points[j].latlng = closestPt;
+                stageAfter.points.push({ 'latlng': calculatedPoints2[calculatedPoints2.length - 1] });
             }
         } else {    // When BRouter is not used
             latlngs.forEach((latlng, j) =>{
@@ -5293,17 +5300,22 @@
         function copy(stage) {
             const stage2 = {
                 name: stage.name,
+                color: stage.color,
                 points: [],
                 sections: []                  
             }
 
-            stage.points.forEach(point => {
-                stage2.points.push({ latlng: point.marker.getLatLng() });
-            })
+            if (stage.points) {
+                stage.points.forEach(point => {
+                    stage2.points.push({ latlng: point.marker.getLatLng() });
+                })
+            }
 
-            stage.sections.forEach(section => {
-                stage2.sections.push({ latlngs: section.polyline.getLatLngs() });
-            })
+            if (stage.sections) {
+                stage.sections.forEach(section => {
+                    stage2.sections.push({ latlngs: section.polyline.getLatLngs() });
+                })
+            }
 
             return stage2;
         }
@@ -5530,7 +5542,7 @@
                     return;
 
                 let { sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnStage(stageRef, e.latlng);
-                if (sectIdx > 0) 
+                if (sectIdx > 0 && ptIdx > 0) 
                     ptIdx--;   // First point of section is indexed only for the first section
 
                 if (distance <= 30) {
@@ -5997,7 +6009,7 @@
                 if (context.altPop && context.altPop !== null)
                     context.altPop.remove();
 
-                if (!context.stageNRouteProfileDisplayed || context.editedStage === null) 
+                if (!context.stageNRouteProfileDisplayed || context.editedStage === null || !context.stageProfileControl) 
                     return;
 
                 const stageRef = stages[context.editedStage];
@@ -6007,7 +6019,7 @@
                     return;
 
                 let { sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnStage(stageRef, e.latlng);
-                if (sectIdx > 0) 
+                if (sectIdx > 0 && ptIdx > 0)
                     ptIdx--;   // First point of section is indexed only for the first section
 
                 if (distance <= 30) {
@@ -6099,12 +6111,12 @@
                 if (context.altPop && context.altPop !== null)
                     context.altPop.remove();
 
-                if (!context.stageNRouteProfileDisplayed || context.editedStage !== null) 
+                if (!context.stageNRouteProfileDisplayed || context.editedStage !== null || !context.routeProfileControl) 
                     return;
 
                 stages.forEach((stage, i) => {
                     let { stageIdx: stageIdx, sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnRoute(e.latlng);
-                    if (sectIdx > 0) 
+                    if (sectIdx > 0 && ptIdx > 0) 
                         ptIdx--;   // First point of section is indexed only for the first section
 
                     if (distance <= 30) {
@@ -6115,7 +6127,8 @@
                         else
                             context.routeProfileMapMarker = L.circleMarker(latlng, { pane: 'markerNEPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
 
-                        if (context.routeProfileChartRevIdx && context.routeProfileChartRevIdx[stageIdx] && context.routeProfileChartRevIdx[stageIdx][sectIdx] && context.routeProfileChartRevIdx[stageIdx][sectIdx][ptIdx] != undefined) {
+                        if (context.routeProfileChartRevIdx && context.routeProfileChartRevIdx[stageIdx] && context.routeProfileChartRevIdx[stageIdx][sectIdx] && 
+                         context.routeProfileChartRevIdx[stageIdx][sectIdx][ptIdx] != undefined) {
                             const idx = context.routeProfileChartRevIdx[stageIdx][sectIdx][ptIdx];
 
                             const dist = context.routeProfileChartPoints[idx].x;
@@ -6259,10 +6272,10 @@
         if (context.menuDisplayed)
             setMenu4NonEdt();     // Set menu for non edit status
 
-        setDocMap4NonEdt();     // Set document and map event listeners for non edit status
-
         if (context.stageNRouteProfileDisplayed)
             displayRouteProfile();
+
+        setDocMap4NonEdt();     // Set document and map event listeners for non edit status
     }
 
     //----------------------------
@@ -9144,7 +9157,7 @@
             }
         
             // Restore previous point's and previous section's positions
-            if (this.before.previousPoint != null || stage.points.length > 0) {
+            if (this.before.previousPoint != null && stage.points.length > 0) {
                 stage.points[stage.points.length - 1].marker.setLatLng(this.before.previousPoint); // Adjust last point's position
                 if (stage.sections.length > 0) { // When there are sections in the stage, adjust last section's end position
                     let latlngs = stage.sections[stage.sections.length - 1].polyline.getLatLngs()
@@ -10380,7 +10393,9 @@
 
             // Restore stage's sections
             stage.sections.forEach(section => {
-                const newPolyline = L.polyline(section.latlngs).addTo(map);    // Create section
+                const newPolyline = L.polyline(section.latlngs)
+                 .setStyle({ color: colors[stage.color].light })
+                 .addTo(map);    // Create section
                 section.polyline = newPolyline;
                 section.evtList = [];
                 delete section.latlngs;
@@ -10417,29 +10432,29 @@
                 setEnv4EdtStg(stageIdx);
             }
 
-            // Remove event listeners on all sections and all points
-            for (const point of stage.points)
-                for (const { target, type, handler } of point.evtList)
-                    target.removeEventListener(type, handler);
-            if (stage.sections)
-                for (const section of stage.sections)
-                    for (const { target, type, handler } of section.evtList)
-                        target.removeEventListener(type, handler);
-        
             //Delete all sections and all points
-            for (const point of stage.points) {
-                point.latlng = point.marker.getLatLng();
-                point.marker.remove();
-                delete point.marker;
-                delete point.evtList;
+            if (stage.points) {
+                for (const point of stage.points) {
+                    point.latlng = point.marker.getLatLng();
+                    point.marker.remove();
+                    delete point.marker;
+                    for (const { target, type, handler } of point.evtList)
+                        target.removeEventListener(type, handler);
+                    delete point.evtList;
+                }
+                stage.points.length = 0;
             }
-            if (stage.sections)
+            if (stage.sections) {
                 for (const section of stage.sections) {
                     section.latlngs = section.polyline.getLatLngs();
                     section.polyline.remove();
                     delete section.polyline;
+                    for (const { target, type, handler } of section.evtList)
+                        target.removeEventListener(type, handler);
                     delete section.evtList;
                 }
+                stage.sections.length = 0;
+            }
 
             if (stage.infoPop)
                 stage.infoPop.remove();
@@ -11520,8 +11535,8 @@
         undo() {
             // Find out stage
             const stage = this.stage;
-
             const stageIdx = this.stageIdx;
+            const beforeStage = this.before.stage;
 
             if (stageIdx != context.editedStage) {
                 quitEditStage();
@@ -11529,13 +11544,51 @@
                 setEnv4EdtStg(stageIdx);
             }
 
-            stage.points.forEach((point, i) => {
-                point.marker.setLatLng(this.before.stage.points[i].latlng);
-            })
+            //Delete all sections and all points
+            if (stage.points) {
+                for (const point of stage.points) {
+                    point.latlng = point.marker.getLatLng();
+                    point.marker.remove();
+                    delete point.marker;
+                    for (const { target, type, handler } of point.evtList)
+                        target.removeEventListener(type, handler);
+                    delete point.evtList;
+                }
+                stage.points.length = 0;
+            }
+            if (stage.sections) {
+                for (const section of stage.sections) {
+                    section.latlngs = section.polyline.getLatLngs();
+                    section.polyline.remove();
+                    delete section.polyline;
+                    for (const { target, type, handler } of section.evtList)
+                        target.removeEventListener(type, handler);
+                    delete section.evtList;
+                }
+                stage.sections.length = 0;
+            }
 
-            stage.sections.forEach((section, i) => {
-                section.polyline.setLatLngs(this.before.stage.sections[i].latlngs);
-            })
+            // Restore points and stages
+            beforeStage.points.forEach(point => {
+                const newMarker = L.marker(point.latlng, {
+                    icon: getCircleIcon(stage.color, 'light'),
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+                stage.points.push({ 'marker': newMarker, 'evtList': [] });
+            });
+
+            // Generate stage's sections
+            beforeStage.sections.forEach(section => {
+                const newPolyline = L.polyline(section.latlngs)
+                 .setStyle({ color: colors[stage.color].light })
+                 .addTo(map);    // Create section
+                stage.sections.push({ 'polyline': newPolyline, 'evtList': [] });
+            });
+
+            setEnv4EdtStg(stageIdx);
 
             stage.distance = calculateStageDistance(stage);
 
@@ -11549,8 +11602,8 @@
         redo() {
             // Find out stage
             const stage = this.stage;
-
             const stageIdx = this.stageIdx;
+            const afterStage = this.after.stage;
 
             if (stageIdx != context.editedStage) {
                 quitEditStage();
@@ -11558,13 +11611,51 @@
                 setEnv4EdtStg(stageIdx);
             }
 
-            stage.points.forEach((point, i) => {
-                point.marker.setLatLng(this.after.stage.points[i].latlng);
-            })
+            //Delete all sections and all points
+            if (stage.points) {
+                for (const point of stage.points) {
+                    point.latlng = point.marker.getLatLng();
+                    point.marker.remove();
+                    delete point.marker;
+                    for (const { target, type, handler } of point.evtList)
+                        target.removeEventListener(type, handler);
+                    delete point.evtList;
+                }
+                stage.points.length = 0;
+            }
+            if (stage.sections) {
+                for (const section of stage.sections) {
+                    section.latlngs = section.polyline.getLatLngs();
+                    section.polyline.remove();
+                    delete section.polyline;
+                    for (const { target, type, handler } of section.evtList)
+                        target.removeEventListener(type, handler);
+                    delete section.evtList;
+                }
+                stage.sections.length = 0;
+            }
 
-            stage.sections.forEach((section, i) => {
-                section.polyline.setLatLngs(this.after.stage.sections[i].latlngs);
-            })
+            // Generate stage's points
+            afterStage.points.forEach(point => {
+                const newMarker = L.marker(point.latlng, {
+                    icon: getCircleIcon(stage.color, 'light'),
+                    pane: 'markerEditPane',
+                    draggable: true,
+                    autoPan: false,
+                    bubblingMouseEvents: true
+                }).addTo(map);
+                stage.points.push({ 'marker': newMarker, 'evtList': [] });
+            });
+
+            // Generate stage's sections
+            afterStage.sections.forEach(section => {
+                const newPolyline = L.polyline(section.latlngs)
+                 .setStyle({ color: colors[stage.color].light })
+                 .addTo(map);    // Create section
+                stage.sections.push({ 'polyline': newPolyline, 'evtList': [] });
+            });
+
+            setEnv4EdtStg(stageIdx);
 
             stage.distance = calculateStageDistance(stage);
 
@@ -11684,9 +11775,8 @@
     function calculateAscentAndDescent(stage) {
         const SMOOTH_WINDOW = 1;    // A sample of n preceding and n following points surrounding the current point will be used to smooth the calculated ascent and descent
                                     // SMOOTH_WINDOW = 0 -> No smoothing
-
-        let ascent = 0;     // Calculated ascent
-        let descent = 0;    // Calculated descent
+        let ascent = null;     // Calculated ascent
+        let descent = null;    // Calculated descent
 
         let sample = [];    // Array of the altitudes of the points surrounding the current point
         let sampTotal = 0;   // Total of the altitudes of the points in "sample" array
@@ -11781,10 +11871,16 @@
             if (smoothAlt != null && prevSmoothAlt != null) {
                 let diff = smoothAlt - prevSmoothAlt;     // Calculate smoothed altitude difference with the previous point
                 // Update ascent and descent
-                if (diff > 0)
-                    ascent = ascent + diff;
-                else if (diff < 0)
-                    descent = descent + diff;
+                if (diff > 0) {
+                    if (ascent !== null)
+                        ascent = ascent + diff;
+                    else
+                        ascent = diff;
+                } else if (diff < 0)
+                    if (descent !== null)
+                        descent = descent + diff;
+                    else
+                        descent = diff;
                 //console.log("diff: " + diff + ", ascent: " + ascent + ", descent: " + descent);
             }
             if (smoothAlt != null)    // Save point smoothed altitude for future use with next point
@@ -13252,27 +13348,27 @@
                     : ''
             }
             ${
-                stage.ascent != null && stage.descent != null 
+                stage.points.length >= 2 
                     ? `<br><b>${
                         context.language === 'EN' 
                             ? 'Elevation:' 
                             : 'Dénivelé :'
-                    }</b> ${
-                        stage.ascent != null 
-                            ? `<span style="font-size:20px;">&#8593;</span> ${
+                    }</b><span style="font-size:20px;">&#8593;</span> 
+                        ${stage.ascent != null 
+                            ? `${
                                 context.measurementUnits === 'ME'
                                     ? `${Math.round(stage.ascent)} m`
                                     : `${Math.round(stage.ascent/0.3048)} ft`
                             }` 
-                            : ''
-                    } ${
-                        stage.descent != null 
-                            ? ` <span style="font-size:20px;">&#8595;</span> ${
+                            : '?'
+                    } <span style="font-size:20px;">&#8595;</span>
+                        ${stage.descent != null 
+                            ? ` ${
                                 context.measurementUnits === 'ME'
                                     ? `${Math.round(-stage.descent)} m` 
                                     : `${Math.round(-stage.descent/0.3048)} ft`
                             }`
-                            : ''
+                            : '?'
                     }`
                     : ''
             }

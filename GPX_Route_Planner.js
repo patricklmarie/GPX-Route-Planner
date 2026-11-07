@@ -478,7 +478,7 @@
                     <td>Focus on the interest place</td>
                 </tr>
                 <tr>
-                    <td><strong>d</strong></td>
+                    <td><strong>d or Del</strong></td>
                     <td>Delete the interest place</td>
                 </tr>
                 <tr>
@@ -569,7 +569,7 @@
                     <td>Focaliser sur le lieu d'intérêt</td>
                 </tr>
                 <tr>
-                    <td><strong>d</strong></td>
+                    <td><strong>d ou Suppr</strong></td>
                     <td>Supprimer le lieu d'intérêt</td>
                 </tr>
                 <tr>
@@ -756,7 +756,7 @@
                     <td>Delete the last or first point of the stage</td>
                 </tr>
                 <tr>
-                    <td><strong>d</strong></td>
+                    <td><strong>d or Del</strong></td>
                     <td>Delete the stage</td>
                 </tr>
                 <tr>
@@ -872,7 +872,7 @@
                     <td>Supprimer le dernier ou le premier point de l'étape</td>
                 </tr>
                 <tr>
-                    <td><strong>d</strong></td>
+                    <td><strong>d ou Suppr</strong></td>
                     <td>Supprimer l'étape</td>
                 </tr>
                 <tr>
@@ -5363,7 +5363,7 @@
                 e.preventDefault();
                 
                 quitEditIntPl();
-            } else if (key === 'd') {     // When user presses 'd' (to delete current interest place)
+            } else if (key === 'd' || key === 'delete') {     // When user presses 'd' (to delete current interest place)
                 e.preventDefault();
 
                 if (confirm(context.language === 'EN' ? "Are you sure you want to delete the edited interest place?" : "Etes-vous sûr de vouloir supprimer le lieu d\'intérêt en cours d'édition ?")) 
@@ -5747,7 +5747,7 @@
             if (key === 'escape') {     // When user presses 'escape' (to quit edit mode)
                 e.preventDefault();
                 quitEditStage();
-            } else if (key === 'd') {     // When user presses 'd' (to delete current stage)
+            } else if (key === 'd' || key === 'delete') {     // When user presses 'd' (to delete current stage)
                 e.preventDefault();
 
                 if (confirm(context.language === 'EN' ? "Are you sure you want to delete the edited stage?" : "Etes-vous sûr de vouloir supprimer l'étape en cours d'édition ?")) 

@@ -428,7 +428,7 @@
     //--------------------------------------------------------
     // Create command list control for interest places edit
     //--------------------------------------------------------
-    function createCmdListEdtIntPlControl() {
+    function createCmdListEdtIntPlControl(wrapper) {
         // Create global container
         const container = L.DomUtil.create('div', 'info menu');
         container.style.maxWidth = '350px';
@@ -636,6 +636,8 @@
 
         // Adjust max height to content
         if (context.spannedCommand) {
+            L.DomEvent.disableScrollPropagation(wrapper);
+
             content.style.maxHeight = '0';       // collapse
             content.style.overflow = 'hidden';
 
@@ -648,6 +650,10 @@
             content.style.overflowY = 'auto';
             });
         } else {
+            L.DomEvent.off(wrapper, 'wheel');
+            L.DomEvent.off(wrapper, 'mousewheel');
+            L.DomEvent.off(wrapper, 'DOMMouseScroll');
+            
             content.style.maxHeight = '0';       // Collapse
             content.style.overflow = 'hidden';
         }
@@ -661,6 +667,8 @@
 
             // Adjust max height to content
             if (context.spannedCommand) {
+                L.DomEvent.disableScrollPropagation(wrapper);
+
                 const mapContainer = map.getContainer(); // Leaflet map container
                 const mapHeight = mapContainer.clientHeight;
                 const containerRect = container.getBoundingClientRect();
@@ -669,6 +677,10 @@
                 content.style.maxHeight = availableHeight + 'px';   // Expand
                 content.style.overflowY = 'auto';
             } else {
+                L.DomEvent.off(wrapper, 'wheel');
+                L.DomEvent.off(wrapper, 'mousewheel');
+                L.DomEvent.off(wrapper, 'DOMMouseScroll');
+            
                 content.style.maxHeight = '0';       // Collapse
                 content.style.overflow = 'hidden';
             }
@@ -682,7 +694,7 @@
     //--------------------------------------------
     // Create command list control for stage edit
     //--------------------------------------------
-    function createCmdListEdtStgControl() {
+    function createCmdListEdtStgControl(wrapper) {
         // Create global container
         const container = L.DomUtil.create('div', 'info menu');
         container.style.maxWidth = '350px';
@@ -939,18 +951,24 @@
 
         // Adjust max height to content
         if (context.spannedCommand) {
+            L.DomEvent.disableScrollPropagation(wrapper);
+
             content.style.maxHeight = '0';       // collapse
             content.style.overflow = 'hidden';
 
             requestAnimationFrame(() => {
-            const mapContainer = map.getContainer(); // Leaflet map container
-            const mapHeight = mapContainer.clientHeight;
-            const containerRect = container.getBoundingClientRect();
-            const availableHeight = mapHeight - containerRect.top - 80; // 10px padding
-            content.style.maxHeight = availableHeight + 'px';   // Expand
-            content.style.overflowY = 'auto';
+                const mapContainer = map.getContainer(); // Leaflet map container
+                const mapHeight = mapContainer.clientHeight;
+                const containerRect = container.getBoundingClientRect();
+                const availableHeight = mapHeight - containerRect.top - 80; // 10px padding
+                content.style.maxHeight = availableHeight + 'px';   // Expand
+                content.style.overflowY = 'auto';
             });
         } else {
+            L.DomEvent.off(wrapper, 'wheel');
+            L.DomEvent.off(wrapper, 'mousewheel');
+            L.DomEvent.off(wrapper, 'DOMMouseScroll');
+            
             content.style.maxHeight = '0';       // Collapse
             content.style.overflow = 'hidden';
         }
@@ -964,6 +982,8 @@
 
             // Adjust max height to content
             if (context.spannedCommand) {
+                L.DomEvent.disableScrollPropagation(wrapper);
+                
                 const mapContainer = map.getContainer(); // Leaflet map container
                 const mapHeight = mapContainer.clientHeight;
                 const containerRect = container.getBoundingClientRect();
@@ -972,6 +992,10 @@
                 content.style.maxHeight = availableHeight + 'px';   // Expand
                 content.style.overflowY = 'auto';
             } else {
+                L.DomEvent.off(wrapper, 'wheel');
+                L.DomEvent.off(wrapper, 'mousewheel');
+                L.DomEvent.off(wrapper, 'DOMMouseScroll');
+
                 content.style.maxHeight = '0';       // Collapse
                 content.style.overflow = 'hidden';
             }
@@ -985,7 +1009,7 @@
     //------------------------------------------
     // Create command list control for non edit
     //------------------------------------------
-    function createCmdListNonEdtControl() {
+    function createCmdListNonEdtControl(wrapper) {
         // Create global container
         const container = L.DomUtil.create('div', 'info menu');
         container.style.maxWidth = '350px';
@@ -1124,6 +1148,8 @@
 
         // Adjust max height to content
         if (context.spannedCommand) {
+            L.DomEvent.disableScrollPropagation(wrapper);
+
             content.style.maxHeight = '0';       // collapse
             content.style.overflow = 'hidden';
 
@@ -1136,6 +1162,10 @@
             content.style.overflowY = 'auto';
             });
         } else {
+            L.DomEvent.off(wrapper, 'wheel');
+            L.DomEvent.off(wrapper, 'mousewheel');
+            L.DomEvent.off(wrapper, 'DOMMouseScroll');
+            
             content.style.maxHeight = '0';       // Collapse
             content.style.overflow = 'hidden';
         }
@@ -1149,6 +1179,8 @@
 
             // Adjust max height to content
             if (context.spannedCommand) {
+                L.DomEvent.disableScrollPropagation(wrapper);
+    
                 const mapContainer = map.getContainer(); // Leaflet map container
                 const mapHeight = mapContainer.clientHeight;
                 const containerRect = container.getBoundingClientRect();
@@ -1157,6 +1189,10 @@
                 content.style.maxHeight = availableHeight + 'px';   // Expand
                 content.style.overflowY = 'auto';
             } else {
+                L.DomEvent.off(wrapper, 'wheel');
+                L.DomEvent.off(wrapper, 'mousewheel');
+                L.DomEvent.off(wrapper, 'DOMMouseScroll');
+            
                 content.style.maxHeight = '0';       // Collapse
                 content.style.overflow = 'hidden';
             }
@@ -7316,7 +7352,7 @@
             wrapper.appendChild(genButtonsContainers[1]);
 
             // Create command list for edit stage control
-            wrapper.appendChild(createCmdListEdtIntPlControl());
+            wrapper.appendChild(createCmdListEdtIntPlControl(wrapper));
 
             return wrapper;
         };
@@ -7381,7 +7417,7 @@
             wrapper.appendChild(genButtonsContainers[1]);
 
             // Create command list for edit stage control
-            wrapper.appendChild(createCmdListEdtStgControl());
+            wrapper.appendChild(createCmdListEdtStgControl(wrapper));
 
             return wrapper;
         };
@@ -7441,7 +7477,7 @@
             wrapper.appendChild(genButtonsContainers[1]);
 
             // Create command list for non edit control
-            wrapper.appendChild(createCmdListNonEdtControl());
+            wrapper.appendChild(createCmdListNonEdtControl(wrapper));
 
             return wrapper;
         };

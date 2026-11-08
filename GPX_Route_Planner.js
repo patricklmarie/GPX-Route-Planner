@@ -206,31 +206,49 @@
         }
     };
 
+    const routerProfiles = {
+        'hiking-beta': ['hiking-beta'],
+        'hiking-mountain': ['hiking-mountain'],
+        'trekking': ['trekking'],
+        'trekking-cycloroutes-safe': ['trekking', 'avoid_unsafe', 'stick_to_cycleroutes'],
+        'fastbike': ['fastbike'],
+        'fastbike-lowtraffic': ['fastbike-lowtraffic'],
+        'fastbike-verylowtraffic': ['fastbike-verylowtraffic'],
+        'gravel': ['gravel'],
+        'mtb': ['mtb'],
+        'car-vario': ['car-vario'],
+        'car-fast': ['car-fast'],
+        'car-eco': ['car-eco'],
+        'crow': null
+    };
+
     // Router profiles available
-    const routerProfilesEn = {
-        "Trekking": "trekking",
+    const routerProfilesEnLabels = {
         "Hiking": "hiking-beta",
-        "Hiking (mountain)": "hiking-mountain",
-        "Mountain biking": "mtb",
-        "Gravel cycling": "gravel",
+        "Hiking (steep trails)": "hiking-mountain",
+        "Bicycle touring": "trekking",
+        "Bicycle tour. (safety & cycleroutes) ": "trekking-cycloroutes-safe",
         "Road cycling (fast)": "fastbike",
         "Road cycling (low traffic)": "fastbike-lowtraffic",
         "Road cycling (very low traffic)": "fastbike-verylowtraffic",
+        "Gravel": "gravel",
+        "Mountain biking": "mtb",
         "Car route": "car-vario",
         "Car route (fast)": "car-fast",
         "Car route (economic)": "car-eco",
         "-- crow --": "crow"
     };
 
-    const routerProfilesFr = {
-        "Randonnée itinérante": "trekking",
-        "Randonnée": "hiking-beta",
-        "Randonnée (montagne)": "hiking-mountain",
-        "VTT": "mtb",
-        "Cyclisme de style gravel": "gravel",
+    const routerProfilesFrLabels = {
+        "Randonnée pédestre": "hiking-beta",
+        "Randonnée pédestre (accidenté)": "hiking-mountain",
+        "Randonnée cyclotouriste": "trekking",
+        "Randonnée cyclo (sécurité & pistes cycl.)": "trekking-cycloroutes-safe",
         "Cyclisme sur route (rapide)": "fastbike",
         "Cyclisme sur route (trafic bas)": "fastbike-lowtraffic",
         "Cyclisme sur route (trafic très bas)": "fastbike-verylowtraffic",
+        "Gravel": "gravel",
+        "VTT": "mtb",
         "Automobile": "car-vario",
         "Automobile (rapide)": "car-fast",
         "Automobile (économique)": "car-eco",
@@ -2453,7 +2471,7 @@
 
         // Create selection box
         const select = L.DomUtil.create('select', '', container);
-        Object.entries(context.language === 'EN' ? routerProfilesEn : routerProfilesFr).forEach(([labelText, value]) => {
+        Object.entries(context.language === 'EN' ? routerProfilesEnLabels : routerProfilesFrLabels).forEach(([labelText, value]) => {
             const option = document.createElement('option');
             option.value = value;              // stored string
             option.textContent = labelText;    // displayed label
@@ -5207,12 +5225,12 @@
         found = false;
         if (routerProfile !== '') {
             if (context.language === 'FR') {
-                Object.values(routerProfilesFr).forEach(intPl => {
+                Object.values(routerProfilesFrLabels).forEach(intPl => {
                     if (routerProfile === intPl)
                         found = true;
                 });
             } else {
-                Object.values(routerProfilesEn).forEach(intPl => {
+                Object.values(routerProfilesEnLabels).forEach(intPl => {
                     if (routerProfile === intPl)
                         found = true;
                 });
@@ -12123,8 +12141,12 @@
     //----------------------------------------------
     async function fetchBRouterRoute(coordinates) {
         // Prepare request to BRouter
-        const url = "https://brouter.de/brouter?lonlats=" + coordinates +
-            "&profile=" + context.routerProfile +"&alternativeidx=0&format=geojson";
+        const routerProfileDetails = routerProfiles[context.routerProfile];
+        let url = "https://brouter.de/brouter?lonlats=" + coordinates + "&alternativeidx=0&format=geojson" +
+            "&profile=" + routerProfileDetails[0];
+        for (let i = 1; i < routerProfileDetails.length; i++) {
+            url = url + "&profile:" + routerProfileDetails[i] + "=1";
+        }
 
         try {
             // Fetch BRouter GeoJSON

@@ -562,7 +562,7 @@
                 </tr>
                 <tr>
                     <td><strong>c</strong></td>
-                    <td>Mettre le lieu d'intérêt à la couleur par défaut</td>
+                    <td>Attribuer la couleur par défaut au lieu d'intérêt</td>
                 </tr>
                 <tr>
                     <td><strong>f</strong></td>
@@ -574,7 +574,7 @@
                 </tr>
                 <tr>
                     <td><strong>Echappement</strong></td>
-                    <td>Terminer la création modification de lieu d'intérêt</td>
+                    <td>Terminer la création/modification du lieu d'intérêt</td>
                 </tr>
             </table>
             <br><strong>Générales :</strong><br>
@@ -844,7 +844,7 @@
                 </tr>
                 <tr>
                     <td><strong>c</strong></td>
-                    <td>Mettre l'étape à la couleur par défaut</td>
+                    <td>Attribuer la couleur par défaut à l'étape</td>
                 </tr>
                 <tr>
                 <tr>
@@ -877,7 +877,7 @@
                 </tr>
                 <tr>
                     <td><strong>Echappement</strong></td>
-                    <td>Terminer la création modification d'étape</td>
+                    <td>Terminer la création/modification d'étape</td>
                 </tr>
             </table>
             <br><strong>Générales :</strong><br>
@@ -1499,7 +1499,7 @@
         setNameButton.style.display = 'flex';
         setNameButton.style.alignItems = 'center';
         setNameButton.style.justifyContent = 'center';
-        setNameButton.title = context.language === 'EN' ? 'Set stage name' : 'Attribuer nom à l\'étape';
+        setNameButton.title = context.language === 'EN' ? 'Set stage name' : 'Attribuer un nom à l\'étape';
         buttonsContainer.appendChild(setNameButton);
 
         // Define submit handler (for setting the stage's name)
@@ -1656,7 +1656,7 @@
         revStgButton.style.display = 'flex';
         revStgButton.style.alignItems = 'center';
         revStgButton.style.justifyContent = 'center';
-        revStgButton.title = context.language === 'EN' ? 'Reverse stage direction' : 'Inverser direction de l\'étape';
+        revStgButton.title = context.language === 'EN' ? 'Reverse stage direction' : 'Inverser la direction de l\'étape';
         buttonsContainer.appendChild(revStgButton);
 
         // Define submit handler (for reverse stage direction)
@@ -1796,7 +1796,7 @@
         changeStgPosButton.style.display = 'flex';
         changeStgPosButton.style.alignItems = 'center';
         changeStgPosButton.style.justifyContent = 'center';
-        changeStgPosButton.title = context.language === 'EN' ? 'Change stage position (in the list of stages)' : 'Modifier la position de l\'étape (dans la liste des étapes)';
+        changeStgPosButton.title = context.language === 'EN' ? 'Change stage position (in the list of stages)' : 'Modifier la position de l\'étape\n(dans la liste des étapes)';
         changeStgPosButton.addEventListener('click', (e) => {
             if (context.operationInProcess) {
                 displayError(context.language === 'EN' ? 'Another operation is in process' : 'Une autre operation est en cours');
@@ -1951,7 +1951,7 @@
         quitEdtButton.style.display = 'flex';
         quitEdtButton.style.alignItems = 'center';
         quitEdtButton.style.justifyContent = 'center';
-        quitEdtButton.title = context.language === 'EN' ? 'Quit stage edition' : 'Quitter édition de l\'étape';
+        quitEdtButton.title = context.language === 'EN' ? 'Quit stage edition' : 'Quitter l\'édition de l\'étape';
         buttonsContainer.appendChild(quitEdtButton);
 
         // Define submit handler (for quitting edit mode)
@@ -2013,7 +2013,7 @@
         newStgButton.style.display = 'flex';
         newStgButton.style.alignItems = 'center';
         newStgButton.style.justifyContent = 'center';
-        newStgButton.title = context.language === 'EN' ? 'Start creating new stage' : 'Démarrer création nouvelle étape';
+        newStgButton.title = context.language === 'EN' ? 'Start creating new stage' : 'Démarrer la création d\'une nouvelle étape';
         buttonsContainer.appendChild(newStgButton);
 
         // Define submit handler (for creating a new stage)
@@ -2053,7 +2053,7 @@
         newIntPlButton.style.display = 'flex';
         newIntPlButton.style.alignItems = 'center';
         newIntPlButton.style.justifyContent = 'center';
-        newIntPlButton.title = context.language === 'EN' ? 'Start creating new interest place' : 'Démarrer création nouveau lieu d\'intérêt';
+        newIntPlButton.title = context.language === 'EN' ? 'Start creating new interest place' : 'Démarrer la création d\'un nouveau lieu d\'intérêt';
         buttonsContainer.appendChild(newIntPlButton);
 
         // Define submit handler (for creating a new interest place)
@@ -2093,7 +2093,7 @@
         importGPXButton.style.display = 'flex';
         importGPXButton.style.alignItems = 'center';
         importGPXButton.style.justifyContent = 'center';
-        importGPXButton.title = context.language === 'EN' ? 'Import route from GPX' : 'Importer itinéraire de GPX';        
+        importGPXButton.title = context.language === 'EN' ? 'Import route from GPX file' : 'Importer un itinéraire d\'un fichier GPX';        
         buttonsContainer.appendChild(importGPXButton);
 
         // Define submit handler (for exporting to a GPX file)
@@ -2128,7 +2128,7 @@
         exportGPXButton.style.display = 'flex';
         exportGPXButton.style.alignItems = 'center';
         exportGPXButton.style.justifyContent = 'center';
-        exportGPXButton.title = context.language === 'EN' ? 'Export route to GPX' : 'Exporter l\'itinéraire vers GPX';
+        exportGPXButton.title = context.language === 'EN' ? 'Export route to GPX file' : 'Exporter l\'itinéraire dans un fichier GPX';
         buttonsContainer.appendChild(exportGPXButton);
 
         // Define submit handler (for exporting to a GPX file)
@@ -6316,6 +6316,7 @@
             const submitButton = document.createElement('button');
             submitButton.textContent = context.language === 'EN' ? 'Localize me!' : 'Localise-moi !';
             submitButton.style.width = '100px';
+            submitButton.title = context.language === 'EN' ? 'Localize my position on the map' : 'Localiser ma position sur la carte';
             row.appendChild(submitButton);
 
             // Define submit handler (button)
@@ -6350,6 +6351,7 @@
             const resetButton = document.createElement('button');
             resetButton.textContent = context.language === 'EN' ? 'Reset' : 'Réinitial.';
             resetButton.style.width = '70px';
+            resetButton.title = context.language === 'EN' ? 'Remove my position from the map' : 'Retirer ma position de la carte';
             row.appendChild(resetButton);
 
             wrapper.appendChild(row);
@@ -6900,6 +6902,7 @@
             // Create submit button
             const submitButton = document.createElement('button');
             submitButton.textContent = context.language === 'EN' ? 'Search' : 'Chercher';
+            submitButton.title = context.language === 'EN' ? 'Find the address (or coordinates)\nand show it on the map' : 'Trouver l\'adresse (ou les coordonnées)\net les montrer sur la carte';
             submitButton.style.width = '80px';
             row.appendChild(submitButton);
 
@@ -6907,6 +6910,7 @@
             const resetButton = document.createElement('button');
             resetButton.textContent = context.language === 'EN' ? 'Reset' : 'Réinitial.';
             resetButton.style.width = '75px';
+            resetButton.title = context.language === 'EN' ? 'Remove found place from the map' : 'Retirer le lieu trouvé de la carte';
             row.appendChild(resetButton);
 
             // Add label and buttons to row and row to wrapper
@@ -13520,8 +13524,8 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Double-click on an interest place to finish creating/editing the current stage and switch to create/edit mode for that interest place. </li>
 <li>Press the "?" key to display the address of the point on the map where the mouse cursor is located. </li>
 <li>Press the "h" key to display the altitude of the point on the map where the mouse cursor is located. </li>
-<li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
-<li>Click the "Export route to GPX" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
+<li>Click the "Import route from GPX file" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
+<li>Click the "Export route to GPX file" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
 <li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
 <li>Click the "Undo last action" button or press the "Ctrl + z" key combination to undo the last action.</li>
 <li>Click the "Redo last action" button or press the "Ctrl + y" key combination to redo the last action undone.</li>
@@ -13550,8 +13554,8 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Double-click on another interest place to finish creating/editing the current interest place and switch to create/edit mode for that interest place. </li>
 <li>Press the "?" key to display the address of the point on the map where the mouse cursor is located. </li>
 <li>Press the "h" key to display the altitude of the point on the map where the mouse cursor is located. </li>
-<li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
-<li>Click the "Export route to GPX" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
+<li>Click the "Import route from GPX file" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
+<li>Click the "Export route to GPX file" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
 <li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
 <li>Click the "Undo last action" button or press the "Ctrl + z" key combination to undo the last action.</li>
 <li>Click the "Redo last action" button or press the "Ctrl + y" key combination to redo the last action undone.</li>
@@ -13568,8 +13572,8 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Double-click on an interest place to switch to create/edit mode for that interest place. </li>
 <li>Press the "?" key to display the address of the point on the map where the mouse cursor is located. </li>
 <li>Press the "h" key to display the altitude of the point on the map where the mouse cursor is located. </li>
-<li>Click the "Import stages from GPX" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
-<li>Click the "Export route to GPX" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
+<li>Click the "Import route from GPX file" or press the "Ctrl + i" key combination to import additional stages and interest places from a GPX file (without deleting the stages and interest places already defined). </li>
+<li>Click the "Export route to GPX file" or press the "Ctrl + e" key combination to export the route to a GPX file. </li>
 <li>Click the "Focus on route" button or press the "Ctrl + f" key combination to focus the map on the route.</li>
 <li>Click the "Undo last action" or press the "Ctrl + z" key combination to undo the last action.</li>
 <li>Click the "Redo last action" or press the "Ctrl + y" key combination to redo the last action undone.</li>
@@ -13669,9 +13673,9 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Double-cliquer sur un point de l'étape pour le supprimer.</li>
 <li>Tirer-déposer un point de l'étape pour le déplacer.</li>
 <li>Tirer-déposer une section de l'étape pour insérer un nouveau point et le déplacer.</li>
-<li>Cliquer sur le bouton "Attribuer nom à l'étape" ou presser la touche "n" pour attribuer un nom à l'étape.</li>
+<li>Cliquer sur le bouton "Attribuer un nom à l'étape" ou presser la touche "n" pour attribuer un nom à l'étape.</li>
 <li>Cliquer sur le bouton "Modifier la couleur de l'étape" ou presser la touche "c" pour modifier la couleur de l'étape.</li>
-<li>Cliquer sur le bouton "Inverser direction de l'étape" ou presser la touche "r" pour inverser la direction de l'étape.</li>
+<li>Cliquer sur le bouton "Inverser la direction de l'étape" ou presser la touche "r" pour inverser la direction de l'étape.</li>
 <li>Cliquer sur le bouton "Partager l'étape en deux" ou presser la touche "s" pour partager l'étape en deux à un point désigné avec la souris.</li>
 <li>Cliquer sur le bouton "Fusionner l'étape avec une autre" ou presser la touche "m" pour fusionner l'étape avec une autre étape voisine désignée avec la souris. Pour être éligibles à la fusion, les autres étapes doivent :
 <ul>
@@ -13685,23 +13689,23 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Presser la touche "u" pour supprimer le dernier point de l'étape.</li>
 <li>Presser la touche "v" pour supprimer le premier point de l'étape.</li>
 <li>Cliquer sur le bouton "Supprimer l'étape" ou presser la touche "d" pour supprimer tous les points (et toutes les sections) de l'étape. Cette action fait également passer en mode supervision.</li>
-<li>Cliquer sur le bouton "Quitter édition de l'étape" ou presser la touche "Echappement" pour terminer la création/modification de l'étape et passer en mode supervision.</li>
+<li>Cliquer sur le bouton "Quitter l'édition de l'étape" ou presser la touche "Echappement" pour terminer la création/modification de l'étape et passer en mode supervision.</li>
 </ul>
 <p>Et les actions générales disponibles sont:</p>
 <ul>
-<li>Cliquer sur le bouton "Démarrer création nouvelle étape" ou double-cliquer sur la carte pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'une nouvelle étape.</li>
+<li>Cliquer sur le bouton "Démarrer la création d'une nouvelle étape" ou double-cliquer sur la carte pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'une nouvelle étape.</li>
 <li>Double-cliquer sur un point ou une section d'une autre étape pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour l'autre étape.</li>
-<li>Cliquer sur le bouton "Démarrer création nouveau lieu d'intérêt" pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
+<li>Cliquer sur le bouton "Démarrer la création d'un nouveau lieu d'intérêt" pour terminer la création/modification de l'étape en cours et passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
 <li>Double-cliquer sur un lieu d'intérêt pour terminer la création/modification de l'étape en cours et passer en mode édition/modification pour ce lieu d'intérêt.</li>
 <li>Presser la touche "?" pour afficher l'adresse du point de la carte où se trouve le curseur de la souris. </li>
 <li>Presser la touche "h" pour afficher l'altitude du point de la carte où se trouve le curseur de la souris. </li>
-<li>Cliquer sur le boutton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
-<li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
+<li>Cliquer sur le boutton "Importer un itinéraire d'un fichier GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
+<li>Cliquer sur le bouton "Exporter l'itinéraire dans un fichier GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
 <li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
 <li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
 <li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
 <li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes et lieux d'intérêt).</li>
-<li>Cliquer sur le bouton "Help" ou presser la combinaison de touches "Ctrl + h" pour ouvrir le panneau d'Aide.</li>
+<li>Cliquer sur le bouton "Aide" ou presser la combinaison de touches "Ctrl + h" pour ouvrir le panneau d'Aide.</li>
 </ul>
 <h3>Mode création/modification de lieu d'intérêt</h3>
 <p>Ce mode permet de créer un nouveau lieu d'intérêt ou de modifier un lieu d'intérêt existant de l'itinéraire. En cliquant de manière répétée sur la carte, on ajoute des lieux d'intérêt sur la carte.</p>
@@ -13711,44 +13715,44 @@ Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du 
 <li>Double-cliquer sur le lieu d'intérêt en mode création/modification pour le supprimer.</li>
 <li>Tirer-déposer un lieu d'intérêt pour le déplacer.</li>
 <li>Cliquer sur le bouton "Attribuer nom au lieu d'intérêt" ou presser la touche "n" pour attribuer un nom au lieu d'intérêt.</li>
-<li>Cliquer sur le bouton "Modificer la couleur du lieu d'intérêt" ou presser la touche "c" pour modifier la couleur du lieu d'intérêt.</li>
+<li>Cliquer sur le bouton "Modifier la couleur du lieu d'intérêt" ou presser la touche "c" pour modifier la couleur du lieu d'intérêt.</li>
 <li>Cliquer sur le bouton "Focaliser sur le lieu d'intérêt" ou presser la touche "f" pour focaliser la carte sur le lieu d'intérêt en mode créaation/modification.</li>
 <li>Cliquer sur le bouton "Supprimer le lieu d'intérêt" ou presser la touche "d" pour supprimer le lieu d'intérêt. Cette action fait également passer en mode supervision.</li>
 <li>Cliquer sur le bouton "Quitter l'édition du lieu d'intérêt" ou presser la touche "Echappement" pour terminer la création/modification du lieu d'intérêt et passer en mode supervision.</li>
 </ul>
 <p>Et les actions générales disponibles sont:</p>
 <ul>
-<li>Cliquer sur le bouton "Démarrer création nouvelle étape" ou double-cliquer sur la carte pour terminer la création/modification du lieu d'intérêt en cours de création/modification et passer en mode création/modification d'une nouvelle étape.</li>
+<li>Cliquer sur le bouton "Démarrer la création d'une nouvelle étape" ou double-cliquer sur la carte pour terminer la création/modification du lieu d'intérêt en cours de création/modification et passer en mode création/modification d'une nouvelle étape.</li>
 <li>Double-cliquer sur un point ou une section d'une étape pour terminer la création/modification du lieu d'intérêt en cours et passer en mode édition/modification pour cette étape.</li>
-<li>Cliquer sur le bouton "Démarrer création nouveu lieu d'intérêt" pour terminer la création/modification du lieu d'intérêt en cours et passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
+<li>Cliquer sur le bouton "Démarrer la création d'un nouveu lieu d'intérêt" pour terminer la création/modification du lieu d'intérêt en cours et passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
 <li>Double-cliquer sur un lieu d'intérêt pour terminer la création/modification du lieu d'intérêt en cours et passer en mode édition/modification pour l'autre lieu d'intérêt.</li>
 <li>Presser la touche "?" pour afficher l'adresse du point de la carte où se trouve le curseur de la souris. </li>
 <li>Presser la touche "h" pour afficher l'altitude du point de la carte où se trouve le curseur de la souris. </li>
-<li>Cliquer sur le boutton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
-<li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
+<li>Cliquer sur le boutton "Importer un itinéraire d'un fichier GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
+<li>Cliquer sur le bouton "Exporter l'itinéraire dans un fichier GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
 <li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
 <li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
 <li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
 <li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes et lieux d'intérêt).</li>
-<li>Cliquer sur le bouton "Help" ou presser la combinaison de touches "Ctrl + h" pour ouvrir le panneau d'Aide.</li>
+<li>Cliquer sur le bouton "Aide" ou presser la combinaison de touches "Ctrl + h" pour ouvrir le panneau d'Aide.</li>
 </ul>
 <h3>Mode supervision</h3>
 <p>Ce mode permet de visualiser les étapes et lieux d'intérêt de l'itinéraire sans qu'aucun ne soit en cours de création/modification. Les points de départ et d'arrivée de chaque étape sont représentés, mais pas les points de passage.</p> 
 <p>Les actions disponibles sont :</p>
 <ul>
-<li>Cliquer sur le bouton "Démarrer création nouvelle étape" ou double-cliquer sur la carte pour passer en mode création/modification d'une nouvelle étape.</li>
+<li>Cliquer sur le bouton "Démarrer la création d'une nouvelle étape" ou double-cliquer sur la carte pour passer en mode création/modification d'une nouvelle étape.</li>
 <li>Double-cliquer sur un point ou une section d'une étape pour passer en mode édition/modification pour cette étape.</li>
-<li>Cliquer sur le bouton "Démarrer création nouveau lieu d'intérêt" pour passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
+<li>Cliquer sur le bouton "Démarrer la création d'un nouveau lieu d'intérêt" pour passer en mode création/modification d'un nouveau lieu d'intérêt.</li>
 <li>Double-cliquer sur un lieu d'intérêt pour passer en mode édition/modification pour ce lieu d'intérêt.</li>
 <li>Presser la touche "?" pour afficher l'adresse du point de la carte où se trouve le curseur de la souris. </li>
 <li>Presser la touche "h" pour afficher l'altitude du point de la carte où se trouve le curseur de la souris. </li>
-<li>Cliquer sur le bouton "Importer étapes de GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
-<li>Cliquer sur le bouton "Exporter l'itinéraire vers GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
+<li>Cliquer sur le bouton "Importer un itinéraire d'un fichier GPX" ou presser la combinaison de touches "Ctrl + i" pour importer de nouvelles étapes et lieux d'intérêt à partir d'un fichier GPX. Ces étapes et lieux d'intérêt s'ajoutent à ceux qui figurent déjà sur la carte.</li>
+<li>Cliquer sur le bouton "Exporter l'itinéraire dans un fichier GPX" ou presser la combinaison de touches "Ctrl + e" pour exporter l'itinéraire en cours dans un fichier GPX.</li>
 <li>Cliquer sur le bouton "Focaliser sur l'itinéraire" ou presser la combinaisson de touches "Ctrl + f" pour focaliser la carte sur l'itinéraire.</li>
 <li>Cliquer sur le bouton "Défaire la dernière action" ou presser la combinaison de touches "Ctrl + z" pour défaire la dernière action.</li>
 <li>Cliquer sur le bouton "Refaire la dernière action" ou presser la combinaison de touches "Ctrl + y" pour refaire la dernière action défaite.</li>
 <li>Cliquer sur le bouton "Réinitialiser l'itinéraire" pour réinitialiser l'itinéraire (c'est-à-dire en supprimer toutes les étapes et lieux d'intérêt).</li>
-<li>Cliquer sur le bouton "Help" ou presser la touche "h" pour ouvrir le panneau d'Aide.</li>
+<li>Cliquer sur le bouton "Aide" ou presser la touche "h" pour ouvrir le panneau d'Aide.</li>
 </ul>
 <h2>Divers</h2>
 <p>Une fonction de géolocalisation est fournie (en haut à gauche). Elle permet de déterminer la position de l'utilisateur et de centrer la carte dessus. L'API de géolocalisation du navigateur est utilisée pour cela.</p>

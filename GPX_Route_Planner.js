@@ -211,7 +211,8 @@
         'hiking-mountain': ['hiking-mountain'],
         'trekking': ['trekking'],
         'trekking-cycloroutes-safe': ['trekking', 'avoid_unsafe', 'stick_to_cycleroutes'],
-        'trekking-cycloroutes-safe-paved': ['trekking', 'avoid_unsafe', 'stick_to_cycleroutes', 'avoid_unpaved'],
+        // 'trekking-cycloroutes-safe-paved': ['trekking', 'avoid_unsafe', 'stick_to_cycleroutes', 'avoid_unpaved'],
+        // (ruled out because 'avoid_unpaved' option does not seem to be supported by "https://brouter.de/brouter")
         'fastbike': ['fastbike'],
         'fastbike-lowtraffic': ['fastbike-lowtraffic'],
         'fastbike-verylowtraffic': ['fastbike-verylowtraffic'],
@@ -226,27 +227,27 @@
     // Router profiles available
     const routerProfilesEnLabels = {
         "Hiking": "hiking-beta",
-        "Hiking (steep trails)": "hiking-mountain",
-        "Bicycle touring": "trekking",
-        "Bicycle tour. (safe & cycleroutes) ": "trekking-cycloroutes-safe",
-        "Bicycle tour. (all paved) ": "trekking-cycloroutes-safe",
+        "Hiking (rugged terrain)": "hiking-mountain",
+        "Cycle touring": "trekking",
+        "Cycle touring (safety & cycle routes)": "trekking-cycloroutes-safe",
+//        "Cycle touring (safety, cycle rtes & paved rds)": "trekking-cycloroutes-safe-paved",
         "Road cycling (fast)": "fastbike",
         "Road cycling (low traffic)": "fastbike-lowtraffic",
         "Road cycling (very low traffic)": "fastbike-verylowtraffic",
         "Gravel": "gravel",
         "Mountain biking": "mtb",
-        "Car route": "car-vario",
-        "Car route (fast)": "car-fast",
-        "Car route (economic)": "car-eco",
+        "Car": "car-vario",
+        "Car (fast)": "car-fast",
+        "Car (economical)": "car-eco",
         "-- crow --": "crow"
     };
 
     const routerProfilesFrLabels = {
         "Randonnée pédestre": "hiking-beta",
         "Randonnée pédestre (accidenté)": "hiking-mountain",
-        "Randonnée cyclotouriste": "trekking",
-        "Randonnée cyclo (sécurité & pistes cycl.)": "trekking-cycloroutes-safe",
-        "Randonnée cyclo (tout goudronné)": "trekking-cycloroutes-safe-paved",
+        "Cyclotourisme": "trekking",
+        "Cyclotourisme (sécurité & véloroutes)": "trekking-cycloroutes-safe",
+//        "Cyclotour. (sécu., véloroutes & goudronné)": "trekking-cycloroutes-safe-paved",
         "Cyclisme sur route (rapide)": "fastbike",
         "Cyclisme sur route (trafic bas)": "fastbike-lowtraffic",
         "Cyclisme sur route (trafic très bas)": "fastbike-verylowtraffic",
@@ -13516,6 +13517,7 @@
 <ul>
 <li>A topographic map (from OpenTopoMap and displayed by default) highlighting the natural features of the terrain (relief, waterways, coastlines, etc.) and showing contour lines. </li>
 <li>A general map (from OpenStreetMap).</li>
+<li>A general map (from OpenStreetMap) with place names in french.</li>
 <li>A map with hiking trails (from Waymarked Trails).</li>
 <li>A map with hiking trails (from Thunderforest Outdoors).</li>
 <li>A map with cycling tracks (from Waymarked Trails).</li>
@@ -13543,15 +13545,20 @@
 <ul>
 <li>Click on the map to add an additional point to the stage. If other points already exist, a section is also created to connect the previous point to this new point. The path used between these two points is determined by the chosen travel mode:
 <ul>
-<li>Walking/hiking (default): paths and small roads are preferred. </li>
-<li>Mountain biking: paths and trails are preferred. </li>
-<li>Road cycling (fast): paved roads are used, excluding highways. The shortest route is prefered.</li>
-<li>Road cycling (low traffic): paved roads are used, excluding highways. Routes with low traffic are prefered.</li>
-<li>Road cycling (very low traffic): paved roads are used, excluding highways. Routes with low traffic are strongly prefered.</li>
-<li>Car route: paved roads and major roads are used.</li>
-<li>Car route (fast): paved roads and major roads are used. The shortest route is prefered.</li>
-<li>Car route (economic): paved roads and major roads are used. The route with the lowest energy consumption is prefered.</li>
-<li>-- crow --: allows you to plot a straight line between two points, whether or not a path exists.</li>
+<li>Hiking: Paths, trails and minor roads are preferred.</li>
+<li>Hiking (rugged terrain): Like the previous profile, with a stronger preference for trails and rugged, sporty terrain.</li>
+<li>Cycle touring: Comfortable and pleasant cycling routes. Dedicated cycling infrastructure is preferred, though unpaved sections may occasionally be used.</li>
+<li>Cycle touring (safety & cycle routes): Like the previous profile, but with a stronger preference for safer routes and official cycle routes.</li>
+<!--li>Cycle touring (safety, cycle routes & paved roads): Like the previous profile, but excluding unpaved sections from the route in addition.</li-->
+<li>Road cycling (fast): Uses paved roads that favor speed, excluding motorways. The shortest route is preferred.</li>
+<li>Road cycling (low traffic): Like the previous profile, but avoiding high-traffic roads.</li>
+<li>Road cycling (very low traffic): Like the previous profile, but with a stronger preference for roads with very little traffic.</li>
+<li>Gravel: Intended for routes ridden on a gravel bike. Unpaved sections are accepted, but excessively difficult tracks (suitable only for mountain bikes) are avoided.</li>
+<li>Mountain biking: Tracks and trails suitable for mountain biking are preferred.</li>
+<li>Car: Uses paved roads and major routes.</li>
+<li>Car (fast): Like the previous profile, but favoring the shortest route.</li>
+<li>Car (economical): Like the previous profile, but favoring the route with the lowest energy consumption.</li>
+<li>-- crow --: Draws a route in a straight line between two points, whether or not a road or path exists.</li>
 </ul>
 For the first four travel modes, the route is calculated using the BRouter routing service and the resulting paths are curved. For the last one, a straight segment is plotted between the two points.
 </li>
@@ -13690,6 +13697,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <ul>
 <li>Une carte topographique (d'OpenTopoMap, présentée par défaut) mettant en évidence les caractéristiques naturelles du terrain (relief, cours d'eau, côtes...) et représentant les courbes de niveau.</li>
 <li>Une carte généraliste (d'OpenStreetMap).</li>
+<li>Une carte généraliste (d'OpenStreetMap) avec les noms de lieu en français.</li>
 <li>Une carte avec des sentiers de randonnée (de Waymarked Trails).</li>
 <li>Une carte avec des sentiers de randonnée (de Thunderforest Outdoors).</li>
 <li>Une carte avec des pistes de cyclotourisme (de Waymarked Trails).</li>
@@ -13718,15 +13726,20 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <ul>
 <li>Cliquer sur la carte pour ajouter un point supplémentaire à l'étape en cours d'édition. Si d'autres points existent déjà, une section est aussi créée pour relier le point précédent à ce nouveau point. Le chemin utilisé entre ces deux points est déterminé par le mode de voyage choisi :
 <ul>
-<li>Marche/randonnée (par défaut) : les chemins et les petites routes sont choisis de préférence.</li>
-<li>VTT : les chemins et sentiers sont choisis de préférence.</li>
-<li>Cyclisme sur route (rapide) : les routes goudronnées sont utilisées, à l'exclusion des autoroutes. L'itinéraire le plus court est préféré.</li>
-<li>Cyclisme sur route (trafic bas) : les routes goudronnées sont utilisées, à l'exclusion des autoroutes. Les itinéraires avec trafic bas sont préférés>.</li>
-<li>Cyclisme sur route (trafic très bas): les routes goudronnées sont utilisées, à l'exclusion des autoroutes. Les itinéraires avec trafic bas sont fortement privilégiés>.</li>
+<li>Randonnée pédestre : les chemins, sentiers et les petites routes sont choisis de préférence.</li>
+<li>Randonnée pédestre (accidenté) : comme le précédent, en privilégiant les sentiers et les parcours accidentés et sportifs.</li>
+<li>Cyclotourisme : parcours cyclistes confortables et agréables. Favorise les voies aménagées pour le vélo, mais des secteurs non goudronnés peuvent éventuellement être empruntés.</li>
+<li>Cyclotourisme (sécurité & véloroutes): comme le précédent, en privilégiant les parcours offrant une meilleure sécurité et empruntant des véloroutes.</li>
+<!--li>Cyclotourisme (sécurité, véloroutes & goudronné): comme le précédent, en éliminant du parcours les secteurs non goudronnés.</li-->
+<li>Cyclisme sur route (rapide) : les routes goudronnées favorisant la vitesse sont utilisées, à l'exclusion des autoroutes. L'itinéraire le plus court est préféré.</li>
+<li>Cyclisme sur route (trafic bas) : comme le précédent, en évitant les routes de trafic élevé.</li>
+<li>Cyclisme sur route (trafic très bas) : comme le précédent, en privilégiant les routes de très faible trafic.</li>
+<li>Gravel : destiné aux parcours avec un vélo de type "Gravel". Les sections non goudronnées sont acceptées, mais les chemins trop difficiles (reservés aux VTT) sont évités.</li>
+<li>VTT : les chemins et sentiers praticables en VTT sont choisis de préférence.</li>
 <li>Automobile : les routes goudronnées et les grands axes sont utilisés.</li>
-<li>Automobile (rapide) : les routes goudronnées et les grands axes sont utilisés. L'itinéraire le plus court est préféré.</li>
-<li>Automobile (économique) : les routes goudronnées et les grands axes sont utilisés. L'itinéraire avec la plus faible consommation d'énergie est préféré.</li>
-<li>-- vol d'oiseau -- : permet de tracer un trajet en ligne droite entre deux points, qu'il existe ou non un chemin.</li>
+<li>Automobile (rapide) : comme le précédent, en privilégiant l'itinéraire le plus court.</li>
+<li>Automobile (économique) : comme le précédent, en privilégiant l'itinéraire offrant la plus faible consommation d'énergie.</li>
+<li>-- vol d'oiseau -- : permet de tracer un parcours en ligne droite entre deux points, qu'il existe ou non un chemin.</li>
 </ul>
 Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du service de routage BRouter etles chemins résultants sont courbes. Pour le dernier, un segment de droite est tracé entre les deux points.
 </li>

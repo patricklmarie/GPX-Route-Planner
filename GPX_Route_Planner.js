@@ -13560,8 +13560,7 @@
 <li>Car (economical): Like the previous profile, but favoring the route with the lowest energy consumption.</li>
 <li>-- crow --: Draws a route in a straight line between two points, whether or not a road or path exists.</li>
 </ul>
-For the first four travel modes, the route is calculated using the BRouter routing service and the resulting paths are curved. For the last one, a straight segment is plotted between the two points.
-</li>
+For all travel modes (except the last one), the route is calculated using the BRouter routing service, and the resulting path consists of a series of connected segments. For the last mode, a straight-line segment is simply drawn between two points.
 <li>Double-click on a section of the stage to insert a new point.</li>
 <li>Double-click on a point in the stage to delete it.</li>
 <li>Drag and drop a point on the stage to move it.</li>
@@ -13741,7 +13740,7 @@ For the first four travel modes, the route is calculated using the BRouter routi
 <li>Automobile (économique) : comme le précédent, en privilégiant l'itinéraire offrant la plus faible consommation d'énergie.</li>
 <li>-- vol d'oiseau -- : permet de tracer un parcours en ligne droite entre deux points, qu'il existe ou non un chemin.</li>
 </ul>
-Pour les quatre premiers modes de voyage, le parcours est calculé à l'aide du service de routage BRouter etles chemins résultants sont courbes. Pour le dernier, un segment de droite est tracé entre les deux points.
+Pour tous les modes de voyage (sauf le dernier), le parcours est calculé à l'aide du service de routage BRouter et le chemin résultant est constitué d'une série de segments connexes. Pour le dernier, un segment de droite est simplement tracé entre deux points.
 </li>
 <li>Double-cliquer sur une section de l'étape pour insérer un nouveau point.</li>
 <li>Double-cliquer sur un point de l'étape pour le supprimer.</li>

@@ -210,6 +210,7 @@
         'hiking-beta': ['hiking-beta'],
         'hiking-mountain': ['hiking-mountain'],
         'trekking': ['trekking'],
+        'trekking-safe': ['trekking', 'avoid_unsafe'],
         'trekking-cycloroutes-safe': ['trekking', 'avoid_unsafe', 'stick_to_cycleroutes'],
         // 'trekking-cycloroutes-safe-paved': ['trekking', 'avoid_unsafe', 'stick_to_cycleroutes', 'avoid_unpaved'],
         // (ruled out because 'avoid_unpaved' option does not seem to be supported by "https://brouter.de/brouter")
@@ -229,6 +230,7 @@
         "Hiking": "hiking-beta",
         "Hiking (rugged terrain)": "hiking-mountain",
         "Cycle touring": "trekking",
+        "Cycle touring (safety)": "trekking-safe",
         "Cycle touring (safety & cycle routes)": "trekking-cycloroutes-safe",
 //        "Cycle touring (safety, cycle rtes & paved rds)": "trekking-cycloroutes-safe-paved",
         "Road cycling (fast)": "fastbike",
@@ -246,6 +248,7 @@
         "Randonnée pédestre": "hiking-beta",
         "Randonnée pédestre (accidenté)": "hiking-mountain",
         "Cyclotourisme": "trekking",
+        "Cyclotourisme (sécurité)": "trekking-safe",
         "Cyclotourisme (sécurité & véloroutes)": "trekking-cycloroutes-safe",
 //        "Cyclotour. (sécu., véloroutes & goudronné)": "trekking-cycloroutes-safe-paved",
         "Cyclisme sur route (rapide)": "fastbike",
@@ -13548,6 +13551,7 @@
 <li>Hiking: Paths, trails and minor roads are preferred.</li>
 <li>Hiking (rugged terrain): Like the previous profile, with a stronger preference for trails and rugged, sporty terrain.</li>
 <li>Cycle touring: Comfortable and pleasant cycling routes. Dedicated cycling infrastructure is preferred, though unpaved sections may occasionally be used.</li>
+<li>Cycle touring (safety): Like the previous profile, but with a stronger preference for safer routes.</li>
 <li>Cycle touring (safety & cycle routes): Like the previous profile, but with a stronger preference for safer routes and official cycle routes.</li>
 <!--li>Cycle touring (safety, cycle routes & paved roads): Like the previous profile, but excluding unpaved sections from the route in addition.</li-->
 <li>Road cycling (fast): Uses paved roads that favor speed, excluding motorways. The shortest route is preferred.</li>
@@ -13728,6 +13732,7 @@ For all travel modes (except the last one), the route is calculated using the BR
 <li>Randonnée pédestre : les chemins, sentiers et les petites routes sont choisis de préférence.</li>
 <li>Randonnée pédestre (accidenté) : comme le précédent, en privilégiant les sentiers et les parcours accidentés et sportifs.</li>
 <li>Cyclotourisme : parcours cyclistes confortables et agréables. Favorise les voies aménagées pour le vélo, mais des secteurs non goudronnés peuvent éventuellement être empruntés.</li>
+<li>Cyclotourisme (sécurité): comme le précédent, en privilégiant les parcours offrant une meilleure sécurité.</li>
 <li>Cyclotourisme (sécurité & véloroutes): comme le précédent, en privilégiant les parcours offrant une meilleure sécurité et empruntant des véloroutes.</li>
 <!--li>Cyclotourisme (sécurité, véloroutes & goudronné): comme le précédent, en éliminant du parcours les secteurs non goudronnés.</li-->
 <li>Cyclisme sur route (rapide) : les routes goudronnées favorisant la vitesse sont utilisées, à l'exclusion des autoroutes. L'itinéraire le plus court est préféré.</li>

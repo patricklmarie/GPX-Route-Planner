@@ -3064,9 +3064,9 @@
                                         const x = tooltipItems[0].parsed.x;   // the real distance
                                         if (x == null) 
                                             return "";                              
-                                        const label = context.language === 'EN' ? 'Distance: ' : 'Distance : ';
+                                        const title = context.language === 'EN' ? 'Distance: ' : 'Distance : ';
                                         const unit  = context.measurementUnits === 'ME' ? ' km' : ' mi';
-                                        return label + x.toFixed(3) + unit;
+                                        return title + x.toFixed(3) + unit;
                                     },
                                     label: function(tooltipItem) {
                                         const y = tooltipItem.parsed.y;
@@ -3437,15 +3437,63 @@
                                 callbacks: {
                                     title: function(tooltipItems) {
                                         const x = tooltipItems[0].parsed.x;   // the real distance                               
-                                        const label = context.language === 'EN' ? 'Distance: ' : 'Distance : ';
+                                        const title = context.language === 'EN' ? 'Distance: ' : 'Distance : ';
                                         const unit  = context.measurementUnits === 'ME' ? ' km' : ' mi';
-                                        return label + x.toFixed(3) + unit;
+                                        return title + x.toFixed(3) + unit;
                                     },
                                     label: function(tooltipItem) {
                                         const y = tooltipItem.parsed.y;
                                         const label = context.language === 'EN' ? 'Altitude: ' : 'Altitude : ';
                                         const unit  = context.measurementUnits === 'ME' ? ' m' : ' ft';
                                         return label + y.toFixed(0) + unit;
+                                    },
+                                    afterLabel: function(tooltipItem) {
+                                        const idx = tooltipItem.dataIndex;
+                                        const points = context.stageProfileChartPoints;
+
+                                        // First or last point: no grade available
+                                        if (idx > 0 && idx < points.length - 1) {
+                                            const prev = points[idx - 1];
+                                            const curr = points[idx];
+                                            const next = points[idx + 1];
+
+                                            // Ignore gaps
+                                            if (!prev || !curr || !next || prev.y == null || curr.y == null || next.y == null)
+                                                return "";
+
+                                            const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
+                                            const gradient = 100 * (((next.y - curr.y) / (next.x - curr.x)) + ((curr.y - prev.y) / (curr.x - prev.x))) / 2 / 1000;
+
+                                            return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
+                                        } else if (idx <= 0 && idx < points.length - 1) {
+                                            const curr = points[idx];
+                                            const next = points[idx + 1];
+
+                                            // Ignore gaps
+                                            if (!curr || !next || curr.y == null || next.y == null)
+                                                return "";
+
+                                            const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
+                                            const gradient = 100 * ((next.y - curr.y) / (next.x - curr.x)) / 1000;
+
+                                            return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
+                                        } else if (idx > 0 && idx >= points.length - 1) {
+                                            const prev = points[idx - 1];
+                                            const curr = points[idx];
+                                            const next = points[idx + 1];
+
+                                            // Ignore gaps
+                                            if (!prev || !curr || !next ||
+                                                prev.y == null || curr.y == null || next.y == null)
+                                                return "";
+
+                                            const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
+                                            const gradient = 100 * ((curr.y - prev.y) / (curr.x - prev.x)) / 1000;
+
+                                            return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
+                                        } else {
+                                            return "";
+                                        }
                                     }
                                 }
                             },
@@ -11878,8 +11926,8 @@
                         //console.log("Current alt is unknown");
                     }
 
-                    /*console.log("End of stage not reached");
-                    let alts = "Altitudes (" + i + ", " + j + "): ";
+                    //console.log("End of stage not reached");
+                    /*let alts = "Altitudes (" + i + ", " + j + "): ";
                     for (let l = 0; l < sample.length; l++) {
                         if (l === 0 && l < sample.length - 1)
                             alts = alts + l + ") " + sample[l] + " | ";
@@ -11947,7 +11995,7 @@
                 
                 //console.log("sampTotal: " + sampTotal + ", sampNotNullNb: " + sampNotNullNb + ", prevSmoothAlt: " + prevSmoothAlt + ", smoothAlt: " + smoothAlt + 
                 //    ", diff: " + diff + ", ascent: " + ascent + ", descent: " + descent);
-            } else if (prevSmoothAlt === null)
+            } //else if (prevSmoothAlt === null)
                 //console.log("sampTotal: " + sampTotal + ", sampNotNullNb: " + sampNotNullNb + ", smoothAlt: " + smoothAlt);
 
             if (smoothAlt != null)    // Save point smoothed altitude for future use with next point

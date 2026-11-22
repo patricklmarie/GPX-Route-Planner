@@ -11831,6 +11831,7 @@
     function calculateAscentAndDescent(stage) {
         const SMOOTH_WINDOW = 1;    // A sample of n preceding and n following points surrounding the current point will be used to smooth the calculated ascent and descent
                                     // SMOOTH_WINDOW = 0 -> No smoothing
+        //console.log("SMOOTH_WINDOW: " + SMOOTH_WINDOW);
         let ascent = null;     // Calculated ascent
         let descent = null;    // Calculated descent
 
@@ -11842,31 +11843,30 @@
         if (!stage.sections[0] || !stage.sections[0].polyline)
             return [null, null];
 
-        for (let k = 0; k < SMOOTH_WINDOW + 1; k++)     // Add ghost points at the left of the sample
+        for (let k = 0; k < (2 * SMOOTH_WINDOW) + 1; k++)     // Add ghost points at the left of the sample
             sample.push(null);
 
         let i = 0;      // Section index
         let j = -1;     // Index of point in section
+        let latlngs = null;
+        let endOfStageReached = false;
         while(true) {
             // Remove first point of sample
-            if (sample[0] != null) {
+            if (sample[0] !== null) {
                 sampTotal = sampTotal - sample[0];  // Update sum of altitudes for sample
                 sampNotNullNb--;    // Update number of not null altitudes for the sample
             }
             sample.shift();
 
-            // If sample is not complete, add another point if available
-            while (sample.length < (2 * SMOOTH_WINDOW) + 1) {
+            // While sample is not complete, add other points if available
+            while (!endOfStageReached && sample.length < (2 * SMOOTH_WINDOW) + 1) {   // End of stage not reached
                 j++;
                 //console.log("Section " + i + " of " + stage.sections.length + ", point " + j + " of " + stage.sections[i].polyline.getLatLngs().length);
-                const latlngs = stage.sections[i].polyline.getLatLngs();
-                if (j < latlngs.length || (j === latlngs.length && i < stage.sections.length - 1)) {    // End of stage points not reached
-                    if (j === latlngs.length && i < stage.sections.length - 1) {     // End of section reached, go to next one
-                        i++;
-                        j = 0;
-                        continue;     // Skip first point of section ignored because the same as last point of previous section
-                    }
-
+                if (latlngs === null) {
+                    latlngs = stage.sections[i].polyline.getLatLngs();
+                    //console.log("New section");
+                }
+                if (j < latlngs.length) {    // End of section not reached
                     // Add point to sample if its altitude is known
                     if (latlngs[j].alt) {
                         sample.push(latlngs[j].alt);
@@ -11878,52 +11878,49 @@
                         //console.log("Current alt is unknown");
                     }
 
-                    // Add ghost points (if needed) when last point of last stage reached
-                    if (j === latlngs.length - 1 && i === stage.sections.length - 1) {
-                        for (let k = 0; k < SMOOTH_WINDOW; k++)
-                            sample.push(null);
-                        while (sample.length < (2 * SMOOTH_WINDOW) + 1)
-                            sample.push(null);
-                        //console.log("End of stage reached");
-                        for (let l = 0; l < sample.length; l++) {
-                            //console.log("sample[" + l + "] = " + sample[l]);
-                        }
-                        //console.log("------------------------------------------------------------------------------------------------------------------------------------------------");
-                    }  else {
-                        //console.log("End of stage not reached");
-                        //for (let l = 0; l < sample.length; l++) {
-                        //    console.log("sample[" + l + "] = " + sample[l]);
-                        //}
-                        //console.log("------------------------------------------------------------------------------------------------------------------------------------------------");
+                    /*console.log("End of stage not reached");
+                    let alts = "Altitudes (" + i + ", " + j + "): ";
+                    for (let l = 0; l < sample.length; l++) {
+                        if (l === 0 && l < sample.length - 1)
+                            alts = alts + l + ") " + sample[l] + " | ";
+                        else if (l < sample.length - 1)
+                            alts = alts + l + ") " + sample[l] + " | ";
+                        else
+                            alts = alts + l + ") " + sample[l];
                     }
-                } else {
-                    //console.log("End of stage exceeded");
-                    //for (let l = 0; l < sample.length; l++) {
-                    //    console.log("sample[" + l + "] = " + sample[l]);
-                    //}
-                    //console.log("------------------------------------------------------------------------------------------------------------------------------------------------");
+                    console.log(alts);*/
+                } else if (j === latlngs.length && i < stage.sections.length - 1) {     // End of section reached, but not end of stage
+                    //console.log("End of section reached");
+                    i++;
+                    j = 0;
+                    latlngs = null;
+                    continue;     // Skip first point of section ignored because the same as last point of previous section
+                } else {    // End of section and end of stage reached
+                    endOfStageReached = true;
+
                     break;
                 }
             }
 
-            if (sample.length < (2 * SMOOTH_WINDOW) + 1) {    // End of ascent/descent calculation reached
-                //for (let l = 0; l < sample.length; l++) {
-                //    console.log("sample[" + l + "] = " + sample[l]);
-                //}
-                //console.log("Calculation completed");
-                break;
+            if (endOfStageReached) {
+                if (sampNotNullNb > 0) {   // End of stage reached and all points taken into account
+                    /*let alts = "Altitudes (" + i + ", " + j + "): ";
+                    for (let l = 0; l < sample.length; l++) {
+                        if (l === 0 && l < sample.length - 1)
+                            alts = alts + l + ") " + sample[l] + " | ";
+                        else if (l < sample.length - 1)
+                            alts = alts + l + ") " + sample[l] + " | ";
+                        else
+                            alts = alts + l + ") " + sample[l];
+                    }
+                    console.log(alts);*/
+                } else
+                    break;
             }
-            
-            //for (let l = 0; l < sample.length; l++) {
-            //    console.log("sample[" + l + "] = " + sample[l]);
-            //}
-            //console.log("sampTotal = " + sampTotal);
-            //console.log("sampNotNullNb = " + sampNotNullNb);
+
             let smoothAlt = null;
             if (sampNotNullNb > 0 )
                 smoothAlt = sampTotal / sampNotNullNb;      // Calculate smoothed altitude for the point as the average altitude of the sample
-            //console.log("prevSmoothAlt: " + prevSmoothAlt);
-            //console.log("smoothAlt: " + smoothAlt);
             if (smoothAlt != null && prevSmoothAlt != null) {
                 let diff = smoothAlt - prevSmoothAlt;     // Calculate smoothed altitude difference with the previous point
                 // Update ascent and descent
@@ -11932,18 +11929,31 @@
                         ascent = ascent + diff;
                     else
                         ascent = diff;
-                } else if (diff < 0)
+                    if (descent === null)
+                        descent = 0;
+                } else if (diff < 0) {
+                    if (ascent === null)
+                        ascent = 0;
                     if (descent !== null)
                         descent = descent + diff;
                     else
                         descent = diff;
-                //console.log("diff: " + diff + ", ascent: " + ascent + ", descent: " + descent);
-            }
+                } else {        // diff = 0
+                    if (ascent === null)
+                        ascent = 0;
+                    if (descent === null)
+                        descent = 0;
+                }
+                
+                //console.log("sampTotal: " + sampTotal + ", sampNotNullNb: " + sampNotNullNb + ", prevSmoothAlt: " + prevSmoothAlt + ", smoothAlt: " + smoothAlt + 
+                //    ", diff: " + diff + ", ascent: " + ascent + ", descent: " + descent);
+            } else if (prevSmoothAlt === null)
+                //console.log("sampTotal: " + sampTotal + ", sampNotNullNb: " + sampNotNullNb + ", smoothAlt: " + smoothAlt);
+
             if (smoothAlt != null)    // Save point smoothed altitude for future use with next point
                 prevSmoothAlt = smoothAlt;
-
-            //console.log("____________________________________________________________________________________________________________________________________________________");       
         }
+        //console.log("FINAL RESULT: ascent: " + ascent + " , descent: " + descent);
         return [ascent, descent];
     }
 

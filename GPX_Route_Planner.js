@@ -3075,6 +3075,56 @@
                                         const label = context.language === 'EN' ? 'Altitude: ' : 'Altitude : ';
                                         const unit  = context.measurementUnits === 'ME' ? ' m' : ' ft';
                                         return label + y.toFixed(0) + unit;
+                                    },
+                                    afterLabel: function(tooltipItem) {
+                                        const idx = tooltipItem.dataIndex;
+                                        const points = context.routeProfileChartPoints;
+
+                                        // First or last point: no grade available
+                                        if (idx > 0 && idx < points.length - 1) {
+                                            const prev = points[idx - 1];
+                                            const curr = points[idx];
+                                            const next = points[idx + 1];
+
+                                            // Ignore gaps
+                                            if (!prev || !curr || !next || prev.y == null || curr.y == null || next.y == null)
+                                                return "";
+
+                                            const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
+                                            const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
+                                            const gradient = 100 * (((next.y - curr.y) / ((next.x - curr.x) * distanceFactor)) + 
+                                             ((curr.y - prev.y) / ((curr.x - prev.x) * distanceFactor))) / 2;
+
+                                            return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
+                                        } else if (idx <= 0 && idx < points.length - 1) {
+                                            const curr = points[idx];
+                                            const next = points[idx + 1];
+
+                                            // Ignore gaps
+                                            if (!curr || !next || curr.y == null || next.y == null)
+                                                return "";
+
+                                            const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
+                                            const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
+                                            const gradient = 100 * (((next.y - curr.y) / ((next.x - curr.x) * distanceFactor))) / 2;
+
+                                            return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
+                                        } else if (idx > 0 && idx >= points.length - 1) {
+                                            const prev = points[idx - 1];
+                                            const curr = points[idx];
+
+                                            // Ignore gaps
+                                            if (!prev || !curr || prev.y == null || curr.y == null)
+                                                return "";
+
+                                            const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
+                                            const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
+                                            const gradient = 100 * (((curr.y - prev.y) / ((curr.x - prev.x) * distanceFactor))) / 2;
+
+                                            return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
+                                        } else {
+                                            return "";
+                                        }
                                     }
                                 }
                             },
@@ -3462,7 +3512,9 @@
                                                 return "";
 
                                             const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
-                                            const gradient = 100 * (((next.y - curr.y) / (next.x - curr.x)) + ((curr.y - prev.y) / (curr.x - prev.x))) / 2 / 1000;
+                                            const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
+                                            const gradient = 100 * (((next.y - curr.y) / ((next.x - curr.x) * distanceFactor)) + 
+                                             ((curr.y - prev.y) / ((curr.x - prev.x) * distanceFactor))) / 2;
 
                                             return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
                                         } else if (idx <= 0 && idx < points.length - 1) {
@@ -3474,21 +3526,21 @@
                                                 return "";
 
                                             const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
-                                            const gradient = 100 * ((next.y - curr.y) / (next.x - curr.x)) / 1000;
+                                            const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
+                                            const gradient = 100 * (((next.y - curr.y) / ((next.x - curr.x) * distanceFactor))) / 2;
 
                                             return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
                                         } else if (idx > 0 && idx >= points.length - 1) {
                                             const prev = points[idx - 1];
                                             const curr = points[idx];
-                                            const next = points[idx + 1];
 
                                             // Ignore gaps
-                                            if (!prev || !curr || !next ||
-                                                prev.y == null || curr.y == null || next.y == null)
+                                            if (!prev || !curr || prev.y == null || curr.y == null)
                                                 return "";
 
                                             const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
-                                            const gradient = 100 * ((curr.y - prev.y) / (curr.x - prev.x)) / 1000;
+                                            const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
+                                            const gradient = 100 * (((curr.y - prev.y) / ((curr.x - prev.x) * distanceFactor))) / 2;
 
                                             return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
                                         } else {

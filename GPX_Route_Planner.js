@@ -4417,21 +4417,21 @@
                         stage2.name = names[0].textContent;
                     // Retrieve waypoint color and set it as interest place name
                     const colors2 = rte.getElementsByTagNameNS(RP_NS, "color");
-                    if (colors2.length > 0 && colors2[0].textContent.length > 0 && !context.forceColorAtImport)
+                    if (rpMade && colors2.length > 0 && colors2[0].textContent.length > 0 && !context.forceColorAtImport)
                         stage2.color = colors2[0].textContent;
                     else
                         stage2.color = context.stageDefaultColor;
                     // Retrieve track distance and set it as stage distance
                     const distances = rte.getElementsByTagNameNS(RP_NS, "distance");
-                    if (distances.length > 0)
+                    if (rpMade && distances.length > 0)
                         stage2.distance = parseFloat(distances[0].textContent);
                     // Retrieve track ascent and set it as stage ascent
                     const ascents = rte.getElementsByTagNameNS(RP_NS, "ascent");
-                    if (ascents.length > 0)
+                    if (rpMade && ascents.length > 0)
                         stage2.ascent = parseFloat(ascents[0].textContent);
                     // Retrieve track descent and set it as stage descent
                     const descents = rte.getElementsByTagNameNS(RP_NS, "descent");
-                    if (descents.length > 0)
+                    if (rpMade && descents.length > 0)
                         stage2.descent = parseFloat(descents[0].textContent);
                 
                     let polypoints = [];

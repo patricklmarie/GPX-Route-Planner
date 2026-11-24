@@ -12621,6 +12621,8 @@
                 if (section.polyline)
                     bounds.extend(section.polyline.getBounds());
             });
+            if (stage.points.length === 1)
+                bounds.extend(stage.points[0].marker.getLatLng());
         });
 
         interestPlaces.forEach(intPl => {   // Store the bounds of all markers of all interest places
@@ -12657,6 +12659,8 @@
         stage.sections.forEach(section => {
             bounds.extend(section.polyline.getBounds());
         });
+        if (stage.points.length === 1)
+            bounds.extend(stage.points[0].marker.getLatLng());
 
         if (bounds.isValid())
             map.fitBounds(bounds);  // Focus the map on the polylines

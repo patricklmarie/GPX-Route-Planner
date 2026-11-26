@@ -99,6 +99,7 @@
         routeProfileChartPoints: null,
         routeProfileChartRevIdx: null,
         routeProfileControl: null,      // Control hosting the route profile diagram
+        routeProfileIndexes: null,      // Used to build route profile chart
         routeProfileMapMarker: null,    // Marker added on map when hovering on a route profile curve
         routerProfile: null,            // Router profile
         settingsBtnActivated: null,     // Settings button must be activated only once
@@ -3196,7 +3197,7 @@
         //-------------------------
         // Calculate route profile  
         //-------------------------
-        function calculateRouteProfile() {
+        /*function calculateRouteProfile() {
             let dist = 0;
             context.routeProfileChartPoints = [];
             context.routeProfileIndexes = [];
@@ -3214,10 +3215,12 @@
                     context.routeProfileIndexes.push(null);
                 }
                 
+                // Register first point
                 let alt = context.measurementUnits === 'ME' ? stage.points[0].marker.getLatLng().alt : stage.points[0].marker.getLatLng().alt/0.3048;
                 context.routeProfileChartPoints.push({ x: dist, y: alt });
                 context.routeProfileIndexes.push({ stageNum: h, sectNum: 0, ptNum: 0 });
                 
+                // Find min and max altitudes
                 if (yMin != null) {
                     if (alt < yMin) yMin = alt;
                     if (alt > yMax) yMax = alt;
@@ -3226,6 +3229,7 @@
                     yMax = alt;
                 }
                 
+                // Register other points
                 k++;
                 context.routeProfileChartRevIdx[h] = [[k]];
                 stage.sections.forEach((section, i) => {
@@ -3250,6 +3254,81 @@
                         context.routeProfileChartPoints.push({ x: dist, y: alt });
                         context.routeProfileIndexes.push({ stageNum: h, sectNum: i, ptNum: j });
 
+                        context.routeProfileChartRevIdx[h][i].push(k);
+
+                        if (alt < yMin) yMin = alt;
+                        if (alt > yMax) yMax = alt;
+                    }
+                });
+            });
+
+            return [yMin, yMax];
+        }*/
+
+        function calculateRouteProfile() {
+            if (stages.length === 0)
+                return [null, null];
+
+            let dist = 0;
+            context.routeProfileChartPoints = [];
+            context.routeProfileIndexes = [];
+            context.routeProfileChartRevIdx = [];
+            
+            // Prepare to search min and max altitudes
+            let yMin = null;
+            let yMax = null;
+            
+            let k = -1;
+            stages.forEach((stage, h) => {
+                if (stage.points.length === 0) {
+                    context.routeProfileChartRevIdx.push([]);
+                    return;
+                }
+
+                if (h > 0) {    // Insert a null item to break the chart into several stages with a vertical dashed bar
+                    k++;
+                    context.routeProfileChartPoints.push({ x: null, y: null });
+                    context.routeProfileIndexes.push(null);
+                }
+
+                // Register first point of stage
+                k++;
+                let alt = context.measurementUnits === 'ME' ? stage.points[0].marker.getLatLng().alt : stage.points[0].marker.getLatLng().alt/0.3048;
+                context.routeProfileChartPoints.push({ x: dist, y: alt });
+                context.routeProfileIndexes.push({ stageNum: h, sectNum: 0, ptNum: 0 });
+                context.routeProfileChartRevIdx.push([[]]);
+                context.routeProfileChartRevIdx[h][0].push([k]);
+                
+                // Find min and max altitudes
+                if (yMin != null) {
+                    if (alt < yMin) yMin = alt;
+                    if (alt > yMax) yMax = alt;
+                } else {
+                    yMin = alt;
+                    yMax = alt;
+                }
+                
+                // Register other points of stage
+                stage.sections.forEach((section, i) => {
+                    const sectPoints = section.polyline.getLatLngs();
+
+                    // Register first point of section (except for the first section)
+                    if (i > 0) {
+                        k++;
+                        context.routeProfileChartPoints.push({ x: dist, y: alt });
+                        context.routeProfileIndexes.push({ stageNum: h, sectNum: i, ptNum: 0 });
+                        context.routeProfileChartRevIdx[h].push([[k]]);
+                    }
+
+                    for (let j = 1; j < sectPoints.length; j++) {
+                        k++;
+                        let delta = context.measurementUnits === 'ME' ? haversine(sectPoints[j - 1], sectPoints[j]) : haversine(sectPoints[j - 1], sectPoints[j])/1.609344;
+                        dist += delta;  // Use the haversine function to add the distance between two points
+                        if (sectPoints[j].alt) {    // When alt not available, the previous value is used
+                            alt = context.measurementUnits === 'ME' ? sectPoints[j].alt : sectPoints[j].alt/0.3048;
+                        }
+                        context.routeProfileChartPoints.push({ x: dist, y: alt });
+                        context.routeProfileIndexes.push({ stageNum: h, sectNum: i, ptNum: j });
                         context.routeProfileChartRevIdx[h][i].push(k);
 
                         if (alt < yMin) yMin = alt;
@@ -3544,20 +3623,26 @@
             let dist = 0;
             let alt = context.measurementUnits === 'ME' ? stage.points[0].marker.getLatLng().alt : stage.points[0].marker.getLatLng().alt/0.3048;
             
+            // Register first chart point
             context.stageProfileChartPoints = [{ x: 0, y: alt }];
             context.stageProfileIndexes = [ { sectNum: 0, ptNum: 0 }];
             context.stageProfileChartRevIdx = [[0]];
             
+            // Prepare to search min and max altitudes
             let yMin = alt;
             let yMax = alt;
-            let k = 0;
 
+            // Register other chart points
+            let k = 0;
             stage.sections.forEach((section, i) => {
                 const sectPoints = section.polyline.getLatLngs();
 
-                if (i > 0) context.stageProfileChartRevIdx.push([]);
+                if (i > 0 && sectPoints.length > 0) {
+                    context.stageProfileChartRevIdx.push([]);
+                    context.stageProfileChartRevIdx[i].push(k);
+                }
 
-                for (let j = 1; j < sectPoints.length; j++) {
+                for (let j = 1; j < sectPoints.length; j++) {   // First point of section is skipped
                     k++;
                     let delta = context.measurementUnits === 'ME' ? haversine(sectPoints[j - 1], sectPoints[j]) : haversine(sectPoints[j - 1], sectPoints[j])/1.609344;
                     dist = dist + delta;  // Use the haversine function to add the distance between two points
@@ -5606,57 +5691,6 @@
 
                 if (context.altPop && context.altPop !== null)
                     context.altPop.remove();
-
-                if (!context.stageNRouteProfileDisplayed || context.editedStage === null) 
-                    return;
-
-                const stageRef = stages[context.editedStage];
-                const iRef = context.editedStage;
-
-                if (!stageRef) 
-                    return;
-
-                let { sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnStage(stageRef, e.latlng);
-                if (sectIdx > 0 && ptIdx > 0) 
-                    ptIdx--;   // First point of section is indexed only for the first section
-
-                if (distance <= 30) {
-                    const latlng = stageRef.sections[sectIdx].polyline.getLatLngs()[ptIdx];
-
-                    if (context.stageProfileMapMarker)
-                        context.stageProfileMapMarker.setLatLng(latlng);
-                    else
-                        context.stageProfileMapMarker = L.circleMarker(latlng, { pane: 'markerEditPane', radius: 3, color: 'red', fill: true, fillColor: 'red', fillOpacity: 1, interactive: false }).addTo(map);
-
-                    if (context.stageProfileChartRevIdx && context.stageProfileChartRevIdx[sectIdx] && context.stageProfileChartRevIdx[sectIdx][ptIdx] != undefined) {
-                        const idx = context.stageProfileChartRevIdx[sectIdx][ptIdx];
-
-                        const dist = context.stageProfileChartPoints[idx].x;
-                        const alt = context.stageProfileChartPoints[idx].y;
-
-                        const chart = context.stageProfileChart;
-
-                        chart.setActiveElements([{
-                            datasetIndex: 0,
-                            index: idx
-                        }]);
-
-                        chart.tooltip.setActiveElements([{
-                            datasetIndex: 0,
-                            index: idx
-                        }], {
-                            x: dist,
-                            y: alt
-                        });
-
-                        chart.update();
-                    }
-                } else {
-                    if (!context.stageProfileControl || !context.stageProfileMapMarker) 
-                        return;
-                    else 
-                        removeStageMapNChartMarkers();
-                }
             }
         })(stages[i]);
         map.addEventListener('mousemove', map_mousemove);    // Add event listener  to map
@@ -6094,8 +6128,10 @@
                     return;
 
                 let { sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnStage(stageRef, e.latlng);
-                if (sectIdx > 0 && ptIdx > 0)
-                    ptIdx--;   // First point of section is indexed only for the first section
+                if (sectIdx > 0 && ptIdx === 0) {
+                    sectIdx--;
+                    ptIdx = stageRef.sections[sectIdx].polyline.getLatLngs().length - 1;
+                }
 
                 if (distance <= 30) {
                     const latlng = stageRef.sections[sectIdx].polyline.getLatLngs()[ptIdx];
@@ -6107,7 +6143,7 @@
 
                     if (context.stageProfileChartRevIdx && context.stageProfileChartRevIdx[sectIdx] && context.stageProfileChartRevIdx[sectIdx][ptIdx] != undefined) {
                         const idx = context.stageProfileChartRevIdx[sectIdx][ptIdx];
-
+    
                         const dist = context.stageProfileChartPoints[idx].x;
                         const alt = context.stageProfileChartPoints[idx].y;
 
@@ -6191,8 +6227,10 @@
 
                 stages.forEach((stage, i) => {
                     let { stageIdx: stageIdx, sectionIdx: sectIdx, pointIdx: ptIdx, distance: distance } = findClosestSectPointDistOnRoute(e.latlng);
-                    if (sectIdx > 0 && ptIdx > 0) 
-                        ptIdx--;   // First point of section is indexed only for the first section
+                    if (sectIdx > 0 && ptIdx === 0) {
+                        sectIdx--;
+                        ptIdx = stages[stageIdx].sections[sectIdx].polyline.getLatLngs().length - 1;
+                    }
 
                     if (distance <= 30) {
                         const latlng = stages[stageIdx].sections[sectIdx].polyline.getLatLngs()[ptIdx];
@@ -11968,47 +12006,79 @@
     //------------------------------------------------------
     function calculateGradient(idx, points) {
         const MAX_SMOTHING_DISTANCE = 40;
+        const MIN_SMOTHING_DISTANCE = 15;
         const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
+        const convert2MetersFactor = context.measurementUnits === 'ME' ? 1 : 0.3048;
 
-        if (!points[idx].y) return "";
+        let curr = null;
+        if (typeof idx === "number") {  // Usual case
+            curr = idx;
+        } else if (typeof idx === "object") {   // After a gap used for indicating a stage change, the first point of the next stage returns an array
+            curr = idx[0];
+        } else return "";
+
+        if (curr < 0 || curr > points.length - 1)
+            return "";
+
+        if (!points[curr].y) {
+            return "";
+        }
 
         // Calculate gradient with preceding points
+        //console.log("Calculating PREV gradient for : " + idx + " and " + points.length + " elements");
         let addedPrevGradients = 0;
         let prevPointsNb = 0;
-        let lastIdx = idx;
-        for (let i = idx - 1; i >= 0; i-- ) {
-            if (!points[i].y)
-                continue;
-            if (points[lastIdx].x - points[i].x === 0)
+        let lastCurr = curr;
+        for (let i = curr - 1; i >= 0; i--) {
+            const dist = (points[lastCurr].x - points[i].x) * distanceFactor;
+            const metricDist = dist * convert2MetersFactor;
+            
+            if (dist === 0) {  // Last point of a stage and first point of another stage
                 break;
-            addedPrevGradients += (points[lastIdx].y - points[i].y) / ((points[lastIdx].x - points[i].x) * distanceFactor);
+            }
+
+            if (!points[i].y || metricDist < MIN_SMOTHING_DISTANCE)
+                continue;
+
+            addedPrevGradients += (points[lastCurr].y - points[i].y) / dist;
             prevPointsNb++;
-            lastIdx = i;
-            if ((points[idx].x - points[i].x) * distanceFactor > MAX_SMOTHING_DISTANCE)
+            lastCurr = i;
+
+            if (metricDist > MAX_SMOTHING_DISTANCE)
                 break;
         }
         let prevGradient = 0;
         if (prevPointsNb > 0)
             prevGradient = addedPrevGradients / prevPointsNb;
 
+        // Calculate gradient with following points
         let addedNextGradients = 0;
         let nextPointsNb = 0;
-        lastIdx = idx;
-        for (let i = idx + 1; i < points.length; i++ ) {
-            if (!points[i].y)
-                continue;
-            if (points[i].x - points[lastIdx].x === 0)
+        lastCurr = curr;
+        for (let i = curr + 1; i < points.length; i++) {
+            const dist = (points[i].x - points[lastCurr].x) * distanceFactor;
+            const metricDist = dist * convert2MetersFactor;
+
+            if (dist === 0) { // Last point of a stage and first point of another stage
                 break;
-            addedNextGradients += (points[i].y - points[lastIdx].y) / ((points[i].x - points[lastIdx].x) * distanceFactor);
+            }
+
+            if (!points[i].y || metricDist < MIN_SMOTHING_DISTANCE) {
+                continue;
+            }
+
+            addedNextGradients += (points[i].y - points[lastCurr].y) / dist;
             nextPointsNb++;
-            lastIdx = i;
-            if ((points[i].x - points[idx].x) * distanceFactor > MAX_SMOTHING_DISTANCE)
+            lastCurr = i;
+
+            if (metricDist > MAX_SMOTHING_DISTANCE)
                 break;
         }
         let nextGradient = 0;
         if (nextPointsNb > 0)
             nextGradient = addedNextGradients / nextPointsNb;
 
+        // Complete gradient calculation with averaging
         let gradient = "";
         if (prevPointsNb > 0 && nextPointsNb > 0)
             gradient = (100 * ((prevGradient + nextGradient) / 2)).toFixed(0);

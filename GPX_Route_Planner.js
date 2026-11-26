@@ -3077,53 +3077,12 @@
                                         return label + y.toFixed(0) + unit;
                                     },
                                     afterLabel: function(tooltipItem) {
-                                        const idx = tooltipItem.dataIndex;
-                                        const points = context.routeProfileChartPoints;
-
-                                        // First or last point: no grade available
-                                        if (idx > 0 && idx < points.length - 1) {
-                                            const prev = points[idx - 1];
-                                            const curr = points[idx];
-                                            const next = points[idx + 1];
-
-                                            // Ignore gaps
-                                            if (!prev || !curr || !next || prev.y == null || curr.y == null || next.y == null)
-                                                return "";
-
-                                            const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
-                                            const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
-                                            const gradient = 100 * (((next.y - curr.y) / ((next.x - curr.x) * distanceFactor)) + 
-                                             ((curr.y - prev.y) / ((curr.x - prev.x) * distanceFactor))) / 2;
-
-                                            return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
-                                        } else if (idx <= 0 && idx < points.length - 1) {
-                                            const curr = points[idx];
-                                            const next = points[idx + 1];
-
-                                            // Ignore gaps
-                                            if (!curr || !next || curr.y == null || next.y == null)
-                                                return "";
-
-                                            const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
-                                            const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
-                                            const gradient = 100 * (((next.y - curr.y) / ((next.x - curr.x) * distanceFactor))) / 2;
-
-                                            return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
-                                        } else if (idx > 0 && idx >= points.length - 1) {
-                                            const prev = points[idx - 1];
-                                            const curr = points[idx];
-
-                                            // Ignore gaps
-                                            if (!prev || !curr || prev.y == null || curr.y == null)
-                                                return "";
-
-                                            const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
-                                            const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
-                                            const gradient = 100 * (((curr.y - prev.y) / ((curr.x - prev.x) * distanceFactor))) / 2;
-
-                                            return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
-                                        } else {
-                                            return "";
+                                        const gradient = calculateGradient(tooltipItem.dataIndex, context.routeProfileChartPoints);
+                                        if (gradient !== "") {
+                                            let afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
+                                            afterLabel += gradient;
+                                            afterLabel += context.language === 'EN' ? '%' : ' %';
+                                            return afterLabel;
                                         }
                                     }
                                 }
@@ -3498,53 +3457,12 @@
                                         return label + y.toFixed(0) + unit;
                                     },
                                     afterLabel: function(tooltipItem) {
-                                        const idx = tooltipItem.dataIndex;
-                                        const points = context.stageProfileChartPoints;
-
-                                        // First or last point: no grade available
-                                        if (idx > 0 && idx < points.length - 1) {
-                                            const prev = points[idx - 1];
-                                            const curr = points[idx];
-                                            const next = points[idx + 1];
-
-                                            // Ignore gaps
-                                            if (!prev || !curr || !next || prev.y == null || curr.y == null || next.y == null)
-                                                return "";
-
-                                            const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
-                                            const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
-                                            const gradient = 100 * (((next.y - curr.y) / ((next.x - curr.x) * distanceFactor)) + 
-                                             ((curr.y - prev.y) / ((curr.x - prev.x) * distanceFactor))) / 2;
-
-                                            return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
-                                        } else if (idx <= 0 && idx < points.length - 1) {
-                                            const curr = points[idx];
-                                            const next = points[idx + 1];
-
-                                            // Ignore gaps
-                                            if (!curr || !next || curr.y == null || next.y == null)
-                                                return "";
-
-                                            const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
-                                            const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
-                                            const gradient = 100 * (((next.y - curr.y) / ((next.x - curr.x) * distanceFactor))) / 2;
-
-                                            return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
-                                        } else if (idx > 0 && idx >= points.length - 1) {
-                                            const prev = points[idx - 1];
-                                            const curr = points[idx];
-
-                                            // Ignore gaps
-                                            if (!prev || !curr || prev.y == null || curr.y == null)
-                                                return "";
-
-                                            const afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
-                                            const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
-                                            const gradient = 100 * (((curr.y - prev.y) / ((curr.x - prev.x) * distanceFactor))) / 2;
-
-                                            return afterLabel + gradient.toFixed(1) + (context.language === 'EN' ? '%' : ' %');
-                                        } else {
-                                            return "";
+                                        const gradient = calculateGradient(tooltipItem.dataIndex, context.stageProfileChartPoints);
+                                        if (gradient !== "") {
+                                            let afterLabel = context.language === 'EN' ? 'Gradient: ' : 'Pente : ';
+                                            afterLabel += gradient;
+                                            afterLabel += context.language === 'EN' ? '%' : ' %';
+                                            return afterLabel;
                                         }
                                     }
                                 }
@@ -11977,18 +11895,6 @@
                         sample.push(null);
                         //console.log("Current alt is unknown");
                     }
-
-                    //console.log("End of stage not reached");
-                    /*let alts = "Altitudes (" + i + ", " + j + "): ";
-                    for (let l = 0; l < sample.length; l++) {
-                        if (l === 0 && l < sample.length - 1)
-                            alts = alts + l + ") " + sample[l] + " | ";
-                        else if (l < sample.length - 1)
-                            alts = alts + l + ") " + sample[l] + " | ";
-                        else
-                            alts = alts + l + ") " + sample[l];
-                    }
-                    console.log(alts);*/
                 } else if (j === latlngs.length && i < stage.sections.length - 1) {     // End of section reached, but not end of stage
                     //console.log("End of section reached");
                     i++;
@@ -12055,6 +11961,65 @@
         }
         //console.log("FINAL RESULT: ascent: " + ascent + " , descent: " + descent);
         return [ascent, descent];
+    }
+
+    //------------------------------------------------------
+    // Calculate gradient for a point of the stage or route
+    //------------------------------------------------------
+    function calculateGradient(idx, points) {
+        const MAX_SMOTHING_DISTANCE = 40;
+        const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
+
+        if (!points[idx].y) return "";
+
+        // Calculate gradient with preceding points
+        let addedPrevGradients = 0;
+        let prevPointsNb = 0;
+        let lastIdx = idx;
+        for (let i = idx - 1; i >= 0; i-- ) {
+            if (!points[i].y)
+                continue;
+            if (points[lastIdx].x - points[i].x === 0)
+                break;
+            addedPrevGradients += (points[lastIdx].y - points[i].y) / ((points[lastIdx].x - points[i].x) * distanceFactor);
+            prevPointsNb++;
+            lastIdx = i;
+            if ((points[idx].x - points[i].x) * distanceFactor > MAX_SMOTHING_DISTANCE)
+                break;
+        }
+        let prevGradient = 0;
+        if (prevPointsNb > 0)
+            prevGradient = addedPrevGradients / prevPointsNb;
+
+        let addedNextGradients = 0;
+        let nextPointsNb = 0;
+        lastIdx = idx;
+        for (let i = idx + 1; i < points.length; i++ ) {
+            if (!points[i].y)
+                continue;
+            if (points[i].x - points[lastIdx].x === 0)
+                break;
+            addedNextGradients += (points[i].y - points[lastIdx].y) / ((points[i].x - points[lastIdx].x) * distanceFactor);
+            nextPointsNb++;
+            lastIdx = i;
+            if ((points[i].x - points[idx].x) * distanceFactor > MAX_SMOTHING_DISTANCE)
+                break;
+        }
+        let nextGradient = 0;
+        if (nextPointsNb > 0)
+            nextGradient = addedNextGradients / nextPointsNb;
+
+        let gradient = "";
+        if (prevPointsNb > 0 && nextPointsNb > 0)
+            gradient = (100 * ((prevGradient + nextGradient) / 2)).toFixed(0);
+        else if (prevPointsNb > 0)
+            gradient = (100 * prevGradient).toFixed(0);
+        else if (nextPointsNb > 0)
+            gradient = (100 * nextGradient).toFixed(0);
+        if (gradient === "-0")
+            gradient = "0";
+
+        return gradient;
     }
 
     //----------------------------
@@ -13001,103 +12966,6 @@
     //---------------------------------------------------------------------------------
     // Improve the geometry of a section returned by BRouter by decimating the points
     //---------------------------------------------------------------------------------
-    /*function improvePolyGeom(latlngs) {
-        // Project the points on the map (to make the improvement independent of the map's zoom level)
-        const projected = latlngs.map(ll => {
-            const p = map.options.crs.project(ll);
-            p.alt = ll.alt;
-            return p;
-        });
-
-        const improvedPoints = L.LineUtil.simplify(projected, 5);     // Simplify the way with precision = 5 meters
-
-        // Unproject the points from the map to retrieve their coordinates
-        const improvedLatLngs = improvedPoints.map(p => {   
-            const ll = map.options.crs.unproject(p);
-            return L.latLng(ll.lat, ll.lng, p.alt);
-        });
-        
-        // Add altitudes
-        improvedLatLngs.forEach(ll => {
-            ll.alt = interpolateAltitude(ll, latlngs);
-        });
-
-        // Insert points by interpolation if some are too distant
-        let improvedLatLngs2 = [];
-        for (let i = 0; i < improvedLatLngs.length - 1; i++) {
-            improvedLatLngs2.push(improvedLatLngs[i]);
-            const nb = compareFlatDistance(improvedLatLngs[i], improvedLatLngs[i + 1], 500);
-            if (nb > 0) {
-                const latStep = (improvedLatLngs[i + 1].lat - improvedLatLngs[i].lat) / (nb + 1); 
-                const lngStep = (improvedLatLngs[i + 1].lng - improvedLatLngs[i].lng) / (nb + 1); 
-                const altStep = (improvedLatLngs[i + 1].alt - improvedLatLngs[i].alt) / (nb + 1); 
-                let lastLat = improvedLatLngs[i].lat;
-                let lastLng = improvedLatLngs[i].lng;
-                let lastAlt = improvedLatLngs[i].alt;
-                for (let j = 0; j < nb; j++) {
-                    lastLat = lastLat + latStep;
-                    lastLng = lastLng + lngStep;
-                    lastAlt = lastAlt + altStep;
-                    improvedLatLngs2.push(L.latLng(lastLat, lastLng, lastAlt));
-                }
-            }
-        }
-        improvedLatLngs2.push(improvedLatLngs[improvedLatLngs.length - 1]);
-
-        return improvedLatLngs2;
-
-        //------------------------------------------------------------
-        // Retrieve altitude of the points obtained by simplification
-        //------------------------------------------------------------
-        function interpolateAltitude(latlng, originalTrack) {
-            let bestDist = Infinity;
-            let bestAlt = 0;
-
-            for (let i = 0; i < originalTrack.length - 1; i++) {
-                const a = originalTrack[i];
-                const b = originalTrack[i + 1];
-
-                const d = latlng.distanceTo(a);
-                if (d < bestDist) {
-                    bestDist = d;
-                    bestAlt = a.alt;
-                }
-            }
-
-            return bestAlt;
-        }
-
-        //--------------------------------------------------------------------------------------------------
-        // Compare flat-earth distance between two nearby geographic points to a maximal accepted threshold
-        //--------------------------------------------------------------------------------------------------
-        function compareFlatDistance(latlng1, latlng2, threshold) {
-            const R = 6378137;                     // Earth radius (meters)
-            const rad = 0.017453292519943295;      // PI/180
-
-            // Convert degrees → radians
-            const lat1 = latlng1.lat * rad;
-            const lat2 = latlng2.lat * rad;
-            const lng1 = latlng1.lng * rad;
-            const lng2 = latlng2.lng * rad;
-
-            // Differences in radians
-            const dLat = lat2 - lat1;
-            const dLng = lng2 - lng1;
-
-            // Tangent-plane projection (meters)
-            const dy = R * dLat;
-            const dx = R * Math.cos((lat1 + lat2) * 0.5) * dLng;
-
-            // Euclidean distance (meters)
-            const ed = Math.hypot(dx, dy);
-
-            if (ed <= threshold) 
-                return 0;
-            else
-                return Math.floor(ed / threshold);  // integer quotient
-        }
-    }*/
-
     function improvePolyGeom(latlngs) {
         // Project points
         const projected = latlngs.map(ll => {
@@ -13144,7 +13012,9 @@
 
         return result;
 
+        //-------------------------------
         // Proper altitude interpolation
+        //-------------------------------
         function interpolateAltitude(latlng, original) {
             let bestAlt = original[0].alt;
             let bestDist = Infinity;
@@ -13181,7 +13051,10 @@
             return bestAlt;
         }
 
-        function projectPointOnSegment(p, a, b) {
+        //---------------------------
+        // Project point on segement
+        //---------------------------
+        /*function projectPointOnSegment(p, a, b) {
             const ax = a.lng, ay = a.lat;
             const bx = b.lng, by = b.lat;
             const px = p.lng, py = p.lat;
@@ -13192,7 +13065,7 @@
             const t = ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy);
     
             return Math.max(0, Math.min(1, t));
-        }
+        }*/
 
         //--------------------------------------------------------------------------------------------------
         // Compare flat-earth distance between two nearby geographic points to a maximal accepted threshold

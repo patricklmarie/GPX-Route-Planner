@@ -12005,7 +12005,7 @@
     // Calculate gradient for a point of the stage or route
     //------------------------------------------------------
     function calculateGradient(idx, points) {
-        const MAX_SMOTHING_DISTANCE = 40;
+        const MAX_SMOTHING_DISTANCE = 35;
         const MIN_SMOTHING_DISTANCE = 15;
         const distanceFactor = context.measurementUnits === 'ME' ? 1000 : 5280;
         const convert2MetersFactor = context.measurementUnits === 'ME' ? 1 : 0.3048;
@@ -12025,7 +12025,6 @@
         }
 
         // Calculate gradient with preceding points
-        //console.log("Calculating PREV gradient for : " + idx + " and " + points.length + " elements");
         let addedPrevGradients = 0;
         let prevPointsNb = 0;
         let lastCurr = curr;
